@@ -742,6 +742,25 @@ const QUADRATIC_METHODS = new Set(["find", "findIndex", "some"]);
 // 역시 배열 전용이라 문자열 오탐이 없다.
 const QUADRATIC_GROUP_METHODS = new Set(["filter"]);
 
+// O(n²) 사이트를 PR 가치순으로 가른다. 같은 O(n²)라도 프론트 UI 루프(n=메뉴·필터, 유계)와
+// 백엔드 유저데이터 루프(n=요청·행, 무계)는 PR감이 천지차. zone(파일경로)이 지배적 신호다.
+function quadZoneOf(file) {
+  if (/\.(test|spec)\.|__tests__|\/tests?\/|\/e2e\/|\/fixtures?\/|\/migrations?\//.test(file)) return "test";
+  // backend before frontend: e.g. medusa `api/admin/*.route.ts` is a REST route, not UI.
+  if (/\/(api|server|services?|routes?|controllers?|use-?cases?|repositor\w*|workflows?|queues?|handlers?|resolvers?|jobs?|tasks?)\//.test(file))
+    return "backend";
+  // frontend is signalled by the JSX extension or explicit component/client dirs — not a bare `/admin/`.
+  if (/\.(tsx|jsx)$|\/components?\/|\/dashboard\/|\/client\/|\/ui\//.test(file)) return "frontend";
+  return "other";
+}
+// 루프 반복대상이 배열 리터럴이면 유계(바운드), 식별자·프로퍼티·호출이면 유저데이터일 개연 → dynamic.
+function quadOuterDynamic(text) {
+  if (!text) return true; // 알 수 없으면 후보 쪽으로(보수적)
+  if (/^\[/.test(text)) return false; // [a,b,c] 리터럴
+  return true;
+}
+const QUAD_ZONE_RANK = { backend: 3, other: 2, frontend: 1, test: 0 };
+
 function analyzeQuadraticLookups(ts, fileContents) {
   const sites = [];
   for (const { file, content } of fileContents) {
@@ -774,12 +793,20 @@ function analyzeQuadraticLookups(ts, fileContents) {
       return names;
     };
 
-    const walk = (node, inLoop, locals) => {
+    const loopIterableText = (n) => {
+      if ((n.kind === ts.SyntaxKind.ForOfStatement || n.kind === ts.SyntaxKind.ForInStatement) && n.expression)
+        return n.expression.getText(sf).replace(/\s+/g, " ").slice(0, 60);
+      return null; // for(;;)/while: 반복대상 미상
+    };
+
+    const walk = (node, inLoop, locals, outerText) => {
       let childInLoop = inLoop;
       let childLocals = locals;
+      let childOuter = outerText;
       if (isLoopNode(node)) {
         childInLoop = true;
         childLocals = new Set([...locals, ...declaredIn(node)]);
+        childOuter = loopIterableText(node) ?? outerText;
       }
 
       if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) {
@@ -800,16 +827,24 @@ function analyzeQuadraticLookups(ts, fileContents) {
             (QUADRATIC_METHODS.has(method) || QUADRATIC_GROUP_METHODS.has(method))) {
           const recv = recvNode.getText(sf);
           if (!locals.has(root)) {
+            const zone = quadZoneOf(file);
+            const dynamicOuter = quadOuterDynamic(outerText);
             sites.push({
               file, line: lineOf(node), recv, method,
               kind: QUADRATIC_GROUP_METHODS.has(method) ? "group" : "lookup",
+              zone, outer: outerText || null, dynamicOuter,
+              // PR 우선순위: 백엔드 + 무계 반복이 최상, 테스트/유계 프론트가 최하.
+              rank: (QUAD_ZONE_RANK[zone] ?? 2) * 2 + (dynamicOuter ? 1 : 0),
             });
           }
         }
-        // 순회 메서드(map/forEach…)에 넘긴 콜백 본문도 루프로 취급
+        // 순회 메서드(map/forEach…)에 넘긴 콜백 본문도 루프로 취급 — 반복대상은 수신자
         if (ITERATING_METHODS.has(method)) {
+          const iterText = ts.isPropertyAccessExpression(node.expression)
+            ? node.expression.expression.getText(sf).replace(/\s+/g, " ").slice(0, 60)
+            : outerText;
           for (const arg of node.arguments) {
-            if (isFnLike(arg)) walk(arg, true, new Set([...childLocals, ...declaredIn(arg)]));
+            if (isFnLike(arg)) walk(arg, true, new Set([...childLocals, ...declaredIn(arg)]), iterText);
           }
         }
       }
@@ -820,17 +855,23 @@ function analyzeQuadraticLookups(ts, fileContents) {
           ts.isPropertyAccessExpression(node.expression) &&
           ITERATING_METHODS.has(node.expression.name.getText(sf)) &&
           isFnLike(child);
-        if (!alreadyWalked) walk(child, childInLoop, childLocals);
+        if (!alreadyWalked) walk(child, childInLoop, childLocals, childOuter);
       });
     };
-    ts.forEachChild(sf, (n) => walk(n, false, new Set()));
+    ts.forEachChild(sf, (n) => walk(n, false, new Set(), null));
   }
 
   const byFile = new Map();
   for (const s of sites) byFile.set(s.file, (byFile.get(s.file) || 0) + 1);
+  // PR 후보 = 백엔드/기타 + 무계 반복 + 테스트 아님. 이게 실제 손검증 대상 좁히기.
+  const candidates = sites.filter((s) => s.zone !== "test" && s.zone !== "frontend" && s.dynamicOuter);
+  const ranked = [...sites].sort((a, b) => b.rank - a.rank);
+  const zoneCount = sites.reduce((m, s) => ((m[s.zone] = (m[s.zone] || 0) + 1), m), {});
   return {
     sites: sites.length,
-    worst: sites.slice(0, 8),
+    candidates: candidates.length,     // PR 손검증 우선 대상 수
+    zones: zoneCount,                  // {backend, frontend, test, other}
+    worst: ranked.slice(0, 12),        // PR 가치순 상위 (기존 slice(0,8) 무순 → 랭킹)
     files: [...byFile.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([file, n]) => ({ file, n })),
   };
 }
@@ -1700,9 +1741,11 @@ if (textbook) {
   }
 }
 if (quadratic && quadratic.sites > 0) {
-  console.log(`  O(n²) 배열 조회: ${quadratic.sites}곳 — 루프 안에서 루프 밖 배열을 선형 탐색합니다 (Map/Set으로 O(n), 점수 미반영)`);
-  for (const w of quadratic.worst.slice(0, 5)) {
-    console.log(`    ${w.recv}.${w.method}() — ${w.file}:${w.line}`);
+  const z = quadratic.zones || {};
+  console.log(`  O(n²) 배열 조회: ${quadratic.sites}곳 (PR후보 ${quadratic.candidates}곳 · backend ${z.backend || 0}/frontend ${z.frontend || 0}/test ${z.test || 0}) — 루프 안 선형 탐색, Map/Set으로 O(n), 점수 미반영`);
+  for (const w of quadratic.worst.slice(0, 6)) {
+    const tag = w.zone === "backend" ? "★backend" : w.zone;
+    console.log(`    [${tag}${w.dynamicOuter ? "" : " ·유계"}] ${w.recv}.${w.method}() — ${w.file}:${w.line}${w.outer ? `  (loop: ${w.outer})` : ""}`);
   }
 }
 if (dead) {

@@ -77,5 +77,26 @@ for (const [name, code, want] of CASES) {
   if (!ok) fail++;
   console.log(`  ${ok ? "✓" : "✗"} ${name}: got ${got} want ${want}`);
 }
-console.log(fail ? `\n  ${fail} FAIL` : `\n  ${CASES.length} passed`);
+
+// O(n²) 축의 zone 분류 회귀 — 백엔드가 프론트보다 먼저 매칭돼야 한다(api/admin 라우트 오분류 방지).
+const zoneSrc = src.match(/function quadZoneOf\(file\) \{[\s\S]*?\n\}/);
+if (zoneSrc) {
+  const quadZoneOf = eval(`(${zoneSrc[0].replace(/^function quadZoneOf/, "function")})`);
+  const ZONE_CASES = [
+    ["medusa admin REST route", "packages/medusa/src/api/admin/translations/batch/route.ts", "backend"],
+    ["directus api service", "api/src/services/collections.ts", "backend"],
+    ["strapi admin UI component", "packages/core/admin/admin/src/components/LeftMenu.tsx", "frontend"],
+    ["outline server task", "server/queues/tasks/MarkdownAPIImportTask.ts", "backend"],
+    ["spec file", "server/services/foo.test.ts", "test"],
+    ["plain lib file", "src/utils/format.ts", "other"],
+  ];
+  for (const [name, path, want] of ZONE_CASES) {
+    const got = quadZoneOf(path);
+    const ok = got === want;
+    if (!ok) fail++;
+    console.log(`  ${ok ? "✓" : "✗"} zone: ${name}: got ${got} want ${want}`);
+  }
+}
+
+console.log(fail ? `\n  ${fail} FAIL` : `\n  all passed`);
 process.exit(fail ? 1 : 0);
