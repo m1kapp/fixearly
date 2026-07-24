@@ -16,18 +16,24 @@ import { fileURLToPath } from "url";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const src = fs.readFileSync(path.join(ROOT, "bin", "cleanscore.mjs"), "utf8");
 
-// 엔진에서 두 함수 본문을 추출해 격리 평가한다(회귀 대상이 바뀌면 여기서 즉시 깨진다).
-const isFnLikeSrc = src.match(/const isFnLike = ([\s\S]*?);\n/);
-const cogSrc = src.match(/const cognitiveOf = (\(fn\) => \{[\s\S]*?\n  \});\n/);
-if (!isFnLikeSrc || !cogSrc) {
-  console.error("selftest: cognitiveOf/isFnLike 본문을 찾지 못했습니다(엔진 구조 변경?).");
+// 엔진에서 세 함수 선언을 통째로 추출한다(회귀 대상이 바뀌면 여기서 즉시 깨진다).
+// cognitiveOf 는 fnName·isFnLike 를 참조하고 fnName 은 sf 를 클로저로 잡으므로,
+// sf 가 살아있는 cog() 안에서 direct eval 로 세 선언을 함께 평가한다.
+const isFnLikeSrc = src.match(/  const isFnLike = [\s\S]*?;\n/);
+const fnNameSrc = src.match(/  const fnName = \(n\) => \{[\s\S]*?\n  \};\n/);
+const cogSrc = src.match(/  const cognitiveOf = \(fn\) => \{[\s\S]*?\n  \};\n/);
+if (!isFnLikeSrc || !fnNameSrc || !cogSrc) {
+  console.error("selftest: isFnLike/fnName/cognitiveOf 선언을 찾지 못했습니다(엔진 구조 변경?).");
   process.exit(2);
 }
-const isFnLike = eval(`(${isFnLikeSrc[1]})`);
-const cognitiveOf = eval(`(${cogSrc[1]})`);
+const harness = isFnLikeSrc[0] + fnNameSrc[0] + cogSrc[0];
+const isFnLikeVal = isFnLikeSrc[0].match(/const isFnLike = ([\s\S]*);\n/)[1];
+const isFnLike = eval(`(${isFnLikeVal})`); // sf 비의존 — 모듈 스코프에서 find 용
 
 const cog = (code) => {
   const sf = ts.createSourceFile("t.ts", code, ts.ScriptTarget.ES2020, true);
+  // eslint-disable-next-line no-eval
+  const cognitiveOf = eval(`${harness}\ncognitiveOf`); // direct eval: sf·isFnLike·fnName 스코프 공유
   let fn = null;
   const find = (n) => {
     if (!fn && isFnLike(n)) fn = n;
@@ -52,6 +58,16 @@ const CASES = [
   ["nested ternary", `function f(){ return a ? (b?1:2) : 3; }`, 3],
   // else { if } 는 else-if 와 다르다: else 가 중첩을 올려 내부 if 가 +2.
   ["else-block if (not else-if)", `function f(){ if(a){} else { if(b){} } }`, 4],
+  // 라벨 continue: for+1, for+2, if+3, continue LABEL +1 = 7 (SonarSource sumOfPrimes 정본).
+  ["labeled continue", `function f(max){ outer: for(let i=1;i<=max;++i){ for(let j=2;j<i;++j){ if(i%j==0){ continue outer; } } } }`, 7],
+  // 라벨 없는 break/continue 는 증가 없음.
+  ["unlabeled break", `function f(){ for(;;){ if(a){ break; } } }`, 3],
+  // 직접 재귀: if+1, 재귀호출 2회 +2 = 3.
+  ["direct recursion (fib)", `function fib(n){ if(n<2) return n; return fib(n-1)+fib(n-2); }`, 3],
+  // 화살표 재귀도 바인딩 이름으로 잡는다.
+  ["arrow recursion", `const walk = (n) => { if(n){ walk(n.next); } };`, 2],
+  // this.foo()·동명 타 함수 호출은 재귀로 세지 않는다(오탐 방지).
+  ["method call not counted as recursion", `function run(){ this.run(); other.run(); }`, 0],
 ];
 
 let fail = 0;

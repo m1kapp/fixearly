@@ -317,6 +317,9 @@ function analyzeAstComplexity(ts, filePath, content) {
   const cognitiveOf = (fn) => {
     let score = 0;
     const LOGICAL = new Set([ts.SyntaxKind.AmpersandAmpersandToken, ts.SyntaxKind.BarBarToken]);
+    // 직접 재귀 판별용 자기 이름(타입체커가 없으므로 이름 매칭 — bare identifier 호출만, 오탐 최소화).
+    const selfName = fnName(fn);
+    const validSelf = /^[A-Za-z_$][\w$]*$/.test(selfName);
     const walk = (n, depth, parentLogicalOp) => {
       if (n !== fn && isFnLike(n)) return; // 중첩 함수는 자기 항목에서 계산
       switch (n.kind) {
@@ -349,6 +352,16 @@ function analyzeAstComplexity(ts, filePath, content) {
             return;
           }
           break;
+        }
+        case ts.SyntaxKind.BreakStatement:
+        case ts.SyntaxKind.ContinueStatement: {
+          if (n.label) score += 1; // 라벨 점프(break/continue LABEL): 구조 +1, 중첩 없음
+          return;
+        }
+        case ts.SyntaxKind.CallExpression: {
+          // 직접 재귀 selfName(...) : 구조 +1. this.foo()·간접 재귀는 오탐 방지로 제외.
+          if (validSelf && ts.isIdentifier(n.expression) && n.expression.text === selfName) score += 1;
+          break; // 인자는 아래 forEachChild 로 계속 walk
         }
       }
       ts.forEachChild(n, (c) => walk(c, depth, null));
