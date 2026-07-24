@@ -26,6 +26,7 @@ const srcDir = path.resolve(process.cwd(), getFlag("dir") || "src");
 const outDir = path.resolve(process.cwd(), getFlag("out") || "public");
 const wantDead = args.includes("--dead"); // 데드코드축(knip) 옵트인 — 느리므로 기본 off
 const wantBadge = args.includes("--badge"); // README·사이트 임베드용 SVG 배지 생성
+const wantMine = args.includes("--mine");   // O(n²) PR 후보 전체 덤프(손검증 파이프라인 입력)
 
 // 등급 색 (라이트 기준) — 배지·임베드 공용
 const GRADE_COLORS = { "A+": "#12915a", A: "#12915a", B: "#b6841a", C: "#d4701a", D: "#cb4436" };
@@ -872,6 +873,11 @@ function analyzeQuadraticLookups(ts, fileContents) {
     candidates: candidates.length,     // PR 손검증 우선 대상 수
     zones: zoneCount,                  // {backend, frontend, test, other}
     worst: ranked.slice(0, 12),        // PR 가치순 상위 (기존 slice(0,8) 무순 → 랭킹)
+    // 채굴용 전체 후보 목록(백엔드/기타·무계 반복·테스트 아님) — --mine 로 덤프. 손검증 파이프라인 입력.
+    candidateList: candidates
+      .sort((a, b) => b.rank - a.rank)
+      .slice(0, 500)
+      .map((s) => ({ file: s.file, line: s.line, recv: s.recv, method: s.method, zone: s.zone, outer: s.outer })),
     files: [...byFile.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([file, n]) => ({ file, n })),
   };
 }
@@ -1746,6 +1752,15 @@ if (quadratic && quadratic.sites > 0) {
   for (const w of quadratic.worst.slice(0, 6)) {
     const tag = w.zone === "backend" ? "★backend" : w.zone;
     console.log(`    [${tag}${w.dynamicOuter ? "" : " ·유계"}] ${w.recv}.${w.method}() — ${w.file}:${w.line}${w.outer ? `  (loop: ${w.outer})` : ""}`);
+  }
+  if (wantMine) {
+    const list = quadratic.candidateList || [];
+    console.log(`\n  ── --mine: PR 후보 전체 ${list.length}곳 (backend/기타·무계 반복, 손검증 대상) ──`);
+    for (const c of list) {
+      console.log(`    [${c.zone}] ${c.recv}.${c.method}() — ${c.file}:${c.line}${c.outer ? `  (loop: ${c.outer})` : ""}`);
+    }
+    const minePath = path.join(outDir, "quadratic-candidates.json");
+    try { fs.writeFileSync(minePath, JSON.stringify(list, null, 2)); console.log(`  ✓ 후보 목록 저장 → ${minePath}`); } catch {}
   }
 }
 if (dead) {
