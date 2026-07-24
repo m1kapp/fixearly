@@ -23,6 +23,7 @@ cleanscore가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점�
 | `doc-metadata localization O(n²)` | [strapi · 72.7k★](https://github.com/strapi/strapi) | O(n²) (localization별 versions.find — 복합키 Map으로 O(1)) | [#27125](https://github.com/strapi/strapi/pull/27125) | 🟢 open · 머지되면 +1 | — |
 | `parse-fields dedup O(n²)` | [directus · 36.9k★](https://github.com/directus/directus) | O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1)) | [#27978](https://github.com/directus/directus/pull/27978) | 🟢 open · 머지되면 +1 | — |
 | `resource-mapper schema validation O(n²)` | [n8n · 148k★](https://github.com/n8n-io/n8n) | O(n²) (value별 schema.find — id Map으로 O(1)) | [#34899](https://github.com/n8n-io/n8n/pull/34899) | 🟢 open · 머지되면 +1 | — |
+| `user field validation O(n²)` | [nocodb · 54k★](https://github.com/nocodb/nocodb) | O(n²) (value별 baseUsers.find ×4 — id·email Map으로 O(1)) | [#14309](https://github.com/nocodb/nocodb/pull/14309) | 🟢 open · 머지되면 +1 | — |
 
 ## 규칙
 
