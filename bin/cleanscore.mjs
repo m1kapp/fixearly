@@ -321,18 +321,7 @@ function analyzeAstComplexity(ts, filePath, content) {
       if (n !== fn && isFnLike(n)) return; // 중첩 함수는 자기 항목에서 계산
       switch (n.kind) {
         case ts.SyntaxKind.IfStatement: {
-          score += 1 + depth;
-          walk(n.expression, depth, null);
-          walk(n.thenStatement, depth + 1, null);
-          if (n.elseStatement) {
-            if (n.elseStatement.kind === ts.SyntaxKind.IfStatement) {
-              // else if — if 쪽에서 +1+depth 처리되므로 여기선 그대로 위임 (깊이 유지)
-              walk(n.elseStatement, depth, null);
-            } else {
-              score += 1; // else 자체
-              walk(n.elseStatement, depth + 1, null);
-            }
-          }
+          walkIf(n, depth, false);
           return;
         }
         case ts.SyntaxKind.ForStatement:
@@ -363,6 +352,21 @@ function analyzeAstComplexity(ts, filePath, content) {
         }
       }
       ts.forEachChild(n, (c) => walk(c, depth, null));
+    };
+    // S3776: if 는 구조 증가(+1) + 중첩 증가(+depth). else-if·else 는 구조 증가(+1)만, 중첩 증가 없음.
+    // else-if 를 IfStatement 케이스로 되돌리면 중첩분(+depth)이 잘못 더해진다(루프 안에 있을 때 과대계상).
+    const walkIf = (n, depth, isElseIf) => {
+      score += isElseIf ? 1 : 1 + depth;
+      walk(n.expression, depth, null);
+      walk(n.thenStatement, depth + 1, null);
+      if (n.elseStatement) {
+        if (n.elseStatement.kind === ts.SyntaxKind.IfStatement) {
+          walkIf(n.elseStatement, depth, true); // else-if: 구조 +1만, 깊이 유지
+        } else {
+          score += 1; // else 자체(구조 +1)
+          walk(n.elseStatement, depth + 1, null);
+        }
+      }
     };
     ts.forEachChild(fn, (c) => walk(c, 0, null));
     return score;

@@ -25,5 +25,8 @@
     "typescript": "^5.4.0"
   },
   "license": "MIT",
-  "homepage": "https://yoo-minho.github.io/cleanscore"
+  "homepage": "https://yoo-minho.github.io/cleanscore",
+  "scripts": {
+    "test": "node bin/selftest.mjs"
+  }
 }
