@@ -62,6 +62,13 @@
    "repo": "outline/outline",
    "repoLabel": "outline · 39.8k★",
    "pr": 13117
+  },
+  {
+   "title": "doc-metadata localization O(n²)",
+   "type": "O(n²) (localization별 versions.find — 복합키 Map으로 O(1))",
+   "repo": "strapi/strapi",
+   "repoLabel": "strapi · 72.7k★",
+   "pr": 27125
   }
  ]
 }
