@@ -69,6 +69,13 @@
    "repo": "strapi/strapi",
    "repoLabel": "strapi · 72.7k★",
    "pr": 27125
+  },
+  {
+   "title": "parse-fields dedup O(n²)",
+   "type": "O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1))",
+   "repo": "directus/directus",
+   "repoLabel": "directus · 36.9k★",
+   "pr": 27978
   }
  ]
 }

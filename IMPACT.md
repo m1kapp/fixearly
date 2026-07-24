@@ -21,6 +21,7 @@ cleanscore가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점�
 | `translations batch match O(n²)` | [medusa · 35.3k★](https://github.com/medusajs/medusa) | O(n²) (batch당 filter+some 전체 스캔 — Set으로 O(1)) | [#16188](https://github.com/medusajs/medusa/pull/16188) | 🟢 open · 머지되면 +1 | — |
 | `markdown import merge O(n²)` | [outline · 39.8k★](https://github.com/outline/outline) | O(n²) (형제 out.find title 스캔 — Map으로 O(1)) | [#13117](https://github.com/outline/outline/pull/13117) | 🟢 open · 머지되면 +1 | — |
 | `doc-metadata localization O(n²)` | [strapi · 72.7k★](https://github.com/strapi/strapi) | O(n²) (localization별 versions.find — 복합키 Map으로 O(1)) | [#27125](https://github.com/strapi/strapi/pull/27125) | 🟢 open · 머지되면 +1 | — |
+| `parse-fields dedup O(n²)` | [directus · 36.9k★](https://github.com/directus/directus) | O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1)) | [#27978](https://github.com/directus/directus/pull/27978) | 🟢 open · 머지되면 +1 | — |
 
 ## 규칙
 
