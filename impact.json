@@ -90,6 +90,13 @@
    "repo": "nocodb/nocodb",
    "repoLabel": "nocodb · 54k★",
    "pr": 14309
+  },
+  {
+   "title": "ExternalRequest field lookup O(n²)",
+   "type": "O(n²) (행 필드별 fieldNames.find — Set으로 O(1))",
+   "repo": "Budibase/budibase",
+   "repoLabel": "budibase · 25k★",
+   "pr": 19320
   }
  ]
 }
