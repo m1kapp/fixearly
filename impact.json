@@ -48,6 +48,13 @@
    "repo": "payloadcms/payload",
    "repoLabel": "payload · 43.8k★",
    "pr": 17469
+  },
+  {
+   "title": "translations batch match O(n²)",
+   "type": "O(n²) (batch당 filter+some 전체 스캔 — Set으로 O(1))",
+   "repo": "medusajs/medusa",
+   "repoLabel": "medusa · 35.3k★",
+   "pr": 16188
   }
  ]
 }

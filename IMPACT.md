@@ -18,6 +18,7 @@ cleanscore가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점�
 | `nested relations hydration O(n²)` | [twenty · 37k★](https://github.com/twentyhq/twenty) | O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map) | [#23232](https://github.com/twentyhq/twenty/pull/23232) | 🟢 open · 머지되면 +1 | — |
 | `lucky-user set rebuild in loop` | [cal.com · 47k★](https://github.com/calcom/cal.diy) | 루프 불변 인덱스 재구축 (while마다 new Set 재구축 → 호이스팅) | [#29832](https://github.com/calcom/cal.diy/pull/29832) | 🟢 open · 머지되면 +1 | — |
 | `dataloader doc placement O(n²)` | [payload · 43.8k★](https://github.com/payloadcms/payload) | O(n²) (배치당 keys.findIndex 전체 스캔 — Map으로 O(1)) | [#17469](https://github.com/payloadcms/payload/pull/17469) | 🟢 open · 머지되면 +1 | — |
+| `translations batch match O(n²)` | [medusa · 35.3k★](https://github.com/medusajs/medusa) | O(n²) (batch당 filter+some 전체 스캔 — Set으로 O(1)) | [#16188](https://github.com/medusajs/medusa/pull/16188) | 🟢 open · 머지되면 +1 | — |
 
 ## 규칙
 
