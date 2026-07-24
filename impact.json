@@ -76,6 +76,13 @@
    "repo": "directus/directus",
    "repoLabel": "directus · 36.9k★",
    "pr": 27978
+  },
+  {
+   "title": "resource-mapper schema validation O(n²)",
+   "type": "O(n²) (value별 schema.find — id Map으로 O(1))",
+   "repo": "n8n-io/n8n",
+   "repoLabel": "n8n · 148k★",
+   "pr": 34899
   }
  ]
 }

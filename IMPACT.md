@@ -22,6 +22,7 @@ cleanscore가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점�
 | `markdown import merge O(n²)` | [outline · 39.8k★](https://github.com/outline/outline) | O(n²) (형제 out.find title 스캔 — Map으로 O(1)) | [#13117](https://github.com/outline/outline/pull/13117) | 🟢 open · 머지되면 +1 | — |
 | `doc-metadata localization O(n²)` | [strapi · 72.7k★](https://github.com/strapi/strapi) | O(n²) (localization별 versions.find — 복합키 Map으로 O(1)) | [#27125](https://github.com/strapi/strapi/pull/27125) | 🟢 open · 머지되면 +1 | — |
 | `parse-fields dedup O(n²)` | [directus · 36.9k★](https://github.com/directus/directus) | O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1)) | [#27978](https://github.com/directus/directus/pull/27978) | 🟢 open · 머지되면 +1 | — |
+| `resource-mapper schema validation O(n²)` | [n8n · 148k★](https://github.com/n8n-io/n8n) | O(n²) (value별 schema.find — id Map으로 O(1)) | [#34899](https://github.com/n8n-io/n8n/pull/34899) | 🟢 open · 머지되면 +1 | — |
 
 ## 규칙
 
