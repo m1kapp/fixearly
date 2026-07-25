@@ -1537,9 +1537,14 @@ if (ts && allFns.length > 0) {
   // (진단 출력·JSON엔 유지 — React 앱에서 참고용.)
   qualityScore = Math.max(0, Math.round(
     100
+    // 인지 복잡도 감점 = 분포 위주 + 단일 최악함수는 작은 잔여항.
+    // 볼륨 재보정(Goodhart 내성): 예전엔 maxCog 단일항이 12점까지 좌우해, '안정적이라 아무도 안 만지는
+    // 최악 함수 하나'만 고쳐도 점수가 크게 올랐다(측정을 게임). 이제 분포(over15·over25·p90)가 주도한다.
+    // 분포는 함수 하나로 못 흔든다 — 올리려면 '여러 복잡 함수'를 실제로 줄여야 한다.
     - Math.min(15, Math.max(0, over15Pct - 2) * 2)  // cog15+ 함수비율 (2% 초과분만)
     - Math.min(12, Math.max(0, over25Pct - 1) * 3)  // cog25+ 함수비율 (1% 초과분만)
-    - Math.min(12, Math.max(0, Math.log2(Math.max(1, maxCog) / 15)) * 1.5) // 최악 함수: 로그(계수를 낮춰 100~800 구간이 갈리게 — 캡만 키우면 전부 만렙이라 변별력이 없다)
+    - Math.min(9, Math.max(0, Math.log2(Math.max(1, cognitive.p90) / 12)) * 2.2) // p90 복잡도(분포 — 상위 10% 함수 수준). 단일 outlier로 못 흔듦.
+    - Math.min(4, Math.max(0, Math.log2(Math.max(1, maxCog) / 15)) * 1.0) // 최악 함수: 잔여항만(12→4). 진짜 괴물 하나는 조금 벌하되 지배 못 함.
     - Math.min(16, Math.max(0, duplication.percent - 8) * 1.2) // 중복: 8% 초과분(구조적 반복 관용)
     - Math.min(10, longFileSeverityPct * 1.0)       // 200줄+ 파일 심각도
     - Math.min(12, Math.max(0, avgFileLines - 120) / 6) // 평균 파일 길이 120줄 초과분
