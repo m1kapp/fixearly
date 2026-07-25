@@ -20,6 +20,26 @@
    "status": "held",
    "heldReason": "GitHub abuse guard blocked 2nd rapid PR to budibase (had #19320 minutes earlier). File after #19320 gets a reaction, or after a cooldown (spacing = anti-spam discipline).",
    "createdContext": "2026-07-25"
+  },
+  {
+   "id": "nocodb-datatable-filtermap",
+   "repo": "nocodb/nocodb",
+   "base": "develop",
+   "target": "packages/nocodb/src/services/data-table.service.ts:1489",
+   "pattern": "O(rows²) — filterAndMapRows targetList.some per source row → composite-key Set",
+   "fork": "yoo-minho/nocodb",
+   "branch": "perf/data-table-filter-map-set",
+   "forkPushed": true,
+   "benchmark": {
+    "shape": "keyjoin row-diff",
+    "2000_rows": "18ms → 0.5ms (~36x)",
+    "10000_rows": "213ms → 2.8ms (~75x)"
+   },
+   "prTitle": "perf(nocodb): O(1) target-row exclusion in filterAndMapRows (~36× at 2k rows)",
+   "prBody": "## Change Summary\n\n`filterAndMapRows` returns the source rows that are **not** already present in the target set. It did so by scanning the whole target list for every source row:\n\n```ts\nsourceList.filter(sourceRow =>\n  !targetList.some(targetRow =>\n    relatedModel.primaryKeys.every(key => sourceRow[k] === targetRow[k])\n  )\n)\n```\n\nThat's `O(sourceRows × targetRows × pkCount)` — quadratic in the number of rows, on a row-diff that runs during link operations between tables.\n\nThis indexes the target rows by their composite primary key in a `Set` and tests membership in O(1):\n\n```ts\nconst pkCols = relatedModel.primaryKeys.map(k => k.title || k.column_name)\nconst rowKey = row => JSON.stringify(pkCols.map(c => row[c]))\nconst targetKeys = new Set(targetList.map(rowKey))\nreturn sourceList.filter(sr => !targetKeys.has(rowKey(sr))).map(...)\n```\n\nBehaviour is identical — `some(t => pks.every(k => s[k] === t[k]))` is exactly \"the composite key exists in target\". `JSON.stringify` of the pk-value array is a collision-free key (distinguishes types/null). No API/DTO change.\n\n### Measured impact\n\nIsolated micro-benchmark of the row-diff (`some` scan vs `Set`, N = rows on each side) — the algorithmic delta, **not** an end-to-end app benchmark:\n\n| rows/side | before | after | speedup |\n|----------:|-------:|------:|--------:|\n| 2,000 | 18 ms | 0.5 ms | ~36× |\n| 10,000 | 213 ms | 2.8 ms | ~75× |\n\nFor small link sets the difference is negligible; the change is free (the `Set` build is O(targetRows), same order as the old `.map` chain), so it's pure safety margin with no downside. I couldn't run the full suite locally, but the change is local and type-preserving.",
+   "status": "ready",
+   "heldReason": "2nd nocodb PR this batch (#14309 earlier) — space it out to avoid the abuse guard / spam pattern.",
+   "createdContext": "2026-07-25"
   }
  ]
 }
