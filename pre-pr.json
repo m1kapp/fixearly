@@ -1,0 +1,25 @@
+{
+ "_schema": "발사 대기 PR 큐. 세션이 죽어도 살아남게 커밋. 나중에 status=ready 인 걸 gh pr create 로 발사.",
+ "queue": [
+  {
+   "id": "budibase-staticformula-enrich",
+   "repo": "Budibase/budibase",
+   "base": "master",
+   "target": "packages/server/src/api/controllers/row/staticFormula.ts:114",
+   "pattern": "O(rows²) — enrichedRows.find(_id) per row over whole table → Map",
+   "fork": "yoo-minho/budibase",
+   "branch": "perf/static-formula-enrich-map",
+   "forkPushed": true,
+   "benchmark": {
+    "shape": "keyjoin (isolated micro-bench, not e2e)",
+    "5000_rows": "67ms → 1.5ms (~45x)",
+    "20000_rows": "616ms → 5.7ms (~109x)"
+   },
+   "prTitle": "perf: drop O(rows²) enriched-row lookup in static formula recalc (~45× at 5k rows)",
+   "prBody": "## Description\n\nThe static-formula pass in `finaliseRow` (`staticFormula.ts`) recalculates formulas for every row of a table. It fetches all rows, builds an `enrichedRows` copy of the same length, then for each row locates its enriched counterpart with `enrichedRows.find(e => e._id === row._id)`:\n\n```ts\nfor (let row of rows) {\n  const enrichedRow = enrichedRows.find(e => e._id === row._id) // O(rows) per row\n  ...\n}\n```\n\nThat `find` scans `enrichedRows` for every row, so the loop is **O(rows²)** over the whole table. This runs on a full static-formula recalculation, which touches every row — so it scales quadratically with table size.\n\nThis indexes `enrichedRows` by `_id` once and looks up in O(1):\n\n```ts\nconst enrichedById = new Map(enrichedRows.map(e => [e._id, e]))\nfor (let row of rows) {\n  const enrichedRow = enrichedById.get(row._id)\n  ...\n}\n```\n\nBehaviour is identical — `find(e => e._id === row._id)` is exactly `Map.get(row._id)` (ids are unique). No API/DTO change, no migration.\n\n### Measured impact\n\nIsolated micro-benchmark of the lookup (`find` vs `Map`, both branches, N = table rows) — this measures the algorithmic delta, **not** an end-to-end app benchmark:\n\n| rows | before | after | speedup |\n|-----:|-------:|------:|--------:|\n| 1,000 | 4.9 ms | 0.3 ms | ~15× |\n| 5,000 | 67 ms | 1.5 ms | ~45× |\n| 20,000 | 616 ms | 5.7 ms | ~109× |\n\nSo on a 20k-row table this loop alone drops from ~0.6 s of pure CPU to ~6 ms. For small tables the difference is negligible; the change is free (`Map` build is O(rows), same order as the existing `.map`), so there's no downside either way — it just removes the quadratic for large tables.\n\nI couldn't run the full server suite locally, but the change is local and type-preserving.\n",
+   "status": "held",
+   "heldReason": "GitHub abuse guard blocked 2nd rapid PR to budibase (had #19320 minutes earlier). File after #19320 gets a reaction, or after a cooldown (spacing = anti-spam discipline).",
+   "createdContext": "2026-07-25"
+  }
+ ]
+}
