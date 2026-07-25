@@ -40,6 +40,46 @@
    "status": "ready",
    "heldReason": "2nd nocodb PR this batch (#14309 earlier) — space it out to avoid the abuse guard / spam pattern.",
    "createdContext": "2026-07-25"
+  },
+  {
+   "id": "strapi-yup-unique-property",
+   "repo": "strapi/strapi",
+   "base": "develop",
+   "target": "packages/core/utils/src/yup.ts:73",
+   "pattern": "O(list²) uniqueProperty self-filter → count Map",
+   "fork": "yoo-minho/strapi",
+   "branch": "perf/yup-unique-property-linear",
+   "forkPushed": true,
+   "benchmark": {
+    "shape": "self-dedup",
+    "2000": "15ms→0.8ms(~18x)",
+    "10000": "225ms→1.6ms(~140x)"
+   },
+   "prTitle": "perf(utils): O(n) uniqueProperty validation via value counts (~18× at 2k)",
+   "prBody": "## What & Why\n\n`yup.array().uniqueProperty(propertyName)` flags array elements that share a property value. It found duplicates by scanning the whole array for every element:\n\n```ts\nlist?.forEach((element, index) => {\n  const sameElements = list.filter(e => get(propertyName, e) === get(propertyName, element)); // O(list) per element\n  if (sameElements.length > 1) errors.push(...);\n});\n```\n\nThat's **O(list²)** — quadratic in the array length being validated, which is client-controlled input.\n\n## How\n\nCount each property value once in a `Map`, then flag elements whose count exceeds 1:\n\n```ts\nconst valueCounts = new Map();\nlist?.forEach(el => { const v = get(propertyName, el); valueCounts.set(v, (valueCounts.get(v) ?? 0) + 1); });\nlist?.forEach((el, index) => { if ((valueCounts.get(get(propertyName, el)) ?? 0) > 1) errors.push(...); });\n```\n\nIdentical errors — same paths, same order, same trigger (a value appearing more than once). O(list).\n\n## Measured impact\n\nIsolated micro-benchmark of the duplicate check (self-scan vs count-Map, N = array length) — the algorithmic delta, **not** an e2e benchmark. Note the original uses `filter` (no early exit), so real gains are at least this:\n\n| length | before | after | speedup |\n|-------:|-------:|------:|--------:|\n| 2,000 | 15 ms | 0.8 ms | ~18× |\n| 10,000 | 225 ms | 1.6 ms | ~140× |\n\nSmall arrays are negligible; the change is a pure win (one extra O(list) pass replaces an O(list²) one). Couldn't run the full suite locally; change is local and type-preserving. This is a shared `@strapi/utils` validator, so it benefits every uniqueProperty use.",
+   "status": "ready",
+   "heldReason": "2nd strapi PR (#27125 earlier) — space out.",
+   "createdContext": "2026-07-25"
+  },
+  {
+   "id": "budibase-inmemory-view-rev",
+   "repo": "Budibase/budibase",
+   "base": "master",
+   "target": "packages/server/src/db/inMemoryView.ts:58",
+   "pattern": "O(rows²) data.find per result row → Map by _id",
+   "fork": "yoo-minho/budibase",
+   "branch": "perf/inmemory-view-rev-map",
+   "forkPushed": true,
+   "benchmark": {
+    "shape": "keyjoin",
+    "5000": "67ms→1.5ms(~45x)",
+    "20000": "616ms→5.7ms(~109x)"
+   },
+   "prTitle": "perf: O(1) rev lookup in in-memory view rebuild",
+   "prBody": "## Description\n\n`inMemoryView`'s rev-fixup loop corrects `_rev` on each result row by locating the matching source row with `data.find`:\n\n```ts\nfor (let row of response.rows) {\n  if (!row._rev || !row._id) continue\n  const found = data.find(possible => possible._id === row._id) // O(data) per result row\n  if (found) row._rev = found._rev\n}\n```\n\n`data` and `response.rows` both scale with the view's row count, so this is **O(rows²)**.\n\nThis indexes `data` by `_id` once and looks up in O(1):\n\n```ts\nconst dataById = new Map(data.map(possible => [possible._id, possible]))\nfor (let row of response.rows) {\n  ...\n  const found = dataById.get(row._id)\n  ...\n}\n```\n\nBehaviour identical (`find(_id)` == `Map.get(_id)`). No API change.\n\n### Measured impact\n\nIsolated micro-benchmark (find vs Map, N = rows) — algorithmic delta, not e2e:\n\n| rows | before | after | speedup |\n|-----:|-------:|------:|--------:|\n| 5,000 | 67 ms | 1.5 ms | ~45× |\n| 20,000 | 616 ms | 5.7 ms | ~109× |\n\nSmall views negligible; the change is free (Map build is O(rows), same order as the existing `data.map`), pure safety margin. Couldn't run the full suite locally; local and type-preserving.",
+   "status": "held",
+   "heldReason": "3rd budibase — heavily space (already #19320 + staticFormula queued). File well after others.",
+   "createdContext": "2026-07-25"
   }
  ]
 }
