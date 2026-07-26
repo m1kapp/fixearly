@@ -1608,11 +1608,11 @@ if (wantDead) {
 // '점수는 낮아도 등급은 최소 C', D 이하는 구조가 진짜 무너진 경우만.
 // 큰 서비스/앱은 구조 지표상 원래 불리하므로, 커트를 분포에 붙여 과도한 저평가를 막는다.
 const qualityGrade =
-  qualityScore >= 88 ? "S" :   // 코퍼스 상위 ~15% — 예외적으로 깨끗
-  qualityScore >= 78 ? "A" :   // 상위 ~45%
-  qualityScore >= 65 ? "B" :   // 중앙권
-  qualityScore >= 45 ? "C" :   // 기본선 — 실제 서비스/앱은 구조 지표상 불리하므로 여기가 바닥
-  qualityScore >= 30 ? "D" :   // 드묾 — 구조가 실제로 무너진 경우
+  qualityScore >= 85 ? "S" :
+  qualityScore >= 75 ? "A" :
+  qualityScore >= 65 ? "B" :
+  qualityScore >= 45 ? "C" :
+  qualityScore >= 30 ? "D" :
   "E";                         // 사실상 방치
 
 // 절약량 계산
