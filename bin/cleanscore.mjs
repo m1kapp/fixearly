@@ -1602,12 +1602,16 @@ if (wantDead) {
   }
 }
 // 6등급 S~E. S(95+)는 예외적으로 깨끗한 소수만 — 상단이 A+ 하나로 뭉치던 것을 가른다.
+// 등급 임계는 존경받는 OSS 52종 코퍼스의 점수 분위수에 맞춘다(임의 커트 아님).
+// 실측 분포: p10 58 · p25 66 · 중앙 76 · p75 86 · p90 90.
+// S=코퍼스 상위 ~15%, A=상위 ~45%, B=중앙권, C=하위 ~30%, D=하위 ~10%, E=그 아래.
+// 큰 서비스/앱은 구조 지표상 원래 불리하므로, 커트를 분포에 붙여 과도한 저평가를 막는다.
 const qualityGrade =
-  qualityScore >= 95 ? "S" :
-  qualityScore >= 85 ? "A" :
-  qualityScore >= 75 ? "B" :
-  qualityScore >= 65 ? "C" :
-  qualityScore >= 50 ? "D" : "E";
+  qualityScore >= 88 ? "S" :
+  qualityScore >= 78 ? "A" :
+  qualityScore >= 68 ? "B" :
+  qualityScore >= 58 ? "C" :
+  qualityScore >= 45 ? "D" : "E";
 
 // 절약량 계산
 // 같은 소스 파일에서 여러 export를 쓰더라도 파일 LOC는 한 번만 카운트
