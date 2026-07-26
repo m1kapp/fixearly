@@ -30,7 +30,7 @@ const wantMine = args.includes("--mine");   // O(n²) PR 후보 전체 덤프(�
 const wantHotspots = args.includes("--hotspots"); // cog × git churn = "먼저 고칠 파일" 랭킹(git 이력 필요)
 
 // 등급 색 (라이트 기준) — 배지·임베드 공용
-const GRADE_COLORS = { "A+": "#12915a", A: "#12915a", B: "#b6841a", C: "#d4701a", D: "#cb4436" };
+const GRADE_COLORS = { S: "#0f7a63", A: "#12915a", B: "#7d8a2c", C: "#c0862e", D: "#cb4436", E: "#8f2f24" };
 
 // shields 스타일 SVG 배지 생성 — "clean score | A · 90"
 function makeBadgeSvg(grade, score) {
@@ -1580,7 +1580,13 @@ if (wantDead) {
     qualityScore = Math.max(0, Math.round(qualityScore - deadPenalty));
   }
 }
-const qualityGrade = qualityScore >= 90 ? "A+" : qualityScore >= 80 ? "A" : qualityScore >= 70 ? "B" : qualityScore >= 60 ? "C" : "D";
+// 6등급 S~E. S(95+)는 예외적으로 깨끗한 소수만 — 상단이 A+ 하나로 뭉치던 것을 가른다.
+const qualityGrade =
+  qualityScore >= 95 ? "S" :
+  qualityScore >= 85 ? "A" :
+  qualityScore >= 75 ? "B" :
+  qualityScore >= 65 ? "C" :
+  qualityScore >= 50 ? "D" : "E";
 
 // 절약량 계산
 // 같은 소스 파일에서 여러 export를 쓰더라도 파일 LOC는 한 번만 카운트
