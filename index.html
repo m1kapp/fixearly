@@ -159,10 +159,13 @@ dialog::backdrop{background:rgba(15,23,35,.35);}
 .dlg-x:hover{background:var(--paper-3);color:var(--ink);}
 
 /* disclaimer */
-.note{margin-top:var(--space-lg);border:1px solid var(--line-2);border-left:3px solid var(--accent);border-radius:var(--radius-sm);
-  background:var(--paper-2);padding:16px 20px;}
-.note .nt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);font-weight:700;}
-.note p{margin:8px 0 0;color:var(--ink-2);font-size:14px;max-width:60em;line-height:1.62;word-break:keep-all;text-wrap:pretty;}
+.note{margin-top:var(--space-xl);padding-top:var(--space-md);border-top:1px solid var(--line);
+  display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;}
+.note .nt{flex:none;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:700;padding-top:3px;}
+.note p{margin:0;flex:1 1 420px;min-width:0;color:var(--ink-3);font-size:13.5px;line-height:1.62;
+  word-break:keep-all;text-wrap:pretty;}
+.note p b{color:var(--ink-2);}
 .note b{color:var(--ink);font-weight:650;}
 
 /* steps (workbench) */
@@ -289,11 +292,6 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
       <span><span class="ko">채점축</span><span class="en">scored axes</span> 3</span>
     </div>
 
-    <div class="note">
-      <div class="nt"><span class="ko">먼저 — 이 점수가 아닌 것</span><span class="en">first — what this score is not</span></div>
-      <p class="ko">이건 <b>특정 기준으로 바라본 한 단면</b>이지 그 프로젝트의 전부가 아니다. 재는 건 인지 복잡도·중복·파일 크기라는 <b>구조 지표 몇 개뿐</b> — 설계의 우아함, 테스트의 두께, 문서, 보안, 성능, 커뮤니티, 무엇보다 <b>그 소프트웨어가 세상에 준 가치</b>는 하나도 재지 않는다. 낮은 등급이 나쁜 프로젝트라는 뜻이 절대 아니다. 오래 살아남아 많은 기능을 감당한 코드일수록 이런 지표는 불리해진다. 아래 순위는 <b>배우기 위한 관측</b>이지 평가가 아니다.</p>
-      <p class="en">This is <b>one slice through a specific lens</b>, not a verdict. It measures a few structural signals — cognitive complexity, duplication, file size — and <b>nothing else</b>: not design, tests, docs, security, performance, community, and certainly not <b>the value that software has delivered</b>. A lower grade does not mean a worse project; code that survived long enough to carry many features scores worse here by construction. The ranking below is <b>an observation to learn from</b>, not a judgment.</p>
-    </div>
    </div>
    <div class="heroart" aria-hidden="true">
      <div class="glow"></div>
@@ -306,6 +304,13 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
        <div class="plate p1"><span class="pl">90–100</span><span class="pg gS">S</span></div>
      </div>
    </div>
+  </div>
+  <div class="w">
+    <div class="note">
+      <span class="nt"><span class="ko">한 가지 렌즈</span><span class="en">one lens</span></span>
+      <p class="ko">구조 지표만 잰다 — 설계·테스트·문서·보안·성능·커뮤니티, <b>그 소프트웨어가 준 가치</b>는 재지 않는다. 오래 살아남아 기능을 많이 감당한 코드일수록 이 지표는 불리하다. <b>낮은 등급이 나쁜 프로젝트라는 뜻이 아니다.</b></p>
+      <p class="en">Structural signals only — not design, tests, docs, security, performance, community, or <b>the value the software delivered</b>. Code that survived long enough to carry many features scores worse here by construction. <b>A lower grade is not a worse project.</b></p>
+    </div>
   </div>
 </header>
 
