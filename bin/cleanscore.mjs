@@ -480,15 +480,36 @@ function analyzeDuplication(ts, fileContents) {
     }
   });
 
+  // 형제 변종(빌드 타깃별 사본) 판별용 서명: 경로에서 번들러/런타임 변종 표시를 지운 것.
+  // react 는 같은 파일을 react-server-dom-{webpack,turbopack,esm,parcel,unbundled,fb} 로 의도적 복제한다.
+  // 이런 사본끼리의 일치는 사람이 만든 복붙이 아니라 빌드 타깃 매트릭스라 중복으로 세면 안 된다.
+  const VARIANT_WORDS = "webpack|turbopack|parcel|rollup|vite|esbuild|esm|cjs|umd|iife|browser|node|edge|worker|native|fb|unbundled|bundled|legacy|modern";
+  // 경로 세그먼트의 변종 표시(react-server-dom-webpack) + 파일명 안의 변종 토큰
+  // (ReactFlightWebpackNodeLoader vs ReactFlightUnbundledNodeLoader) 둘 다 지운 서명을 만든다.
+  const SEG_RE = new RegExp(`(^|[-_.])(${VARIANT_WORDS})(?=$|[-_./])`, "gi");
+  const NAME_RE = new RegExp(`(${VARIANT_WORDS})`, "gi");
+  const variantSig = (file) => {
+    const norm = file.replace(/\\/g, "/");
+    const i = norm.lastIndexOf("/");
+    const dir = norm.slice(0, i + 1).replace(SEG_RE, "$1");
+    const base = norm.slice(i + 1).replace(NAME_RE, "");
+    return (dir + base).replace(/\/+/g, "/");
+  };
+  const sigOf = perFile.map((f) => variantSig(f.file));
+
   // 2회 이상 등장한 윈도우가 덮는 토큰 마킹
   const dupMask = perFile.map((f) => new Uint8Array(f.tokens.length));
   const blockKeys = new Set(); // 대표 위치 수집용
   const examples = new Map(); // hash → [위치 문자열]
+  let variantSkipped = 0;
   for (const [h, locs] of seen) {
     if (locs.length < 2) continue;
     // 같은 파일 안 인접 중첩(자기 자신과 1토큰 시프트) 제외: 서로 다른 위치 그룹만
     const distinct = locs.filter((a, i) => locs.findIndex((b) => b.fi === a.fi && Math.abs(b.idx - a.idx) < DUP_WINDOW) === i);
     if (distinct.length < 2) continue;
+    // 형제 변종 가드: 등장 위치가 전부 '같은 서명'의 파일들이면 빌드 타깃 사본 → 중복 아님
+    if (new Set(distinct.map((d) => sigOf[d.fi])).size === 1 &&
+        new Set(distinct.map((d) => d.fi)).size > 1) { variantSkipped++; continue; }
     for (const { fi, idx } of distinct) {
       dupMask[fi].fill(1, idx, idx + DUP_WINDOW);
     }
@@ -515,7 +536,7 @@ function analyzeDuplication(ts, fileContents) {
   // 대표 중복 블록 예시 (여러 위치에 나타나는 것 우선)
   const worstBlocks = [...examples.values()].sort((a, b) => b.length - a.length).slice(0, 3);
 
-  return { percent, dupTokens, totalTokens, blocks: blockKeys.size, worstFiles, worstBlocks };
+  return { percent, dupTokens, totalTokens, blocks: blockKeys.size, worstFiles, worstBlocks, variantSkipped };
 }
 
 // 파일 I/O 밀도 — "한 번 처리하는 데 파일을 몇 번이나 읽게 되는 구조인가".
