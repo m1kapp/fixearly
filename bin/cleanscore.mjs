@@ -1209,6 +1209,51 @@ function analyzeTextbookIssues(ts, fileContents) {
   };
 }
 
+// 타입 위생 — 타입체커 없이 AST 문법만으로 잡히는 "타입을 포기한 자리"들.
+// 진단 전용(점수 미반영): any 는 외부 SDK 경계처럼 정당한 쓰임이 있어 사람 판단이 필요하다.
+function analyzeTypeSafety(ts, fileContents) {
+  const anyType = [], asAny = [], nonNull = [], tsIgnore = [];
+  let totalAnnots = 0, tsFiles = 0;
+
+  for (const { file, content } of fileContents) {
+    if (!/\.tsx?$/.test(file) || /\.d\.ts$/.test(file)) continue;
+    tsFiles++;
+    const kind = /\.tsx$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS;
+    const sf = ts.createSourceFile(file, content, ts.ScriptTarget.Latest, true, kind);
+    const lineOf = (n) => sf.getLineAndCharacterOfPosition(n.getStart(sf)).line + 1;
+
+    // @ts-ignore / @ts-nocheck / @ts-expect-error — 타입 검사를 끈 자리
+    const re = /@ts-(ignore|nocheck|expect-error)/g;
+    let m;
+    while ((m = re.exec(content)) !== null) {
+      const line = content.slice(0, m.index).split("\n").length;
+      tsIgnore.push({ file, line, what: m[1] });
+    }
+
+    const walk = (n) => {
+      if (n.kind === ts.SyntaxKind.AnyKeyword) anyType.push({ file, line: lineOf(n) });
+      if (ts.isTypeNode(n)) totalAnnots++;
+      // as any / <any> — 타입을 강제로 지우는 단언
+      if ((ts.isAsExpression(n) || ts.isTypeAssertionExpression?.(n)) && n.type?.kind === ts.SyntaxKind.AnyKeyword)
+        asAny.push({ file, line: lineOf(n), text: n.getText(sf).replace(/\s+/g, " ").slice(0, 48) });
+      // non-null 단언(!) — "여기 null 아님"을 사람이 장담한 자리
+      if (ts.isNonNullExpression(n))
+        nonNull.push({ file, line: lineOf(n), text: n.getText(sf).replace(/\s+/g, " ").slice(0, 40) });
+      ts.forEachChild(n, walk);
+    };
+    try { ts.forEachChild(sf, walk); } catch { /* 깊은 파일 스킵 */ }
+  }
+
+  const pct = (n) => (totalAnnots > 0 ? Math.round((n / totalAnnots) * 1000) / 10 : 0);
+  return {
+    tsFiles, totalAnnots,
+    anyType: { count: anyType.length, pct: pct(anyType.length), worst: anyType.slice(0, 6) },
+    asAny: { count: asAny.length, worst: asAny.slice(0, 6) },
+    nonNull: { count: nonNull.length, worst: nonNull.slice(0, 6) },
+    tsIgnore: { count: tsIgnore.length, worst: tsIgnore.slice(0, 6) },
+  };
+}
+
 function analyzeRenderGates(ts, fileContents) {
   const findings = [];
 
@@ -1513,6 +1558,7 @@ let duplication = null;
 let io = null;
 let renderGates = null;
 let quadratic = null;
+let typeSafety = null;
 let textbook = null;
 if (ts && allFns.length > 0) {
   const byCc = [...allFns].sort((a, b) => b.cc - a.cc);
@@ -1544,6 +1590,7 @@ if (ts && allFns.length > 0) {
   renderGates = analyzeRenderGates(ts, fileContents);
   quadratic = analyzeQuadraticLookups(ts, fileContents);
   textbook = analyzeTextbookIssues(ts, fileContents);
+  typeSafety = analyzeTypeSafety(ts, fileContents);
 
   // v4 보정: 존경받는 OSS 코퍼스(ky·execa·zod·hono·vite·zustand 등 14종) 분포로 역피팅.
   // 원칙: 건강한 코드베이스도 함수 몇%는 cog15+·중복 약간은 정상 → free 임계 이하 감점 0,
@@ -1668,6 +1715,7 @@ const stats = {
     duplication,          // {percent, blocks, worstFiles, worstBlocks} — 토큰 중복 밀도
     io,                   // {readers, uncachedReaders, loopSites, uncachedLoopSites, worst} — 루프 안 파일 읽기
     textbook,             // {awaitInForEach, spreadAccumulator, regexInLoop} — 교과서 결함(진단 전용)
+    typeSafety,           // {anyType,asAny,nonNull,tsIgnore} — 타입 위생(진단 전용, 점수 미반영)
     quadratic,            // {sites, worst[], files[]} — 루프 안 O(n²) 배열 조회(진단 전용, 점수 미반영)
     renderGates,          // {hostages, worst} — fetch 하나가 무관한 UI까지 막고 있는 자리
     cc,                   // {functions, avg, p90, max, over10, over20, worst[5]} — McCabe (참고용)
@@ -1783,6 +1831,19 @@ if (textbook) {
   if (t.regexInLoop.count > 0) {
     console.log(`  루프 안 new RegExp: ${t.regexInLoop.count}곳 — 매 회 재컴파일 (루프 밖으로 호이스팅)`);
     for (const w of t.regexInLoop.worst) console.log(`    ${w.file}:${w.line}`);
+  }
+}
+if (typeSafety && typeSafety.tsFiles > 0) {
+  const t = typeSafety;
+  const bits = [];
+  if (t.anyType.count) bits.push(`any ${t.anyType.count}개(타입주석의 ${t.anyType.pct}%)`);
+  if (t.asAny.count) bits.push(`as any ${t.asAny.count}`);
+  if (t.nonNull.count) bits.push(`non-null(!) ${t.nonNull.count}`);
+  if (t.tsIgnore.count) bits.push(`@ts-ignore ${t.tsIgnore.count}`);
+  if (bits.length) {
+    console.log(`  타입 위생: ${bits.join(" · ")} — 타입을 포기한 자리 (점수 미반영, 경계에선 정당할 수 있음)`);
+    for (const w of t.tsIgnore.worst.slice(0, 3)) console.log(`    @ts-${w.what} — ${w.file}:${w.line}`);
+    for (const w of t.asAny.worst.slice(0, 3)) console.log(`    ${w.text} — ${w.file}:${w.line}`);
   }
 }
 if (quadratic && quadratic.sites > 0) {
