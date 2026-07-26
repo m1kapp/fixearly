@@ -64,15 +64,15 @@ button{font:inherit;cursor:pointer;} :focus-visible{outline:2px solid var(--acce
   text-wrap:balance;word-break:keep-all;min-width:0;}
 .hero .sub{color:var(--ink-2);font-size:clamp(16px,2.1vw,20px);max-width:30em;margin:20px 0 0;
   word-break:keep-all;text-wrap:pretty;}
-.cmdrow{display:flex;flex-wrap:wrap;gap:12px;margin-top:var(--space-lg);align-items:center;}
+.cmdrow{display:flex;flex-wrap:wrap;gap:12px;margin-top:var(--space-lg);align-items:stretch;}
 .cmd{display:flex;align-items:center;gap:12px;background:var(--paper-2);border:1px solid var(--line-2);border-radius:var(--radius);
-  padding:13px 16px;font-family:var(--font-mono);font-size:14.5px;color:var(--ink);}
+  padding:0 16px;min-height:50px;font-family:var(--font-mono);font-size:14.5px;color:var(--ink);}
 .cmd .dollar{color:var(--accent);}
 .copy{border:0;background:transparent;color:var(--ink-3);font-family:var(--font-mono);font-size:12px;padding:6px 8px;border-radius:6px;min-height:32px;}
 .copy:hover{color:var(--ink);background:var(--paper-3);}
 .copy[data-done="1"]{color:var(--gS);}
-.ghost{border:1px solid var(--line-2);border-radius:var(--radius);padding:13px 18px;background:transparent;color:var(--ink);
-  font-size:14.5px;font-weight:600;transition:border-color var(--dur) var(--ease-out),transform var(--dur) var(--ease-out);}
+.ghost{display:inline-flex;align-items:center;border:1px solid var(--line-2);border-radius:var(--radius);padding:0 18px;
+  min-height:50px;background:transparent;color:var(--ink);font-size:14.5px;font-weight:600;transition:border-color var(--dur) var(--ease-out),transform var(--dur) var(--ease-out);}
 .ghost:hover{border-color:var(--accent);} .ghost:active{transform:translateY(1px);}
 .herometa{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:var(--space-md);color:var(--ink-3);font-family:var(--font-mono);font-size:12.5px;}
 
@@ -330,12 +330,12 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
 
   파일: 132개
   코드: 36,996줄
-  <b>청결도: <span class="wn">D (60점)</span></b> — 함수 2378개, cognitive 평균 3.1·최대 195,
-             cog15+ 106개, 중복 0.5%, 200줄+ 50개
+  <b>청결도: <span class="wn">C+ (66점)</span></b> — 함수 2,378개, cognitive 평균 3.1·최대 195,
+             cog15+ 106개·cog25+ 56개, 중복 0.5%, 200줄+ 42개
     <span class="d">복잡:</span> generateBundle <b>cog 195</b> <span class="d">— node/plugins/importAnalysisBuild.ts:281</span>
     <span class="d">복잡:</span> ssrTransformScript <b>cog 101</b> <span class="d">— node/ssr/ssrTransform.ts:59</span>
     <span class="d">복잡:</span> resolveConfig <b>cog 98</b> <span class="d">— node/config.ts:1460</span></pre>
-      <figcaption><span class="ko">실제 출력 — vite (라이트급, 132파일)</span><span class="en">real output — vite (lightweight class, 132 files)</span></figcaption>
+      <figcaption><span class="ko">실제 출력 — vite 8.2 (웰터급, 36,996줄)</span><span class="en">real output — vite 8.2 (welterweight, 36,996 lines)</span></figcaption>
     </figure>
   </div>
 </section>
