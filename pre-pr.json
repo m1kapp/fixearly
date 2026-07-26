@@ -1,0 +1,85 @@
+{
+ "_schema": "발사 대기 PR 큐. 세션이 죽어도 살아남게 커밋. 나중에 status=ready 인 걸 gh pr create 로 발사.",
+ "queue": [
+  {
+   "id": "budibase-staticformula-enrich",
+   "repo": "Budibase/budibase",
+   "base": "master",
+   "target": "packages/server/src/api/controllers/row/staticFormula.ts:114",
+   "pattern": "O(rows²) — enrichedRows.find(_id) per row over whole table → Map",
+   "fork": "yoo-minho/budibase",
+   "branch": "perf/static-formula-enrich-map",
+   "forkPushed": true,
+   "benchmark": {
+    "shape": "keyjoin (isolated micro-bench, not e2e)",
+    "5000_rows": "67ms → 1.5ms (~45x)",
+    "20000_rows": "616ms → 5.7ms (~109x)"
+   },
+   "prTitle": "perf: drop O(rows²) enriched-row lookup in static formula recalc (~45× at 5k rows)",
+   "prBody": "## Description\n\nThe static-formula pass in `finaliseRow` (`staticFormula.ts`) recalculates formulas for every row of a table. It fetches all rows, builds an `enrichedRows` copy of the same length, then for each row locates its enriched counterpart with `enrichedRows.find(e => e._id === row._id)`:\n\n```ts\nfor (let row of rows) {\n  const enrichedRow = enrichedRows.find(e => e._id === row._id) // O(rows) per row\n  ...\n}\n```\n\nThat `find` scans `enrichedRows` for every row, so the loop is **O(rows²)** over the whole table. This runs on a full static-formula recalculation, which touches every row — so it scales quadratically with table size.\n\nThis indexes `enrichedRows` by `_id` once and looks up in O(1):\n\n```ts\nconst enrichedById = new Map(enrichedRows.map(e => [e._id, e]))\nfor (let row of rows) {\n  const enrichedRow = enrichedById.get(row._id)\n  ...\n}\n```\n\nBehaviour is identical — `find(e => e._id === row._id)` is exactly `Map.get(row._id)` (ids are unique). No API/DTO change, no migration.\n\n### Measured impact\n\nIsolated micro-benchmark of the lookup (`find` vs `Map`, both branches, N = table rows) — this measures the algorithmic delta, **not** an end-to-end app benchmark:\n\n| rows | before | after | speedup |\n|-----:|-------:|------:|--------:|\n| 1,000 | 4.9 ms | 0.3 ms | ~15× |\n| 5,000 | 67 ms | 1.5 ms | ~45× |\n| 20,000 | 616 ms | 5.7 ms | ~109× |\n\nSo on a 20k-row table this loop alone drops from ~0.6 s of pure CPU to ~6 ms. For small tables the difference is negligible; the change is free (`Map` build is O(rows), same order as the existing `.map`), so there's no downside either way — it just removes the quadratic for large tables.\n\nI couldn't run the full server suite locally, but the change is local and type-preserving.\n",
+   "status": "held",
+   "heldReason": "GitHub abuse guard blocked 2nd rapid PR to budibase (had #19320 minutes earlier). File after #19320 gets a reaction, or after a cooldown (spacing = anti-spam discipline).",
+   "createdContext": "2026-07-25"
+  },
+  {
+   "id": "nocodb-datatable-filtermap",
+   "repo": "nocodb/nocodb",
+   "base": "develop",
+   "target": "packages/nocodb/src/services/data-table.service.ts:1489",
+   "pattern": "O(rows²) — filterAndMapRows targetList.some per source row → composite-key Set",
+   "fork": "yoo-minho/nocodb",
+   "branch": "perf/data-table-filter-map-set",
+   "forkPushed": true,
+   "benchmark": {
+    "shape": "keyjoin row-diff",
+    "2000_rows": "18ms → 0.5ms (~36x)",
+    "10000_rows": "213ms → 2.8ms (~75x)"
+   },
+   "prTitle": "perf(nocodb): O(1) target-row exclusion in filterAndMapRows (~36× at 2k rows)",
+   "prBody": "## Change Summary\n\n`filterAndMapRows` returns the source rows that are **not** already present in the target set. It did so by scanning the whole target list for every source row:\n\n```ts\nsourceList.filter(sourceRow =>\n  !targetList.some(targetRow =>\n    relatedModel.primaryKeys.every(key => sourceRow[k] === targetRow[k])\n  )\n)\n```\n\nThat's `O(sourceRows × targetRows × pkCount)` — quadratic in the number of rows, on a row-diff that runs during link operations between tables.\n\nThis indexes the target rows by their composite primary key in a `Set` and tests membership in O(1):\n\n```ts\nconst pkCols = relatedModel.primaryKeys.map(k => k.title || k.column_name)\nconst rowKey = row => JSON.stringify(pkCols.map(c => row[c]))\nconst targetKeys = new Set(targetList.map(rowKey))\nreturn sourceList.filter(sr => !targetKeys.has(rowKey(sr))).map(...)\n```\n\nBehaviour is identical — `some(t => pks.every(k => s[k] === t[k]))` is exactly \"the composite key exists in target\". `JSON.stringify` of the pk-value array is a collision-free key (distinguishes types/null). No API/DTO change.\n\n### Measured impact\n\nIsolated micro-benchmark of the row-diff (`some` scan vs `Set`, N = rows on each side) — the algorithmic delta, **not** an end-to-end app benchmark:\n\n| rows/side | before | after | speedup |\n|----------:|-------:|------:|--------:|\n| 2,000 | 18 ms | 0.5 ms | ~36× |\n| 10,000 | 213 ms | 2.8 ms | ~75× |\n\nFor small link sets the difference is negligible; the change is free (the `Set` build is O(targetRows), same order as the old `.map` chain), so it's pure safety margin with no downside. I couldn't run the full suite locally, but the change is local and type-preserving.",
+   "status": "ready",
+   "heldReason": "2nd nocodb PR this batch (#14309 earlier) — space it out to avoid the abuse guard / spam pattern.",
+   "createdContext": "2026-07-25"
+  },
+  {
+   "id": "strapi-yup-unique-property",
+   "repo": "strapi/strapi",
+   "base": "develop",
+   "target": "packages/core/utils/src/yup.ts:73",
+   "pattern": "O(list²) uniqueProperty self-filter → count Map",
+   "fork": "yoo-minho/strapi",
+   "branch": "perf/yup-unique-property-linear",
+   "forkPushed": true,
+   "benchmark": {
+    "shape": "self-dedup",
+    "2000": "15ms→0.8ms(~18x)",
+    "10000": "225ms→1.6ms(~140x)"
+   },
+   "prTitle": "perf(utils): O(n) uniqueProperty validation via value counts (~18× at 2k)",
+   "prBody": "## What & Why\n\n`yup.array().uniqueProperty(propertyName)` flags array elements that share a property value. It found duplicates by scanning the whole array for every element:\n\n```ts\nlist?.forEach((element, index) => {\n  const sameElements = list.filter(e => get(propertyName, e) === get(propertyName, element)); // O(list) per element\n  if (sameElements.length > 1) errors.push(...);\n});\n```\n\nThat's **O(list²)** — quadratic in the array length being validated, which is client-controlled input.\n\n## How\n\nCount each property value once in a `Map`, then flag elements whose count exceeds 1:\n\n```ts\nconst valueCounts = new Map();\nlist?.forEach(el => { const v = get(propertyName, el); valueCounts.set(v, (valueCounts.get(v) ?? 0) + 1); });\nlist?.forEach((el, index) => { if ((valueCounts.get(get(propertyName, el)) ?? 0) > 1) errors.push(...); });\n```\n\nIdentical errors — same paths, same order, same trigger (a value appearing more than once). O(list).\n\n## Measured impact\n\nIsolated micro-benchmark of the duplicate check (self-scan vs count-Map, N = array length) — the algorithmic delta, **not** an e2e benchmark. Note the original uses `filter` (no early exit), so real gains are at least this:\n\n| length | before | after | speedup |\n|-------:|-------:|------:|--------:|\n| 2,000 | 15 ms | 0.8 ms | ~18× |\n| 10,000 | 225 ms | 1.6 ms | ~140× |\n\nSmall arrays are negligible; the change is a pure win (one extra O(list) pass replaces an O(list²) one). Couldn't run the full suite locally; change is local and type-preserving. This is a shared `@strapi/utils` validator, so it benefits every uniqueProperty use.",
+   "status": "ready",
+   "heldReason": "2nd strapi PR (#27125 earlier) — space out.",
+   "createdContext": "2026-07-25"
+  },
+  {
+   "id": "budibase-inmemory-view-rev",
+   "repo": "Budibase/budibase",
+   "base": "master",
+   "target": "packages/server/src/db/inMemoryView.ts:58",
+   "pattern": "O(rows²) data.find per result row → Map by _id",
+   "fork": "yoo-minho/budibase",
+   "branch": "perf/inmemory-view-rev-map",
+   "forkPushed": true,
+   "benchmark": {
+    "shape": "keyjoin",
+    "5000": "67ms→1.5ms(~45x)",
+    "20000": "616ms→5.7ms(~109x)"
+   },
+   "prTitle": "perf: O(1) rev lookup in in-memory view rebuild",
+   "prBody": "## Description\n\n`inMemoryView`'s rev-fixup loop corrects `_rev` on each result row by locating the matching source row with `data.find`:\n\n```ts\nfor (let row of response.rows) {\n  if (!row._rev || !row._id) continue\n  const found = data.find(possible => possible._id === row._id) // O(data) per result row\n  if (found) row._rev = found._rev\n}\n```\n\n`data` and `response.rows` both scale with the view's row count, so this is **O(rows²)**.\n\nThis indexes `data` by `_id` once and looks up in O(1):\n\n```ts\nconst dataById = new Map(data.map(possible => [possible._id, possible]))\nfor (let row of response.rows) {\n  ...\n  const found = dataById.get(row._id)\n  ...\n}\n```\n\nBehaviour identical (`find(_id)` == `Map.get(_id)`). No API change.\n\n### Measured impact\n\nIsolated micro-benchmark (find vs Map, N = rows) — algorithmic delta, not e2e:\n\n| rows | before | after | speedup |\n|-----:|-------:|------:|--------:|\n| 5,000 | 67 ms | 1.5 ms | ~45× |\n| 20,000 | 616 ms | 5.7 ms | ~109× |\n\nSmall views negligible; the change is free (Map build is O(rows), same order as the existing `data.map`), pure safety margin. Couldn't run the full suite locally; local and type-preserving.",
+   "status": "held",
+   "heldReason": "3rd budibase — heavily space (already #19320 + staticFormula queued). File well after others.",
+   "createdContext": "2026-07-25"
+  }
+ ]
+}

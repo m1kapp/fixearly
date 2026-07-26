@@ -1,13 +1,14 @@
 {
   "name": "cleanscore",
-  "version": "0.3.1",
-  "description": "3분 만에 코드베이스 청결점수 — 정적 분석, 100% 로컬, A+~D 등급. 게임 불가.",
+  "version": "0.3.2",
+  "description": "코드가 아니라 '다음에 고칠 때 드는 비용'을 잰다 — JS/TS 정적 분석, 100% 로컬, SSS~E 등급, 오픈소스 70개 기준선",
   "type": "module",
   "bin": {
     "cleanscore": "bin/cleanscore.mjs"
   },
   "files": [
-    "bin"
+    "bin",
+    "data"
   ],
   "keywords": [
     "code-quality",
@@ -25,5 +26,8 @@
     "typescript": "^5.4.0"
   },
   "license": "MIT",
-  "homepage": "https://yoo-minho.github.io/cleanscore"
+  "homepage": "https://yoo-minho.github.io/cleanscore",
+  "scripts": {
+    "test": "node bin/selftest.mjs"
+  }
 }

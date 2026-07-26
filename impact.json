@@ -1,46 +1,102 @@
 {
-  "findings": [
-    {
-      "title": "deleteBulkMetadata N+1",
-      "type": "N+1 (루프 안 순차 DELETE, item당 왕복 1회)",
-      "repo": "immich-app/immich",
-      "repoLabel": "immich · 108k★",
-      "pr": 30163
-    },
-    {
-      "title": "sync-agent findOne N+1",
-      "type": "N+1 (for 루프 안 findOne, 소스 통합당 쿼리 1회)",
-      "repo": "novuhq/novu",
-      "repoLabel": "novu · 40k★",
-      "pr": 12074
-    },
-    {
-      "title": "booking member diff O(n²)",
-      "type": "O(n²) 배열 조회 (루프 안 .some() 선형스캔 4회 → Set)",
-      "repo": "calcom/cal.diy",
-      "repoLabel": "cal.com · 46729★",
-      "pr": 29828
-    },
-    {
-      "title": "view-widget-upsert O(n²)",
-      "type": "O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map)",
-      "repo": "twentyhq/twenty",
-      "repoLabel": "twenty · 53558★",
-      "pr": 23231
-    },
-    {
-      "title": "nested relations hydration O(n²)",
-      "type": "O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map)",
-      "repo": "twentyhq/twenty",
-      "repoLabel": "twenty · 37k★",
-      "pr": 23232
-    },
-    {
-      "title": "lucky-user set rebuild in loop",
-      "type": "루프 불변 인덱스 재구축 (while마다 new Set 재구축 → 호이스팅)",
-      "repo": "calcom/cal.diy",
-      "repoLabel": "cal.com · 47k★",
-      "pr": 29832
-    }
-  ]
+ "findings": [
+  {
+   "title": "deleteBulkMetadata N+1",
+   "type": "N+1 (루프 안 순차 DELETE, item당 왕복 1회)",
+   "repo": "immich-app/immich",
+   "repoLabel": "immich · 108k★",
+   "pr": 30163
+  },
+  {
+   "title": "sync-agent findOne N+1",
+   "type": "N+1 (for 루프 안 findOne, 소스 통합당 쿼리 1회)",
+   "repo": "novuhq/novu",
+   "repoLabel": "novu · 40k★",
+   "pr": 12074
+  },
+  {
+   "title": "booking member diff O(n²)",
+   "type": "O(n²) 배열 조회 (루프 안 .some() 선형스캔 4회 → Set)",
+   "repo": "calcom/cal.diy",
+   "repoLabel": "cal.com · 46729★",
+   "pr": 29828
+  },
+  {
+   "title": "view-widget-upsert O(n²)",
+   "type": "O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map)",
+   "repo": "twentyhq/twenty",
+   "repoLabel": "twenty · 53558★",
+   "pr": 23231
+  },
+  {
+   "title": "nested relations hydration O(n²)",
+   "type": "O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map)",
+   "repo": "twentyhq/twenty",
+   "repoLabel": "twenty · 37k★",
+   "pr": 23232
+  },
+  {
+   "title": "lucky-user set rebuild in loop",
+   "type": "루프 불변 인덱스 재구축 (while마다 new Set 재구축 → 호이스팅)",
+   "repo": "calcom/cal.diy",
+   "repoLabel": "cal.com · 47k★",
+   "pr": 29832
+  },
+  {
+   "title": "dataloader doc placement O(n²)",
+   "type": "O(n²) (배치당 keys.findIndex 전체 스캔 — Map으로 O(1))",
+   "repo": "payloadcms/payload",
+   "repoLabel": "payload · 43.8k★",
+   "pr": 17469
+  },
+  {
+   "title": "translations batch match O(n²)",
+   "type": "O(n²) (batch당 filter+some 전체 스캔 — Set으로 O(1))",
+   "repo": "medusajs/medusa",
+   "repoLabel": "medusa · 35.3k★",
+   "pr": 16188
+  },
+  {
+   "title": "markdown import merge O(n²)",
+   "type": "O(n²) (형제 out.find title 스캔 — Map으로 O(1))",
+   "repo": "outline/outline",
+   "repoLabel": "outline · 39.8k★",
+   "pr": 13117
+  },
+  {
+   "title": "doc-metadata localization O(n²)",
+   "type": "O(n²) (localization별 versions.find — 복합키 Map으로 O(1))",
+   "repo": "strapi/strapi",
+   "repoLabel": "strapi · 72.7k★",
+   "pr": 27125
+  },
+  {
+   "title": "parse-fields dedup O(n²)",
+   "type": "O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1))",
+   "repo": "directus/directus",
+   "repoLabel": "directus · 36.9k★",
+   "pr": 27978
+  },
+  {
+   "title": "resource-mapper schema validation O(n²)",
+   "type": "O(n²) (value별 schema.find — id Map으로 O(1))",
+   "repo": "n8n-io/n8n",
+   "repoLabel": "n8n · 148k★",
+   "pr": 34899
+  },
+  {
+   "title": "user field validation O(n²)",
+   "type": "O(n²) (value별 baseUsers.find ×4 — id·email Map으로 O(1))",
+   "repo": "nocodb/nocodb",
+   "repoLabel": "nocodb · 54k★",
+   "pr": 14309
+  },
+  {
+   "title": "ExternalRequest field lookup O(n²)",
+   "type": "O(n²) (행 필드별 fieldNames.find — Set으로 O(1))",
+   "repo": "Budibase/budibase",
+   "repoLabel": "budibase · 25k★",
+   "pr": 19320
+  }
+ ]
 }
