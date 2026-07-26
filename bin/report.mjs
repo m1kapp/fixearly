@@ -652,6 +652,20 @@ td.act{white-space:nowrap}
 dialog{border:1px solid var(--line-2);border-radius:var(--r);padding:0;max-width:min(94vw,720px);width:100%;
   background:var(--paper);color:var(--ink);box-shadow:0 24px 60px rgba(18,20,26,.22)}
 dialog::backdrop{background:rgba(18,20,26,.42)}
+/* 모바일 = 바텀시트 */
+@media(max-width:560px){
+  dialog{position:fixed;left:0;right:0;bottom:0;top:auto;margin:0;width:100%;max-width:100%;
+    max-height:90vh;border-radius:18px 18px 0 0;border-bottom:0;display:flex;flex-direction:column;
+    animation:sheetUp .22s ease-out}
+  dialog::before{content:"";flex:none;width:40px;height:4px;border-radius:99px;background:var(--line-2);margin:9px auto 2px}
+  .pd-h{padding:var(--s3) var(--s4)}
+  #pd-b{flex:1 1 auto;min-height:0;max-height:none;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:var(--s4);font-size:11px}
+  .pd-f{padding:var(--s3) var(--s4) calc(var(--s4) + env(safe-area-inset-bottom))}
+  .pd-f .cp{flex:1 1 120px}
+}
+@keyframes sheetUp{from{transform:translateY(14%);opacity:.5}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){dialog{animation:none}}
 .pd-h{display:flex;align-items:center;gap:var(--s3);padding:var(--s4) var(--s5);border-bottom:1px solid var(--line)}
 .pd-h b{font-size:14px;font-weight:700;font-family:var(--mono);min-width:0;overflow-wrap:anywhere}
 .pd-x{margin-left:auto;border:0;background:transparent;color:var(--ink-3);font-size:20px;line-height:1;

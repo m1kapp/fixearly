@@ -141,6 +141,21 @@ button{font:inherit;cursor:pointer;} :focus-visible{outline:2px solid var(--acce
 dialog{border:1px solid var(--line-2);border-radius:var(--radius);padding:0;max-width:min(94vw,520px);width:100%;
   background:var(--paper);color:var(--ink);box-shadow:0 30px 60px -30px rgba(15,23,35,.4);margin:auto;}
 dialog::backdrop{background:rgba(15,23,35,.35);}
+
+/* 모바일 = 바텀시트. 화면 중앙 모달은 엄지에서 멀고, 닫기 버튼이 상단에 있어 손이 안 닿는다. */
+@media(max-width:560px){
+  dialog,#rdlg,#gdlg{position:fixed;left:0;right:0;bottom:0;top:auto;margin:0;width:100%;max-width:100%;
+    max-height:88vh;border-radius:18px 18px 0 0;border-bottom:0;display:flex;flex-direction:column;
+    animation:sheetUp .22s var(--ease-out);}
+  dialog::before{content:"";flex:none;width:40px;height:4px;border-radius:99px;background:var(--line-2);
+    margin:9px auto 2px;}
+  dialog .dlg-b{overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1 1 auto;min-height:0;}
+  dialog .dlg-h{padding-top:8px;}
+  dialog .dlg-f{padding-bottom:calc(18px + env(safe-area-inset-bottom));}
+  .dlg-x{top:6px;}
+}
+@keyframes sheetUp{from{transform:translateY(14%);opacity:.5;}to{transform:none;opacity:1;}}
+@media (prefers-reduced-motion:reduce){dialog{animation:none;}}
 .dlg-h{display:flex;align-items:baseline;gap:10px;padding:18px 20px 12px;border-bottom:1px solid var(--line);}
 .dlg-h b{font-size:16px;font-weight:750;letter-spacing:-.01em;}
 .dlg-h span{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-3);}
