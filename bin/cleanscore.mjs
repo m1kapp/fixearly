@@ -1542,13 +1542,13 @@ if (ts && allFns.length > 0) {
     // 볼륨 재보정(Goodhart 내성): 예전엔 maxCog 단일항이 12점까지 좌우해, '안정적이라 아무도 안 만지는
     // 최악 함수 하나'만 고쳐도 점수가 크게 올랐다(측정을 게임). 이제 분포(over15·over25·p90)가 주도한다.
     // 분포는 함수 하나로 못 흔든다 — 올리려면 '여러 복잡 함수'를 실제로 줄여야 한다.
-    - Math.min(15, Math.max(0, over15Pct - 2) * 2)  // cog15+ 함수비율 (2% 초과분만)
+    - Math.min(12, Math.max(0, over15Pct - 2) * 2)  // cog15+ 함수비율 (검증: cog는 약한 결함신호라 볼륨 축소)
     - Math.min(12, Math.max(0, over25Pct - 1) * 3)  // cog25+ 함수비율 (1% 초과분만)
     - Math.min(9, Math.max(0, Math.log2(Math.max(1, cognitive.p90) / 12)) * 2.2) // p90 복잡도(분포 — 상위 10% 함수 수준). 단일 outlier로 못 흔듦.
     - Math.min(4, Math.max(0, Math.log2(Math.max(1, maxCog) / 15)) * 1.0) // 최악 함수: 잔여항만(12→4). 진짜 괴물 하나는 조금 벌하되 지배 못 함.
     - Math.min(16, Math.max(0, duplication.percent - 8) * 1.2) // 중복: 8% 초과분(구조적 반복 관용)
-    - Math.min(10, longFileSeverityPct * 1.0)       // 200줄+ 파일 심각도
-    - Math.min(12, Math.max(0, avgFileLines - 120) / 6) // 평균 파일 길이 120줄 초과분
+    - Math.min(13, longFileSeverityPct * 1.3)       // 200줄+ 파일 (검증: 파일크기가 가장 강한 결함신호)
+    - Math.min(14, Math.max(0, avgFileLines - 120) / 5) // 평균 파일 길이 (검증 근거로 볼륨↑)
     // io(루프 IO·N+1)는 점수에서 뺐다: 재시도 루프·커서 페이지네이션처럼 '순차가 필수'인
     // 코드를 구분하려면 사람 검증이 필요한데(PATTERNS.md), 사람이 필요한 축을 자동 채점에
     // 넣으면 작은 저장소가 통째로 무너진다(파일 1개·사이트 2곳 = 만렙 감점). 진단으로만 보고한다.
