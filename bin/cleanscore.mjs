@@ -1614,8 +1614,8 @@ if (ts && allFns.length > 0) {
     // 분포는 함수 하나로 못 흔든다 — 올리려면 '여러 복잡 함수'를 실제로 줄여야 한다.
     - Math.min(12, Math.max(0, over15Pct - 3.1) * 2)  // cog15+ 비율 — 코퍼스 중앙(3.1%)까지 유예, 초과분만 감점
     - Math.min(12, Math.max(0, over25Pct - 1.5) * 3)  // cog25+ 비율 — 1.5%까지 유예
-    - Math.min(9, Math.max(0, Math.log2(Math.max(1, cognitive.p90) / 12)) * 2.2) // p90 복잡도(분포 — 상위 10% 함수 수준). 단일 outlier로 못 흔듦.
-    - Math.min(4, Math.max(0, Math.log2(Math.max(1, maxCog) / 15)) * 1.0) // 최악 함수: 잔여항만(12→4). 진짜 괴물 하나는 조금 벌하되 지배 못 함.
+    - Math.min(9, Math.max(0, Math.log2(Math.max(1, cognitive.p90) / 6)) * 3.0) // p90 복잡도(분포). 유예=코퍼스 중앙 6 — 그 이하 0점. /12였을 땐 최대치가 15라 항이 거의 죽어 변별을 못 했다.
+    - Math.min(4, Math.max(0, Math.log2(Math.max(1, maxCog) / 120)) * 2.0) // 최악 함수: 잔여항. 유예=코퍼스 중앙 120 — /15였을 땐 전원이 캡의 3/4를 먹어 변별이 없었다.
     - Math.min(16, Math.max(0, duplication.percent - 8) * 1.2) // 중복: 8% 초과분(구조적 반복 관용)
     - Math.min(13, longFileSeverityPct * 1.3)       // 200줄+ 파일 (검증: 파일크기가 가장 강한 결함신호)
     - Math.min(14, Math.max(0, avgFileLines - 120) / 5) // 평균 파일 길이 (검증 근거로 볼륨↑)
