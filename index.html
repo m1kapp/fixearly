@@ -1,523 +1,690 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>청결점수 · CLEAN SCORE</title><style>*{margin:0;padding:0;box-sizing:border-box}img{max-width:100%}</style></head><body><style>
-  :root {
-    --paper: #f4f5f8;
-    --panel: #ffffff;
-    --ink: #14161c;
-    --ink-soft: #565b66;
-    --rule: #d7dbe2;
-    --rule-soft: #e6e9ef;
-    --accent: #4148d8;
-    --accent-ink: #3037c4;
-    --gA: #12915a;   /* A+ / A */
-    --gB: #1f7e86;   /* B */
-    --gC: #b6791a;   /* C */
-    --gD: #cb4436;   /* D */
-    --shadow: 0 1px 0 var(--rule), 0 18px 40px -30px rgba(20,22,28,.5);
-    --mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
-    --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --paper: #0e1014;
-      --panel: #15181e;
-      --ink: #e8eaf0;
-      --ink-soft: #9aa1ad;
-      --rule: #272c35;
-      --rule-soft: #1d222a;
-      --accent: #7b82ff;
-      --accent-ink: #9aa0ff;
-      --gA: #35c98a;
-      --gB: #3ab3bd;
-      --gC: #d69a34;
-      --gD: #ec6152;
-      --shadow: 0 1px 0 var(--rule), 0 24px 50px -34px rgba(0,0,0,.8);
-    }
-  }
-  :root[data-theme="light"] {
-    --paper: #f4f5f8; --panel: #ffffff; --ink: #14161c; --ink-soft: #565b66;
-    --rule: #d7dbe2; --rule-soft: #e6e9ef; --accent: #4148d8; --accent-ink: #3037c4;
-    --gA: #12915a; --gB: #1f7e86; --gC: #b6791a; --gD: #cb4436;
-    --shadow: 0 1px 0 var(--rule), 0 18px 40px -30px rgba(20,22,28,.5);
-  }
-  :root[data-theme="dark"] {
-    --paper: #0e1014; --panel: #15181e; --ink: #e8eaf0; --ink-soft: #9aa1ad;
-    --rule: #272c35; --rule-soft: #1d222a; --accent: #7b82ff; --accent-ink: #9aa0ff;
-    --gA: #35c98a; --gB: #3ab3bd; --gC: #d69a34; --gD: #ec6152;
-    --shadow: 0 1px 0 var(--rule), 0 24px 50px -34px rgba(0,0,0,.8);
-  }
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>cleanscore — 코드 청결점수 CLI</title>
+<style>
+/* Hallmark · pre-emit critique: P5 H5 E4 S5 R4 V5
+ * Hallmark · macrostructure: Workbench · nav: N1b · footer: Ft4 · genre: modern-minimal
+ * theme: Cobalt-light (white paper · system-sans display · cool-blue accent) · tone: technical · light-only
+ * enrichment: E-CSS3D isometric weight-class stack (Tier A, pure CSS)
+ */
+:root{
+  --paper:#ffffff; --paper-2:#f7f9fc; --paper-3:#eef2f7; --line:#e4e9f0; --line-2:#d3dae4;
+  --ink:#0f1723; --ink-2:#4a5769; --ink-3:#7c8899;
+  --accent:#2563eb; --accent-2:#1d4ed8; --accent-soft:#e8effd;
+  --gS:#0f7a63; --gA:#2f8f5b; --gB:#7d8a2c; --gC:#c0862e; --gD:#bf4a38; --gE:#8f2f24;
+  --perf:#2f6fc4; --bug:#bf4a38; --hyg:#6f7a26; --type:#7a3fb8;
+  --font-display:ui-sans-serif,system-ui,-apple-system,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  --font-mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  --space-xs:6px; --space-sm:12px; --space-md:20px; --space-lg:36px; --space-xl:64px; --space-2xl:104px;
+  --radius:12px; --radius-sm:8px;
+  --ease-out:cubic-bezier(.2,.7,.3,1); --dur:180ms;
+  --maxw:1180px;
+}
+:root[data-theme="light"]{
+  --paper:#ffffff; --paper-2:#f7f9fc; --paper-3:#eef2f7; --line:#e4e9f0; --line-2:#d3dae4;
+  --ink:#0f1723; --ink-2:#4a5769; --ink-3:#7c8899; --accent:#2563eb; --accent-2:#1d4ed8; --accent-soft:#e8effd;
+  --gS:#0f7a63; --gA:#2f8f5b; --gB:#7d8a2c; --gC:#c0862e; --gD:#bf4a38; --gE:#8f2f24;
+  --perf:#2f6fc4; --bug:#bf4a38; --hyg:#6f7a26;}
 
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--sans);
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-  .wrap { max-width: 860px; margin: 0 auto; padding: 0 24px; }
-  a { color: var(--accent-ink); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+/* 화이트 고정 — 다크 자동전환 없음 */
+:root{color-scheme:light;}
+*{box-sizing:border-box;} html,body{overflow-x:clip;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-display);line-height:1.6;-webkit-font-smoothing:antialiased;
+  word-break:keep-all;overflow-wrap:break-word;}
+.w{max-width:var(--maxw);margin:0 auto;padding:0 clamp(1rem,4vw,2rem);}
+a{color:var(--accent);text-decoration:none;} a:hover{color:var(--accent-2);}
+button{font:inherit;cursor:pointer;} :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px;}
+.mono{font-family:var(--font-mono);}
+.en{display:none;} :root[data-lang="en"] .ko{display:none;} :root[data-lang="en"] .en{display:revert;}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
 
-  .mono { font-family: var(--mono); }
-  .eyebrow {
-    font-family: var(--mono); font-size: 12px; letter-spacing: .16em;
-    text-transform: uppercase; color: var(--ink-soft);
-  }
-  .tnum { font-variant-numeric: tabular-nums; }
+/* nav N1b */
+.nav{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+.nav .in{max-width:var(--maxw);margin:0 auto;padding:0 clamp(1rem,4vw,2rem);height:58px;display:flex;align-items:center;gap:var(--space-lg);}
+.brand{font-weight:800;letter-spacing:-.02em;font-size:16px;}
+.brand span{color:var(--accent);}
+.navlinks{display:flex;gap:22px;margin-left:auto;}
+.navlinks a{color:var(--ink-2);font-size:14px;font-weight:550;}
+.navlinks a:hover{color:var(--ink);}
+.navcta{display:flex;align-items:center;gap:8px;margin-left:var(--space-md);}
+.lang{display:flex;gap:2px;border:1px solid var(--line);border-radius:999px;padding:2px;background:var(--paper-2);}
+.lang button{border:0;background:transparent;color:var(--ink-3);font-family:var(--font-mono);font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;min-height:28px;}
+.lang button[aria-pressed="true"]{background:var(--accent);color:#fff;}
+@media(max-width:760px){.navlinks{display:none;}}
 
-  /* ── top rule / masthead ── */
-  header.mast {
-    border-bottom: 1px solid var(--rule);
-    background: var(--panel);
-  }
-  .mast-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 0; gap: 16px;
-  }
-  .brand { font-family: var(--mono); font-weight: 700; letter-spacing: .04em; font-size: 15px; }
-  .brand .sp { color: var(--accent); }
-  .mast-meta { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); letter-spacing: .04em; }
+/* hero */
+.hero{padding:clamp(56px,9vw,110px) 0 var(--space-xl);border-bottom:1px solid var(--line);}
+.kicker{font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;}
+.hero h1{font-size:clamp(34px,6.4vw,68px);line-height:1.04;letter-spacing:-.035em;font-weight:850;margin:16px 0 0;
+  text-wrap:balance;word-break:keep-all;min-width:0;}
+.hero .sub{color:var(--ink-2);font-size:clamp(16px,2.1vw,20px);max-width:30em;margin:20px 0 0;
+  word-break:keep-all;text-wrap:pretty;}
+.cmdrow{display:flex;flex-wrap:wrap;gap:12px;margin-top:var(--space-lg);align-items:center;}
+.cmd{display:flex;align-items:center;gap:12px;background:var(--paper-2);border:1px solid var(--line-2);border-radius:var(--radius);
+  padding:13px 16px;font-family:var(--font-mono);font-size:14.5px;color:var(--ink);}
+.cmd .dollar{color:var(--accent);}
+.copy{border:0;background:transparent;color:var(--ink-3);font-family:var(--font-mono);font-size:12px;padding:6px 8px;border-radius:6px;min-height:32px;}
+.copy:hover{color:var(--ink);background:var(--paper-3);}
+.copy[data-done="1"]{color:var(--gS);}
+.ghost{border:1px solid var(--line-2);border-radius:var(--radius);padding:13px 18px;background:transparent;color:var(--ink);
+  font-size:14.5px;font-weight:600;transition:border-color var(--dur) var(--ease-out),transform var(--dur) var(--ease-out);}
+.ghost:hover{border-color:var(--accent);} .ghost:active{transform:translateY(1px);}
+.herometa{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:var(--space-md);color:var(--ink-3);font-family:var(--font-mono);font-size:12.5px;}
 
-  /* ── hero ── */
-  .hero { padding: 68px 0 40px; }
-  .hero h1 {
-    font-family: var(--mono);
-    font-weight: 700;
-    font-size: clamp(30px, 5.4vw, 50px);
-    line-height: 1.08;
-    letter-spacing: -0.01em;
-    text-wrap: balance;
-    margin: 18px 0 0;
-  }
-  .hero .lede {
-    max-width: 54ch; margin: 20px 0 0; font-size: 17px; color: var(--ink-soft);
-  }
-  .hero .lede b { color: var(--ink); font-weight: 600; }
 
-  .cmd {
-    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-    margin-top: 30px;
-    font-family: var(--mono); font-size: 15px;
-    background: var(--panel); border: 1px solid var(--rule);
-    border-radius: 10px; padding: 14px 16px; box-shadow: var(--shadow);
-  }
-  .cmd .dollar { color: var(--accent); font-weight: 700; }
-  .cmd code { color: var(--ink); }
-  .cmd .flag { color: var(--ink-soft); }
-  .cmd .tag {
-    margin-left: auto; font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
-    color: var(--ink-soft); border: 1px solid var(--rule); border-radius: 999px; padding: 3px 9px;
-  }
+/* hero 2-col + 3D art */
+.herogrid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:var(--space-xl);align-items:center;}
+@media(max-width:940px){.herogrid{grid-template-columns:minmax(0,1fr);gap:var(--space-lg);}
+  .heroart{order:-1;justify-self:center;transform:scale(.86);} }
+.heroart{position:relative;height:360px;display:flex;align-items:center;justify-content:center;
+  perspective:1100px;perspective-origin:52% 42%;}
+.stage{position:relative;width:310px;height:250px;transform-style:preserve-3d;
+  transform:rotateX(56deg) rotateZ(-40deg);animation:drift 9s var(--ease-out) infinite alternate;}
+@keyframes drift{from{transform:rotateX(56deg) rotateZ(-40deg) translateZ(0);}
+  to{transform:rotateX(52deg) rotateZ(-34deg) translateZ(10px);}}
+@media (prefers-reduced-motion:reduce){.stage{animation:none;}}
+.plate{position:absolute;inset:0;margin:auto;width:224px;height:138px;border-radius:15px;
+  border:1px solid var(--line-2);background:var(--paper-2);transform-style:preserve-3d;
+  box-shadow:0 22px 40px -26px rgba(15,23,35,.5);display:flex;align-items:flex-end;justify-content:flex-end;
+  gap:10px;padding:0 18px 13px;}
+.plate::after{content:"";position:absolute;left:6px;right:6px;top:100%;height:12px;border-radius:0 0 14px 14px;
+  background:color-mix(in srgb,var(--ink) 12%,transparent);filter:blur(.5px);transform:translateZ(-1px);}
+.p1{transform:translateZ(110px) translate(-33px,-33px);border-color:color-mix(in srgb,var(--accent) 60%,var(--line-2));
+  box-shadow:0 26px 44px -24px color-mix(in srgb,var(--accent) 45%,transparent);}
+.p2{transform:translateZ(88px) translate(-20px,-20px);}
+.p3{transform:translateZ(66px) translate(-7px,-7px);}
+.p4{transform:translateZ(44px) translate(7px,7px);}
+.p5{transform:translateZ(22px) translate(20px,20px);}
+.p6{transform:translateZ(0) translate(33px,33px);}
+.plate .pl{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-3);letter-spacing:.03em;white-space:nowrap;}
+.p1 .pl{color:var(--accent);}
+.plate .pg{font-weight:800;font-size:13px;color:#fff;border-radius:6px;padding:3px 9px;}
+.heroart .glow{position:absolute;width:340px;height:200px;border-radius:50%;
+  background:radial-gradient(closest-side,var(--accent-soft),transparent);filter:blur(6px);z-index:-1;}
 
-  /* ── graded readout card ── */
-  .readout {
-    margin-top: 22px;
-    display: grid; grid-template-columns: auto 1fr; gap: 20px; align-items: center;
-    background: var(--panel); border: 1px solid var(--rule);
-    border-radius: 12px; padding: 20px 22px; box-shadow: var(--shadow);
-  }
-  .stamp {
-    width: 92px; height: 92px; border-radius: 14px;
-    display: grid; place-items: center;
-    border: 2px solid currentColor;
-    font-family: var(--mono); font-weight: 700; font-size: 40px; letter-spacing: -0.02em;
-    position: relative;
-  }
-  .stamp small { position: absolute; bottom: 8px; right: 10px; font-size: 12px; letter-spacing: 0; }
-  .readout .rlabel { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); }
-  .readout .rline { font-family: var(--mono); font-size: 15px; margin-top: 6px; }
-  .readout .rline .n { font-weight: 700; }
-  .bar { height: 8px; border-radius: 999px; background: var(--rule-soft); margin-top: 12px; overflow: hidden; }
-  .bar > i { display: block; height: 100%; border-radius: 999px; }
+/* repo detail dialog */
+.peer{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;font-size:12.5px;color:var(--ink-2);
+  border:1px solid var(--line);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:14px;}
+.peer b{font-family:var(--font-mono);font-weight:750;color:var(--ink);}
+.peer .pd{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-3);}
+.dgs{margin-left:4px;color:var(--ink-3);font-size:11px;}
+#rdlg{max-width:min(94vw,620px);}
+#rdlg .dlg-h{display:flex;align-items:center;gap:9px;padding-right:38px;}
+@media(max-width:560px){#rdlg .dlg-h{flex-wrap:wrap;row-gap:6px;}#rdlg .dlg-h .chip{margin-left:0;}}
+#rdlg .dlg-h b{font-size:19px;font-weight:800;letter-spacing:-.01em;}
+#rdlg .dlg-h .g{color:#fff;font-family:var(--font-sans);font-size:12px;font-weight:750;}
+#rdlg .det{background:transparent;border:0;box-shadow:none;padding:2px 0 0;}
+#rdlg-f{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.ghlink{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line-2);border-radius:var(--radius-sm);
+  padding:9px 15px;font-size:13.5px;font-weight:650;color:var(--ink);
+  transition:border-color var(--dur) var(--ease-out),color var(--dur) var(--ease-out);}
+.ghlink:hover{border-color:var(--accent);color:var(--accent);text-decoration:none;}
+.ghlink .arw{font-family:var(--font-mono);font-size:12px;}
+.ghpath{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-3);}
 
-  /* ── section frame ── */
-  section { padding: 46px 0; border-top: 1px solid var(--rule); }
-  .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 22px; }
-  .sec-head .num { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .1em; }
-  .sec-head h2 { font-family: var(--mono); font-size: 20px; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
-  .sec-head .note { margin-left: auto; font-size: 13px; color: var(--ink-soft); }
+/* grade info dialog */
+.boardfoot{display:flex;justify-content:flex-end;margin-top:10px;}
+.gradelink{border:0;background:transparent;color:var(--ink-3);font-size:13px;font-weight:550;padding:6px 2px;
+  display:inline-flex;align-items:center;gap:7px;border-bottom:1px solid transparent;transition:color var(--dur) var(--ease-out),border-color var(--dur) var(--ease-out);}
+.gradelink:hover{color:var(--accent);border-bottom-color:color-mix(in srgb,var(--accent) 45%,transparent);}
+.gradelink .arw{font-family:var(--font-mono);font-size:12px;}
+.gradehelp{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.ibtn{width:26px;height:26px;border-radius:999px;border:1px solid var(--line-2);background:var(--paper-2);
+  color:var(--ink-3);font-family:var(--font-mono);font-size:12px;font-weight:700;line-height:1;
+  display:inline-flex;align-items:center;justify-content:center;transition:border-color var(--dur) var(--ease-out);}
+.ibtn:hover{border-color:var(--accent);color:var(--accent);}
+dialog{border:1px solid var(--line-2);border-radius:var(--radius);padding:0;max-width:min(94vw,520px);width:100%;
+  background:var(--paper);color:var(--ink);box-shadow:0 30px 60px -30px rgba(15,23,35,.4);margin:auto;}
+dialog::backdrop{background:rgba(15,23,35,.35);}
+.dlg-h{display:flex;align-items:baseline;gap:10px;padding:18px 20px 12px;border-bottom:1px solid var(--line);}
+.dlg-h b{font-size:16px;font-weight:750;letter-spacing:-.01em;}
+.dlg-h span{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-3);}
+.dlg-b{padding:14px 20px 4px;}
+.pyr{display:flex;flex-direction:column;align-items:center;gap:0;padding:10px 0 6px;}
+.pl2{display:grid;grid-template-columns:minmax(0,1fr) 250px minmax(0,1fr);align-items:center;width:100%;}
+.pw{grid-column:2;justify-self:center;display:inline-flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:800;font-size:12.5px;letter-spacing:.02em;flex:none;line-height:1;}
+.pc2{grid-column:1;justify-self:end;font-family:var(--font-mono);font-size:11.5px;color:var(--ink-2);white-space:nowrap;padding-right:20px;}
+.pr{grid-column:3;justify-self:start;font-family:var(--font-mono);font-size:11.5px;color:var(--ink-3);white-space:nowrap;padding-left:20px;}
+.pl2:has(.pw[style*="0.3"]) .pc2,.pl2:has(.pw[style*="0.3"]) .pr{color:var(--ink-3);}
+@media(max-width:560px){.pl2{grid-template-columns:1fr 190px 1fr;} .pr,.pc2{font-size:10.5px;padding:0 8px;}}
+.dlg-f{padding:12px 20px 18px;color:var(--ink-3);font-size:12.5px;line-height:1.6;word-break:keep-all;border-top:1px solid var(--line);margin-top:10px;}
+.dlg-f b{color:var(--ink-2);}
+.dlg-x{position:absolute;top:12px;right:14px;border:0;background:transparent;color:var(--ink-3);font-size:18px;line-height:1;padding:4px 8px;border-radius:6px;}
+.dlg-x:hover{background:var(--paper-3);color:var(--ink);}
 
-  /* ── leaderboard ── */
-  .board { width: 100%; }
-  .board .scroll { overflow-x: auto; }
-  table.lb { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 900px; }
-  table.lb th {
-    text-align: left; font-family: var(--mono); font-weight: 600; font-size: 11px;
-    letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft);
-    padding: 0 10px 10px; border-bottom: 1px solid var(--rule);
-  }
-  table.lb td { padding: 11px 10px; border-bottom: 1px solid var(--rule-soft); vertical-align: middle; }
-  table.lb tr:last-child td { border-bottom: 0; }
-  .rank { font-family: var(--mono); color: var(--ink-soft); width: 30px; }
-  .repo { font-family: var(--mono); font-weight: 600; }
-  .repo a { color: inherit; text-decoration: none; }
-  .repo a:hover { color: var(--accent-ink); text-decoration: underline; }
-  .repo .kind { display: block; font-family: var(--sans); font-weight: 400; font-size: 11px; color: var(--ink-soft); letter-spacing: .02em; }
-  .grade-chip {
-    font-family: var(--mono); font-weight: 700; font-size: 13px;
-    border: 1.5px solid currentColor; border-radius: 7px; padding: 2px 9px; display: inline-block; min-width: 34px; text-align: center;
-  }
-  .score-cell { width: 190px; }
-  .score-cell .row { display: flex; align-items: center; gap: 10px; }
-  .score-cell .val { font-family: var(--mono); font-weight: 700; width: 30px; text-align: right; }
-  .score-cell .bar { flex: 1; margin: 0; }
-  .metric { font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft); white-space: nowrap; }
-  table.lb td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; font-size: 13px; white-space: nowrap; }
-  table.lb td.num b { font-weight: 700; }
-  table.lb td.ctx, table.lb th.ctx { color: var(--ink-soft); }
-  table.lb th { white-space: nowrap; }
-  .repo .kind code { font-family: var(--mono); font-size: 10px; background: var(--rule-soft); padding: 0 4px; border-radius: 3px; }
-  .tip-btn { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer;
-    display: inline-flex; align-items: center; gap: 4px; letter-spacing: inherit; text-transform: inherit; }
-  .tip-btn:hover { color: var(--accent-ink); }
-  .tip-i { display: inline-grid; place-items: center; width: 13px; height: 13px; border-radius: 50%;
-    border: 1px solid currentColor; font-size: 9px; opacity: .55; }
-  .tip-btn:hover .tip-i { opacity: 1; }
-  dialog#tipdlg { margin: auto; max-width: 460px; width: calc(100% - 32px); border: 1px solid var(--rule); border-radius: 12px;
-    background: var(--panel); color: var(--ink); padding: 0; box-shadow: 0 24px 60px -20px rgba(0,0,0,.5); }
-  dialog#tipdlg::backdrop { background: rgba(0,0,0,.45); }
-  .tip-head { display: flex; align-items: center; gap: 12px; padding: 16px 18px 12px; border-bottom: 1px solid var(--rule); }
-  .tip-head h3 { font-family: var(--mono); font-size: 15px; font-weight: 700; margin: 0; flex: 1; }
-  .tip-x { font: inherit; background: none; border: 0; color: var(--ink-soft); cursor: pointer; font-size: 14px; padding: 2px 4px; }
-  .tip-x:hover { color: var(--ink); }
-  .tip-body { padding: 16px 18px; font-size: 13.5px; line-height: 1.65; color: var(--ink-soft); }
-  .tip-body b { color: var(--ink); }
-  .tip-body code { font-family: var(--mono); font-size: 12px; background: var(--rule-soft); padding: 1px 5px; border-radius: 4px; }
-  .tip-thr { padding: 10px 18px 16px; font-family: var(--mono); font-size: 11.5px; color: var(--accent-ink);
-    border-top: 1px solid var(--rule-soft); }
-  .kchip { font-style: normal; font-family: var(--mono); font-size: 9.5px; letter-spacing: .04em;
-    border: 1px solid var(--rule); border-radius: 4px; padding: 0 4px; margin-right: 5px; color: var(--ink-faint); }
-  .k-fw { border-color: var(--gC); color: var(--gC); } .k-app { border-color: var(--gB); color: var(--gB); }
-  .k-tool { border-color: var(--accent); color: var(--accent-ink); }
-  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 12px; font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
-  .legend span { white-space: nowrap; }
+/* disclaimer */
+.note{margin-top:var(--space-lg);border:1px solid var(--line-2);border-left:3px solid var(--accent);border-radius:var(--radius-sm);
+  background:var(--paper-2);padding:16px 20px;}
+.note .nt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);font-weight:700;}
+.note p{margin:8px 0 0;color:var(--ink-2);font-size:14px;max-width:60em;line-height:1.62;word-break:keep-all;text-wrap:pretty;}
+.note b{color:var(--ink);font-weight:650;}
 
-  .gA { color: var(--gA); } .gB { color: var(--gB); } .gC { color: var(--gC); } .gD { color: var(--gD); }
-  .bgA { background: var(--gA); } .bgB { background: var(--gB); } .bgC { background: var(--gC); } .bgD { background: var(--gD); }
+/* steps (workbench) */
+.step{padding:var(--space-2xl) 0;border-bottom:1px solid var(--line);}
+.step:nth-child(even){background:var(--paper-2);}
+.stepno{font-family:var(--font-mono);font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.1em;}
+.step h2{font-size:clamp(22px,3.4vw,34px);letter-spacing:-.025em;font-weight:800;margin:10px 0 0;text-wrap:balance;}
+.step .lead{color:var(--ink-2);max-width:none;margin-top:12px;font-size:15.5px;word-break:keep-all;text-wrap:pretty;}
+figure{margin:var(--space-lg) 0 0;}
+pre{margin:0;background:var(--paper);border:1px solid var(--line-2);border-radius:var(--radius);padding:18px 20px;
+  overflow-x:auto;font-family:var(--font-mono);font-size:12.5px;line-height:1.7;color:var(--ink-2);}
+pre{background:var(--paper-3);}
+pre b{color:var(--ink);font-weight:600;} pre .a{color:var(--accent);} pre .g{color:var(--gS);}
+pre .wn{color:var(--gC);} pre .r{color:var(--gD);} pre .d{color:var(--ink-3);}
+figcaption{margin-top:12px;color:var(--ink-3);font-size:13.5px;font-family:var(--font-mono);}
 
-  .roast {
-    margin-top: 18px; font-size: 13.5px; color: var(--ink-soft);
-    border-left: 2px solid var(--accent); padding: 4px 0 4px 14px;
-  }
-  .roast b { color: var(--ink); }
+/* proof board */
+.tab .tl{display:flex;flex-direction:column;align-items:flex-start;line-height:1.25}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:var(--space-lg);}
+.tab{border:1px solid var(--line-2);background:var(--paper);color:var(--ink-2);border-radius:999px;padding:8px 15px;font-size:13.5px;font-weight:650;min-height:38px;}
+.tab[aria-selected="true"]{border-color:var(--accent);color:var(--ink);background:color-mix(in srgb,var(--accent) 14%,transparent);}
+.tab i{font-style:normal;font-family:var(--font-mono);font-size:11px;color:var(--ink-3);margin-left:7px;}
+.board{margin-top:var(--space-md);border:1px solid var(--line-2);border-radius:var(--radius);overflow:hidden;background:var(--paper);}
 
-  /* ── axes grid ── */
-  .axes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; }
-  .axis { background: var(--panel); padding: 18px 18px; }
-  .axis .k { font-family: var(--mono); font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 9px; }
-  .axis .k .dot { width: 8px; height: 8px; border-radius: 2px; }
-  .axis p { margin: 8px 0 0; font-size: 13.5px; color: var(--ink-soft); }
+.row{display:grid;grid-template-columns:30px minmax(0,1fr) auto auto;gap:14px;align-items:center;width:100%;
+  padding:13px 18px;border:0;border-bottom:1px solid var(--line);background:transparent;color:inherit;text-align:left;}
+.row:last-of-type{border-bottom:0;} .row:hover{background:var(--paper-3);}
+.rk{font-family:var(--font-mono);font-size:12.5px;color:var(--ink-3);}
+.rn{font-weight:680;font-size:15px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-width:0;}
+.rn .ver{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);font-weight:500;white-space:nowrap;}
+.chip{font-size:10px;font-weight:600;letter-spacing:.01em;padding:1px 7px;border-radius:999px;
+  border:1px solid var(--line);background:var(--paper-2);color:#9aa5b4;white-space:nowrap;line-height:1.5;}
+/* 줄 수는 좁은 화면에서 숨긴다 */
+@media(max-width:720px){.rml{display:none}}
+.rm{font-family:var(--font-mono);font-size:12px;color:var(--ink-3);}
+.rs{display:grid;grid-template-columns:38px 34px 12px;align-items:center;gap:10px;font-variant-numeric:tabular-nums;justify-items:center;}
+.rs b{font-size:16.5px;font-weight:750;justify-self:end;}
+.g{display:inline-block;min-width:26px;white-space:nowrap;text-align:center;font-weight:750;border-radius:5px;padding:2px 7px;font-size:12px;color:#fff;}
+.gS{background:var(--gS);}.gA{background:var(--gA);}.gB{background:var(--gB);}.gC{background:var(--gC);}.gD{background:var(--gD);}.gE{background:var(--gE);}
+.car{color:var(--ink-3);font-size:11px;justify-self:center;transition:transform var(--dur) var(--ease-out);}
+.row:hover .car{color:var(--accent);transform:translateX(2px);}
+.det{padding:2px 18px 16px 20px;background:transparent;border-bottom:1px solid var(--line);
+  box-shadow:inset 3px 0 0 var(--accent-soft);}
+.det .dh{font-family:var(--font-mono);font-size:12px;color:var(--ink-3);padding:12px 0;}
+.met{display:grid;grid-template-columns:minmax(0,124px) minmax(0,1fr) 56px;gap:12px;align-items:center;padding:6px 0;}
+.met .ml{font-size:13px;color:var(--ink-2);} .met .ml small{display:block;color:var(--ink-3);font-size:11px;}
+.bar{height:6px;border-radius:4px;background:var(--paper-3);overflow:hidden;} .bar i{display:block;height:100%;border-radius:4px;}
+.met .mv{font-family:var(--font-mono);font-size:12.5px;text-align:right;font-weight:650;font-variant-numeric:tabular-nums;}
+.dg{margin-top:10px;font-family:var(--font-mono);font-size:12px;color:var(--ink-3);}
+@media(max-width:640px){.row{grid-template-columns:26px minmax(0,1fr) auto;} .rm{display:none;}}
 
-  /* ── trust cards ── */
-  .trust { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-  .card { background: var(--panel); border: 1px solid var(--rule); border-radius: 12px; padding: 18px 18px; box-shadow: var(--shadow); }
-  .card .h { font-family: var(--mono); font-weight: 700; font-size: 14px; }
-  .card p { margin: 8px 0 0; font-size: 13.5px; color: var(--ink-soft); }
-  .card .fig { font-family: var(--mono); font-weight: 700; font-size: 22px; margin-top: 12px; letter-spacing: -0.01em; }
+/* pillars */
+.pill{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:1px;margin-top:var(--space-lg);
+  background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;}
+.pc{background:var(--paper);padding:22px;}
 
-  /* ── impact ── */
-  .impact-top { display: flex; align-items: baseline; gap: 16px; margin-bottom: 14px; font-family: var(--mono); }
-  .impact-score { font-size: 15px; color: var(--ink); }
-  .impact-score b { color: var(--accent); font-size: 20px; }
-  .impact-rule { font-size: 12px; color: var(--ink-soft); letter-spacing: .04em; }
-  .find { display: flex; gap: 18px; align-items: center; justify-content: space-between;
-    background: var(--panel); border: 1px solid var(--rule); border-radius: 12px; padding: 18px 20px;
-    box-shadow: var(--shadow); text-decoration: none; color: inherit; transition: border-color .15s; }
-  .find:hover { border-color: var(--accent); text-decoration: none; }
-  .find-title { font-family: var(--mono); font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 9px; }
-  .nplus { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--gD); border: 1.5px solid var(--gD); border-radius: 5px; padding: 1px 6px; letter-spacing: .02em; }
-  .find-repo { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); margin-top: 5px; }
-  .find-desc { font-size: 13px; color: var(--ink-soft); margin-top: 8px; max-width: 60ch; line-height: 1.55; }
-  .find-desc code { font-family: var(--mono); background: var(--rule-soft); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
-  .find-r { display: flex; flex-direction: column; align-items: flex-end; gap: 7px; flex-shrink: 0; }
-  .find-pr { font-family: var(--mono); font-weight: 700; font-size: 14px; color: var(--accent-ink); }
-  .find-status { font-family: var(--mono); font-size: 11.5px; color: var(--ink-soft); white-space: nowrap; }
-  .impact-note { margin-top: 16px; font-size: 13.5px; color: var(--ink-soft); border-left: 2px solid var(--accent); padding: 4px 0 4px 14px; line-height: 1.6; }
-  .impact-note b { color: var(--ink); }
-  @media (max-width: 620px) { .find { flex-direction: column; align-items: flex-start; } .find-r { align-items: flex-start; } }
+.pc .pn{font-family:var(--font-mono);font-size:11px;color:var(--accent);font-weight:700;}
+.pc h3{margin:8px 0 6px;font-size:16px;font-weight:730;letter-spacing:-.01em;}
+.pc p{margin:0;color:var(--ink-2);font-size:13.5px;line-height:1.55;}
 
-  /* ── start ── */
-  .steps { display: grid; gap: 12px; }
-  .step { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: start; }
-  .step .n { font-family: var(--mono); font-weight: 700; color: var(--accent); font-size: 13px; padding-top: 2px; }
-  .step .body code { font-family: var(--mono); background: var(--rule-soft); padding: 2px 6px; border-radius: 5px; font-size: 13px; }
-  .step .body .desc { font-size: 13.5px; color: var(--ink-soft); margin-top: 3px; }
-  .badge-demo { font-family: var(--mono); font-size: 12px; display: inline-flex; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; margin-top: 6px; }
-  .badge-demo .l { padding: 3px 8px; background: var(--rule-soft); color: var(--ink-soft); }
-  .badge-demo .r { padding: 3px 8px; color: #fff; font-weight: 700; }
+/* diagnostics grid */
+  .catbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:var(--space-lg);}
+  .catbar .lbl{font-family:var(--font-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;font-weight:700;padding:3px 10px;border-radius:999px;}
+  .lbl.perf{color:var(--perf);border:1px solid color-mix(in srgb,var(--perf) 42%,var(--line));}
+  .lbl.bug{color:var(--bug);border:1px solid color-mix(in srgb,var(--bug) 42%,var(--line));}
+  .lbl.type{color:var(--type);border:1px solid color-mix(in srgb,var(--type) 42%,var(--line));}
+  .lbl.hyg{color:var(--hyg);border:1px solid color-mix(in srgb,var(--hyg) 42%,var(--line));}
+  .dx{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:10px;margin-top:var(--space-md);}
+.dxc{border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px;background:var(--paper);}
 
-  footer { border-top: 1px solid var(--rule); padding: 30px 0 50px; color: var(--ink-soft); font-size: 13px; }
-  footer .frow { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center; }
-  footer .mono { font-size: 12px; }
+.dxc .dt{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;}
+.dot{width:8px;height:8px;border-radius:3px;flex:none;}
+.dot.perf{background:var(--perf);}.dot.bug{background:var(--bug);}.dot.hyg{background:var(--hyg);}.dot.type{background:var(--type);}
+.dxc code{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);display:block;margin-top:1px;}
+.dxc p{margin:7px 0 0;color:var(--ink-2);font-size:13px;line-height:1.5;}
 
-  @media (max-width: 620px) {
-    .axes, .trust { grid-template-columns: 1fr; }
-    .readout { grid-template-columns: 1fr; }
-    .stamp { width: 72px; height: 72px; font-size: 32px; }
-    .sec-head .note { display: none; }
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .stamp { animation: stampIn .5s cubic-bezier(.2,.9,.3,1.2) both; }
-    .bar > i { animation: grow .9s cubic-bezier(.2,.7,.2,1) both; }
-    @keyframes stampIn { from { transform: scale(.7) rotate(-6deg); opacity: 0; } to { transform: none; opacity: 1; } }
-    @keyframes grow { from { transform: scaleX(0); transform-origin: left; } to { transform: scaleX(1); } }
-  }
+/* final cta */
+.cta{padding:var(--space-2xl) 0;text-align:center;}
+.cta h2{font-size:clamp(26px,4.4vw,42px);letter-spacing:-.03em;font-weight:850;margin:0;text-wrap:balance;}
+.cta .cmdrow{justify-content:center;}
+footer{border-top:1px solid var(--line);padding:var(--space-xl) 0 var(--space-2xl);
+  font-family:var(--font-mono);font-size:12.5px;color:var(--ink-3);line-height:1.9;}
+footer b{color:var(--ink-2);font-weight:600;}
+footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:var(--space-md);}
 </style>
+</head>
+<body>
+<nav class="nav">
+  <div class="in">
+    <div class="brand">clean<span>score</span></div>
+    <div class="navlinks">
+      <a href="#how"><span class="ko">쓰는 법</span><span class="en">How it works</span></a>
+      <a href="#report"><span class="ko">리포트</span><span class="en">report</span></a>
+      <a href="#board"><span class="ko">70개 측정</span><span class="en">70 repos</span></a>
+      <a href="#axes"><span class="ko">무엇을 재나</span><span class="en">What it measures</span></a>
+    </div>
+    <div class="navcta">
+      <div class="lang" role="group" aria-label="언어">
+        <button data-setlang="ko" aria-pressed="true">한</button>
+        <button data-setlang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </div>
+</nav>
 
-<header class="mast">
-  <div class="wrap mast-row">
-    <div class="brand">clean<span class="sp">·</span>score</div>
-    <div class="mast-meta">cleanscore · npm</div>
+<header class="hero">
+  <div class="w herogrid">
+   <div>
+    <div class="kicker">JS / TS · CLI · <span class="ko">설치 없이</span><span class="en">zero install</span></div>
+    <h1 class="ko">코드와 함께<br>부채가 쌓인다.</h1>
+    <h1 class="en">Debt piles up<br>with the code.</h1>
+    <p class="sub ko">묻는 건 코드가 예쁜가가 아니라 <b>다음에 이걸 고칠 때 얼마가 드는가</b>다. 그 부채가 쌓인 자리를 파일·줄로 짚고, 같은 덩치·같은 종류의 유명 오픈소스 70개를 기준선 삼아 <b>S–E 등급</b>으로 급한 정도를 말해준다.</p>
+    <p class="sub en">The question isn't whether the code is pretty — it's <b>what the next change will cost</b>. It points at the files and lines where that debt piled up, and grades it <b>S–E</b> against 70 well-known repos of the same size and kind.</p>
+
+    <div class="cmdrow">
+      <div class="cmd"><span class="dollar">$</span><span id="cmdtext">npx cleanscore --dir=src</span>
+        <button class="copy" data-copy="npx cleanscore --dir=src">copy</button></div>
+      <button class="ghost" data-scroll="#board"><span class="ko">70개 결과 보기 ↓</span><span class="en">See 70 results ↓</span></button>
+    </div>
+    <div class="herometa">
+      <span><span class="ko">유명 OSS</span><span class="en">measured</span> 70</span>
+      <span><span class="ko">비교 기준</span><span class="en">baselines</span> <span class="ko">체급 6 · 종류 5</span><span class="en">6 sizes · 5 kinds</span></span>
+      <span><span class="ko">진단</span><span class="en">diagnostics</span> 17</span>
+      <span><span class="ko">채점축</span><span class="en">scored axes</span> 3</span>
+    </div>
+
+    <div class="note">
+      <div class="nt"><span class="ko">먼저 — 이 점수가 아닌 것</span><span class="en">first — what this score is not</span></div>
+      <p class="ko">이건 <b>특정 기준으로 바라본 한 단면</b>이지 그 프로젝트의 전부가 아니다. 재는 건 인지 복잡도·중복·파일 크기라는 <b>구조 지표 몇 개뿐</b> — 설계의 우아함, 테스트의 두께, 문서, 보안, 성능, 커뮤니티, 무엇보다 <b>그 소프트웨어가 세상에 준 가치</b>는 하나도 재지 않는다. 낮은 등급이 나쁜 프로젝트라는 뜻이 절대 아니다. 오래 살아남아 많은 기능을 감당한 코드일수록 이런 지표는 불리해진다. 아래 순위는 <b>배우기 위한 관측</b>이지 평가가 아니다.</p>
+      <p class="en">This is <b>one slice through a specific lens</b>, not a verdict. It measures a few structural signals — cognitive complexity, duplication, file size — and <b>nothing else</b>: not design, tests, docs, security, performance, community, and certainly not <b>the value that software has delivered</b>. A lower grade does not mean a worse project; code that survived long enough to carry many features scores worse here by construction. The ranking below is <b>an observation to learn from</b>, not a judgment.</p>
+    </div>
+   </div>
+   <div class="heroart" aria-hidden="true">
+     <div class="glow"></div>
+     <div class="stage">
+       <div class="plate p6"><span class="pl">0–34</span><span class="pg gE">E</span></div>
+       <div class="plate p5"><span class="pl">35–54</span><span class="pg gD">D</span></div>
+       <div class="plate p4"><span class="pl">55–69</span><span class="pg gC">C</span></div>
+       <div class="plate p3"><span class="pl">70–79</span><span class="pg gB">B</span></div>
+       <div class="plate p2"><span class="pl">80–89</span><span class="pg gA">A</span></div>
+       <div class="plate p1"><span class="pl">90–100</span><span class="pg gS">S</span></div>
+     </div>
+   </div>
   </div>
 </header>
 
-<main class="wrap">
+<section class="step" id="how">
+  <div class="w">
+    <div class="stepno">01</div>
+    <h2 class="ko">디렉토리를 가리키면, 등급이 나온다.</h2>
+    <h2 class="en">Point it at a directory. Get a grade.</h2>
+    <p class="lead ko">빌드 산출물·테스트·벤더 파일은 알아서 제외한다. 빈 파일로 점수를 부풀리는 것도 막는다.</p>
+    <p class="lead en">Build output, tests, and vendored files are excluded automatically — and padding with empty files won't inflate the score.</p>
+    <figure>
+<pre><span class="d">$</span> <b>npx cleanscore --dir=packages/vite/src</b>
 
-  <section class="hero" style="border-top:0">
-    <div class="eyebrow">JS · TS 전용 · 정적 분석 · 100% 로컬 · LLM 0</div>
-    <h1>당신의 코드베이스,<br>3분 만에 채점한다.</h1>
-    <p class="lede">명령 한 줄. 설정 제로. 코드는 컴퓨터 밖으로 <b>한 발짝도</b> 안 나간다. <b>TypeScript·JavaScript만</b> 분석한다(파서가 TS 컴파일러 API 기반).
-      인지 복잡도·중복·데드코드·루프 IO를 재서 <b>A+ ~ D</b> 등급을 매긴다.</p>
+  <span class="d">git 추적 파일만 분석 — 빌드산출물 0개 제외 (382개 대상)</span>
+  <span class="d">비-프로덕션·벤더 파일 249개 제외 (133개 분석)</span>
+  <span class="d">자잘 파일(코드 &lt;5줄) 1개 제외 — 패딩 게이밍 방지</span>
 
-    <div class="cmd">
-      <span class="dollar">$</span>
-      <code>npx cleanscore <span class="flag">--dir=src</span></code>
-      <span class="tag">복사</span>
+  파일: 132개
+  코드: 36,996줄
+  <b>청결도: <span class="wn">D (60점)</span></b> — 함수 2378개, cognitive 평균 3.1·최대 195,
+             cog15+ 106개, 중복 0.5%, 200줄+ 50개
+    <span class="d">복잡:</span> generateBundle <b>cog 195</b> <span class="d">— node/plugins/importAnalysisBuild.ts:281</span>
+    <span class="d">복잡:</span> ssrTransformScript <b>cog 101</b> <span class="d">— node/ssr/ssrTransform.ts:59</span>
+    <span class="d">복잡:</span> resolveConfig <b>cog 98</b> <span class="d">— node/config.ts:1460</span></pre>
+      <figcaption><span class="ko">실제 출력 — vite (라이트급, 132파일)</span><span class="en">real output — vite (lightweight class, 132 files)</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="step">
+  <div class="w">
+    <div class="stepno">02</div>
+    <h2 class="ko">등급 옆에, 고칠 줄을 같이 준다.</h2>
+    <h2 class="en">Next to the grade — the line to fix.</h2>
+    <p class="lead ko">크기 지표가 원리상 못 보는 결함을 따로 짚는다. 점수엔 넣지 않는다 — 이건 채점이 아니라 <b>작업 목록</b>이다.</p>
+    <p class="lead en">Defects a size metric can't see, listed separately. They never touch the score — this is a <b>work list</b>, not a grade.</p>
+    <figure>
+<pre><span class="d">$</span> <b>npx cleanscore --dir=src --mine</b>
+
+  <span class="r">O(n²) 배열 조회: 71곳</span> (PR후보 67곳 · backend 67 / frontend 0 / test 4)
+  <span class="d">루프 안 선형 탐색 — Map/Set으로 O(n). 점수 미반영.</span>
+
+    <span class="a">[★backend]</span> enrichedRows.find() <span class="d">— row/staticFormula.ts:114  (loop: rows)</span>
+    <span class="a">[★backend]</span> baseUsers.find()    <span class="d">— field-handler/user.general.handler.ts:153</span>
+    <span class="a">[★backend]</span> targetList.some()   <span class="d">— services/data-table.service.ts:1491</span>
+
+  <span class="d">✓ 후보 목록 저장 → public/quadratic-candidates.json</span></pre>
+      <figcaption><span class="ko">실제 출력 — budibase·nocodb에서 찾은 결함(고쳐서 PR로 냄)</span><span class="en">real output — findings in budibase / nocodb, fixed and sent as PRs</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="step">
+  <div class="w">
+    <div class="stepno">03</div>
+    <h2 class="ko">그래서, 무엇부터 손대야 하나.</h2>
+    <h2 class="en">So — what do you touch first?</h2>
+    <p class="lead ko">git 이력을 읽어 <b>복잡도 × 변경빈도</b>로 정렬한다. 제일 복잡한 파일이 아니라, <b>복잡한데 매주 만지는</b> 파일이 답이다. 안 건드리는 파일은 놔두라고 말해준다.</p>
+    <p class="lead en">Reads git history and ranks by <b>complexity × churn</b>. The answer isn't the most complex file — it's the complex one you touch every week. It also tells you what to leave alone.</p>
+    <figure>
+<pre><span class="d">$</span> <b>npx cleanscore --dir=src --hotspots</b>
+
+  <span class="d">── 복잡 × 변경빈도 = 먼저 고칠 파일 ──</span>
+  maxCog churn   worst함수 · 파일
+  <b>   148    28</b>   handleTranscriptLine():395  <span class="d">qa-runner.claude-runner.ts</span>
+  <b>    88   110</b>   processFileAsync():978      <span class="d">file/service/file.service.ts</span>
+  <b>    62   201</b>   streamAgent():255           <span class="d">agent/agent.service.ts</span>
+
+  <span class="g">놔둘 것</span> <span class="d">(복잡하지만 안정 — 리팩터 ROI 낮음):</span>
+    cog 248 churn 3  expandExternalLinks()  <span class="d">chain-collector/external-links.ts</span></pre>
+      <figcaption><span class="ko">실제 출력 — 우리 백엔드에 직접 돌린 결과</span><span class="en">real output — run against our own backend</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="step" id="report">
+  <div class="w">
+    <div class="stepno">04</div>
+    <h2 class="ko">한 장으로 받는다. 그리고 AI에게 넘긴다.</h2>
+    <h2 class="en">One page. Then hand it to the AI.</h2>
+    <p class="lead ko"><code>--report</code>는 HTML 한 장을 뽑는다 — 같은 체급 오픈소스 안에서 <b>내 위치</b>, 축별 좌표, <b>무엇부터 고칠지 파일·줄</b>, 그리고 각 항목마다 <b>코딩 에이전트에 그대로 붙여넣는 작업 지시문</b>. 측정할 때마다 이력이 쌓여서 <b>지난번 대비 변화</b>도 같이 나온다. 외부 요청 0 — 파일 하나로 끝난다.</p>
+    <p class="lead en"><code>--report</code> writes a single HTML page: where you sit inside your weight class, your position on each axis, <b>what to fix with file and line</b>, and a <b>ready-to-paste work order</b> for each item. Every run appends to a local history, so you also get the delta since last time. Zero external requests.</p>
+    <figure>
+<pre><span class="d">$</span> <b>npx cleanscore --dir=src --report</b>
+
+  청결도: <b>B (73점)</b> — 함수 11,000개, cog15+ 293개, 중복 5.5%
+  지난 측정(2026-07-20 09:00) 대비: <span class="d">C 69 →</span> <b>B 73</b> <span class="g">(+4점)</span>
+  <span class="g">✓</span> 리포트 → cleanscore-report.html
+
+  <span class="d">── 리포트 안에 ──</span>
+  어디쯤인가     헤비급 11개 중 <b>6위</b> <span class="d">(체급 중앙 73점)</span>
+  무엇부터       <b>processFileAsync() 354줄</b>  <span class="d">file.service.ts:978 · churn 110회</span>
+                 <span class="d">[지시문] ← 눌러서 전문 확인 후 복사</span>
+  지난번 대비     긴 함수 <span class="d">661개 →</span> <b>623개</b> <span class="g">(−38)</span></pre>
+      <figcaption><span class="ko">점수는 절대 위치, 변화량은 당신이 한 일이다</span><span class="en">the score is where you stand; the delta is what you did</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="step" id="board">
+  <div class="w">
+    <div class="stepno">05</div>
+    <h2 class="ko">유명 오픈소스 70개, 체급별로.</h2>
+    <h2 class="en">70 well-known projects, sorted by weight class.</h2>
+    <p class="lead ko">3천 줄 유틸과 20만 줄 백엔드를 같은 링에 세우면 큰 게 늘 진다. 그래서 <b>코드줄</b>로 체급을 나눈다(파일 수로 나누면 파일을 잘게 쪼갠 쪽이 체급만 올라간다). 체급이 크기를 지운다면 종류는 성격을 지운다 — <b>엔진·컴파일러 11개는 중앙 66점</b>으로 라이브러리(87)·프레임워크(85)·툴체인(84)보다 구조적으로 낮고, <b>앱은 76점</b>이다. 엔진은 성능·번들 크기 때문에 추상화를 포기하고, 앱은 화면 단위 함수가 길어지는 관습을 따른다 — 둘 다 이 축이 깎는다. 그래서 행을 열면 동종 기준선을 같이 보여준다.</p>
+    <p class="lead en">Pit a 3k-line util against a 200k-line backend and the big one always loses — so we split by <b>lines of code</b>, not file count. Weight class cancels size; kind cancels temperament — <b>the 11 engines and compilers sit at a median of 66</b> — below libraries (87), frameworks (85) and toolchains (84) — and apps land at 76. Engines trade abstraction for speed and bundle size; apps grow long screen-level functions. These axes penalise both. So every row shows its peer baseline.</p>
+    <div class="tabs" id="tabs" role="tablist"></div>
+    <div class="board" id="brd"></div>
+    <div class="boardfoot">
+      <button class="gradelink" id="gradeinfo">
+        <span class="ko">등급은 어떻게 나뉘나 — 70개 분포로 보기</span>
+        <span class="en">How the grades split — see the distribution</span>
+        <span class="arw">→</span>
+      </button>
     </div>
 
-    <div class="readout" aria-label="예시 결과">
-      <div class="stamp gB">B<small>78</small></div>
-      <div>
-        <div class="rlabel">예시 출력</div>
-        <div class="rline mono">청결도: <span class="n gB">B (78점)</span> — 함수 4,908개 · 중복 15% · 데드 12개</div>
-        <div class="bar"><i class="bgB" style="width:78%"></i></div>
+    <dialog id="rdlg">
+      <button class="dlg-x" data-close-r aria-label="닫기">×</button>
+      <div class="dlg-h" id="rdlg-h"></div>
+      <div class="dlg-b" id="rdlg-b"></div>
+      <div class="dlg-f" id="rdlg-f"></div>
+    </dialog>
+
+    <dialog id="gdlg">
+      <button class="dlg-x" data-close aria-label="닫기">×</button>
+      <div class="dlg-h"><b><span class="ko">등급은 이렇게 나뉜다</span><span class="en">How the grades split</span></b>
+        <span class="ko">유명 OSS 70개 기준 · S는 S/SS/SSS 3단(93·97점), 나머지는 상위 40%에 +</span><span class="en">across 70 OSS repos · S splits into S/SS/SSS at 93 and 97; other bands mark their top 40% with +</span></div>
+      <div class="dlg-b" id="gdist"></div>
+      <div class="dlg-f">
+        <p class="ko" style="margin:0">90 / 80 / 70 / 55 / 35 — 벌점은 <b>유예 구간을 넘은 뒤에만</b> 붙는다. 파일 260줄·복잡함수 3.1%까지는 무료 — 정상 코드의 90%가 해당된다.</p>
+        <p class="en" style="margin:0">90 / 80 / 70 / 55 / 35 — penalties only start <b>past a grace band</b>: 260 lines per file, 3.1% complex functions. That covers 90% of normal files.</p>
       </div>
-    </div>
-  </section>
+    </dialog>
+  </div>
+</section>
 
-  <section>
-    <div class="sec-head">
-      <span class="num">01</span>
-      <h2>유명 오픈소스, 실제 지표</h2>
-      <span class="note">JS·TS 30개 · 기본 브랜치 · 2026-07-24 · 엔진 0.2.1</span>
+<section class="step" id="axes">
+  <div class="w">
+    <div class="stepno">06</div>
+    <h2 class="ko">점수를 만드는 축 4개, 짚어주는 결함 17종.</h2>
+    <h2 class="en">Three axes make the score. Seventeen diagnostics point at fixes.</h2>
+    <p class="lead ko">채점은 함수 길이·인지 복잡도·중복·파일 크기 넷으로 한다. 감점 비중은 함수 길이 26 · 복잡도 37 · 중복 9 · 파일 크기 8(캡 기준). 나머지 17종은 등급을 건드리지 않고 파일·줄만 짚는다.</p>
+    <p class="lead en">Four axes set the grade — function length 26, complexity 37, duplication 9, file size 8 (by cap). The other seventeen never touch it; they name the file and line.</p>
+    <div class="pill">
+      <div class="pc"><div class="pn">SCORED 01</div><h3 class="ko">함수 길이</h3><h3 class="en">Function length</h3>
+        <p class="ko">한 번에 읽어야 하는 양. 중첩 함수·주석을 뺀 <b>자기 코드 줄</b> 기준, 40줄 초과(JSX 60줄) 비율. <b>파일을 쪼개도 안 변한다</b> — 그래서 조작이 안 된다.</p>
+        <p class="en">How much you must read at once — a function's <b>own</b> code lines, nested functions and comments removed. Splitting files doesn't move it, so it can't be gamed.</p></div>
+      <div class="pc"><div class="pn">SCORED 02</div><h3 class="ko">인지 복잡도</h3><h3 class="en">Cognitive complexity</h3>
+        <p class="ko">함수를 머리로 따라가는 부담. SonarSource <span class="mono">S3776</span> 스펙과 정본값까지 일치 검증.</p>
+        <p class="en">How hard a function is to follow. Matches SonarSource <span class="mono">S3776</span>, verified to canonical values.</p></div>
+      <div class="pc"><div class="pn">SCORED 03</div><h3 class="ko">중복</h3><h3 class="en">Duplication</h3>
+        <p class="ko">토큰 단위 복사·붙여넣기 밀도. 70개 실측에서 점수와 상관 −0.11이라 <b>비중을 16→9로 줄였다</b> — 대부분에겐 0점, 소수에게만 큰 항목이다.</p>
+        <p class="en">Token-level copy-paste density. Correlates −0.11 with score across 70 repos, so its cap was cut 16 → 9: zero for most, heavy for a few.</p></div>
+      <div class="pc"><div class="pn">SCORED 04</div><h3 class="ko">파일 크기</h3><h3 class="en">File size</h3>
+        <p class="ko">평균 줄 수 + 대형 파일 비중. <b>보조 항으로 강등(27→8)</b> — 같은 코드를 6파일로 쪼개기만 해도 옛 공식은 +27점을 줬다. 함수 길이와 상관 +0.16이라 버리진 않았다.</p>
+        <p class="en">Average lines + oversized-file share, <b>demoted to a minor term (27 → 8)</b>: splitting identical code into six files used to gain +27. Kept, because it correlates only +0.16 with function length — different information.</p></div>
     </div>
+    <div class="catbar">
+      <span class="lbl perf"><span class="ko">성능 5</span><span class="en">performance · 5</span></span>
+      <span class="lbl bug"><span class="ko">정확성 버그 5</span><span class="en">correctness · 5</span></span>
+      <span class="lbl type"><span class="ko">타입 위생 4</span><span class="en">type safety · 4</span></span>
+      <span class="lbl hyg"><span class="ko">위생 3</span><span class="en">hygiene · 3</span></span>
+    </div>
+    <div class="dx" id="dx"></div>
+  </div>
+</section>
 
-    <div class="board">
-      <div class="scroll">
-        <table class="lb tnum">
-          <thead>
-            <tr><th>#</th><th>프로젝트 · 기준</th><th><button class="tip-btn" data-tip="grade" aria-label="등급 설명 보기">등급<span class="tip-i">?</span></button></th><th><button class="tip-btn" data-tip="score" aria-label="점수 설명 보기">점수<span class="tip-i">?</span></button></th><th class="ctx"><button class="tip-btn" data-tip="files" aria-label="파일 설명 보기">파일<span class="tip-i">?</span></button></th><th class="ctx"><button class="tip-btn" data-tip="loc" aria-label="코드줄 설명 보기">코드줄<span class="tip-i">?</span></button></th><th><button class="tip-btn" data-tip="dup" aria-label="중복 설명 보기">중복<span class="tip-i">?</span></button></th><th><button class="tip-btn" data-tip="maxcog" aria-label="maxCog 설명 보기">maxCog<span class="tip-i">?</span></button></th><th><button class="tip-btn" data-tip="cog15" aria-label="cog15+ 설명 보기">cog15+<span class="tip-i">?</span></button></th><th><button class="tip-btn" data-tip="avg" aria-label="평균줄 설명 보기">평균줄<span class="tip-i">?</span></button></th><th><button class="tip-btn" data-tip="quad" aria-label="O(n²) 설명 보기">O(n²)<span class="tip-i">?</span></button></th></tr>
-          </thead>
-          <tbody>
-            <tr><td class="rank">1</td><td class="repo"><a href="https://github.com/developit/mitt" target="_blank" rel="noopener">mitt</a><span class="kind"><i class="kchip k-lib">라이브러리</i> ★ 11.9k · <code>main@6b41670</code> · <code>src</code></span></td><td><span class="grade-chip gA">A+</span></td><td class="num" style="background:rgba(18,145,90,0.47)"><b>100</b></td><td class="num ctx">1</td><td class="num ctx">75</td><td class="num" style="background:rgba(18,145,90,0.47)">0%</td><td class="num" style="background:rgba(18,145,90,0.47)">4</td><td class="num" style="background:rgba(18,145,90,0.47)">0.0%</td><td class="num" style="background:rgba(18,145,90,0.47)">75</td><td class="num" style="background:rgba(18,145,90,0.47)">0</td></tr>
-            <tr><td class="rank">2</td><td class="repo"><a href="https://github.com/sindresorhus/execa" target="_blank" rel="noopener">execa</a><span class="kind"><i class="kchip k-lib">라이브러리</i> ★ 7.6k · <code>main@499fe80</code> · <code>lib</code></span></td><td><span class="grade-chip gA">A+</span></td><td class="num" style="background:rgba(18,145,90,0.47)"><b>100</b></td><td class="num ctx">103</td><td class="num ctx">5,726</td><td class="num" style="background:rgba(18,145,90,0.47)">0.7%</td><td class="num" style="background:rgba(18,145,90,0.47)">15</td><td class="num" style="background:rgba(18,145,90,0.47)">0.0%</td><td class="num" style="background:rgba(18,145,90,0.47)">56</td><td class="num" style="background:rgba(18,145,90,0.47)">0</td></tr>
-            <tr><td class="rank">3</td><td class="repo"><a href="https://github.com/pmndrs/jotai" target="_blank" rel="noopener">jotai</a><span class="kind"><i class="kchip k-lib">라이브러리</i> ★ 21.2k · <code>main@86e74bd</code> · <code>src</code></span></td><td><span class="grade-chip gA">A+</span></td><td class="num" style="background:rgba(18,145,90,0.3)"><b>90</b></td><td class="num ctx">31</td><td class="num ctx">3,036</td><td class="num" style="background:rgba(18,145,90,0.47)">1.8%</td><td class="num" style="background:rgba(18,145,90,0.47)">26</td><td class="num" style="background:rgba(18,145,90,0.47)">1.2%</td><td class="num" style="background:rgba(18,145,90,0.47)">98</td><td class="num" style="background:rgba(18,145,90,0.47)">0</td></tr>
-            <tr><td class="rank">4</td><td class="repo"><a href="https://github.com/nestjs/nest" target="_blank" rel="noopener">nestjs</a><span class="kind"><i class="kchip k-fw">프레임워크</i> ★ 76.2k · <code>master@d8ee014</code> · <code>packages</code></span></td><td><span class="grade-chip gA">A+</span></td><td class="num" style="background:rgba(18,145,90,0.3)"><b>90</b></td><td class="num ctx">483</td><td class="num ctx">31,726</td><td class="num" style="background:rgba(18,145,90,0.47)">7.3%</td><td class="num" style="background:rgba(18,145,90,0.43)">39</td><td class="num" style="background:rgba(18,145,90,0.47)">0.4%</td><td class="num" style="background:rgba(18,145,90,0.47)">66</td><td class="num" style="background:rgba(18,145,90,0.3)">4</td></tr>
-            <tr><td class="rank">5</td><td class="repo"><a href="https://github.com/prisma/prisma" target="_blank" rel="noopener">prisma</a><span class="kind"><i class="kchip k-lib">라이브러리</i> ★ 47.4k · <code>main@dcb3e9d</code> · <code>packages/client/src</code></span></td><td><span class="grade-chip gA">A</span></td><td class="num" style="background:rgba(18,145,90,0.27)"><b>88</b></td><td class="num ctx">148</td><td class="num ctx">9,309</td><td class="num" style="background:rgba(18,145,90,0.47)">1.2%</td><td class="num" style="background:rgba(18,145,90,0.11)">99</td><td class="num" style="background:rgba(18,145,90,0.47)">1.8%</td><td class="num" style="background:rgba(18,145,90,0.47)">63</td><td class="num" style="background:rgba(18,145,90,0.47)">0</td></tr>
-            <tr><td class="rank">6</td><td class="repo"><a href="https://github.com/outline/outline" target="_blank" rel="noopener">outline</a><span class="kind"><i class="kchip k-app">앱</i> ★ 39.8k · <code>main@e275560</code> · <code>server</code></span></td><td><span class="grade-chip gA">A</span></td><td class="num" style="background:rgba(18,145,90,0.27)"><b>88</b></td><td class="num ctx">808</td><td class="num ctx">64,787</td><td class="num" style="background:rgba(18,145,90,0.43)">9.2%</td><td class="num" style="background:rgba(18,145,90,0.16)">89</td><td class="num" style="background:rgba(18,145,90,0.47)">1.9%</td><td class="num" style="background:rgba(18,145,90,0.47)">80</td><td class="num" style="background:rgba(18,145,90,0.34)">3</td></tr>
-            <tr><td class="rank">7</td><td class="repo"><a href="https://github.com/pmndrs/zustand" target="_blank" rel="noopener">zustand</a><span class="kind"><i class="kchip k-lib">라이브러리</i> ★ 58.5k · <code>main@beca84e</code> · <code>src</code></span></td><td><span class="grade-chip gA">A</span></td><td class="num" style="background:rgba(18,145,90,0.25)"><b>87</b></td><td class="num ctx">13</td><td class="num ctx">1,208</td><td class="num" style="background:rgba(18,145,90,0.47)">0%</td><td class="num" style="background:rgba(18,145,90,0.47)">18</td><td class="num" style="background:rgba(18,145,90,0.47)">0.5%</td><td class="num" style="background:rgba(18,145,90,0.47)">93</td><td class="num" style="background:rgba(18,145,90,0.47)">0</td></tr>
-            <tr><td class="rank">8</td><td class="repo"><a href="https://github.com/trpc/trpc" target="_blank" rel="noopener">trpc</a><span class="kind"><i class="kchip k-lib">라이브러리</i> ★ 40.5k · <code>main@340811b</code> · <code>packages/server/src</code></span></td><td><span class="grade-chip gA">A</span></td><td class="num" style="background:rgba(18,145,90,0.23)"><b>86</b></td><td class="num ctx">70</td><td class="num ctx">7,295</td><td class="num" style="background:rgba(18,145,90,0.47)">2.2%</td><td class="num" style="background:rgba(18,145,90,0.46)">33</td><td class="num" style="background:rgba(18,145,90,0.47)">0.6%</td><td class="num" style="background:rgba(18,145,90,0.47)">104</td><td class="num" style="background:rgba(18,145,90,0.47)">0</td></tr>
-            <tr><td class="rank">9</td><td class="repo"><a href="https://github.com/immich-app/immich" target="_blank" rel="noopener">immich</a><span class="kind"><i class="kchip k-app">앱</i> ★ 109k · <code>main@5fa920a</code> · <code>server/src</code></span></td><td><span class="grade-chip gA">A</span></td><td class="num" style="background:rgba(18,145,90,0.23)"><b>86</b></td><td class="num ctx">423</td><td class="num ctx">48,818</td><td class="num" style="background:rgba(18,145,90,0.47)">2.8%</td><td class="num" style="background:rgba(18,145,90,0.43)">39</td><td class="num" style="background:rgba(18,145,90,0.47)">1.5%</td><td class="num" style="background:rgba(18,145,90,0.47)">115</td><td class="num" style="background:rgba(203,68,54,0.09)">13</td></tr>
-            <tr><td class="rank">10</td><td class="repo"><a href="https://github.com/medusajs/medusa" target="_blank" rel="noopener">medusa</a><span class="kind"><i class="kchip k-app">앱</i> ★ 35.3k · <code>develop@f440743c</code> · <code>packages/medusa/src</code></span></td><td><span class="grade-chip gA">A</span></td><td class="num" style="background:rgba(18,145,90,0.23)"><b>86</b></td><td class="num ctx">687</td><td class="num ctx">37,471</td><td class="num" style="background:rgba(18,145,90,0.11)">18.4%</td><td class="num" style="background:rgba(18,145,90,0.47)">22</td><td class="num" style="background:rgba(18,145,90,0.47)">0.5%</td><td class="num" style="background:rgba(18,145,90,0.47)">55</td><td class="num" style="background:rgba(18,145,90,0.26)">5</td></tr>
-            <tr><td class="rank">11</td><td class="repo"><a href="https://github.com/storybookjs/storybook" target="_blank" rel="noopener">storybook</a><span class="kind"><i class="kchip k-tool">툴체인</i> ★ 90.7k · <code>next@6b378f9</code> · <code>code/core/src</code></span></td><td><span class="grade-chip gA">A</span></td><td class="num" style="background:rgba(18,145,90,0.2)"><b>84</b></td><td class="num ctx">922</td><td class="num ctx">116,731</td><td class="num" style="background:rgba(18,145,90,0.47)">2.9%</td><td class="num" style="background:rgba(18,145,90,0.24)">75</td><td class="num" style="background:rgba(18,145,90,0.47)">1.2%</td><td class="num" style="background:rgba(18,145,90,0.42)">127</td><td class="num" style="background:rgba(203,68,54,0.36)">32</td></tr>
-            <tr><td class="rank">12</td><td class="repo"><a href="https://github.com/strapi/strapi" target="_blank" rel="noopener">strapi</a><span class="kind"><i class="kchip k-app">앱</i> ★ 72.7k · <code>develop@e904c0c</code> · <code>packages/core</code></span></td><td><span class="grade-chip gA">A</span></td><td class="num" style="background:rgba(18,145,90,0.2)"><b>84</b></td><td class="num ctx">2,116</td><td class="num ctx">199,719</td><td class="num" style="background:rgba(18,145,90,0.47)">7.4%</td><td class="num" style="background:rgba(203,68,54,0.31)">175</td><td class="num" style="background:rgba(18,145,90,0.47)">1.4%</td><td class="num" style="background:rgba(18,145,90,0.47)">94</td><td class="num" style="background:rgba(203,68,54,0.47)">65</td></tr>
-            <tr><td class="rank">13</td><td class="repo"><a href="https://github.com/angular/angular" target="_blank" rel="noopener">angular</a><span class="kind"><i class="kchip k-fw">프레임워크</i> ★ 101k · <code>main@e779309</code> · <code>packages</code></span></td><td><span class="grade-chip gA">A</span></td><td class="num" style="background:rgba(18,145,90,0.18)"><b>83</b></td><td class="num ctx">1,972</td><td class="num ctx">236,675</td><td class="num" style="background:rgba(18,145,90,0.47)">4.2%</td><td class="num" style="background:rgba(203,68,54,0.19)">145</td><td class="num" style="background:rgba(18,145,90,0.33)">3.0%</td><td class="num" style="background:rgba(18,145,90,0.47)">120</td><td class="num" style="background:rgba(203,68,54,0.47)">41</td></tr>
-            <tr><td class="rank">14</td><td class="repo"><a href="https://github.com/withastro/astro" target="_blank" rel="noopener">astro</a><span class="kind"><i class="kchip k-fw">프레임워크</i> ★ 61.3k · <code>main@b01a692</code> · <code>packages/astro/src</code></span></td><td><span class="grade-chip gA">A</span></td><td class="num" style="background:rgba(18,145,90,0.17)"><b>82</b></td><td class="num ctx">550</td><td class="num ctx">55,287</td><td class="num" style="background:rgba(18,145,90,0.47)">2.9%</td><td class="num" style="background:rgba(203,68,54,0.47)">271</td><td class="num" style="background:rgba(18,145,90,0.32)">3.1%</td><td class="num" style="background:rgba(18,145,90,0.47)">101</td><td class="num" style="background:rgba(203,68,54,0.25)">24</td></tr>
-            <tr><td class="rank">15</td><td class="repo"><a href="https://github.com/ai/nanoid" target="_blank" rel="noopener">nanoid</a><span class="kind"><i class="kchip k-lib">라이브러리</i> ★ 26.9k · <code>main@b49a237</code> · <code>.</code></span></td><td><span class="grade-chip gA">A</span></td><td class="num" style="background:rgba(18,145,90,0.17)"><b>82</b></td><td class="num ctx">5</td><td class="num ctx">240</td><td class="num" style="background:rgba(18,145,90,0.12)">18.1%</td><td class="num" style="background:rgba(18,145,90,0.47)">27</td><td class="num" style="background:rgba(203,68,54,0.08)">5.3%</td><td class="num" style="background:rgba(18,145,90,0.47)">48</td><td class="num" style="background:rgba(18,145,90,0.47)">0</td></tr>
-            <tr><td class="rank">16</td><td class="repo"><a href="https://github.com/axios/axios" target="_blank" rel="noopener">axios</a><span class="kind"><i class="kchip k-lib">라이브러리</i> ★ 109k · <code>v1.x@311fcc5</code> · <code>lib</code></span></td><td><span class="grade-chip gA">A</span></td><td class="num" style="background:rgba(18,145,90,0.13)"><b>80</b></td><td class="num ctx">58</td><td class="num ctx">5,459</td><td class="num" style="background:rgba(18,145,90,0.47)">0.4%</td><td class="num" style="background:rgba(203,68,54,0.24)">158</td><td class="num" style="background:rgba(18,145,90,0.23)">3.7%</td><td class="num" style="background:rgba(18,145,90,0.47)">94</td><td class="num" style="background:rgba(18,145,90,0.47)">0</td></tr>
-            <tr><td class="rank">17</td><td class="repo"><a href="https://github.com/prettier/prettier" target="_blank" rel="noopener">prettier</a><span class="kind"><i class="kchip k-tool">툴체인</i> ★ 52.1k · <code>main@4f84a93</code> · <code>src</code></span></td><td><span class="grade-chip gB">B</span></td><td class="num" style="background:rgba(18,145,90,0.12)"><b>79</b></td><td class="num ctx">472</td><td class="num ctx">36,692</td><td class="num" style="background:rgba(18,145,90,0.47)">2.6%</td><td class="num" style="background:rgba(203,68,54,0.47)">236</td><td class="num" style="background:rgba(18,145,90,0.25)">3.6%</td><td class="num" style="background:rgba(18,145,90,0.47)">78</td><td class="num" style="background:rgba(18,145,90,0.3)">4</td></tr>
-            <tr><td class="rank">18</td><td class="repo"><a href="https://github.com/nuxt/nuxt" target="_blank" rel="noopener">nuxt</a><span class="kind"><i class="kchip k-fw">프레임워크</i> ★ 60.7k · <code>main@2740086</code> · <code>packages/nuxt/src</code></span></td><td><span class="grade-chip gB">B</span></td><td class="num" style="background:rgba(18,145,90,0.12)"><b>79</b></td><td class="num ctx">167</td><td class="num ctx">18,840</td><td class="num" style="background:rgba(18,145,90,0.47)">3.8%</td><td class="num" style="background:rgba(18,145,90,0.09)">102</td><td class="num" style="background:rgba(18,145,90,0.29)">3.3%</td><td class="num" style="background:rgba(18,145,90,0.47)">113</td><td class="num" style="background:rgba(203,68,54,0.18)">19</td></tr>
-            <tr><td class="rank">19</td><td class="repo"><a href="https://github.com/n8n-io/n8n" target="_blank" rel="noopener">n8n</a><span class="kind"><i class="kchip k-app">앱</i> ★ 198k · <code>master@1dc67b2a</code> · <code>packages/core</code></span></td><td><span class="grade-chip gB">B</span></td><td class="num" style="background:rgba(18,145,90,0.1)"><b>78</b></td><td class="num ctx">141</td><td class="num ctx">15,755</td><td class="num" style="background:rgba(18,145,90,0.47)">1.9%</td><td class="num" style="background:rgba(203,68,54,0.47)">338</td><td class="num" style="background:rgba(203,68,54,0.21)">6.5%</td><td class="num" style="background:rgba(18,145,90,0.47)">112</td><td class="num" style="background:rgba(18,145,90,0.3)">4</td></tr>
-            <tr><td class="rank">20</td><td class="repo"><a href="https://github.com/immerjs/immer" target="_blank" rel="noopener">immer</a><span class="kind"><i class="kchip k-lib">라이브러리</i> ★ 29.0k · <code>main@a3be9df</code> · <code>src</code></span></td><td><span class="grade-chip gB">B</span></td><td class="num" style="background:rgba(18,145,90,0.08)"><b>77</b></td><td class="num ctx">15</td><td class="num ctx">2,338</td><td class="num" style="background:rgba(18,145,90,0.47)">0.8%</td><td class="num" style="background:rgba(18,145,90,0.47)">25</td><td class="num" style="background:rgba(18,145,90,0.44)">2.2%</td><td class="num" style="background:rgba(18,145,90,0.24)">156</td><td class="num" style="background:rgba(18,145,90,0.47)">0</td></tr>
-            <tr><td class="rank">21</td><td class="repo"><a href="https://github.com/vitest-dev/vitest" target="_blank" rel="noopener">vitest</a><span class="kind"><i class="kchip k-tool">툴체인</i> ★ 16.9k · <code>main@b7be73190</code> · <code>packages/vitest/src</code></span></td><td><span class="grade-chip gB">B</span></td><td class="num" style="background:rgba(18,145,90,0.07)"><b>76</b></td><td class="num ctx">235</td><td class="num ctx">36,107</td><td class="num" style="background:rgba(18,145,90,0.47)">1.6%</td><td class="num" style="background:rgba(203,68,54,0.47)">243</td><td class="num" style="background:rgba(18,145,90,0.46)">2.1%</td><td class="num" style="background:rgba(18,145,90,0.25)">154</td><td class="num" style="background:rgba(203,68,54,0.09)">13</td></tr>
-            <tr><td class="rank">22</td><td class="repo"><a href="https://github.com/directus/directus" target="_blank" rel="noopener">directus</a><span class="kind"><i class="kchip k-app">앱</i> ★ 36.9k · <code>main@7b0edea54</code> · <code>api/src</code></span></td><td><span class="grade-chip gB">B</span></td><td class="num" style="background:rgba(18,145,90,0.05)"><b>75</b></td><td class="num ctx">761</td><td class="num ctx">61,931</td><td class="num" style="background:rgba(18,145,90,0.32)">12.4%</td><td class="num" style="background:rgba(203,68,54,0.1)">122</td><td class="num" style="background:rgba(18,145,90,0.06)">4.9%</td><td class="num" style="background:rgba(18,145,90,0.47)">81</td><td class="num" style="background:rgba(203,68,54,0.47)">64</td></tr>
-            <tr><td class="rank">23</td><td class="repo"><a href="https://github.com/eslint/eslint" target="_blank" rel="noopener">eslint</a><span class="kind"><i class="kchip k-tool">툴체인</i> ★ 27.4k · <code>main@6ddf858</code> · <code>lib</code></span></td><td><span class="grade-chip gB">B</span></td><td class="num" style="background:rgba(203,68,54,0.08)"><b>73</b></td><td class="num ctx">381</td><td class="num ctx">62,999</td><td class="num" style="background:rgba(18,145,90,0.47)">5.3%</td><td class="num" style="background:rgba(203,68,54,0.09)">119</td><td class="num" style="background:rgba(18,145,90,0.26)">3.5%</td><td class="num" style="background:rgba(18,145,90,0.18)">165</td><td class="num" style="background:rgba(18,145,90,0.18)">7</td></tr>
-            <tr><td class="rank">24</td><td class="repo"><a href="https://github.com/expressjs/express" target="_blank" rel="noopener">express</a><span class="kind"><i class="kchip k-lib">라이브러리</i> ★ 69.2k · <code>master@ae6dd37</code> · <code>lib</code></span></td><td><span class="grade-chip gB">B</span></td><td class="num" style="background:rgba(203,68,54,0.1)"><b>72</b></td><td class="num ctx">6</td><td class="num ctx">1,137</td><td class="num" style="background:rgba(18,145,90,0.47)">0%</td><td class="num" style="background:rgba(18,145,90,0.47)">29</td><td class="num" style="background:rgba(18,145,90,0.47)">0.6%</td><td class="num" style="background:rgba(203,68,54,0.07)">190</td><td class="num" style="background:rgba(18,145,90,0.47)">0</td></tr>
-            <tr><td class="rank">25</td><td class="repo"><a href="https://github.com/sindresorhus/ky" target="_blank" rel="noopener">ky</a><span class="kind"><i class="kchip k-lib">라이브러리</i> ★ 17.0k · <code>main@3419113</code> · <code>source</code></span></td><td><span class="grade-chip gB">B</span></td><td class="num" style="background:rgba(203,68,54,0.1)"><b>72</b></td><td class="num ctx">27</td><td class="num ctx">2,836</td><td class="num" style="background:rgba(18,145,90,0.47)">0%</td><td class="num" style="background:rgba(18,145,90,0.17)">87</td><td class="num" style="background:rgba(18,145,90,0.27)">3.4%</td><td class="num" style="background:rgba(18,145,90,0.47)">105</td><td class="num" style="background:rgba(18,145,90,0.47)">0</td></tr>
-            <tr><td class="rank">26</td><td class="repo"><a href="https://github.com/TanStack/query" target="_blank" rel="noopener">tanstack-query</a><span class="kind"><i class="kchip k-lib">라이브러리</i> ★ 50.0k · <code>main@a3b0612</code> · <code>packages/query-core/src</code></span></td><td><span class="grade-chip gB">B</span></td><td class="num" style="background:rgba(203,68,54,0.12)"><b>71</b></td><td class="num ctx">24</td><td class="num ctx">5,685</td><td class="num" style="background:rgba(18,145,90,0.47)">0.6%</td><td class="num" style="background:rgba(18,145,90,0.37)">50</td><td class="num" style="background:rgba(18,145,90,0.47)">1.7%</td><td class="num" style="background:rgba(203,68,54,0.28)">237</td><td class="num" style="background:rgba(18,145,90,0.47)">0</td></tr>
-            <tr><td class="rank">27</td><td class="repo"><a href="https://github.com/microsoft/playwright" target="_blank" rel="noopener">playwright</a><span class="kind"><i class="kchip k-tool">툴체인</i> ★ 93.3k · <code>main@dea59db</code> · <code>packages/playwright-core/src</code></span></td><td><span class="grade-chip gB">B</span></td><td class="num" style="background:rgba(203,68,54,0.12)"><b>71</b></td><td class="num ctx">302</td><td class="num ctx">55,968</td><td class="num" style="background:rgba(18,145,90,0.47)">6%</td><td class="num" style="background:rgba(203,68,54,0.08)">118</td><td class="num" style="background:rgba(18,145,90,0.47)">1.9%</td><td class="num" style="background:rgba(18,145,90,0.05)">185</td><td class="num" style="background:rgba(18,145,90,0.26)">5</td></tr>
-            <tr><td class="rank">28</td><td class="repo"><a href="https://github.com/sveltejs/svelte" target="_blank" rel="noopener">svelte</a><span class="kind"><i class="kchip k-fw">프레임워크</i> ★ 87.7k · <code>main@3dde011</code> · <code>packages/svelte/src</code></span></td><td><span class="grade-chip gB">B</span></td><td class="num" style="background:rgba(203,68,54,0.13)"><b>70</b></td><td class="num ctx">343</td><td class="num ctx">41,395</td><td class="num" style="background:rgba(18,145,90,0.47)">2.8%</td><td class="num" style="background:rgba(203,68,54,0.47)">359</td><td class="num" style="background:rgba(203,68,54,0.06)">5.1%</td><td class="num" style="background:rgba(18,145,90,0.46)">121</td><td class="num" style="background:rgba(203,68,54,0.09)">13</td></tr>
-            <tr><td class="rank">29</td><td class="repo"><a href="https://github.com/fastify/fastify" target="_blank" rel="noopener">fastify</a><span class="kind"><i class="kchip k-lib">라이브러리</i> ★ 36.8k · <code>main@5454a66</code> · <code>lib</code></span></td><td><span class="grade-chip gC">C</span></td><td class="num" style="background:rgba(203,68,54,0.17)"><b>68</b></td><td class="num ctx">31</td><td class="num ctx">5,336</td><td class="num" style="background:rgba(18,145,90,0.47)">2.1%</td><td class="num" style="background:rgba(18,145,90,0.28)">67</td><td class="num" style="background:rgba(18,145,90,0.2)">3.9%</td><td class="num" style="background:rgba(18,145,90,0.13)">172</td><td class="num" style="background:rgba(18,145,90,0.47)">0</td></tr>
-            <tr><td class="rank">30</td><td class="repo"><a href="https://github.com/vercel/next.js" target="_blank" rel="noopener">next.js</a><span class="kind"><i class="kchip k-fw">프레임워크</i> ★ 141k · <code>canary@2a25442b</code> · <code>packages/next/src</code></span></td><td><span class="grade-chip gC">C</span></td><td class="num" style="background:rgba(203,68,54,0.17)"><b>68</b></td><td class="num ctx">1,325</td><td class="num ctx">198,209</td><td class="num" style="background:rgba(18,145,90,0.47)">4%</td><td class="num" style="background:rgba(203,68,54,0.47)">995</td><td class="num" style="background:rgba(18,145,90,0.12)">4.5%</td><td class="num" style="background:rgba(18,145,90,0.28)">150</td><td class="num" style="background:rgba(203,68,54,0.44)">38</td></tr>
-            <tr><td class="rank">31</td><td class="repo"><a href="https://github.com/excalidraw/excalidraw" target="_blank" rel="noopener">excalidraw</a><span class="kind"><i class="kchip k-app">앱</i> ★ 128k · <code>master@f179f7f</code> · <code>packages/excalidraw</code></span></td><td><span class="grade-chip gC">C</span></td><td class="num" style="background:rgba(203,68,54,0.2)"><b>66</b></td><td class="num ctx">332</td><td class="num ctx">66,794</td><td class="num" style="background:rgba(18,145,90,0.47)">2.8%</td><td class="num" style="background:rgba(203,68,54,0.32)">178</td><td class="num" style="background:rgba(18,145,90,0.36)">2.8%</td><td class="num" style="background:rgba(203,68,54,0.12)">201</td><td class="num" style="background:rgba(18,145,90,0.18)">7</td></tr>
-            <tr><td class="rank">32</td><td class="repo"><a href="https://github.com/payloadcms/payload" target="_blank" rel="noopener">payload</a><span class="kind"><i class="kchip k-app">앱</i> ★ 43.8k · <code>main@8bbdb68</code> · <code>packages/payload/src</code></span></td><td><span class="grade-chip gC">C</span></td><td class="num" style="background:rgba(203,68,54,0.27)"><b>62</b></td><td class="num ctx">582</td><td class="num ctx">51,111</td><td class="num" style="background:rgba(18,145,90,0.47)">5.5%</td><td class="num" style="background:rgba(203,68,54,0.47)">252</td><td class="num" style="background:rgba(203,68,54,0.26)">7.0%</td><td class="num" style="background:rgba(18,145,90,0.47)">88</td><td class="num" style="background:rgba(203,68,54,0.47)">42</td></tr>
-            <tr><td class="rank">33</td><td class="repo"><a href="https://github.com/microsoft/TypeScript" target="_blank" rel="noopener">typescript</a><span class="kind"><i class="kchip k-tool">툴체인</i> ★ 110k · <code>main@cc5c6e2d3</code> · <code>src</code></span></td><td><span class="grade-chip gC">C</span></td><td class="num" style="background:rgba(203,68,54,0.27)"><b>62</b></td><td class="num ctx">528</td><td class="num ctx">301,414</td><td class="num" style="background:rgba(18,145,90,0.47)">5.6%</td><td class="num" style="background:rgba(203,68,54,0.47)">672</td><td class="num" style="background:rgba(18,145,90,0.25)">3.6%</td><td class="num" style="background:rgba(203,68,54,0.47)">571</td><td class="num" style="background:rgba(203,68,54,0.41)">36</td></tr>
-            <tr><td class="rank">34</td><td class="repo"><a href="https://github.com/vitejs/vite" target="_blank" rel="noopener">vite</a><span class="kind"><i class="kchip k-tool">툴체인</i> ★ 82.0k · <code>main@3ac77d9dd</code> · <code>packages/vite/src</code></span></td><td><span class="grade-chip gC">C</span></td><td class="num" style="background:rgba(203,68,54,0.3)"><b>60</b></td><td class="num ctx">132</td><td class="num ctx">36,996</td><td class="num" style="background:rgba(18,145,90,0.47)">0.5%</td><td class="num" style="background:rgba(203,68,54,0.39)">195</td><td class="num" style="background:rgba(18,145,90,0.08)">4.8%</td><td class="num" style="background:rgba(203,68,54,0.47)">280</td><td class="num" style="background:rgba(203,68,54,0.08)">12</td></tr>
-            <tr><td class="rank">35</td><td class="repo"><a href="https://github.com/honojs/hono" target="_blank" rel="noopener">hono</a><span class="kind"><i class="kchip k-lib">라이브러리</i> ★ 31.4k · <code>main@26d8e42</code> · <code>src</code></span></td><td><span class="grade-chip gD">D</span></td><td class="num" style="background:rgba(203,68,54,0.32)"><b>59</b></td><td class="num ctx">162</td><td class="num ctx">18,808</td><td class="num" style="background:rgba(203,68,54,0.1)">23.2%</td><td class="num" style="background:rgba(203,68,54,0.19)">144</td><td class="num" style="background:rgba(18,145,90,0.33)">3.0%</td><td class="num" style="background:rgba(18,145,90,0.47)">116</td><td class="num" style="background:rgba(18,145,90,0.39)">2</td></tr>
-            <tr><td class="rank">36</td><td class="repo"><a href="https://github.com/fabian-hiller/valibot" target="_blank" rel="noopener">valibot</a><span class="kind"><i class="kchip k-lib">라이브러리</i> ★ 8.8k · <code>main@769bb7c</code> · <code>library/src</code></span></td><td><span class="grade-chip gD">D</span></td><td class="num" style="background:rgba(203,68,54,0.32)"><b>59</b></td><td class="num ctx">338</td><td class="num ctx">25,419</td><td class="num" style="background:rgba(203,68,54,0.44)">43.5%</td><td class="num" style="background:rgba(18,145,90,0.11)">99</td><td class="num" style="background:rgba(18,145,90,0.23)">3.7%</td><td class="num" style="background:rgba(18,145,90,0.47)">75</td><td class="num" style="background:rgba(18,145,90,0.47)">0</td></tr>
-            <tr><td class="rank">37</td><td class="repo"><a href="https://github.com/colinhacks/zod" target="_blank" rel="noopener">zod</a><span class="kind"><i class="kchip k-lib">라이브러리</i> ★ 43.3k · <code>main@912f0f5</code> · <code>packages/zod/src</code></span></td><td><span class="grade-chip gD">D</span></td><td class="num" style="background:rgba(203,68,54,0.37)"><b>56</b></td><td class="num ctx">98</td><td class="num ctx">24,382</td><td class="num" style="background:rgba(18,145,90,0.2)">15.6%</td><td class="num" style="background:rgba(203,68,54,0.26)">163</td><td class="num" style="background:rgba(18,145,90,0.19)">4.0%</td><td class="num" style="background:rgba(203,68,54,0.33)">249</td><td class="num" style="background:rgba(18,145,90,0.47)">0</td></tr>
-            <tr><td class="rank">38</td><td class="repo"><a href="https://github.com/vuejs/core" target="_blank" rel="noopener">vue</a><span class="kind"><i class="kchip k-fw">프레임워크</i> ★ 54.0k · <code>main@b5f8518</code> · <code>packages</code></span></td><td><span class="grade-chip gD">D</span></td><td class="num" style="background:rgba(203,68,54,0.47)"><b>47</b></td><td class="num ctx">241</td><td class="num ctx">45,412</td><td class="num" style="background:rgba(18,145,90,0.47)">1.1%</td><td class="num" style="background:rgba(203,68,54,0.47)">392</td><td class="num" style="background:rgba(203,68,54,0.34)">7.8%</td><td class="num" style="background:rgba(203,68,54,0.06)">188</td><td class="num" style="background:rgba(18,145,90,0.3)">4</td></tr>
-          </tbody>
-        </table>
-      </div>
+<section class="step">
+  <div class="w">
+    <div class="stepno">07</div>
+    <h2 class="ko">왜 이 점수는 다른가.</h2>
+    <h2 class="en">Why this score is different.</h2>
+    <div class="pill">
+      <div class="pc"><div class="pn">01</div><h3 class="ko">크기로 깔지 않는다</h3><h3 class="en">Doesn't punish size</h3>
+        <p class="ko">체급으로 나눠 같은 덩치끼리 겨루게 한다.</p><p class="en">Weight classes let each compete with its own.</p></div>
+      <div class="pc"><div class="pn">02</div><h3 class="ko">감점 무게를 실제 버그로 정했다</h3><h3 class="en">Weights set by real bugs</h3>
+        <p class="ko">감이 아니라 <b>git 버그픽스 이력</b>과의 상관으로 맞췄다. 측정해보니 파일 크기 &gt; 인지 복잡도여서 — 직감과 반대라 — 그 순서로 재조정했다.</p>
+        <p class="en">Set by correlation with <b>real git bug-fix history</b>. The data said file size &gt; complexity — the opposite of our instinct — so we rebalanced.</p></div>
+      <div class="pc"><div class="pn">03</div><h3 class="ko">이상치 하나론 못 흔든다</h3><h3 class="en">One outlier can't move it</h3>
+        <p class="ko">제일 무서운 함수 하나만 고쳐도 점수가 튀던 것을 막았다. 이제 <b>상위 10% 분포</b>가 점수를 몬다.</p>
+        <p class="en">Fixing the single scariest function used to swing the grade. Now the <b>top-10% distribution</b> drives it.</p></div>
+      <div class="pc"><div class="pn">04</div><h3 class="ko">머지가 증거다</h3><h3 class="en">A merge is the proof</h3>
+        <p class="ko">점수는 자기가 자기를 채점한다. 머지는 못 조작한다 — 낯선 저장소의 메인테이너가 눌러야 한다.</p>
+        <p class="en">A score grades itself. A merge can't be faked — a stranger's maintainer has to press it.</p></div>
     </div>
+  </div>
+</section>
 
-    <p class="roast"><b>점수 하나만 믿으라고 하지 않는다.</b> 등급을 만든 지표를 전부 같이 편다 — 초록이 짙을수록 좋고, 빨강이 짙을수록 나쁘다(고정 임계 기준, 표본 상대가 아님). 파일·코드줄은 <b>맥락</b>이라 색을 칠하지 않는다.<br>
-      <span style="color:var(--ink-faint)">분류별 중앙값: 라이브러리 80 · 앱 82 · 툴체인 76 · <b>프레임워크 70</b> — 렌더러·컴파일러처럼 알고리즘 밀도가 본질인 코드가 낮게 나온다. vue의 D는 <code>renderer.ts</code> 2,195줄 가상DOM diff이고, valibot의 중복 43%는 수백 개의 거의 동일한 스키마 모듈이다. <b>점수는 판결이 아니라 측정이다.</b></span></p>
-    <div class="legend"><span>중복 ≤8% 좋음 · ≥30% 나쁨</span><span>maxCog ≤30 · ≥200</span><span>cog15+ ≤2% · ≥8%</span><span>평균줄 ≤120 · ≥250</span><span>O(n²) 0 · ≥15</span></div>
-  </section>
-
-  <section>
-    <div class="sec-head">
-      <span class="num">02</span>
-      <h2>무엇을 재는가</h2>
-      <span class="note">SonarQube가 안 재는 축까지</span>
+<section class="cta">
+  <div class="w">
+    <h2 class="ko">한 줄이면 끝난다.</h2>
+    <h2 class="en">It's one line.</h2>
+    <div class="cmdrow">
+      <div class="cmd"><span class="dollar">$</span><span>npx cleanscore --dir=src</span>
+        <button class="copy" data-copy="npx cleanscore --dir=src">copy</button></div>
     </div>
-    <div class="axes">
-      <div class="axis"><div class="k"><span class="dot bgB"></span>인지 복잡도</div><p>함수당 중첩·분기 가중 복잡도. 사람이 못 읽는 괴물 함수를 지목한다.</p></div>
-      <div class="axis"><div class="k"><span class="dot bgD"></span>중복</div><p>토큰 단위 복붙 검출. 변수명만 바꾼 위장은 잡되, 구조적 유사는 관용한다.</p></div>
-      <div class="axis"><div class="k"><span class="dot bgA"></span>데드코드 <span class="mono" style="font-size:11px;color:var(--ink-soft)">--dead</span></div><p>knip 내장. 죽은 파일·미사용 export를 감점. <code style="font-family:var(--mono);font-size:11px">// @keep</code> 주석으로 "코드 밖 호출자"(크론·웹훅·QR)를 살려둔다.</p></div>
-      <div class="axis"><div class="k"><span class="dot bgC"></span>루프 IO</div><p>루프 안에서 파일을 N번 읽는 구조. 복잡도·중복이 원리상 못 잡는 N+1을 드러낸다.</p></div>
-    </div>
-  </section>
-
-  <section>
-    <div class="sec-head">
-      <span class="num">03</span>
-      <h2>왜 믿나</h2>
-      <span class="note">점수는 방어할 수 있어야 점수다</span>
-    </div>
-    <div class="trust">
-      <div class="card"><div class="h">빈 파일 패딩 방어</div><p>코드 5줄 미만 파일은 분석에서 제외돼, 빈 파일을 대량으로 넣어 비율을 희석하는 조작은 막힌다. <b>다만 점수는 본질적으로 비율이라</b>, 생성한 코드를 대량으로 넣으면 다른 비율 지표와 마찬가지로 희석된다 — 이건 막지 못한다.</p><div class="fig">빈 파일 8,000개 → ±0점</div></div>
-      <div class="card"><div class="h">OSS 38종으로 보정</div><p>계수는 존경받는 오픈소스 라이브러리·앱 분포에 맞춰 역산했다. 임의의 임계값이 아니다.</p><div class="fig">중앙값 78 · B</div></div>
-      <div class="card"><div class="h">네거티브 컨트롤</div><p>일부러 만든 병적 코드(중복 100%, 함수 전부 괴물)를 검증용으로 채점 — 최하위에 정확히 떨어진다.</p><div class="fig gD">병적 코드 → 36 · D</div></div>
-      <div class="card"><div class="h">한계를 먼저 밝힌다</div><p><b>JS·TS 전용이다.</b> 파서가 TypeScript 컴파일러 API라 <code>.ts .tsx .js .jsx .mjs .cjs</code>만 읽는다 — Python·Go·Rust·Java는 분석하지 못한다. 패턴 자체(N+1·O(n²))는 언어와 무관하지만 디텍터는 그렇지 않다.</p><div class="fig" style="font-size:15px">.ts .tsx .js .jsx .mjs .cjs</div></div>
-      <div class="card"><div class="h">로컬 · 무료 · LLM 0</div><p>CLI가 당신 컴퓨터에서 정적 분석한다. 코드가 서버로 전송되지 않는다. API 키도, 비용도 없다.</p><div class="fig">3분 · $0</div></div>
-    </div>
-  </section>
-
-  <section>
-    <div class="sec-head">
-      <span class="num">04</span>
-      <h2>실전 성과</h2>
-      <span class="note">등급이 아니라 증거</span>
-    </div>
-    <div class="impact">
-      <div class="impact-top">
-        <span class="impact-score">cleanscore 임팩트 점수 <b>0</b></span>
-        <span class="impact-rule">머지된 PR 1건마다 +1 · <b>대상 repo 등급과는 무관</b></span>
-      </div>
-      <a class="find" href="https://github.com/immich-app/immich/pull/30163" target="_blank" rel="noopener">
-        <div class="find-l">
-          <div class="find-title">deleteBulkMetadata <span class="nplus">N+1</span></div>
-          <div class="find-repo">immich · ★ 108k · NestJS 서버</div>
-          <div class="find-desc">루프 안에서 item당 <code>DELETE</code> 1방씩 = N번 왕복. cleanscore의 io축(순차 await)이 감지 → 사람이 검증 → 배칭 PR.</div>
-        </div>
-        <div class="find-r">
-          <span class="find-pr">PR #30163</span>
-          <span class="find-status">🟢 open · 머지되면 임팩트 +1</span>
-        </div>
-      </a>
-      <a class="find" href="https://github.com/novuhq/novu/pull/12074" target="_blank" rel="noopener" style="margin-top:12px">
-        <div class="find-l">
-          <div class="find-title">sync-agent findOne <span class="nplus">N+1</span></div>
-          <div class="find-repo">novu · ★ 39k · NestJS 서버</div>
-          <div class="find-desc">for 루프 안에서 소스 통합당 <code>findOne</code> 1방씩. 루프 앞에서 <code>$in</code>으로 한 번에 프리페치하도록 배칭 — 바로 위에 이미 쓰던 패턴.</div>
-        </div>
-        <div class="find-r">
-          <span class="find-pr">PR #12074</span>
-          <span class="find-status">🟢 open · 머지되면 임팩트 +1</span>
-        </div>
-      </a>
-      <a class="find" href="https://github.com/calcom/cal.diy/pull/29828" target="_blank" rel="noopener" style="margin-top:12px">
-        <div class="find-l">
-          <div class="find-title">booking member diff <span class="nplus">O(n²)</span></div>
-          <div class="find-repo">cal.com · ★ 47k · 예약 스케줄링</div>
-          <div class="find-desc">멤버 비교를 <code>.some()</code>으로 4번 선형스캔 — 매칭은 이메일 동등비교뿐이라 Set 두 개면 O(1). cleanscore의 O(n²)축이 감지.</div>
-        </div>
-        <div class="find-r">
-          <span class="find-pr">PR #29828</span>
-          <span class="find-status">🟢 open · 머지되면 임팩트 +1</span>
-        </div>
-      </a>
-      <a class="find" href="https://github.com/twentyhq/twenty/pull/23231" target="_blank" rel="noopener" style="margin-top:12px">
-        <div class="find-l">
-          <div class="find-title">view-widget-upsert <span class="nplus">O(n²)</span></div>
-          <div class="find-repo">twenty · ★ 37k · CRM 서버</div>
-          <div class="find-desc">4개 업서트 루프가 매 항목마다 기존 컬렉션을 <code>.find()</code>로 재스캔. Map 인덱싱 1회로 O(1) — <b>첫 일치 우선</b>까지 보존해 의미 동일.</div>
-        </div>
-        <div class="find-r">
-          <span class="find-pr">PR #23231</span>
-          <span class="find-status">❌ closed</span>
-        </div>
-      </a>
-      <a class="find" href="https://github.com/twentyhq/twenty/pull/23232" target="_blank" rel="noopener" style="margin-top:12px">
-        <div class="find-l">
-          <div class="find-title">nested relations 하이드레이션 <span class="nplus">O(n²)</span></div>
-          <div class="find-repo">twenty · ★ 37k · GraphQL 핫패스</div>
-          <div class="find-desc">관계 쿼리마다 <b>부모 레코드 × 관계행 전수 스캔</b>. 60×500 = 3만 비교/쿼리. 1회 인덱싱으로 O(n+m) — <code>filter</code>는 그룹핑 Map으로.</div>
-        </div>
-        <div class="find-r">
-          <span class="find-pr">PR #23232</span>
-          <span class="find-status">🟢 open · 머지되면 임팩트 +1</span>
-        </div>
-      </a>
-      <a class="find" href="https://github.com/calcom/cal.diy/pull/29832" target="_blank" rel="noopener" style="margin-top:12px">
-        <div class="find-l">
-          <div class="find-title">lucky-user set 재구축 <span class="nplus">O(n·m)</span></div>
-          <div class="find-repo">cal.com · ★ 47k · 예약 스케줄링</div>
-          <div class="find-desc">while 루프마다 <code>new Set(users…)</code>를 다시 만듦 — users는 루프 밖 불변. 루프 밖으로 호이스팅. "고친 척하는 O(n²)"를 새 축이 잡았다.</div>
-        </div>
-        <div class="find-r"><span class="find-pr">PR #29832</span><span class="find-status">🟢 open · 머지되면 임팩트 +1</span></div>
-      </a>
-      <p class="impact-note">리더보드는 <b>의견</b>이지만, 머지된 PR은 <b>반박 불가 사실</b>이다. cleanscore는 등급만 매기지 않고 고칠 것을 파일·줄 단위로 짚는다.<br><span style="color:var(--ink-faint)">※ 임팩트 점수 = cleanscore가 실제로 고쳐 머지된 것의 누적. 위 immich의 청결점수(88)와는 별개 지표다.</span></p>
-    </div>
-  </section>
-
-  <section>
-    <div class="sec-head">
-      <span class="num">05</span>
-      <h2>시작하기</h2>
-    </div>
-    <div class="steps">
-      <div class="step"><div class="n">01</div><div class="body"><code>npx cleanscore --dir=src</code><div class="desc">git 추적 파일만 분석한다. 빌드 산출물은 자동 제외.</div></div></div>
-      <div class="step"><div class="n">02</div><div class="body"><code>npx cleanscore --dir=src --dead</code><div class="desc">데드코드 축 추가 (knip 내장). 프로젝트 전체를 한 번 훑는다.</div></div></div>
-      <div class="step"><div class="n">03</div><div class="body">README 배지로 자랑<div class="badge-demo"><span class="l">clean&nbsp;score</span><span class="r bgA">A · 90</span></div></div></div>
-    </div>
-  </section>
-
-</main>
-
-
-<dialog id="tipdlg" aria-labelledby="tipttl">
-  <div class="tip-head"><h3 id="tipttl"></h3><button class="tip-x" aria-label="닫기">✕</button></div>
-  <div class="tip-body"></div>
-  <div class="tip-thr"></div>
-</dialog>
-<script>
-(function () {
-  var TIPS = {
-    grade: { t: "등급", b: "점수를 다섯 구간으로 자른 것. 점수 자체가 이미 감점의 합이라, 등급은 한눈에 보라고 붙인 라벨이다.", thr: "A+ ≥90 · A ≥80 · B ≥70 · C ≥60 · D <60" },
-    score: { t: "점수", b: "100점에서 시작해 축별로 감점한다. 인지 복잡도(함수 비율·최악 함수), 중복 밀도, 파일 크기(200줄+ 심각도·평균 줄)를 본다. 계수는 존경받는 오픈소스 분포에 맞춰 역산했다 — 임의의 임계값이 아니다.<br><br><b>점수는 판결이 아니라 측정이다.</b> 낮다고 나쁜 코드라는 뜻이 아니라, 이 자로 재면 이렇게 나온다는 뜻이다.", thr: "대조군(일부러 만든 병적 코드) 30 · 코퍼스 중앙값 78" },
-    files: { t: "파일", b: "실제로 분석한 파일 수. 테스트·벤치·스토리·타입선언, <code>compiled/</code>·<code>vendor/</code> 같은 벤더 디렉토리, 미니파이·번들 파일, 코드 5줄 미만 자잘 파일을 <b>모두 제외한 뒤</b>의 숫자다.<br><br>커밋된 벤더 번들을 빼지 않으면 지표가 통째로 오염된다 — next.js가 그래서 처음에 D 27로 나왔다(실제로는 C 66).", thr: "크기는 품질이 아니다 — 그래서 색을 칠하지 않는다" },
-    loc: { t: "코드줄", b: "빈 줄과 주석만 있는 줄을 뺀 코드 줄 수. 규모를 가늠하는 맥락 값이다.", thr: "크기는 품질이 아니다 — 색 없음" },
-    dup: { t: "중복", b: "토큰 단위로 잡은 복붙 밀도. 식별자를 원문 그대로 두기 때문에 <b>정확한 복붙만</b> 잡는다 — 변수명을 바꾼 복붙은 놓치는 대신, 스키마·타입 라이브러리의 구조적 유사를 복붙으로 오인하지 않는다.<br><br>valibot의 43%는 \"나쁜 코드\"가 아니라 수백 개의 거의 동일한 스키마 모듈이라는 뜻이다.", thr: "≤8% 좋음 · ≥30% 나쁨 (SonarQube 게이트는 3%)" },
-    maxcog: { t: "maxCog — 최악 함수의 인지 복잡도", b: "<b>인지 복잡도(cognitive complexity)</b>는 \"사람이 읽기 얼마나 힘든가\"를 재는 값이다. 순환 복잡도(경로 수)와 달리 <b>중첩에 가중치</b>를 준다 — 같은 <code>if</code>라도 3중 안에 있으면 더 아프다.<br><br>여기 적힌 건 그 저장소에서 <b>가장 복잡한 함수 하나</b>의 값이다. 괴물 함수가 하나라도 있는지 보는 칸이다.", thr: "≤30 좋음 · ≥200 나쁨 (SonarQube 권고는 함수당 15)" },
-    cog15: { t: "cog15+ — 복잡한 함수의 비율", b: "인지 복잡도가 15를 넘는 함수가 전체 함수 중 몇 %인지. maxCog가 \"최악 하나\"라면 이건 \"얼마나 퍼져 있나\"다.<br><br>건강한 코드베이스도 몇 %는 넘는다 — 그래서 2% 초과분부터 감점한다.", thr: "≤2% 좋음 · ≥8% 나쁨" },
-    avg: { t: "평균줄", b: "파일 하나당 평균 코드 줄 수. 파일이 비대해지는지 본다. 큰 파일은 읽기·리뷰·충돌 모두에서 비싸다.", thr: "≤120 좋음 · ≥250 나쁨" },
-    quad: { t: "O(n²) — 루프 안 선형 탐색", b: "루프 안에서 <b>루프 밖 배열</b>에 <code>find</code>·<code>some</code>·<code>filter</code>를 돌리는 자리 수. 루프 n번 × 탐색 m번 = O(n·m)이고, Map/Set을 한 번 만들면 O(n+m)이 된다.<br><br>취향이 개입하지 않는 기계적 개선이라 외부 기여(PR)로도 안전한 축이다 — 실제로 이 축에서 cal.com·twenty에 PR을 냈다.<br><br><b>점수에는 반영하지 않는다</b>(진단 전용).", thr: "0 좋음 · ≥15 나쁨 · 점수 미반영" }
-  };
-  var dlg = document.getElementById("tipdlg");
-  if (!dlg) return;
-  var ttl = dlg.querySelector("#tipttl"), body = dlg.querySelector(".tip-body"), thr = dlg.querySelector(".tip-thr");
-  document.querySelectorAll(".tip-btn").forEach(function (b) {
-    b.addEventListener("click", function () {
-      var d = TIPS[b.dataset.tip]; if (!d) return;
-      ttl.textContent = d.t; body.innerHTML = d.b; thr.textContent = d.thr;
-      if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
-    });
-  });
-  dlg.querySelector(".tip-x").addEventListener("click", function () { dlg.close(); });
-  dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
-})();
-</script>
+  </div>
+</section>
 
 <footer>
-  <div class="wrap frow">
-    <span>청결점수 — <span class="mono">cleanscore</span></span>
-    <span class="mono">정적 분석 · 로컬 실행 · 오픈소스</span>
+  <div class="w cols">
+    <div><b>cleanscore</b><br>
+      <span class="ko">JS · TS · JSX · TSX 정적 분석</span><span class="en">static analysis for JS · TS · JSX · TSX</span><br>
+      <span class="ko">타입체커 불필요</span><span class="en">no type-checker required</span></div>
+    <div><b><span class="ko">플래그</span><span class="en">flags</span></b><br>
+      --dir · --mine<br>--hotspots · --dead · --badge</div>
+    <div><b><span class="ko">정직하게</span><span class="en">honestly</span></b><br>
+      <span class="ko">절대점수 아닌 체급 상대 순위.</span><span class="en">a relative rank in a class, not a verdict.</span><br>
+      <span class="ko">'깨끗함'엔 지상진실이 없다.</span><span class="en">there's no ground truth for "clean."</span></div>
   </div>
 </footer>
-</body></html>
+<script>
+const DATA = [{"name": "mitt", "grade": "S", "gradeF": "SSS", "score": 100, "files": 1, "loc": 75, "dup": 0, "maxCog": 4, "cog15": 0, "avg": 75, "quad": 0, "fn40": 0, "fnP90": 12, "fnMax": 12, "fnTop10": 7.8, "cogTop10": 1.5, "stars": "11.9k", "kind": "라이브러리", "ver": "3.0.1", "sha": "6b41670", "url": "https://github.com/developit/mitt", "sub": "src", "exw": "", "td": 229.3}, {"name": "rxjs", "grade": "S", "gradeF": "SSS", "score": 99, "files": 188, "loc": 6536, "dup": 6.5, "maxCog": 41, "cog15": 0.4, "avg": 35, "quad": 1, "fn40": 0.4, "fnP90": 12, "fnMax": 89, "fnTop10": 45, "cogTop10": 16.6, "stars": "32k", "kind": "라이브러리", "ver": "8.0.0-alpha.14", "sha": "c15b37f", "url": "https://github.com/ReactiveX/rxjs", "sub": "packages/rxjs/src", "exw": "", "td": 12.4}, {"name": "execa", "grade": "S", "gradeF": "SSS", "score": 98, "files": 103, "loc": 5726, "dup": 0.7, "maxCog": 15, "cog15": 0, "avg": 56, "quad": 0, "fn40": 1.2, "fnP90": 16, "fnMax": 108, "fnTop10": 53.4, "cogTop10": 9.3, "stars": "7.6k", "kind": "라이브러리", "ver": "10.0.0", "sha": "499fe80", "url": "https://github.com/sindresorhus/execa", "sub": "lib", "exw": "", "td": 261.9}, {"name": "discordjs", "grade": "S", "gradeF": "SS", "score": 95, "files": 695, "loc": 37164, "dup": 6.3, "maxCog": 84, "cog15": 1.4, "avg": 53, "quad": 1, "fn40": 1.6, "fnP90": 14, "fnMax": 193, "fnTop10": 131.1, "cogTop10": 55.6, "stars": "", "kind": "라이브러리", "ver": "14.16.3", "sha": "219ad7ba", "url": "https://github.com/discordjs/discord.js", "sub": "packages", "exw": "api-extractor=Microsoft 툴 포크(벤더) · docgen=문서 생성 툴", "td": 14.1}, {"name": "nestjs", "grade": "S", "gradeF": "SS", "score": 95, "files": 483, "loc": 31726, "dup": 7.3, "maxCog": 39, "cog15": 0.3, "avg": 66, "quad": 4, "fn40": 1.2, "fnP90": 18, "fnMax": 70, "fnTop10": 62.8, "cogTop10": 20.6, "stars": "76.2k", "kind": "프레임워크", "ver": "11.1.26", "sha": "d8ee014", "url": "https://github.com/nestjs/nest", "sub": "packages", "exw": "", "td": 102.2}, {"name": "cypress", "grade": "S", "gradeF": "SS", "score": 93, "files": 226, "loc": 26436, "dup": 1, "maxCog": 33, "cog15": 0.6, "avg": 117, "quad": 4, "fn40": 1.8, "fnP90": 17, "fnMax": 315, "fnTop10": 149.1, "cogTop10": 26.6, "stars": "51k", "kind": "툴체인", "ver": "15.19.0", "sha": "0f0a8a1", "url": "https://github.com/cypress-io/cypress", "sub": "packages/server/lib", "exw": "", "td": 99.0}, {"name": "trpc", "grade": "S", "gradeF": "SS", "score": 93, "files": 70, "loc": 7295, "dup": 2.2, "maxCog": 33, "cog15": 0.6, "avg": 104, "quad": 0, "fn40": 2.1, "fnP90": 23, "fnMax": 191, "fnTop10": 66.4, "cogTop10": 15.2, "stars": "40.5k", "kind": "라이브러리", "ver": "11.18.0", "sha": "340811b", "url": "https://github.com/trpc/trpc", "sub": "packages/server/src", "exw": "", "td": 149.9}, {"name": "prisma", "grade": "S", "gradeF": "SS", "score": 93, "files": 147, "loc": 9287, "dup": 1.2, "maxCog": 99, "cog15": 1.6, "avg": 63, "quad": 0, "fn40": 1.9, "fnP90": 19, "fnMax": 127, "fnTop10": 73, "cogTop10": 29.5, "stars": "47.4k", "kind": "라이브러리", "ver": "7.10.0-dev.32", "sha": "dcb3e9d", "url": "https://github.com/prisma/prisma", "sub": "packages/client/src", "exw": "", "td": 182.4}, {"name": "jotai", "grade": "S", "gradeF": "SS", "score": 93, "files": 31, "loc": 3036, "dup": 1.8, "maxCog": 26, "cog15": 2.2, "avg": 98, "quad": 0, "fn40": 2.2, "fnP90": 21, "fnMax": 93, "fnTop10": 48.9, "cogTop10": 15.3, "stars": "21.2k", "kind": "라이브러리", "ver": "2.20.2", "sha": "86e74bd", "url": "https://github.com/pmndrs/jotai", "sub": "src", "exw": "", "td": 189.1}, {"name": "zustand", "grade": "S", "gradeF": "SS", "score": 93, "files": 13, "loc": 1208, "dup": 0, "maxCog": 18, "cog15": 1.0, "avg": 93, "quad": 0, "fn40": 1.9, "fnP90": 15, "fnMax": 51, "fnTop10": 29.5, "cogTop10": 8.3, "stars": "58.5k", "kind": "라이브러리", "ver": "5.0.14", "sha": "beca84e", "url": "https://github.com/pmndrs/zustand", "sub": "src", "exw": "", "td": 312.2}, {"name": "mobx", "grade": "S", "gradeF": "S", "score": 92, "files": 57, "loc": 6895, "dup": 2.4, "maxCog": 50, "cog15": 2.5, "avg": 121, "quad": 0, "fn40": 2.4, "fnP90": 21, "fnMax": 106, "fnTop10": 55.1, "cogTop10": 25, "stars": "28k", "kind": "라이브러리", "ver": "6.16.1", "sha": "f6c8d2c", "url": "https://github.com/mobxjs/mobx", "sub": "packages/mobx/src", "exw": "", "td": 28.9}, {"name": "axios", "grade": "S", "gradeF": "S", "score": 91, "files": 58, "loc": 5459, "dup": 0.4, "maxCog": 158, "cog15": 3.7, "avg": 94, "quad": 0, "fn40": 1.9, "fnP90": 21, "fnMax": 385, "fnTop10": 120.6, "cogTop10": 55.6, "stars": "109k", "kind": "라이브러리", "ver": "1.19.0", "sha": "311fcc5", "url": "https://github.com/axios/axios", "sub": "lib", "exw": "", "td": 257.3}, {"name": "socket.io", "grade": "S", "gradeF": "S", "score": 91, "files": 10, "loc": 2484, "dup": 3, "maxCog": 17, "cog15": 0.4, "avg": 248, "quad": 0, "fn40": 0.4, "fnP90": 15, "fnMax": 41, "fnTop10": 31.7, "cogTop10": 9.3, "stars": "63k", "kind": "라이브러리", "ver": "4.8.3", "sha": "ae7fb46", "url": "https://github.com/socketio/socket.io", "sub": "packages/socket.io/lib", "exw": "", "td": 49.6}, {"name": "immich", "grade": "S", "gradeF": "S", "score": 90, "files": 423, "loc": 48818, "dup": 2.8, "maxCog": 39, "cog15": 0.8, "avg": 115, "quad": 13, "fn40": 2.3, "fnP90": 18, "fnMax": 596, "fnTop10": 269.9, "cogTop10": 32.1, "stars": "109k", "kind": "앱", "ver": "3.0.3", "sha": "5fa920a", "url": "https://github.com/immich-app/immich", "sub": "server/src", "exw": "", "td": 85.4}, {"name": "express", "grade": "S", "gradeF": "S", "score": 90, "files": 6, "loc": 1137, "dup": 0, "maxCog": 29, "cog15": 0.9, "avg": 190, "quad": 0, "fn40": 0.9, "fnP90": 23, "fnMax": 69, "fnTop10": 32.5, "cogTop10": 11.6, "stars": "69.2k", "kind": "라이브러리", "ver": "5.2.1", "sha": "ae6dd37", "url": "https://github.com/expressjs/express", "sub": "lib", "exw": "", "td": 337.4}, {"name": "playwright", "grade": "S", "gradeF": "S", "score": 90, "files": 302, "loc": 55968, "dup": 6, "maxCog": 118, "cog15": 1.0, "avg": 185, "quad": 5, "fn40": 1.1, "fnP90": 13, "fnMax": 200, "fnTop10": 123.5, "cogTop10": 58.7, "stars": "93.3k", "kind": "툴체인", "ver": "1.63.0-next", "sha": "dea59db", "url": "https://github.com/microsoft/playwright", "sub": "packages/playwright-core/src", "exw": "", "td": 99.4}, {"name": "dayjs", "grade": "A", "gradeF": "A+", "score": 88, "files": 184, "loc": 8040, "dup": 16.7, "maxCog": 89, "cog15": 1.9, "avg": 44, "quad": 0, "fn40": 1.1, "fnP90": 13, "fnMax": 55, "fnTop10": 42.9, "cogTop10": 35.1, "stars": "", "kind": "라이브러리", "ver": "1.11.21", "sha": "98364bc", "url": "https://github.com/iamkun/dayjs", "sub": "src", "exw": "", "td": 87.7}, {"name": "nuxt", "grade": "A", "gradeF": "A+", "score": 88, "files": 167, "loc": 18840, "dup": 3.8, "maxCog": 102, "cog15": 3.9, "avg": 113, "quad": 19, "fn40": 2.6, "fnP90": 19, "fnMax": 297, "fnTop10": 126.5, "cogTop10": 68.2, "stars": "60.7k", "kind": "프레임워크", "ver": "5.0.0-0", "sha": "2740086", "url": "https://github.com/nuxt/nuxt", "sub": "packages/nuxt/src", "exw": "", "td": 66.2}, {"name": "puppeteer", "grade": "A", "gradeF": "A+", "score": 88, "files": 173, "loc": 29808, "dup": 4.3, "maxCog": 34, "cog15": 0.8, "avg": 172, "quad": 3, "fn40": 2.1, "fnP90": 19, "fnMax": 221, "fnTop10": 115.6, "cogTop10": 26.8, "stars": "95k", "kind": "툴체인", "ver": "25.3.0", "sha": "06442ae", "url": "https://github.com/puppeteer/puppeteer", "sub": "packages/puppeteer-core/src", "exw": "", "td": 70.3}, {"name": "storybook", "grade": "A", "gradeF": "A+", "score": 88, "files": 922, "loc": 116731, "dup": 2.9, "maxCog": 75, "cog15": 1.2, "avg": 127, "quad": 32, "fn40": 2.9, "fnP90": 22, "fnMax": 577, "fnTop10": 266.8, "cogTop10": 47.8, "stars": "90.7k", "kind": "툴체인", "ver": "10.6.0-alpha.3", "sha": "6b378f9", "url": "https://github.com/storybookjs/storybook", "sub": "code/core/src", "exw": "", "td": 41.6}, {"name": "tanstack-query", "grade": "A", "gradeF": "A+", "score": 87, "files": 24, "loc": 5685, "dup": 0.6, "maxCog": 50, "cog15": 1.8, "avg": 237, "quad": 0, "fn40": 2.5, "fnP90": 17, "fnMax": 161, "fnTop10": 82, "cogTop10": 22.9, "stars": "50.0k", "kind": "라이브러리", "ver": "5.101.4", "sha": "a3b0612", "url": "https://github.com/TanStack/query", "sub": "packages/query-core/src", "exw": "", "td": 189.9}, {"name": "immer", "grade": "A", "gradeF": "A+", "score": 87, "files": 15, "loc": 2338, "dup": 0.8, "maxCog": 25, "cog15": 2.8, "avg": 156, "quad": 0, "fn40": 2.3, "fnP90": 21, "fnMax": 60, "fnTop10": 41.9, "cogTop10": 16.5, "stars": "29.0k", "kind": "라이브러리", "ver": "10.0.3-beta", "sha": "a3be9df", "url": "https://github.com/immerjs/immer", "sub": "src", "exw": "", "td": 157.3}, {"name": "rollup", "grade": "A", "gradeF": "A+", "score": 87, "files": 254, "loc": 30603, "dup": 4.9, "maxCog": 68, "cog15": 3.2, "avg": 120, "quad": 3, "fn40": 3.9, "fnP90": 24, "fnMax": 173, "fnTop10": 114.6, "cogTop10": 49.1, "stars": "", "kind": "엔진·컴파일러", "ver": "4.62.2", "sha": "a65f21c", "url": "https://github.com/rollup/rollup", "sub": "src", "exw": "", "td": 610.0}, {"name": "ghost", "grade": "A", "gradeF": "A+", "score": 87, "files": 1457, "loc": 101001, "dup": 9.4, "maxCog": 153, "cog15": 1.7, "avg": 69, "quad": 51, "fn40": 3.2, "fnP90": 22, "fnMax": 368, "fnTop10": 233.7, "cogTop10": 75.9, "stars": "55k", "kind": "앱", "ver": "6.54.0-rc.0", "sha": "ee07678", "url": "https://github.com/TryGhost/Ghost", "sub": "ghost/core/core", "exw": "", "td": 93.5}, {"name": "lodash", "grade": "A", "gradeF": "A+", "score": 87, "files": 3, "loc": 6026, "dup": 1, "maxCog": 46, "cog15": 3.3, "avg": 2009, "quad": 0, "fn40": 2.5, "fnP90": 15, "fnMax": 476, "fnTop10": 121.7, "cogTop10": 31.7, "stars": "61k", "kind": "라이브러리", "ver": "4.18.1", "sha": "a666ba5", "url": "https://github.com/lodash/lodash", "sub": ".", "exw": "fp=자동생성 래퍼 · lib=빌드 스크립트 · dist=산출물", "td": 50.3}, {"name": "vitest", "grade": "A", "gradeF": "A+", "score": 86, "files": 235, "loc": 36107, "dup": 1.6, "maxCog": 243, "cog15": 2.1, "avg": 154, "quad": 13, "fn40": 3.1, "fnP90": 22, "fnMax": 593, "fnTop10": 162, "cogTop10": 63, "stars": "16.9k", "kind": "툴체인", "ver": "5.0.0-beta.7", "sha": "b7be73190", "url": "https://github.com/vitest-dev/vitest", "sub": "packages/vitest/src", "exw": "", "td": 89.6}, {"name": "remix", "grade": "A", "gradeF": "A", "score": 85, "files": 402, "loc": 67509, "dup": 6.3, "maxCog": 123, "cog15": 2.0, "avg": 168, "quad": 19, "fn40": 3.2, "fnP90": 23, "fnMax": 246, "fnTop10": 170.9, "cogTop10": 74.5, "stars": "8k", "kind": "프레임워크", "ver": "3.0.0-beta.5", "sha": "593e568f1", "url": "https://github.com/remix-run/remix", "sub": "packages", "exw": "", "td": 65.8}, {"name": "strapi", "grade": "A", "gradeF": "A", "score": 85, "files": 2116, "loc": 199719, "dup": 7.4, "maxCog": 175, "cog15": 1.3, "avg": 94, "quad": 65, "fn40": 3.5, "fnP90": 24, "fnMax": 418, "fnTop10": 297, "cogTop10": 97.1, "stars": "72.7k", "kind": "앱", "ver": "5.51.0", "sha": "e904c0c3b", "url": "https://github.com/strapi/strapi", "sub": "packages/core", "exw": "", "td": 86.5}, {"name": "solid", "grade": "A", "gradeF": "A", "score": 84, "files": 12, "loc": 3717, "dup": 8.7, "maxCog": 47, "cog15": 4.3, "avg": 310, "quad": 0, "fn40": 1.3, "fnP90": 16, "fnMax": 83, "fnTop10": 47, "cogTop10": 30.8, "stars": "33k", "kind": "엔진·컴파일러", "ver": "1.0.0", "sha": "d2f81d5", "url": "https://github.com/solidjs/solid", "sub": "packages/solid/src", "exw": "", "td": 137.1}, {"name": "angular", "grade": "A", "gradeF": "A", "score": 84, "files": 1852, "loc": 232503, "dup": 4.2, "maxCog": 145, "cog15": 2.5, "avg": 126, "quad": 41, "fn40": 3.5, "fnP90": 23, "fnMax": 514, "fnTop10": 297.4, "cogTop10": 102.8, "stars": "101k", "kind": "엔진·컴파일러", "ver": "22.2.0-next.0", "sha": "e779309", "url": "https://github.com/angular/angular", "sub": "packages", "exw": "", "td": 109.7}, {"name": "nanoid", "grade": "A", "gradeF": "A", "score": 84, "files": 5, "loc": 240, "dup": 18.1, "maxCog": 27, "cog15": 2.5, "avg": 48, "quad": 0, "fn40": 0, "fnP90": 19, "fnMax": 35, "fnTop10": 13.8, "cogTop10": 7.2, "stars": "26.9k", "kind": "라이브러리", "ver": "6.0.0", "sha": "b49a237", "url": "https://github.com/ai/nanoid", "sub": ".", "exw": "", "td": 150.4}, {"name": "jest", "grade": "A", "gradeF": "A", "score": 83, "files": 377, "loc": 47765, "dup": 2.6, "maxCog": 84, "cog15": 2.7, "avg": 127, "quad": 5, "fn40": 5.0, "fnP90": 27, "fnMax": 322, "fnTop10": 191.1, "cogTop10": 63.6, "stars": "", "kind": "툴체인", "ver": "30.4.2", "sha": "f49721c7", "url": "https://github.com/jestjs/jest", "sub": "packages", "exw": "", "td": 158.1}, {"name": "drizzle-orm", "grade": "A", "gradeF": "A", "score": 83, "files": 400, "loc": 45778, "dup": 36.2, "maxCog": 85, "cog15": 1.9, "avg": 114, "quad": 5, "fn40": 2.2, "fnP90": 18, "fnMax": 255, "fnTop10": 188.8, "cogTop10": 71.3, "stars": "35k", "kind": "라이브러리", "ver": "0.45.3", "sha": "b786252", "url": "https://github.com/drizzle-team/drizzle-orm", "sub": "drizzle-orm/src", "exw": "", "td": 65.3}, {"name": "redux", "grade": "A", "gradeF": "A", "score": 83, "files": 17, "loc": 853, "dup": 10.3, "maxCog": 14, "cog15": 0, "avg": 50, "quad": 0, "fn40": 4.3, "fnP90": 32, "fnMax": 63, "fnTop10": 32.1, "cogTop10": 6.9, "stars": "", "kind": "라이브러리", "ver": "5.0.1", "sha": "5d65348", "url": "https://github.com/reduxjs/redux", "sub": "src", "exw": "", "td": 86.9}, {"name": "astro", "grade": "A", "gradeF": "A", "score": 82, "files": 550, "loc": 55287, "dup": 2.9, "maxCog": 271, "cog15": 2.8, "avg": 101, "quad": 24, "fn40": 5.1, "fnP90": 26, "fnMax": 321, "fnTop10": 203.4, "cogTop10": 92.5, "stars": "61.3k", "kind": "프레임워크", "ver": "7.1.3", "sha": "b01a692", "url": "https://github.com/withastro/astro", "sub": "packages/astro/src", "exw": "", "td": 98.0}, {"name": "n8n", "grade": "A", "gradeF": "A", "score": 80, "files": 141, "loc": 15755, "dup": 1.9, "maxCog": 338, "cog15": 3.7, "avg": 112, "quad": 4, "fn40": 5.2, "fnP90": 26, "fnMax": 583, "fnTop10": 210.8, "cogTop10": 93.3, "stars": "198k", "kind": "앱", "ver": "2.32.0", "sha": "1dc67b2a", "url": "https://github.com/n8n-io/n8n", "sub": "packages/core", "exw": "", "td": 99.2}, {"name": "fastify", "grade": "A", "gradeF": "A", "score": 80, "files": 31, "loc": 5336, "dup": 2.1, "maxCog": 67, "cog15": 4.2, "avg": 172, "quad": 0, "fn40": 3.7, "fnP90": 22, "fnMax": 89, "fnTop10": 65.1, "cogTop10": 36.8, "stars": "36.8k", "kind": "라이브러리", "ver": "5.10.0", "sha": "5454a66", "url": "https://github.com/fastify/fastify", "sub": "lib", "exw": "", "td": 478.0}, {"name": "vscode", "grade": "B", "gradeF": "B+", "score": 79, "files": 5203, "loc": 1265707, "dup": 5.8, "maxCog": 264, "cog15": 2.2, "avg": 243, "quad": 517, "fn40": 2.4, "fnP90": 19, "fnMax": 924, "fnTop10": 515.8, "cogTop10": 181.7, "stars": "188k", "kind": "앱", "ver": "1.131.0", "sha": "c3707c7b", "url": "https://github.com/microsoft/vscode", "sub": "src/vs", "exw": "", "td": 46.7}, {"name": "eslint", "grade": "B", "gradeF": "B+", "score": 78, "files": 381, "loc": 62999, "dup": 5.3, "maxCog": 119, "cog15": 3.0, "avg": 165, "quad": 7, "fn40": 4.8, "fnP90": 27, "fnMax": 339, "fnTop10": 208.8, "cogTop10": 75.5, "stars": "27.4k", "kind": "툴체인", "ver": "10.7.0", "sha": "6ddf858", "url": "https://github.com/eslint/eslint", "sub": "lib", "exw": "", "td": 303.0}, {"name": "ky", "grade": "B", "gradeF": "B+", "score": 77, "files": 27, "loc": 2836, "dup": 0, "maxCog": 87, "cog15": 5.2, "avg": 105, "quad": 0, "fn40": 5.2, "fnP90": 23, "fnMax": 96, "fnTop10": 56, "cogTop10": 31.9, "stars": "17.0k", "kind": "라이브러리", "ver": "2.0.2", "sha": "3419113", "url": "https://github.com/sindresorhus/ky", "sub": "source", "exw": "", "td": 370.0}, {"name": "react-router", "grade": "B", "gradeF": "B+", "score": 76, "files": 68, "loc": 21543, "dup": 4.1, "maxCog": 47, "cog15": 3.3, "avg": 317, "quad": 7, "fn40": 5.5, "fnP90": 30, "fnMax": 250, "fnTop10": 178, "cogTop10": 41.5, "stars": "", "kind": "라이브러리", "ver": "8.3.0", "sha": "8bc59bc7", "url": "https://github.com/remix-run/react-router", "sub": "packages/react-router/lib", "exw": "", "td": 76.7}, {"name": "three", "grade": "B", "gradeF": "B+", "score": 76, "files": 745, "loc": 74020, "dup": 11.5, "maxCog": 333, "cog15": 3.9, "avg": 99, "quad": 2, "fn40": 4.0, "fnP90": 22, "fnMax": 306, "fnTop10": 220.1, "cogTop10": 206.1, "stars": "", "kind": "라이브러리", "ver": "0.185.0", "sha": "1bc2577", "url": "https://github.com/mrdoob/three.js", "sub": "src", "exw": "", "td": 4.1}, {"name": "formbricks", "grade": "B", "gradeF": "B+", "score": 76, "files": 1642, "loc": 186218, "dup": 8.1, "maxCog": 94, "cog15": 0.9, "avg": 113, "quad": 78, "fn40": 6.0, "fnP90": 35, "fnMax": 660, "fnTop10": 353.4, "cogTop10": 62.2, "stars": "13k", "kind": "앱", "ver": "5.2.1", "sha": "b5a12fb", "url": "https://github.com/formbricks/formbricks", "sub": "apps/web", "exw": "", "td": 59.2}, {"name": "outline", "grade": "B", "gradeF": "B+", "score": 76, "files": 790, "loc": 63684, "dup": 9.1, "maxCog": 89, "cog15": 1.3, "avg": 81, "quad": 3, "fn40": 6.4, "fnP90": 33, "fnMax": 656, "fnTop10": 236.1, "cogTop10": 45.6, "stars": "39.8k", "kind": "앱", "ver": "1.9.1", "sha": "e275560", "url": "https://github.com/outline/outline", "sub": "server", "exw": "", "td": 28.2}, {"name": "node", "grade": "B", "gradeF": "B+", "score": 76, "files": 375, "loc": 126425, "dup": 4.6, "maxCog": 283, "cog15": 3.7, "avg": 337, "quad": 1, "fn40": 4.0, "fnP90": 24, "fnMax": 263, "fnTop10": 217.5, "cogTop10": 148.8, "stars": "118k", "kind": "라이브러리", "ver": "27.0.0", "sha": "4a5eb1cf", "url": "https://github.com/nodejs/node", "sub": "lib", "exw": "", "td": 289.3}, {"name": "medusa", "grade": "B", "gradeF": "B", "score": 75, "files": 687, "loc": 37471, "dup": 18.4, "maxCog": 22, "cog15": 0.5, "avg": 55, "quad": 5, "fn40": 5.1, "fnP90": 32, "fnMax": 100, "fnTop10": 79.3, "cogTop10": 16.3, "stars": "35.3k", "kind": "앱", "ver": "2.18.0", "sha": "f440743c", "url": "https://github.com/medusajs/medusa", "sub": "packages/medusa/src", "exw": "", "td": 32.3}, {"name": "echarts", "grade": "B", "gradeF": "B", "score": 75, "files": 533, "loc": 90980, "dup": 1.9, "maxCog": 83, "cog15": 3.5, "avg": 171, "quad": 1, "fn40": 5.3, "fnP90": 29, "fnMax": 205, "fnTop10": 148.6, "cogTop10": 66.7, "stars": "67k", "kind": "라이브러리", "ver": "6.1.0", "sha": "e647e77", "url": "https://github.com/apache/echarts", "sub": "src", "exw": "", "td": 9.6}, {"name": "hono", "grade": "B", "gradeF": "B", "score": 75, "files": 162, "loc": 18808, "dup": 23.2, "maxCog": 144, "cog15": 4.3, "avg": 116, "quad": 2, "fn40": 3.0, "fnP90": 23, "fnMax": 138, "fnTop10": 100.2, "cogTop10": 77.5, "stars": "31.4k", "kind": "라이브러리", "ver": "4.12.32", "sha": "26d8e42", "url": "https://github.com/honojs/hono", "sub": "src", "exw": "", "td": 202.4}, {"name": "prettier", "grade": "B", "gradeF": "B", "score": 73, "files": 472, "loc": 36692, "dup": 2.6, "maxCog": 236, "cog15": 3.8, "avg": 78, "quad": 4, "fn40": 4.6, "fnP90": 26, "fnMax": 678, "fnTop10": 342.8, "cogTop10": 143.8, "stars": "52.1k", "kind": "툴체인", "ver": "3.10.0-dev", "sha": "4f84a93", "url": "https://github.com/prettier/prettier", "sub": "src", "exw": "", "td": 138.7}, {"name": "budibase", "grade": "B", "gradeF": "B", "score": 72, "files": 531, "loc": 77201, "dup": 6, "maxCog": 157, "cog15": 2.9, "avg": 145, "quad": 70, "fn40": 6.2, "fnP90": 31, "fnMax": 755, "fnTop10": 295.8, "cogTop10": 76.5, "stars": "28k", "kind": "앱", "ver": "3.40.1", "sha": "d6b1b0d", "url": "https://github.com/Budibase/budibase", "sub": "packages/server/src", "exw": "", "td": 72.6}, {"name": "directus", "grade": "B", "gradeF": "B", "score": 70, "files": 747, "loc": 61522, "dup": 12.4, "maxCog": 122, "cog15": 4.1, "avg": 82, "quad": 64, "fn40": 5.6, "fnP90": 28, "fnMax": 642, "fnTop10": 256.7, "cogTop10": 92.5, "stars": "36.9k", "kind": "앱", "ver": "12.1.1", "sha": "7b0edea54", "url": "https://github.com/directus/directus", "sub": "api/src", "exw": "", "td": 133.6}, {"name": "typescript", "grade": "B", "gradeF": "B", "score": 70, "files": 528, "loc": 301414, "dup": 5.6, "maxCog": 672, "cog15": 4.0, "avg": 571, "quad": 36, "fn40": 4.1, "fnP90": 24, "fnMax": 1618, "fnTop10": 657.1, "cogTop10": 340.4, "stars": "110k", "kind": "엔진·컴파일러", "ver": "6.0.0", "sha": "cc5c6e2d3", "url": "https://github.com/microsoft/TypeScript", "sub": "src", "exw": "", "td": 813.5}, {"name": "pnpm", "grade": "C", "gradeF": "C+", "score": 69, "files": 788, "loc": 82821, "dup": 1.1, "maxCog": 175, "cog15": 4.4, "avg": 105, "quad": 17, "fn40": 6.5, "fnP90": 31, "fnMax": 535, "fnTop10": 329.7, "cogTop10": 112.3, "stars": "36k", "kind": "툴체인", "ver": "11.17.0", "sha": "f892e3d", "url": "https://github.com/pnpm/pnpm", "sub": "pnpm11", "exw": "", "td": 152.8}, {"name": "svelte", "grade": "C", "gradeF": "C+", "score": 69, "files": 343, "loc": 41395, "dup": 2.8, "maxCog": 359, "cog15": 5.4, "avg": 121, "quad": 13, "fn40": 4.4, "fnP90": 22, "fnMax": 452, "fnTop10": 318.8, "cogTop10": 180, "stars": "87.7k", "kind": "엔진·컴파일러", "ver": "5.56.7", "sha": "3dde011", "url": "https://github.com/sveltejs/svelte", "sub": "packages/svelte/src", "exw": "", "td": 101.7}, {"name": "zod", "grade": "C", "gradeF": "C+", "score": 68, "files": 98, "loc": 24382, "dup": 15.6, "maxCog": 163, "cog15": 4.1, "avg": 249, "quad": 0, "fn40": 6.4, "fnP90": 18, "fnMax": 301, "fnTop10": 136.1, "cogTop10": 76.3, "stars": "43.3k", "kind": "라이브러리", "ver": "4.4.3", "sha": "912f0f5", "url": "https://github.com/colinhacks/zod", "sub": "packages/zod/src", "exw": "", "td": 101.6}, {"name": "excalidraw", "grade": "C", "gradeF": "C+", "score": 68, "files": 332, "loc": 66794, "dup": 2.8, "maxCog": 178, "cog15": 2.9, "avg": 201, "quad": 7, "fn40": 5.2, "fnP90": 33, "fnMax": 631, "fnTop10": 445.4, "cogTop10": 139.2, "stars": "128k", "kind": "앱", "ver": "0.18.0", "sha": "f179f7f", "url": "https://github.com/excalidraw/excalidraw", "sub": "packages/excalidraw", "exw": "", "td": 39.1}, {"name": "babel", "grade": "C", "gradeF": "C+", "score": 66, "files": 643, "loc": 80190, "dup": 1.9, "maxCog": 319, "cog15": 5.1, "avg": 125, "quad": 6, "fn40": 6.0, "fnP90": 30, "fnMax": 681, "fnTop10": 272, "cogTop10": 126.7, "stars": "", "kind": "엔진·컴파일러", "ver": "8.0.4", "sha": "e74e391f", "url": "https://github.com/babel/babel", "sub": "packages", "exw": "", "td": 26.1}, {"name": "vite", "grade": "C", "gradeF": "C+", "score": 66, "files": 132, "loc": 36996, "dup": 0.5, "maxCog": 195, "cog15": 4.5, "avg": 280, "quad": 12, "fn40": 6.2, "fnP90": 29, "fnMax": 572, "fnTop10": 230.4, "cogTop10": 90.1, "stars": "82.0k", "kind": "엔진·컴파일러", "ver": "8.2.0-beta.0", "sha": "3ac77d9dd", "url": "https://github.com/vitejs/vite", "sub": "packages/vite/src", "exw": "", "td": 44.9}, {"name": "nx", "grade": "C", "gradeF": "C", "score": 62, "files": 596, "loc": 93633, "dup": 3.8, "maxCog": 557, "cog15": 3.8, "avg": 157, "quad": 38, "fn40": 6.9, "fnP90": 33, "fnMax": 600, "fnTop10": 368.9, "cogTop10": 200.8, "stars": "29k", "kind": "툴체인", "ver": "23.1.0", "sha": "9c735d4", "url": "https://github.com/nrwl/nx", "sub": "packages/nx/src", "exw": "", "td": 68.1}, {"name": "valibot", "grade": "C", "gradeF": "C", "score": 62, "files": 337, "loc": 25402, "dup": 43.5, "maxCog": 99, "cog15": 5.8, "avg": 75, "quad": 0, "fn40": 5.6, "fnP90": 22, "fnMax": 121, "fnTop10": 90.6, "cogTop10": 65.8, "stars": "8.8k", "kind": "라이브러리", "ver": "1.4.2", "sha": "769bb7c", "url": "https://github.com/fabian-hiller/valibot", "sub": "library/src", "exw": "", "td": 58.1}, {"name": "webpack", "grade": "C", "gradeF": "C", "score": 60, "files": 629, "loc": 126159, "dup": 4.5, "maxCog": 376, "cog15": 5.2, "avg": 201, "quad": 8, "fn40": 5.9, "fnP90": 28, "fnMax": 700, "fnTop10": 462, "cogTop10": 221.3, "stars": "", "kind": "엔진·컴파일러", "ver": "5.109.0", "sha": "db98306", "url": "https://github.com/webpack/webpack", "sub": "lib", "exw": "", "td": 73.9}, {"name": "tailwind", "grade": "C", "gradeF": "C", "score": 56, "files": 64, "loc": 19694, "dup": 3.3, "maxCog": 231, "cog15": 7.2, "avg": 308, "quad": 2, "fn40": 5.5, "fnP90": 27, "fnMax": 1618, "fnTop10": 332, "cogTop10": 127.7, "stars": "", "kind": "엔진·컴파일러", "ver": "1.0.0", "sha": "094bf62", "url": "https://github.com/tailwindlabs/tailwindcss", "sub": "packages/tailwindcss/src", "exw": "", "td": 224.3}, {"name": "next.js", "grade": "C", "gradeF": "C", "score": 55, "files": 1321, "loc": 197522, "dup": 4, "maxCog": 995, "cog15": 4.7, "avg": 150, "quad": 38, "fn40": 7.6, "fnP90": 36, "fnMax": 1640, "fnTop10": 1050.6, "cogTop10": 400.6, "stars": "141k", "kind": "프레임워크", "ver": "16.3.0-canary.95", "sha": "2a25442b", "url": "https://github.com/vercel/next.js", "sub": "packages/next/src", "exw": "", "td": 50.8}, {"name": "nocodb", "grade": "D", "gradeF": "D+", "score": 54, "files": 1129, "loc": 214550, "dup": 11.9, "maxCog": 796, "cog15": 3.9, "avg": 190, "quad": 142, "fn40": 8.0, "fnP90": 34, "fnMax": 2003, "fnTop10": 913.4, "cogTop10": 366.1, "stars": "64k", "kind": "앱", "ver": "0.301.3", "sha": "f782a6a", "url": "https://github.com/nocodb/nocodb", "sub": "packages/nocodb/src", "exw": "", "td": 3.7}, {"name": "react-hook-form", "grade": "D", "gradeF": "D+", "score": 54, "files": 80, "loc": 6053, "dup": 0.8, "maxCog": 132, "cog15": 7.3, "avg": 76, "quad": 1, "fn40": 8.4, "fnP90": 36, "fnMax": 211, "fnTop10": 102, "cogTop10": 53.1, "stars": "45k", "kind": "라이브러리", "ver": "7.83.0", "sha": "d349d08", "url": "https://github.com/react-hook-form/react-hook-form", "sub": "src", "exw": "", "td": 304.6}, {"name": "mongoose", "grade": "D", "gradeF": "D+", "score": 52, "files": 250, "loc": 28743, "dup": 5.7, "maxCog": 314, "cog15": 8.9, "avg": 115, "quad": 6, "fn40": 6.1, "fnP90": 29, "fnMax": 362, "fnTop10": 197.6, "cogTop10": 161.7, "stars": "", "kind": "라이브러리", "ver": "9.8.0", "sha": "c0a75c2", "url": "https://github.com/Automattic/mongoose", "sub": "lib", "exw": "", "td": 169.4}, {"name": "lexical", "grade": "D", "gradeF": "D+", "score": 50, "files": 42, "loc": 19425, "dup": 1.3, "maxCog": 150, "cog15": 6.9, "avg": 463, "quad": 0, "fn40": 7.4, "fnP90": 32, "fnMax": 271, "fnTop10": 184.5, "cogTop10": 90.1, "stars": "24k", "kind": "라이브러리", "ver": "0.48.0", "sha": "82cdae1", "url": "https://github.com/facebook/lexical", "sub": "packages/lexical/src", "exw": "", "td": 75.7}, {"name": "vue", "grade": "D", "gradeF": "D", "score": 40, "files": 241, "loc": 45412, "dup": 1.1, "maxCog": 392, "cog15": 9.0, "avg": 188, "quad": 4, "fn40": 8.1, "fnP90": 34, "fnMax": 686, "fnTop10": 277.5, "cogTop10": 152.3, "stars": "54.0k", "kind": "엔진·컴파일러", "ver": "3.5.40", "sha": "b5f8518", "url": "https://github.com/vuejs/core", "sub": "packages", "exw": "", "td": 158.1}, {"name": "payload", "grade": "D", "gradeF": "D", "score": 39, "files": 582, "loc": 51111, "dup": 5.5, "maxCog": 252, "cog15": 9.4, "avg": 88, "quad": 42, "fn40": 15.5, "fnP90": 51, "fnMax": 586, "fnTop10": 367.9, "cogTop10": 178.1, "stars": "43.8k", "kind": "앱", "ver": "4.0.0-canary.14", "sha": "8bbdb68", "url": "https://github.com/payloadcms/payload", "sub": "packages/payload/src", "exw": "", "td": 72.9}, {"name": "react", "grade": "E", "gradeF": "E+", "score": 28, "files": 637, "loc": 123473, "dup": 18.8, "maxCog": 389, "cog15": 9, "avg": 194, "quad": 1, "fn40": 10.1, "fnP90": 41, "fnMax": 745, "fnTop10": 453.1, "cogTop10": 201.8, "stars": "", "kind": "엔진·컴파일러", "ver": "19.3.0", "sha": "b685b40d", "url": "https://github.com/facebook/react", "sub": "packages", "exw": "devtools=별도 브라우저확장 제품 · eslint-plugin=별도 lint 패키지 · noop/jest-react/test-utils=테스트 인프라", "td": 81.5}];
+// 체급 기준 = 코드줄. 파일 수는 배치 관습에 오염돼 있다(줄/파일이 34~2008로 59배 차이) —
+// 점수 축에서 파일 크기를 강등한 것과 같은 논리다.
+const CLASSES=[{k:'straw',ko:'스트로급',en:'Strawweight',s:'&lt;5k',lo:0,hi:5000},{k:'fly',ko:'플라이급',en:'Flyweight',s:'5k–15k',lo:5000,hi:15000},{k:'light',ko:'라이트급',en:'Lightweight',s:'15k–30k',lo:15000,hi:30000},{k:'welter',ko:'웰터급',en:'Welterweight',s:'30k–60k',lo:30000,hi:60000},{k:'middle',ko:'미들급',en:'Middleweight',s:'60k–120k',lo:60000,hi:120000},{k:'heavy',ko:'헤비급',en:'Heavyweight',s:'120k+',lo:120000,hi:1e12}];
+const DIAG=[
+ ['perf','N+1','io density',['루프 안에서 DB/HTTP를 행마다 순차 await.','A DB/HTTP call per row inside a loop.']],
+ ['perf','O(n²)','array lookup',['행 루프 안 <code>.find/.some</code> 스캔 → Map/Set으로 O(1).','<code>.find/.some</code> over an outer array in a row loop.']],
+ ['perf','루프 불변 인덱스','loop-invariant index',['루프 밖 값으로 매 회 new Set/Map을 다시 만든다.','Rebuilds a Set/Map from invariant data each pass.']],
+ ['perf','스프레드 누적','spread accumulator',['acc = [...acc, x] — 매 회 전체 복사 = O(n²).','acc = [...acc, x] copies everything each pass.']],
+ ['perf','루프 안 정규식','regex in loop',['루프마다 new RegExp() 재컴파일.','Recompiles new RegExp() every iteration.']],
+ ['bug','floating promise','unawaited async',['async 함수를 await 없이 호출하고 결과를 버린다.','Calls an async fn without await, drops the result.']],
+ ['bug','await in forEach','ignored promise',['forEach는 콜백의 프라미스를 무시한다 — 안 기다린다.','forEach ignores the callback promise — it never waits.']],
+ ['bug','공유 참조 fill','shared-ref fill',['Array(n).fill([]) — 한 참조를 모든 칸이 공유.','Array(n).fill([]) shares one reference everywhere.']],
+ ['bug','숫자 정렬','sort no comparator',['숫자 배열을 비교자 없이 sort() → 사전순.','Numeric sort() with no comparator sorts lexically.']],
+ ['bug','전역 정규식 상태','stateful /g regex',['/g 정규식 .test()의 lastIndex 누수.','A /g regex .test() leaks lastIndex between calls.']],
+ ['hyg','빈 catch','empty catch',['catch {} — 에러를 조용히 삼킨다.','catch {} swallows the error silently.']],
+ ['hyg','배열에 for...in','for-in over array',['인덱스가 문자열이고 상속 속성까지 돈다.','Yields string keys and inherited props.']],
+ ['type','any 남용','any annotations',['타입 주석 중 any 비율. 경계 밖에서 잦으면 타입이 사실상 꺼진 것.','Share of annotations that are any — off-boundary means types are effectively off.']],
+ ['type','as any 단언','as any assertion',['타입을 강제로 지운 자리. 컴파일러가 못 지켜준다.','Erases the type on purpose; the compiler can no longer help.']],
+ ['type','non-null (!)','non-null assertion',['"여기 null 아님"을 사람이 장담한 자리. 틀리면 런타임 크래시.','A human vouching for non-null — wrong means a runtime crash.']],
+ ['type','@ts-ignore','ts-ignore / nocheck',['타입 검사를 아예 끈 줄. 남으면 조용히 썩는다.','Type checking switched off for that line.']],
+ ['hyg','데드코드','dead code (knip)',['미사용 export·파일. 진단은 항상, 점수 반영은 <code>--dead</code> 옵트인(라이브러리 공개 API 오탐 때문).','Unused exports and files. Always diagnosed; scored only with <code>--dead</code> (public APIs would false-positive).']],
+];
+const KIND={'라이브러리':['library','라이브러리'],'프레임워크':['framework','프레임워크'],'앱':['app','앱'],'툴체인':['toolchain','툴체인'],'엔진·컴파일러':['engine/compiler','엔진·컴파일러']};
+let LANG='ko', ACT='middle';
+const t=(a,b)=>LANG==='ko'?a:b;
+const inC=c=>DATA.filter(r=>r.loc>=c.lo&&r.loc<c.hi).sort((a,b)=>b.score-a.score);
+function bar(v,mx,thr){const w=Math.max(3,Math.min(100,v/mx*100));const c=v<=thr[0]?'var(--gA)':v<=thr[1]?'var(--gC)':'var(--gD)';return `<div class="bar"><i style="width:${w}%;background:${c}"></i></div>`;}
+function det(r){
+  // 막대 임계 = 70개 코퍼스 실측 분위수(중앙/상위25%). 초록=중앙 이하 · 주황=상위25%까지 · 빨강=그 위.
+  // 스케일 상한은 p90 언저리로 잡아 최악값이 막대를 다 먹지 않게 한다.
+  const M=[[t('긴 함수 비율','long-fn share'),t('40줄+ (JSX 60줄+) · 코퍼스 중앙 4.0%','over 40 lines, 60 for JSX · corpus median 4.0%'),r.fn40,14,[4.0,5.6],r.fn40+'%'],
+   [t('함수 길이 p90','fn length p90'),t('코퍼스 중앙 23줄','corpus median 23'),r.fnP90,70,[23,29],r.fnP90+t('줄','')],
+   [t('복잡 함수 비율','complex-fn share'),t('코퍼스 중앙 2.9%','corpus median 2.9%'),r.cog15,8,[2.9,4.2],r.cog15+'%'],
+   [t('복잡도 상위10 평균','top-10 complexity avg'),t('코퍼스 중앙 65','corpus median 65'),r.cogTop10,300,[65,110],String(r.cogTop10)],
+   [t('함수 길이 상위10 평균','top-10 fn length avg'),t('코퍼스 중앙 174줄','corpus median 174'),r.fnTop10,600,[174,276],r.fnTop10+t('줄','')],
+   [t('중복','duplication'),t('코퍼스 중앙 3.9%','corpus median 3.9%'),r.dup,25,[3.9,7.1],r.dup+'%'],
+   [t('평균 파일 줄','avg file lines'),t('보조 항 · 코퍼스 중앙 120줄','minor term · corpus median 120'),r.avg,300,[120,187],String(r.avg)]];
+  return `<div class="det"><div class="dh">${r.sha?(r.sha+' · '):''}${r.files.toLocaleString()} ${t('파일','files')} · ${r.loc?r.loc.toLocaleString():'—'} ${t('코드줄','LOC')}${r.stars?' · ★'+r.stars:''}</div>`+
+    M.map(m=>`<div class="met"><div class="ml">${m[0]}<small>${m[1]}</small></div>${bar(m[2],m[3],m[4])}<div class="mv">${m[5]}</div></div>`).join('')+
+    `<div class="dg">${t('진단 · 점수와 무관','diagnostic · not scored')} — O(n²) ${r.quad}${t('곳','sites')}`+
+      (r.td!=null?` · ${t('테스트 두께','test thickness')} ${r.td}%<small class="dgs">(${t('코퍼스 중앙 96%','corpus median 96%')})</small>`:'')+
+    `</div></div>`;
+}
+
+// 체급 선수 — 코드 덩치를 몸집으로 그린다. 인라인 SVG라 외부 요청 0(CSP 안전).
+// i=0 스트로급(마름) … i=5 헤비급(거구). 벨트 색 = 그 체급 중앙 등급색.
+// 체급 판 배지 — 작은 자리용
+function plate(i, size, col, label) {
+  const t = i / 5;
+  const uid = "p" + i;
+  const rx = 30, ry = 21 + t * 3;
+  const ink = "#2b2226";
+  return `<svg class="bl" viewBox="0 0 64 52" width="${size}" height="${size * 52 / 64}" aria-hidden="true">
+  <defs><linearGradient id="${uid}g" x1="0" y1="0" x2="0.3" y2="1">
+    <stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset="42%" stop-color="${col}"/><stop offset="100%" stop-color="${col}"/></linearGradient></defs>
+  <ellipse cx="32" cy="26" rx="${rx}" ry="${ry}" fill="url(#${uid}g)" stroke="${ink}" stroke-width="2.4"/>
+  <ellipse cx="32" cy="26" rx="${rx - 4}" ry="${ry - 3.4}" fill="none" stroke="#fff" stroke-width="1.4" opacity=".45"/>
+  <text x="32" y="${26 + ry * 0.33}" text-anchor="middle" fill="#fff"
+    font-family="ui-monospace,Menlo,monospace" font-size="${ry * 0.86}" font-weight="700">${label}</text>
+  </svg>`;
+}
+
+// 체급 벨트 배지 — 복싱/격투 단체가 실제로 쓰는 체급 상징(챔피언십 벨트).
+// 캐릭터와 달리 6개가 같은 퀄로 나오고, 판 안에 코드줄 임계가 들어가 정보도 담는다.
+function belt(i, size, col, label) {
+  // 작은 크기(탭)에선 벨트 끈이 뭉개진다 → 챔피언 판만 남긴다. 큰 크기(리포트 헤더)는 벨트 전체.
+  if (size < 70) return plate(i, size, col, label);
+  const t = i / 5;
+  const uid = "b" + i;
+  const w = 120, h = 62;
+  const strapH = 15 + t * 7;              // 체급이 오를수록 두꺼운 벨트
+  const plateR = 17 + t * 4;              // 중앙 판도 커진다
+  const cy = h / 2, cx = w / 2;
+  const ink = "#2b2226";
+  return `<svg class="bl" viewBox="0 0 ${w} ${h}" width="${size}" height="${size * h / w}" aria-hidden="true">
+  <defs>
+    <linearGradient id="${uid}s" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4a4048"/><stop offset="50%" stop-color="#2b2226"/><stop offset="100%" stop-color="#191418"/></linearGradient>
+    <linearGradient id="${uid}p" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset="40%" stop-color="${col}"/><stop offset="100%" stop-color="${col}"/></linearGradient>
+  </defs>
+  <rect x="2" y="${cy - strapH / 2}" width="${w - 4}" height="${strapH}" rx="${strapH / 2}" fill="url(#${uid}s)"/>
+  <rect x="8" y="${cy - strapH / 2 + 3}" width="${w - 16}" height="2" rx="1" fill="#fff" opacity=".12"/>
+  ${[18, w - 18].map((x) => `<circle cx="${x}" cy="${cy}" r="${3.4 + t}" fill="${col}" stroke="${ink}" stroke-width="1.4"/>`).join("")}
+  <ellipse cx="${cx}" cy="${cy}" rx="${plateR * 1.35}" ry="${plateR}" fill="url(#${uid}p)" stroke="${ink}" stroke-width="2.2"/>
+  <ellipse cx="${cx}" cy="${cy}" rx="${plateR * 1.13}" ry="${plateR * 0.8}" fill="none" stroke="#fff" stroke-width="1.2" opacity=".45"/>
+  <text x="${cx}" y="${cy + plateR * 0.24}" text-anchor="middle" fill="#fff"
+    font-family="ui-monospace,Menlo,monospace" font-size="${plateR * 0.66}" font-weight="700">${label}</text>
+  </svg>`;
+}
+
+// 체급 라벨 — 코드줄 임계를 판에 새긴다
+const beltLabel=(c)=>c.hi>=1e12?`${Math.round(c.lo/1000)}k+`:`${Math.round(c.hi/1000)}k`;
+
+// 체급 중앙 등급색 — 그 링의 평균 실력을 벨트로 보여준다
+function classBelt(c) {
+  const v = inC(c).map(r => r.score).sort((a, b) => a - b);
+  if (!v.length) return "#9aa5b4";
+  const m = v.length % 2 ? v[(v.length - 1) / 2] : (v[v.length / 2 - 1] + v[v.length / 2]) / 2;
+  return (GRADES.find(g => m >= g[1]) || GRADES[GRADES.length - 1])[2];
+}
+
+function render(){
+  document.getElementById('tabs').innerHTML=CLASSES.map((c,ci)=>`<button class="tab" data-tab="${c.k}" role="tab" aria-selected="${c.k===ACT}"><span class="tl">${t(c.ko,c.en)}<i>${c.s} · ${inC(c).length}</i></span></button>`).join('');
+  const list=inC(CLASSES.find(c=>c.k===ACT));
+  document.getElementById('brd').innerHTML=list.map((r,i)=>`<button class="row" data-row="${i}" aria-expanded="false"><span class="rk">${i+1}</span><span class="rn">${r.name}${r.ver?`<span class="ver">v${r.ver}</span>`:''}${(()=>{const k=KIND[r.kind];return k?`<span class="chip">${t(k[1],k[0])}</span>`:'';})()}</span><span class="rm">${r.files.toLocaleString()}${t('파일','f')}<span class="rml"> · ${r.loc?r.loc.toLocaleString():'—'}${t('줄','L')}</span> · ${t('중복','dup')} ${r.dup}%</span><span class="rs"><span class="g g${r.grade}">${r.gradeF||r.grade}</span><b>${r.score}</b><span class="car">→</span></span></button>`).join('');
+  document.getElementById('dx').innerHTML=DIAG.map(d=>`<div class="dxc"><div class="dt"><span class="dot ${d[0]}"></span>${d[1]}</div><code>${d[2]}</code><p>${t(d[3][0],d[3][1])}</p></div>`).join('');
+}
+const GRADES=[['S',90,'#0f7a63'],['A',80,'#2f8f5b'],['B',70,'#7d8a2c'],['C',55,'#c0862e'],['D',35,'#bf4a38'],['E',0,'#8f2f24']];
+function renderDist(){
+  const el=document.getElementById('gdist'); if(!el) return;
+  const cnt={}; DATA.forEach(r=>cnt[r.grade]=(cnt[r.grade]||0)+1);
+  const N=DATA.length;
+  const rows=GRADES.map(([g,cut,col],i)=>({g,col,lo:cut,hi:i===0?100:GRADES[i-1][1]-1,n:cnt[g]||0}));
+  const H=36, BASE=252, STEP=BASE/6;   // 6층이 빈틈없이 맞물려 하나의 삼각형
+  el.innerHTML=`<div class="pyr">${rows.map((r,i)=>{
+    const pct=Math.round(r.n/N*100);
+    const bot=STEP*(i+1), top=STEP*i;
+    const inset=(bot-top)/2/bot*100;
+    const shape=i===0 ? 'polygon(50% 0,100% 100%,0 100%)'
+      : `polygon(${inset.toFixed(2)}% 0,${(100-inset).toFixed(2)}% 0,100% 100%,0 100%)`;
+    return `<div class="pl2" style="height:${H}px">
+      <span class="pc2">${r.n?`${r.n}${t('개','')} · ${pct}%`:t('0개','0')}</span>
+      <span class="pw" style="width:${bot}px;height:${H}px;background:${r.col};opacity:${r.n?1:.32};clip-path:${shape}"
+        ><b style="transform:translateY(${i===0?'7px':'0'})">${r.g}</b></span>
+      <span class="pr">${r.g==='E'?`0–${r.hi}`:`${r.lo}–${r.hi}`}${t('점','')}</span>
+    </div>`;}).join('')}</div>`;
+}
+function openRepo(i){
+  const c=CLASSES.find(x=>x.k===ACT), list=inC(c), r=list[i]; if(!r) return;
+  const kk=KIND[r.kind];
+  document.getElementById('rdlg-h').innerHTML=
+    `<b>${r.name}</b><span class="g g${r.grade}" style="margin-left:2px">${r.gradeF||r.grade}</span>
+     <span style="font-weight:800;font-size:17px;margin-left:-2px">${r.score}</span>
+     <span style="margin-left:auto;display:flex;gap:8px;align-items:center">
+       ${r.ver?`<span class="ver">v${r.ver}</span>`:''}${kk?`<span class="chip">${t(kk[1],kk[0])}</span>`:''}
+     </span>`;
+  const peers=DATA.filter(x=>x.kind===r.kind).map(x=>x.score).sort((a,b)=>a-b);
+  const pmed=peers.length?(peers.length%2?peers[(peers.length-1)/2]:Math.round((peers[peers.length/2-1]+peers[peers.length/2])/2)):null;
+  document.getElementById('rdlg-b').innerHTML=
+    (pmed!=null?`<div class="peer">${t('동종 기준선','peer baseline')} — ${kk?t(kk[1],kk[0]):''} ${peers.length}${t('개 중앙','repos, median')} <b>${pmed}${t('점','')}</b>
+      · ${t('이 저장소','this repo')} <b>${r.score}</b> <span class="pd">${r.score>=pmed?'+':''}${r.score-pmed}</span></div>`:'')
+    +det(r);
+  document.getElementById('rdlg-f').innerHTML=
+    `<a class="ghlink" href="${r.url}" target="_blank" rel="noopener">
+       <span>${t('GitHub에서 보기','View on GitHub')}</span><span class="arw">↗</span></a>
+     <span class="ghpath">${r.sub?`${t('측정 경로','measured')} ${r.sub}`:''}${r.exw?`<br>${t('제외','excluded')} — ${r.exw}`:''}</span>`;
+  document.getElementById('rdlg').showModal();
+}
+function setLang(l){LANG=l;document.documentElement.setAttribute('data-lang',l);
+  document.querySelectorAll('[data-setlang]').forEach(b=>b.setAttribute('aria-pressed',String(b.getAttribute('data-setlang')===l)));
+  try{localStorage.setItem('cs-lang',l);}catch(e){} render(); renderDist();}
+document.addEventListener('click',e=>{
+  const L=e.target.closest('[data-setlang]'); if(L){setLang(L.getAttribute('data-setlang'));return;}
+  const T=e.target.closest('[data-tab]'); if(T){ACT=T.getAttribute('data-tab');render();return;}
+  const R=e.target.closest('[data-row]'); if(R){openRepo(parseInt(R.getAttribute('data-row'),10));return;}
+  if(e.target.closest('[data-close-r]')){document.getElementById('rdlg').close();return;}
+  if(e.target.tagName==='DIALOG'){e.target.close();return;}  // 백드롭 클릭
+  const S=e.target.closest('[data-scroll]'); if(S){document.querySelector(S.getAttribute('data-scroll')).scrollIntoView({behavior:'smooth'});return;}
+  if(e.target.closest('#gradeinfo')){document.getElementById('gdlg').showModal();return;}
+  if(e.target.closest('[data-close]')){document.getElementById('gdlg').close();return;}
+  const C=e.target.closest('[data-copy]'); if(C){navigator.clipboard?.writeText(C.getAttribute('data-copy'));
+    C.setAttribute('data-done','1');C.textContent=t('복사됨','copied');
+    setTimeout(()=>{C.removeAttribute('data-done');C.textContent='copy';},1400);return;}
+});
+(function(){let s;try{s=localStorage.getItem('cs-lang');}catch(e){}setLang(s||'ko');})();
+</script>
+</body>
+</html>

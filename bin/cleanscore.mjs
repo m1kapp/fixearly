@@ -27,6 +27,7 @@ const outDir = path.resolve(process.cwd(), getFlag("out") || "public");
 const wantDead = args.includes("--dead"); // 데드코드축(knip) 옵트인 — 느리므로 기본 off
 const wantBadge = args.includes("--badge"); // README·사이트 임베드용 SVG 배지 생성
 const wantMine = args.includes("--mine");   // O(n²) PR 후보 전체 덤프(손검증 파이프라인 입력)
+const wantReport = args.includes("--report") || !!getFlag("report"); // 한 장짜리 HTML 리포트
 const wantHotspots = args.includes("--hotspots"); // cog × git churn = "먼저 고칠 파일" 랭킹(git 이력 필요)
 
 // 등급 색 (라이트 기준) — 배지·임베드 공용
@@ -36,7 +37,7 @@ const GRADE_COLORS = { S: "#0f7a63", A: "#12915a", B: "#7d8a2c", C: "#c0862e", D
 function makeBadgeSvg(grade, score) {
   const left = "clean score";
   const right = `${grade} · ${score}`;
-  const color = GRADE_COLORS[grade] || "#888";
+  const color = GRADE_COLORS[String(grade).replace("+", "")] || "#888";
   const cw = 6.6; // 대략적 글자 폭(px, 11pt)
   const lw = Math.round(left.length * cw) + 16;
   const rw = Math.round(right.length * cw) + 18;
@@ -236,6 +237,16 @@ function countLines(content) {
   return { total, code };
 }
 
+// 줄 단위 "코드인가" 플래그 — 함수의 자기 줄수를 셀 때 쓴다.
+// 주석·빈 줄을 세면 문서가 두꺼운 코드가 불리해진다(실측: lodash runInContext가 자기줄
+// 10,580줄로 나왔는데 대부분이 중첩 함수 사이의 JSDoc이었다). 읽는 부담은 코드 줄이다.
+function codeLineFlags(content) {
+  return content.split("\n").map((line) => {
+    const t = line.trim();
+    return !!t && !t.startsWith("//") && !t.startsWith("*") && !t.startsWith("/*");
+  });
+}
+
 // 코드 청결도 분석 — 분기 밀도·파일 크기 기반 휴리스틱 (typescript 미설치 시 폴백)
 // 주석/문자열 안까지 세는 러프한 근사지만, 프로젝트 간 상대 비교엔 충분
 function analyzeQuality(content) {
@@ -271,6 +282,12 @@ function analyzeAstComplexity(ts, filePath, content) {
   const isFnLike = (n) =>
     ts.isFunctionDeclaration(n) || ts.isFunctionExpression(n) || ts.isArrowFunction(n) ||
     ts.isMethodDeclaration(n) || ts.isGetAccessor(n) || ts.isSetAccessor(n) || ts.isConstructorDeclaration(n);
+
+  // 코드 줄 누적합 — [a,b] 구간의 코드 줄 수를 O(1)로 얻는다.
+  const isCode = codeLineFlags(content);
+  const codePrefix = new Int32Array(isCode.length + 1);
+  for (let i = 0; i < isCode.length; i++) codePrefix[i + 1] = codePrefix[i] + (isCode[i] ? 1 : 0);
+  const codeLinesIn = (a, b) => codePrefix[Math.min(b, isCode.length)] - codePrefix[Math.max(0, a - 1)];
 
   const fnName = (n) => {
     if (n.name) return n.name.getText(sf);
@@ -390,11 +407,30 @@ function analyzeAstComplexity(ts, filePath, content) {
   const fns = [];
   const collect = (n) => {
     if (isFnLike(n) && (n.body || ts.isArrowFunction(n))) {
+      const startLine = sf.getLineAndCharacterOfPosition(n.getStart(sf)).line + 1;
+      const endLine = sf.getLineAndCharacterOfPosition(n.getEnd()).line + 1;
+      // 자기 줄수 = 전체 범위 − 직속 중첩 함수들이 차지한 줄. 중첩분을 빼지 않으면
+      // 모듈을 감싼 IIFE 하나가 파일 전체를 자기 길이로 신고한다(실측: typescript 52,715줄,
+      // lodash 17,251줄 — 둘 다 래퍼였다). 사람이 한 번에 읽는 양은 자기 몸통뿐이다.
+      let nestedCode = 0;
+      const codeOf = (x) => codeLinesIn(
+        sf.getLineAndCharacterOfPosition(x.getStart(sf)).line + 1,
+        sf.getLineAndCharacterOfPosition(x.getEnd()).line + 1);
+      const scanNested = (x) => {
+        if (x !== n && isFnLike(x)) { nestedCode += codeOf(x); return; } // 손자는 자식에 포함
+        ts.forEachChild(x, scanNested);
+      };
+      ts.forEachChild(n, scanNested);
       fns.push({
         name: fnName(n),
         cc: ccOf(n),
         cog: cognitiveOf(n),
-        line: sf.getLineAndCharacterOfPosition(n.getStart(sf)).line + 1,
+        line: startLine,
+        // 함수 길이 — 파일 크기 대신 "한 번에 읽어야 하는 양"의 직접 측정치.
+        // 파일 크기는 배치 관습(라이브러리=몰아넣기 vs 앱=쪼개기)에 좌우되고,
+        // 의미 없는 파일 분할로 조작된다. 함수 길이는 둘 다에 영향받지 않는다.
+        lines: Math.max(1, codeLinesIn(startLine, endLine) - nestedCode),
+        span: endLine - startLine + 1,
       });
     }
     ts.forEachChild(n, collect);
@@ -1437,16 +1473,44 @@ const NON_SOURCE_RE = /(\.(test|spec|test-d|bench|benchmark|stories|e2e)\.[tj]sx
 // 사람이 쓴 코드가 아니다. 실제 사례: next.js의 src/compiled/ 45MB(react-dom 개발빌드 여러 벌)가
 // 중복 82%·maxCog 997을 만들어 D 27을 찍게 했다 — 전부 벤더 코드였다.
 const VENDORED_RE = /\/(compiled|vendor|vendored|third[-_]party|generated|codegen|\.generated|node_modules)\//;
+// 배포물이 아닌 부속 디렉토리: 예제·데모·플레이그라운드·문서 사이트·빌드 스크립트.
+// 저장소에는 있지만 사용자가 설치하는 물건이 아니라, 점수에 섞이면 "이 라이브러리 코드가
+// 어떤 상태인가"라는 질문의 답을 흐린다(angular/packages/examples 6.4k줄 = 문서용 샘플).
+const NON_SHIPPED_RE = /\/(examples?|demos?|playground|sandbox|website|scripts)\//;
+// --exclude=pat1,pat2 — 모노레포에서 '측정 대상 산출물'이 아닌 하위 패키지 수동 제외.
+// 자동 판별 불가한 판단(별도 제품인 devtools 앱, 저장소에 포크해 넣은 남의 툴)에만 쓴다.
+// 각 사용처는 board-repos.json에 이유와 함께 기록된다 — 근거 없는 제외는 점수 세탁이다.
+const excludePats = (getFlag("exclude") || "").split(",").map((s) => s.trim()).filter(Boolean);
+const EXCLUDE_RES = excludePats.map((p) =>
+  new RegExp(p.replace(/[.+^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^/]*")));
+// 테스트 밀도(테스트줄 ÷ 프로덕션줄) — 점수에 절대 반영하지 않는 진단.
+// 왜 점수에 안 넣나: 테스트를 채점에 섞으면 지표가 뒤집힌다(실측 — vue D46 → B70).
+// 테스트는 길지만 단순해서 '복잡 함수 비율'의 분모만 불린다 = 트리비얼한 테스트를 많이
+// 쓰면 청결점수가 오르는 게이밍이 열린다. 그래서 채점에선 빼고, 양만 따로 센다.
+// 쓸모: 같은 복잡도라도 "두껍게 방어된 복잡함"과 "맨몸 복잡함"은 다른 물건이다.
+// (코퍼스 52개에서 점수와 상관 rho=0.04 — 점수가 못 보는 독립 축이라는 뜻)
+const TEST_FILE_RE = /(\.(test|spec|test-d)\.[tj]sx?$)|(\/(__tests__|tests?|e2e)\/)/;
+let testDensity = null;
+{
+  const testFiles = files.filter((f) => TEST_FILE_RE.test(f.replace(/\\/g, "/")));
+  let testLines = 0;
+  for (const f of testFiles) {
+    try { testLines += fs.readFileSync(f, "utf-8").split("\n").length; } catch { /* 읽기 실패는 무시 */ }
+  }
+  testDensity = { files: testFiles.length, lines: testLines, percent: null };
+}
 {
   const before = files.length;
   files = files.filter((f) => {
     const p = f.replace(/\\/g, "/");
-    return !NON_SOURCE_RE.test(p) && !VENDORED_RE.test(p);
+    return !NON_SOURCE_RE.test(p) && !VENDORED_RE.test(p) && !NON_SHIPPED_RE.test(p)
+      && !EXCLUDE_RES.some((re) => re.test(p));
   });
   const dropped = before - files.length;
   if (dropped > 0) {
-    console.log(`  비-프로덕션·벤더 파일(테스트·벤치·스토리·타입선언·compiled/vendor) ${dropped}개 제외 (${files.length}개 분석)\n`);
+    console.log(`  비-프로덕션·벤더 파일(테스트·벤치·스토리·타입선언·compiled/vendor·예제/스크립트) ${dropped}개 제외 (${files.length}개 분석)\n`);
   }
+  if (excludePats.length) console.log(`  수동 제외(--exclude): ${excludePats.join(", ")}\n`);
 }
 
 // 미니파이·번들 파일 제외: 저장소에 커밋된 벤더 번들·시드 에셋은 git 추적 대상이라
@@ -1556,6 +1620,8 @@ const avgFileLines = files.length > 0 ? Math.round(codeLines / files.length) : 0
 let qualityScore;
 let cc = null;
 let cognitive = null;
+let fnLength = null;   // {avg,p90,max,over40,over80,worst} — 함수 길이 분포
+let scoreInputs = null; // 채점 입력값 원본(감사·재보정용)
 let duplication = null;
 let io = null;
 let renderGates = null;
@@ -1584,7 +1650,29 @@ if (ts && allFns.length > 0) {
     max: maxCog,
     over15: cogOver15.length,
     over25: cogOver25.length,
-    worst: byCog.slice(0, 5).map(({ name, cog, cc, file, line }) => ({ name, cog, cc, file, line })),
+    top10avg: Math.round(byCog.slice(0, 10).reduce((a, f) => a + f.cog, 0) / Math.min(10, byCog.length) * 10) / 10,
+    worst: byCog.slice(0, 10).map(({ name, cog, cc, file, line }) => ({ name, cog, cc, file, line })),
+  };
+
+  // 함수 길이 분포 — "한 번에 읽어야 하는 양". 파일 크기의 대체 후보.
+  // 파일 크기는 배치 관습에 좌우되고 의미 없는 분할로 조작되지만(70개 실측: 앱 중앙 87점
+  // vs 라이브러리 80 — 앱이 쪼개는 관습을 따르기 때문), 함수 길이는 둘 다에 중립이다.
+  const jsxAware = (file) => (/\.(tsx|jsx)$/.test(file || "") ? 60 : 40);
+  const byLen = [...allFns].sort((a, b) => (b.lines || 0) - (a.lines || 0));
+  fnLength = {
+    avg: Math.round((allFns.reduce((s, f) => s + (f.lines || 0), 0) / allFns.length) * 10) / 10,
+    p90: byLen[Math.floor((byLen.length - 1) * 0.1)].lines || 0,
+    max: byLen[0].lines || 0,
+    // 긴 함수 임계는 파일 종류로 나눈다: JSX/TSX는 선언적 마크업이라 같은 복잡도에서 줄이 길다.
+    // (실측: 앱 코퍼스가 40줄 단일 임계에서만 −14점 — 로직이 아니라 마크업 때문에 맞는 벌점이었다)
+    over40: byLen.filter((f) => (f.lines || 0) > jsxAware(f.file)).length,
+    over80: byLen.filter((f) => (f.lines || 0) > jsxAware(f.file) * 2).length,
+    top10avg: Math.round(byLen.slice(0, 10).reduce((a, f) => a + (f.lines || 0), 0) / Math.min(10, byLen.length) * 10) / 10,
+    // 분모 후보 비교용 — 콜백 같은 자잘 함수가 비율을 얼마나 희석하는지 본다
+    countAll: byLen.length,
+    count5: byLen.filter((f) => (f.lines || 0) >= 5).length,
+    count10: byLen.filter((f) => (f.lines || 0) >= 10).length,
+    worst: byLen.slice(0, 10).map(({ name, lines, cog, file, line }) => ({ name, lines, cog, file, line })),
   };
 
   duplication = analyzeDuplication(ts, fileContents);
@@ -1603,6 +1691,18 @@ if (ts && allFns.length > 0) {
   const over15Pct = (cogOver15.length / fnDenom) * 100;
   const over25Pct = (cogOver25.length / fnDenom) * 100;
   const longFileSeverityPct = (longFileSeverity / files.length) * 100;
+  const fnOver40Pct = (fnLength.over40 / fnDenom) * 100;
+  scoreInputs = {
+    over15Pct: Math.round(over15Pct * 100) / 100,
+    over25Pct: Math.round(over25Pct * 100) / 100,
+    p90Cog: cognitive.p90, maxCog,
+    dupPct: duplication.percent,
+    longFileSeverityPct: Math.round(longFileSeverityPct * 100) / 100,
+    avgFileLines,
+    fnOver40Pct: Math.round(fnOver40Pct * 100) / 100,
+    fnP90: fnLength.p90, fnMax: fnLength.max,
+    fnTop10: fnLength.top10avg, cogTop10: cognitive.top10avg,
+  };
   // io = 루프 안 파일읽기 + DB/HTTP N+1(순차 await). 파일당 비율.
   // renderGates(렌더 인질)는 실측상 존경 OSS 17종서 0회 발동 = 변별력 없어 점수에서 제외.
   // (진단 출력·JSON엔 유지 — React 앱에서 참고용.)
@@ -1612,13 +1712,35 @@ if (ts && allFns.length > 0) {
     // 볼륨 재보정(Goodhart 내성): 예전엔 maxCog 단일항이 12점까지 좌우해, '안정적이라 아무도 안 만지는
     // 최악 함수 하나'만 고쳐도 점수가 크게 올랐다(측정을 게임). 이제 분포(over15·over25·p90)가 주도한다.
     // 분포는 함수 하나로 못 흔든다 — 올리려면 '여러 복잡 함수'를 실제로 줄여야 한다.
-    - Math.min(12, Math.max(0, over15Pct - 3.1) * 2)  // cog15+ 비율 — 코퍼스 중앙(3.1%)까지 유예, 초과분만 감점
-    - Math.min(12, Math.max(0, over25Pct - 1.5) * 3)  // cog25+ 비율 — 1.5%까지 유예
+    - Math.min(12, Math.max(0, over15Pct - 3.0) * 2)  // cog15+ 비율 — 코퍼스 중앙(3.0%)까지 유예, 초과분만 감점
+    - Math.min(12, Math.max(0, over25Pct - 1.2) * 3)  // cog25+ 비율 — 1.2%까지 유예
     - Math.min(9, Math.max(0, Math.log2(Math.max(1, cognitive.p90) / 6)) * 3.0) // p90 복잡도(분포). 유예=코퍼스 중앙 6 — 그 이하 0점. /12였을 땐 최대치가 15라 항이 거의 죽어 변별을 못 했다.
-    - Math.min(4, Math.max(0, Math.log2(Math.max(1, maxCog) / 120)) * 2.0) // 최악 함수: 잔여항. 유예=코퍼스 중앙 120 — /15였을 땐 전원이 캡의 3/4를 먹어 변별이 없었다.
-    - Math.min(16, Math.max(0, duplication.percent - 8) * 1.2) // 중복: 8% 초과분(구조적 반복 관용)
-    - Math.min(13, longFileSeverityPct * 1.3)       // 200줄+ 파일 (검증: 파일크기가 가장 강한 결함신호)
-    - Math.min(14, Math.max(0, avgFileLines - 120) / 5) // 평균 파일 길이 (검증 근거로 볼륨↑)
+    // 최악값 1개 → 상위 10개 평균. 최악 하나만 고치면 다음 순위가 즉시 새 최악이 되어
+    // "하나 고치고 끝"이 최적 전략이 됐다(실측: 555줄 함수 고치면 +0.99점, 그 다음부터 ~0).
+    // 상위 10개 평균은 미분값이 0이 되지 않는다 — 10개를 실제로 줄여야 계속 내려간다.
+    // 유예=코퍼스 중앙(복잡도 65 · 길이 174줄), 기울기는 코퍼스 p90에서 캡에 닿게.
+    - Math.min(4, Math.max(0, Math.log2(Math.max(1, cognitive.top10avg) / 65)) * 2.66)
+    // 중복 볼륨 축소(16→9). 70개 코퍼스에서 중복%와 점수의 스피어만이 −0.11 — 사실상 무상관인데
+    // 캡만 최대였다. 분포가 롱테일이라(valibot 43.5·drizzle 36.2·hono 23.2 vs 나머지 한 자리)
+    // 대부분 저장소엔 0점 기여하고 소수만 벼락처럼 때린다. 채점기가 아니라 이상치 탐지기다.
+    - Math.min(9, Math.max(0, duplication.percent - 8) * 1.2)
+    // ── 크기 축: 파일 크기(조작 가능) 볼륨을 줄이고, 함수 길이(조작 불가)로 무게를 옮긴다 ──
+    // 근거: 같은 코드를 함수 경계에서 6파일로 기계 분할하면 옛 공식은 B71 → S98 (+27점).
+    // 코드는 한 줄도 안 변했는데 점수가 뛴다. 파일 경계는 배치 관습이고, 함수 경계는 의미 단위다.
+    // 파일 축을 0으로 두진 않는다 — 70개 실측에서 파일 평균줄과 함수 길이의 상관은 +0.16,
+    // 즉 서로 다른 것을 재고 있어 정보가 겹치지 않는다. 다만 조작 가능한 축에 큰 무게를 줄 순 없다.
+    - Math.min(3, longFileSeverityPct * 1.3)        // 200줄+ 파일 (13 → 3)
+    - Math.min(5, Math.max(0, avgFileLines - 120) / 5) // 평균 파일 길이 (14 → 5)
+    // 함수 길이 = "한 번에 읽어야 하는 양". 중첩 함수·주석 제외한 자기 코드 줄 기준.
+    // 유예는 70개 코퍼스 중앙(40줄 초과 비율 4.3% · p90 23줄) — 그 이하 감점 0.
+    // 긴 함수 비율만 유일하게 '유예 없음'이다. 다른 축은 코퍼스 중앙까지 봐주지만, 여기서 그러면
+    // 관습을 정당화하게 된다("남들도 4%는 길다"). 그리고 파일 크기 축이 하던 광범위 감점 역할을
+    // 조작 불가능한 축으로 옮기려면 이 항이 대부분 저장소에 조금씩 닿아야 한다.
+    // 기울기는 코퍼스 p90(6.9%)에서 캡에 닿도록 잡았다. 임계는 JSX 60줄 / 그 외 40줄.
+    - Math.min(16, fnOver40Pct * 1.95)
+    // 함수 길이 p90·최장 함수: 유예=코퍼스 중앙(23줄·304줄), 로그 스케일 잔여항
+    - Math.min(6, Math.max(0, Math.log2(Math.max(1, fnLength.p90) / 23)) * 11.0)
+    - Math.min(4, Math.max(0, Math.log2(Math.max(1, fnLength.top10avg) / 174)) * 3.60)
     // io(루프 IO·N+1)는 점수에서 뺐다: 재시도 루프·커서 페이지네이션처럼 '순차가 필수'인
     // 코드를 구분하려면 사람 검증이 필요한데(PATTERNS.md), 사람이 필요한 축을 자동 채점에
     // 넣으면 작은 저장소가 통째로 무너진다(파일 1개·사이트 2곳 = 만렙 감점). 진단으로만 보고한다.
@@ -1656,13 +1778,22 @@ if (wantDead) {
 // 상단(S/A)은 선별적으로 유지하되 하단은 넉넉히 — 유명 OSS 52종 어디도 D 아래로 떨어지지 않는다.
 // '점수는 낮아도 등급은 최소 C', D 이하는 구조가 진짜 무너진 경우만.
 // 큰 서비스/앱은 구조 지표상 원래 불리하므로, 커트를 분포에 붙여 과도한 저평가를 막는다.
-const qualityGrade =
+const qualityBase =
   qualityScore >= 90 ? "S" :
   qualityScore >= 80 ? "A" :
   qualityScore >= 70 ? "B" :
   qualityScore >= 55 ? "C" :
   qualityScore >= 35 ? "D" :
   "E";                         // 사실상 방치
+// 플러스 — 구간 상위 40%. C 구간이 15점이나 되어서 같은 C 안에서 개선해도 라벨이 안 움직였다.
+// 색·분포·비교는 기본 글자(S~E) 그대로 쓰고, 표시만 세분한다.
+// S 구간만 S / SS / SSS 3단, 나머지는 상위 40%에 + 를 붙인다.
+// 최상단이 "S+"면 심심하고, 만점권(mitt·rxjs·execa 100~98)과 90점을 같은 라벨로 묶기도 아깝다.
+const PLUS_AT = { A: 86, B: 76, C: 64, D: 47, E: 21 };
+const S_CUTS = [[97, "SSS"], [93, "SS"], [0, "S"]];
+const qualityGrade = qualityBase === "S"
+  ? S_CUTS.find(([lo]) => qualityScore >= lo)[1]
+  : (qualityScore >= PLUS_AT[qualityBase] ? qualityBase + "+" : qualityBase);
 
 // 절약량 계산
 // 같은 소스 파일에서 여러 export를 쓰더라도 파일 LOC는 한 번만 카운트
@@ -1711,13 +1842,17 @@ const stats = {
   quality: {
     engine: cc ? "ast2" : "regex", // ast2 = cognitive complexity + 중복 감지
     score: qualityScore,
-    grade: qualityGrade,
+    grade: qualityGrade,        // 표시용 (+ 포함)
+    gradeBase: qualityBase,     // 색·분포·비교용
     dead,                 // {deadFiles, keptFiles, unusedExports, filePct, exportPct, penalty, worst[]} — knip(@keep 제외), --dead 시만
     cognitive,            // {avg, p90, max, over15, over25, worst[5]} — 중첩 가중 복잡도
+    fnLength,             // {avg,p90,max,over40,over80,worst[5]} — 함수 길이 분포(읽는 단위 크기)
+    scoreInputs,          // 채점에 실제로 들어간 비율값 — 보정·재현·감사용
     duplication,          // {percent, blocks, worstFiles, worstBlocks} — 토큰 중복 밀도
     io,                   // {readers, uncachedReaders, loopSites, uncachedLoopSites, worst} — 루프 안 파일 읽기
     textbook,             // {awaitInForEach, spreadAccumulator, regexInLoop} — 교과서 결함(진단 전용)
     typeSafety,           // {anyType,asAny,nonNull,tsIgnore} — 타입 위생(진단 전용, 점수 미반영)
+    testDensity,          // {files, lines, percent} — 테스트 두께(진단 전용, 점수 미반영 — 섞으면 지표가 뒤집힌다)
     quadratic,            // {sites, worst[], files[]} — 루프 안 O(n²) 배열 조회(진단 전용, 점수 미반영)
     renderGates,          // {hostages, worst} — fetch 하나가 무관한 UI까지 막고 있는 자리
     cc,                   // {functions, avg, p90, max, over10, over20, worst[5]} — McCabe (참고용)
@@ -1835,6 +1970,14 @@ if (textbook) {
     for (const w of t.regexInLoop.worst) console.log(`    ${w.file}:${w.line}`);
   }
 }
+if (testDensity) {
+  testDensity.percent = codeLines > 0 ? Math.round((testDensity.lines / codeLines) * 1000) / 10 : null;
+  if (testDensity.files > 0) {
+    // 코퍼스 52개 중앙 102% — 아래면 '맨몸 복잡함' 쪽, 위면 '방어된 복잡함' 쪽으로 읽는다.
+    const rel = testDensity.percent >= 102 ? "코퍼스 중앙(102%) 이상" : "코퍼스 중앙(102%) 미만";
+    console.log(`  테스트 두께: 프로덕션 ${codeLines.toLocaleString()}줄 대비 테스트 ${testDensity.lines.toLocaleString()}줄 = ${testDensity.percent}% (${testDensity.files}개 파일, ${rel}) — 점수 미반영`);
+  }
+}
 if (typeSafety && typeSafety.tsFiles > 0) {
   const t = typeSafety;
   const bits = [];
@@ -1868,7 +2011,8 @@ if (quadratic && quadratic.sites > 0) {
 
 // --hotspots: cog × git churn = "먼저 고칠 파일". 점수(무상태)와 별개 — 시간축(변경빈도)이 필요.
 // 복잡함(변경당 비쌈) × 자주변경(빈도) = 리팩터 ROI 최대. 안정적 복잡함수는 낮게(안 건드리므로).
-if (wantHotspots && ts && allFns.length > 0) {
+let hotspotRanked = [];
+if ((wantHotspots || wantReport) && ts && allFns.length > 0) {
   // per-file 최악 cog. allFns.file 은 cwd 기준이라 srcDir 기준으로 정규화해 churn 키와 맞춘다.
   const srcAbs = path.resolve(srcDir);
   const fileMaxCog = new Map();
@@ -1893,13 +2037,15 @@ if (wantHotspots && ts && allFns.length > 0) {
   } catch { /* git 없음/이력 없음 */ }
 
   if (churn.size === 0) {
-    console.log(`\n  핫스팟: git 이력을 읽지 못했습니다 (git repo가 아니거나 --dir 에 커밋 이력 없음).`);
+    if (wantHotspots) console.log(`\n  핫스팟: git 이력을 읽지 못했습니다 (git repo가 아니거나 --dir 에 커밋 이력 없음).`);
   } else {
     const ranked = [...fileMaxCog.entries()]
       .map(([file, m]) => ({ file, ...m, churn: churn.get(file) || 0 }))
       .filter((r) => r.churn >= 2)
       .map((r) => ({ ...r, hot: r.cog * Math.log1p(r.churn) }))
       .sort((a, b) => b.hot - a.hot);
+    hotspotRanked = ranked;
+    if (!wantHotspots) { /* 리포트 전용 호출 — 콘솔 출력 생략 */ } else {
     console.log(`\n  ── --hotspots: 복잡 × 변경빈도 = 먼저 고칠 파일 (점수 아닌 리팩터 우선순위) ──`);
     console.log(`  ${"maxCog".padStart(6)} ${"churn".padStart(5)}   worst함수 · 파일`);
     for (const r of ranked.slice(0, 12)) {
@@ -1919,6 +2065,7 @@ if (wantHotspots && ts && allFns.length > 0) {
       fs.writeFileSync(hp, JSON.stringify(ranked.slice(0, 50), null, 2));
       console.log(`\n  ✓ 핫스팟 저장 → ${hp}`);
     } catch {}
+    }
   }
 }
 if (dead) {
@@ -1965,3 +2112,74 @@ ${snippets}`;
 }
 
 console.log(`\n  저장됨 → ${path.relative(process.cwd(), outPath)}\n`);
+
+// 이력 저장 — "고쳤는데 점수가 안 움직인다"의 답은 점수 민감도가 아니라 변화량이다.
+// 점수 축을 민감하게 만들면 게이밍 민감도도 같은 계수로 오른다(실측: 분모를 조이면 개당 이득 3배,
+// 쓰레기 헬퍼로 얻는 이득도 3배). 그래서 점수는 둔감하게 두고, 체감은 자기 이력과의 비교로 준다.
+// 자기 이력은 게이밍이 안 된다 — 헬퍼를 양산해도 "긴 함수 개수"는 줄지 않는다.
+const HISTORY_FILE = ".cleanscore-history.json";
+// 채점 규칙 버전. 유예값·기울기·캡을 바꾸면 이 값을 올려야 한다 —
+// 그러지 않으면 규칙이 바뀐 뒤의 점수를 예전 점수와 나란히 놓게 되고, 진행도가 거짓말을 한다.
+const SCORING_VERSION = "v6";
+let history = [];
+let previous = null;
+{
+  const hp = path.resolve(process.cwd(), HISTORY_FILE);
+  try { history = JSON.parse(fs.readFileSync(hp, "utf-8")); } catch { history = []; }
+  if (!Array.isArray(history)) history = [];
+  const dir = path.relative(process.cwd(), path.resolve(srcDir)) || ".";
+  const mine = history.filter((h) => h.dir === dir);
+  previous = mine.length ? mine[mine.length - 1] : null;
+  const snap = {
+    dir, at: new Date().toISOString().slice(0, 19).replace("T", " "), rules: SCORING_VERSION,
+    score: qualityScore, grade: qualityGrade,
+    files: files.length, codeLines,
+    ...(ts && scoreInputs ? {
+      fnOver40: fnLength.over40, fnP90: fnLength.p90, fnMax: fnLength.max, fnTop10: fnLength.top10avg,
+      cogOver15: cognitive.over15, cogOver25: cognitive.over25, cogMax: cognitive.max, cogTop10: cognitive.top10avg,
+      dup: duplication.percent, avgFileLines, longFiles,
+      quad: (quadratic || {}).sites || 0, functions: totalFunctions,
+    } : {}),
+  };
+  history.push(snap);
+  if (history.length > 40) history = history.slice(-40);
+  try { fs.writeFileSync(hp, JSON.stringify(history, null, 2)); } catch { /* 쓰기 실패는 무시 */ }
+  if (previous && previous.rules && previous.rules !== SCORING_VERSION) {
+    console.log(`  지난 측정은 채점 규칙 ${previous.rules}로 잰 값입니다 (현재 ${SCORING_VERSION}) — 점수 비교는 무효, 원지표만 비교하세요.`);
+  }
+  if (previous) {
+    const d = qualityScore - previous.score;
+    const sign = d > 0 ? "+" : "";
+    const stale = previous.rules && previous.rules !== SCORING_VERSION;
+    console.log(`  지난 측정(${previous.at}${stale ? `, 규칙 ${previous.rules}` : ""}) 대비: ${previous.grade} ${previous.score} → ${qualityGrade} ${qualityScore} (${sign}${d}점)${stale ? " ⚠ 규칙 변경됨" : ""}`);
+  } else {
+    console.log(`  이력 시작 — ${HISTORY_FILE} 에 기록했습니다. 다음 실행부터 변화량을 보여줍니다.`);
+  }
+}
+
+// --report : 한 장짜리 HTML 리포트. "어디쯤인가 + 무엇부터 고칠까" 두 질문에만 답한다.
+// 코퍼스(유명 OSS 70개) 기준선을 패키지에 동봉해 오프라인에서도 비교가 된다.
+if (wantReport && !stats.quality.scoreInputs) {
+  // regex 폴백에선 축 지표가 없다 — 반쪽 리포트를 내놓는 것보다 이유를 말하는 게 낫다.
+  console.error("  리포트는 AST 모드에서만 생성됩니다 (typescript 필요). npx로 실행하면 자동 설치되고,");
+  console.error("  이미 설치본을 쓰신다면 대상 프로젝트나 이 도구에 typescript를 설치하세요.\n");
+} else if (wantReport) {
+  try {
+    const { renderReport } = await import("./report.mjs");
+    const here = path.dirname(new URL(import.meta.url).pathname);
+    const corpusPath = path.join(here, "..", "data", "corpus.json");
+    const corpus = JSON.parse(fs.readFileSync(corpusPath, "utf-8"));
+    const reportPath = path.resolve(process.cwd(), getFlag("report") || "cleanscore-report.html");
+    const projectName = path.basename(path.resolve(srcDir)) === "src"
+      ? path.basename(path.dirname(path.resolve(srcDir))) + "/src"
+      : path.basename(path.resolve(srcDir));
+    const html = renderReport({
+      projectName, quality: stats.quality, source: stats.source, corpus, hotspots: hotspotRanked,
+      previous, history: history.filter((h) => h.dir === (path.relative(process.cwd(), path.resolve(srcDir)) || ".")),
+    });
+    fs.writeFileSync(reportPath, html);
+    console.log(`  ✓ 리포트 → ${path.relative(process.cwd(), reportPath)}  (브라우저로 열어보세요)\n`);
+  } catch (e) {
+    console.error(`  리포트 생성 실패: ${e.message}`);
+  }
+}
