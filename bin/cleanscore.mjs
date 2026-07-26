@@ -27,6 +27,7 @@ const outDir = path.resolve(process.cwd(), getFlag("out") || "public");
 const wantDead = args.includes("--dead"); // 데드코드축(knip) 옵트인 — 느리므로 기본 off
 const wantBadge = args.includes("--badge"); // README·사이트 임베드용 SVG 배지 생성
 const wantMine = args.includes("--mine");   // O(n²) PR 후보 전체 덤프(손검증 파이프라인 입력)
+const wantHotspots = args.includes("--hotspots"); // cog × git churn = "먼저 고칠 파일" 랭킹(git 이력 필요)
 
 // 등급 색 (라이트 기준) — 배지·임베드 공용
 const GRADE_COLORS = { "A+": "#12915a", A: "#12915a", B: "#b6841a", C: "#d4701a", D: "#cb4436" };
@@ -1766,6 +1767,62 @@ if (quadratic && quadratic.sites > 0) {
     }
     const minePath = path.join(outDir, "quadratic-candidates.json");
     try { fs.writeFileSync(minePath, JSON.stringify(list, null, 2)); console.log(`  ✓ 후보 목록 저장 → ${minePath}`); } catch {}
+  }
+}
+
+// --hotspots: cog × git churn = "먼저 고칠 파일". 점수(무상태)와 별개 — 시간축(변경빈도)이 필요.
+// 복잡함(변경당 비쌈) × 자주변경(빈도) = 리팩터 ROI 최대. 안정적 복잡함수는 낮게(안 건드리므로).
+if (wantHotspots && ts && allFns.length > 0) {
+  // per-file 최악 cog. allFns.file 은 cwd 기준이라 srcDir 기준으로 정규화해 churn 키와 맞춘다.
+  const srcAbs = path.resolve(srcDir);
+  const fileMaxCog = new Map();
+  for (const f of allFns) {
+    const key = path.relative(srcAbs, path.resolve(process.cwd(), f.file));
+    if (key.startsWith("..")) continue;
+    const cur = fileMaxCog.get(key);
+    if (!cur || f.cog > cur.cog) fileMaxCog.set(key, { cog: f.cog, name: f.name, line: f.line });
+  }
+  // git churn (파일별 커밋 터치 수). 이력 없으면 스킵.
+  const churn = new Map();
+  try {
+    const root = execFileSync("git", ["-C", srcDir, "rev-parse", "--show-toplevel"], { encoding: "utf-8" }).trim();
+    const rel = path.relative(root, path.resolve(srcDir));
+    const log = execFileSync("git", ["-C", root, "log", "--no-merges", "--pretty=format:", "--name-only", "--", rel || "."],
+      { encoding: "utf-8", maxBuffer: 256 * 1024 * 1024 });
+    for (const line of log.split("\n")) {
+      const p = line.trim(); if (!p) continue;
+      const r = path.relative(path.resolve(srcDir), path.resolve(root, p));
+      if (r && !r.startsWith("..")) churn.set(r, (churn.get(r) || 0) + 1);
+    }
+  } catch { /* git 없음/이력 없음 */ }
+
+  if (churn.size === 0) {
+    console.log(`\n  핫스팟: git 이력을 읽지 못했습니다 (git repo가 아니거나 --dir 에 커밋 이력 없음).`);
+  } else {
+    const ranked = [...fileMaxCog.entries()]
+      .map(([file, m]) => ({ file, ...m, churn: churn.get(file) || 0 }))
+      .filter((r) => r.churn >= 2)
+      .map((r) => ({ ...r, hot: r.cog * Math.log1p(r.churn) }))
+      .sort((a, b) => b.hot - a.hot);
+    console.log(`\n  ── --hotspots: 복잡 × 변경빈도 = 먼저 고칠 파일 (점수 아닌 리팩터 우선순위) ──`);
+    console.log(`  ${"maxCog".padStart(6)} ${"churn".padStart(5)}   worst함수 · 파일`);
+    for (const r of ranked.slice(0, 12)) {
+      console.log(`  ${String(r.cog).padStart(6)} ${String(r.churn).padStart(5)}   ${r.name}():${r.line}  ${r.file}`);
+    }
+    // 안정적 복잡함수(놔둘 것) — cog 높은데 churn 적음
+    const stable = [...fileMaxCog.entries()]
+      .map(([file, m]) => ({ file, ...m, churn: churn.get(file) || 0 }))
+      .filter((r) => r.cog >= 60 && r.churn <= 2)
+      .sort((a, b) => b.cog - a.cog).slice(0, 3);
+    if (stable.length) {
+      console.log(`\n  놔둘 것 (복잡하지만 안정 — churn 낮아 리팩터 ROI 낮음):`);
+      for (const r of stable) console.log(`    cog ${r.cog} churn ${r.churn}  ${r.name}()  ${r.file}`);
+    }
+    try {
+      const hp = path.join(outDir, "hotspots.json");
+      fs.writeFileSync(hp, JSON.stringify(ranked.slice(0, 50), null, 2));
+      console.log(`\n  ✓ 핫스팟 저장 → ${hp}`);
+    } catch {}
   }
 }
 if (dead) {
