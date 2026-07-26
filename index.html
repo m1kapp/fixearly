@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
-<title>cleanscore — 코드 청결점수 CLI</title>
+<title>fixearly — 일찍 고치면 싸다 · JS/TS 변경비용 측정 CLI</title>
 <style>
 /* Hallmark · pre-emit critique: P5 H5 E4 S5 R4 V5
  * Hallmark · macrostructure: Workbench · nav: N1b · footer: Ft4 · genre: modern-minimal
@@ -255,7 +255,7 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
 <body>
 <nav class="nav">
   <div class="in">
-    <div class="brand">clean<span>score</span></div>
+    <div class="brand">fix<span>early</span></div>
     <div class="navlinks">
       <a href="#how"><span class="ko">쓰는 법</span><span class="en">How it works</span></a>
       <a href="#report"><span class="ko">리포트</span><span class="en">report</span></a>
@@ -281,8 +281,8 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
     <p class="sub en">The question isn't whether the code is pretty — it's <b>what the next change will cost</b>. It points at the files and lines where that debt piled up, and grades it <b>S–E</b> against 70 well-known repos of the same size and kind.</p>
 
     <div class="cmdrow">
-      <div class="cmd"><span class="dollar">$</span><span id="cmdtext">npx cleanscore --dir=src</span>
-        <button class="copy" data-copy="npx cleanscore --dir=src">copy</button></div>
+      <div class="cmd"><span class="dollar">$</span><span id="cmdtext">npx fixearly --dir=src</span>
+        <button class="copy" data-copy="npx fixearly --dir=src">copy</button></div>
       <button class="ghost" data-scroll="#board"><span class="ko">70개 결과 보기 ↓</span><span class="en">See 70 results ↓</span></button>
     </div>
     <div class="herometa">
@@ -322,7 +322,7 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
     <p class="lead ko">빌드 산출물·테스트·벤더 파일은 알아서 제외한다. 빈 파일로 점수를 부풀리는 것도 막는다.</p>
     <p class="lead en">Build output, tests, and vendored files are excluded automatically — and padding with empty files won't inflate the score.</p>
     <figure>
-<pre><span class="d">$</span> <b>npx cleanscore --dir=packages/vite/src</b>
+<pre><span class="d">$</span> <b>npx fixearly --dir=packages/vite/src</b>
 
   <span class="d">git 추적 파일만 분석 — 빌드산출물 0개 제외 (382개 대상)</span>
   <span class="d">비-프로덕션·벤더 파일 249개 제외 (133개 분석)</span>
@@ -348,7 +348,7 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
     <p class="lead ko">크기 지표가 원리상 못 보는 결함을 따로 짚는다. 점수엔 넣지 않는다 — 이건 채점이 아니라 <b>작업 목록</b>이다.</p>
     <p class="lead en">Defects a size metric can't see, listed separately. They never touch the score — this is a <b>work list</b>, not a grade.</p>
     <figure>
-<pre><span class="d">$</span> <b>npx cleanscore --dir=src --mine</b>
+<pre><span class="d">$</span> <b>npx fixearly --dir=src --mine</b>
 
   <span class="r">O(n²) 배열 조회: 71곳</span> (PR후보 67곳 · backend 67 / frontend 0 / test 4)
   <span class="d">루프 안 선형 탐색 — Map/Set으로 O(n). 점수 미반영.</span>
@@ -371,7 +371,7 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
     <p class="lead ko">git 이력을 읽어 <b>복잡도 × 변경빈도</b>로 정렬한다. 제일 복잡한 파일이 아니라, <b>복잡한데 매주 만지는</b> 파일이 답이다. 안 건드리는 파일은 놔두라고 말해준다.</p>
     <p class="lead en">Reads git history and ranks by <b>complexity × churn</b>. The answer isn't the most complex file — it's the complex one you touch every week. It also tells you what to leave alone.</p>
     <figure>
-<pre><span class="d">$</span> <b>npx cleanscore --dir=src --hotspots</b>
+<pre><span class="d">$</span> <b>npx fixearly --dir=src --hotspots</b>
 
   <span class="d">── 복잡 × 변경빈도 = 먼저 고칠 파일 ──</span>
   maxCog churn   worst함수 · 파일
@@ -394,11 +394,11 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
     <p class="lead ko"><code>--report</code>는 HTML 한 장을 뽑는다 — 같은 체급 오픈소스 안에서 <b>내 위치</b>, 축별 좌표, <b>무엇부터 고칠지 파일·줄</b>, 그리고 각 항목마다 <b>코딩 에이전트에 그대로 붙여넣는 작업 지시문</b>. 측정할 때마다 이력이 쌓여서 <b>지난번 대비 변화</b>도 같이 나온다. 외부 요청 0 — 파일 하나로 끝난다.</p>
     <p class="lead en"><code>--report</code> writes a single HTML page: where you sit inside your weight class, your position on each axis, <b>what to fix with file and line</b>, and a <b>ready-to-paste work order</b> for each item. Every run appends to a local history, so you also get the delta since last time. Zero external requests.</p>
     <figure>
-<pre><span class="d">$</span> <b>npx cleanscore --dir=src --report</b>
+<pre><span class="d">$</span> <b>npx fixearly --dir=src --report</b>
 
   청결도: <b>B (73점)</b> — 함수 11,000개, cog15+ 293개, 중복 5.5%
   지난 측정(2026-07-20 09:00) 대비: <span class="d">C 69 →</span> <b>B 73</b> <span class="g">(+4점)</span>
-  <span class="g">✓</span> 리포트 → cleanscore-report.html
+  <span class="g">✓</span> 리포트 → fixearly-report.html
 
   <span class="d">── 리포트 안에 ──</span>
   어디쯤인가     헤비급 11개 중 <b>6위</b> <span class="d">(체급 중앙 73점)</span>
@@ -504,15 +504,15 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
     <h2 class="ko">한 줄이면 끝난다.</h2>
     <h2 class="en">It's one line.</h2>
     <div class="cmdrow">
-      <div class="cmd"><span class="dollar">$</span><span>npx cleanscore --dir=src</span>
-        <button class="copy" data-copy="npx cleanscore --dir=src">copy</button></div>
+      <div class="cmd"><span class="dollar">$</span><span>npx fixearly --dir=src</span>
+        <button class="copy" data-copy="npx fixearly --dir=src">copy</button></div>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="w cols">
-    <div><b>cleanscore</b><br>
+    <div><b>fixearly</b><br>
       <span class="ko">JS · TS · JSX · TSX 정적 분석</span><span class="en">static analysis for JS · TS · JSX · TSX</span><br>
       <span class="ko">타입체커 불필요</span><span class="en">no type-checker required</span></div>
     <div><b><span class="ko">플래그</span><span class="en">flags</span></b><br>

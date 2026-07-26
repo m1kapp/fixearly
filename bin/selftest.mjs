@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * cleanscore selftest — 엔진 내부 순수함수의 회귀 테스트.
+ * fixearly selftest — 엔진 내부 순수함수의 회귀 테스트.
  *
- * cleanscore.mjs 는 실행 스크립트(import 시 바로 분석을 돈다)라 내부 함수를 export 하지 않는다.
+ * fixearly.mjs 는 실행 스크립트(import 시 바로 분석을 돈다)라 내부 함수를 export 하지 않는다.
  * 그래서 소스에서 `cognitiveOf`·`isFnLike` 본문만 뽑아 격리 실행한다.
  * 목적: SonarJS S3776(인지 복잡도) 산식이 정본 값과 어긋나지 않는지 고정한다.
  *
@@ -14,7 +14,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const src = fs.readFileSync(path.join(ROOT, "bin", "cleanscore.mjs"), "utf8");
+const src = fs.readFileSync(path.join(ROOT, "bin", "fixearly.mjs"), "utf8");
 
 // 엔진에서 세 함수 선언을 통째로 추출한다(회귀 대상이 바뀌면 여기서 즉시 깨진다).
 // cognitiveOf 는 fnName·isFnLike 를 참조하고 fnName 은 sf 를 클로저로 잡으므로,

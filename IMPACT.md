@@ -1,11 +1,11 @@
-# cleanscore — 실전 성과 (impact log)
+# fixearly — 실전 성과 (impact log)
 
-cleanscore가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
+fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "청결점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **cleanscore 임팩트 점수: 0**
+> **fixearly 임팩트 점수: 0**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
-> _(cleanscore가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 청결점수와는 별개 지표.)_
+> _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 청결점수와는 별개 지표.)_
 >
 > _(자동 생성 — `node bin/impact.mjs`. GitHub PR 상태 기준.)_
 
@@ -28,14 +28,14 @@ cleanscore가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점�
 
 ## 규칙
 
-- cleanscore가 찾은 이슈로 낸 PR만 기록한다.
+- fixearly가 찾은 이슈로 낸 PR만 기록한다.
 - **손 검증 필수** — 정적 분석은 후보만 뽑는다. 오탐 PR은 툴 신뢰를 깎으므로 금지.
 - **머지되면 +1.** 닫히면 0. 정직하게.
 
 ## 어떻게 찾았나
 
 ```bash
-npx cleanscore --dir=src --dead
+npx fixearly --dir=src --dead
 ```
 
 `quality.io`(루프 안 파일읽기 + DB/HTTP 순차 await)와 `quality.dead`(knip)가 후보를 파일:줄로

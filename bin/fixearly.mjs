@@ -33,9 +33,9 @@ const wantHotspots = args.includes("--hotspots"); // cog × git churn = "먼저 
 // 등급 색 (라이트 기준) — 배지·임베드 공용
 const GRADE_COLORS = { S: "#0f7a63", A: "#12915a", B: "#7d8a2c", C: "#c0862e", D: "#cb4436", E: "#8f2f24" };
 
-// shields 스타일 SVG 배지 생성 — "clean score | A · 90"
+// shields 스타일 SVG 배지 생성 — "fixearly | A · 90"
 function makeBadgeSvg(grade, score) {
-  const left = "clean score";
+  const left = "fixearly";
   const right = `${grade} · ${score}`;
   const color = GRADE_COLORS[String(grade).replace("+", "")] || "#888";
   const cw = 6.6; // 대략적 글자 폭(px, 11pt)
@@ -257,7 +257,7 @@ function analyzeQuality(content) {
 
 // 프로젝트의 typescript 패키지 로드 (AST 기반 정밀 분석용)
 function loadTypescript() {
-  // 1) cleanscore에 번들된 typescript를 '먼저' 쓴다 — 같은 저장소를 어디서 실행하든
+  // 1) fixearly에 번들된 typescript를 '먼저' 쓴다 — 같은 저장소를 어디서 실행하든
   //    같은 점수가 나와야 배지가 비교 가능하다(예전엔 타겟의 TS 버전에 따라 점수가 흔들렸다).
   try {
     const req = createRequire(import.meta.url);
@@ -1880,11 +1880,11 @@ fs.writeFileSync(outPath, JSON.stringify(stats, null, 2));
 
 // --badge: README·사이트에 붙일 SVG 배지 + 마크다운 스니펫
 if (wantBadge) {
-  const badgePath = path.join(outDir, "cleanscore.svg");
+  const badgePath = path.join(outDir, "fixearly.svg");
   fs.writeFileSync(badgePath, makeBadgeSvg(qualityGrade, qualityScore));
   const rel = path.relative(process.cwd(), badgePath);
   console.log(`\n  🏷  배지 생성: ${rel}`);
-  console.log(`     README에 붙이기:  ![clean score](${rel})`);
+  console.log(`     README에 붙이기:  ![fixearly](${rel})`);
 }
 
 console.log(`  파일: ${files.length}개`);
@@ -2117,7 +2117,7 @@ console.log(`\n  저장됨 → ${path.relative(process.cwd(), outPath)}\n`);
 // 점수 축을 민감하게 만들면 게이밍 민감도도 같은 계수로 오른다(실측: 분모를 조이면 개당 이득 3배,
 // 쓰레기 헬퍼로 얻는 이득도 3배). 그래서 점수는 둔감하게 두고, 체감은 자기 이력과의 비교로 준다.
 // 자기 이력은 게이밍이 안 된다 — 헬퍼를 양산해도 "긴 함수 개수"는 줄지 않는다.
-const HISTORY_FILE = ".cleanscore-history.json";
+const HISTORY_FILE = ".fixearly-history.json";
 // 채점 규칙 버전. 유예값·기울기·캡을 바꾸면 이 값을 올려야 한다 —
 // 그러지 않으면 규칙이 바뀐 뒤의 점수를 예전 점수와 나란히 놓게 되고, 진행도가 거짓말을 한다.
 const SCORING_VERSION = "v6";
@@ -2169,7 +2169,7 @@ if (wantReport && !stats.quality.scoreInputs) {
     const here = path.dirname(new URL(import.meta.url).pathname);
     const corpusPath = path.join(here, "..", "data", "corpus.json");
     const corpus = JSON.parse(fs.readFileSync(corpusPath, "utf-8"));
-    const reportPath = path.resolve(process.cwd(), getFlag("report") || "cleanscore-report.html");
+    const reportPath = path.resolve(process.cwd(), getFlag("report") || "fixearly-report.html");
     const projectName = path.basename(path.resolve(srcDir)) === "src"
       ? path.basename(path.dirname(path.resolve(srcDir))) + "/src"
       : path.basename(path.resolve(srcDir));

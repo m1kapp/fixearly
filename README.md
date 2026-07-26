@@ -1,13 +1,13 @@
-# cleanscore
+# fixearly
 
-![clean score](./cleanscore.svg)
+![fixearly](./fixearly.svg)
 
-> 우리 엔진도 **B**입니다. 2천 줄 단일 파일이라서요. 툴은 자기한테도 안 봐줍니다 — 그게 요점입니다. ([랜딩](https://yoo-minho.github.io/cleanscore))
+> 우리 엔진도 **B**입니다. 2천 줄 단일 파일이라서요. 툴은 자기한테도 안 봐줍니다 — 그게 요점입니다. ([랜딩](https://yoo-minho.github.io/fixearly))
 
 **코드가 아니라 그 코드를 다음에 고칠 때 드는 비용을 잰다.** JS·TS 전용 · 정적 분석 · 100% 로컬 · LLM 0 · SSS ~ E 등급.
 
 ```bash
-npx cleanscore --dir=src --report
+npx fixearly --dir=src --report
 ```
 
 명령 한 줄, 설정 제로. 코드는 컴퓨터 밖으로 한 발짝도 안 나간다. `--report`는 **한 장짜리 HTML**을 뽑는다 —
@@ -17,14 +17,14 @@ npx cleanscore --dir=src --report
 ```
 청결도: B (73점) — 함수 11,000개, cog15+ 293개, 중복 5.5%, 200줄+ 173개
 지난 측정(2026-07-20 09:00) 대비: C 69 → B 73 (+4점)
-✓ 리포트 → cleanscore-report.html
+✓ 리포트 → fixearly-report.html
 ```
 
 ---
 
 ## 유명 오픈소스 70개, 실제 점수
 
-같은 자로, 예외 없이 채점했다. **2026-07-26 · 채점 규칙 v6 기준 전량 재측정.** 전체는 [랜딩](https://yoo-minho.github.io/cleanscore)에.
+같은 자로, 예외 없이 채점했다. **2026-07-26 · 채점 규칙 v6 기준 전량 재측정.** 전체는 [랜딩](https://yoo-minho.github.io/fixearly)에.
 
 | 프로젝트 | 등급 | 점수 | 핵심 지표 |
 |----------|------|------|-----------|
@@ -91,25 +91,25 @@ npx cleanscore --dir=src --report
 
 ```bash
 # 리포트 한 장 (권장) — 내 위치 + 고칠 목록 + AI 지시문
-npx cleanscore --dir=src --report
+npx fixearly --dir=src --report
 
 # 점수만
-npx cleanscore --dir=src
+npx fixearly --dir=src
 
 # 먼저 고칠 파일 랭킹 (복잡도 × git churn)
-npx cleanscore --dir=src --hotspots
+npx fixearly --dir=src --hotspots
 
 # 데드코드 축 추가 (knip 내장)
-npx cleanscore --dir=src --dead
+npx fixearly --dir=src --dead
 
 # 모노레포에서 산출물 아닌 패키지 제외 (근거를 남길 것)
-npx cleanscore --dir=packages --exclude=packages/devtools,packages/examples
+npx fixearly --dir=packages --exclude=packages/devtools,packages/examples
 
 # README 배지
-npx cleanscore --dir=src --badge
+npx fixearly --dir=src --badge
 ```
 
-측정할 때마다 `.cleanscore-history.json`에 스냅샷이 쌓이고, 리포트에 **지난번 대비** 변화가 표시된다.
+측정할 때마다 `.fixearly-history.json`에 스냅샷이 쌓이고, 리포트에 **지난번 대비** 변화가 표시된다.
 점수는 절대 위치, 변화량은 당신이 한 일이다 — 자기 이력과의 비교라 지표만 건드려서는 움직이지 않는다.
 
 결과는 `--out` 디렉토리에 `kit-stats.json`으로도 떨어진다 (CI 추이 추적용).

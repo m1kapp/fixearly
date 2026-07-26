@@ -1,10 +1,10 @@
 {
-  "name": "cleanscore",
-  "version": "0.3.2",
-  "description": "코드가 아니라 '다음에 고칠 때 드는 비용'을 잰다 — JS/TS 정적 분석, 100% 로컬, SSS~E 등급, 오픈소스 70개 기준선",
+  "name": "fixearly",
+  "version": "0.4.0",
+  "description": "코드가 아니라 '다음에 고칠 때 드는 비용'을 잰다 — 일찍 고치면 싸다. JS/TS 정적 분석, 100% 로컬, SSS~E 등급, 오픈소스 70개 기준선",
   "type": "module",
   "bin": {
-    "cleanscore": "bin/cleanscore.mjs"
+    "fixearly": "bin/fixearly.mjs"
   },
   "files": [
     "bin",
@@ -26,7 +26,7 @@
     "typescript": "^5.4.0"
   },
   "license": "MIT",
-  "homepage": "https://yoo-minho.github.io/cleanscore",
+  "homepage": "https://yoo-minho.github.io/fixearly",
   "scripts": {
     "test": "node bin/selftest.mjs"
   }

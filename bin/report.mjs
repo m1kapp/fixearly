@@ -300,7 +300,7 @@ ${spec.ban}
 1. 후보별 [고침 / 안 고침 + 이유]
 2. 커밋별 diff와 한 줄 요약
 3. **동작이 같다는 근거** — 통과한 테스트 이름 또는 수동 검증 절차
-4. \`npx cleanscore --dir=<경로> --report\` 재실행 후 이 항목 수치 전후 비교`;
+4. \`npx fixearly --dir=<경로> --report\` 재실행 후 이 항목 수치 전후 비교`;
 }
 
 // 이 항목을 고치면 점수가 얼마 오르나 — 공식에 그대로 넣어 계산한다.
@@ -435,7 +435,7 @@ ${top}
 1. **계획** — 항목별로 [고친다 / 안 고친다 + 이유] 판정부터. 전부 고칠 필요 없다.
 2. **단계별 변경** — 커밋 단위 diff와 각 커밋의 한 줄 요약.
 3. **불변 증명** — 각 변경마다 "동작이 같다"를 어떻게 확인했는지. 테스트 이름, 실행 결과, 수동 검증 절차 중 하나 이상. 확인 안 했으면 안 했다고 쓴다.
-4. **재측정** — 작업 후 \`npx cleanscore --dir=<경로> --report\` 를 다시 돌려 전후 점수와 축별 변화를 붙인다.
+4. **재측정** — 작업 후 \`npx fixearly --dir=<경로> --report\` 를 다시 돌려 전후 점수와 축별 변화를 붙인다.
 
 ## 하지 말 것
 - 지표를 겨냥한 변경 (파일 쪼개기, 무의미한 헬퍼 추출, 짧은 함수 대량 생성)
@@ -489,7 +489,7 @@ export function renderReport({ projectName, quality, source, corpus, hotspots, p
   return `<!doctype html>
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light">
-<title>cleanscore — ${esc(projectName)}</title>
+<title>fixearly — ${esc(projectName)}</title>
 <style>
 /* ── 토큰: 타입 스케일·간격 스케일을 고정한다. 임의값 금지 ── */
 :root{
@@ -698,7 +698,7 @@ footer{padding:var(--s6) 0 var(--s7);color:var(--ink-3);font-size:var(--t-sm);
 }
 </style></head><body>
 <header><div class="w">
-  <div class="brand">cleanscore · ${esc(corpus.version)} · 코퍼스 ${corpus.n}개 기준</div>
+  <div class="brand">fixearly · ${esc(corpus.version)} · 코퍼스 ${corpus.n}개 기준</div>
   <h1>${esc(projectName)}</h1>
   <div class="hero">
     <div class="big"><span class="g${gradeF.length > 1 ? " gp" : ""}" style="background:${GRADE_COLORS[grade]}">${gradeF}</span><span class="sc">${score}</span></div>

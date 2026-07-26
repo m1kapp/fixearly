@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * cleanscore impact — cleanscore가 낸 PR들의 머지 상태를 GitHub에서 긁어
+ * fixearly impact — fixearly가 낸 PR들의 머지 상태를 GitHub에서 긁어
  * 임팩트 점수(머지 1건 = +1)를 계산하고 IMPACT.md를 재생성한다.
  *
  * 소스: impact.json (findings 레지스트리)
@@ -24,7 +24,7 @@ const findings = registry.findings || [];
 
 async function prStatus(repo, pr) {
   const url = `https://api.github.com/repos/${repo}/pulls/${pr}`;
-  const headers = { "User-Agent": "cleanscore-impact", Accept: "application/vnd.github+json" };
+  const headers = { "User-Agent": "fixearly-impact", Accept: "application/vnd.github+json" };
   if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
   try {
     const res = await fetch(url, { headers });
@@ -81,14 +81,14 @@ const tableRows = rows
   })
   .join("\n");
 
-const md = `# cleanscore — 실전 성과 (impact log)
+const md = `# fixearly — 실전 성과 (impact log)
 
-cleanscore가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
+fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "청결점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **cleanscore 임팩트 점수: ${score}**
+> **fixearly 임팩트 점수: ${score}**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
-> _(cleanscore가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 청결점수와는 별개 지표.)_
+> _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 청결점수와는 별개 지표.)_
 >
 > _(자동 생성 — \`node bin/impact.mjs\`. GitHub PR 상태 기준.)_
 
@@ -98,14 +98,14 @@ ${tableRows}
 
 ## 규칙
 
-- cleanscore가 찾은 이슈로 낸 PR만 기록한다.
+- fixearly가 찾은 이슈로 낸 PR만 기록한다.
 - **손 검증 필수** — 정적 분석은 후보만 뽑는다. 오탐 PR은 툴 신뢰를 깎으므로 금지.
 - **머지되면 +1.** 닫히면 0. 정직하게.
 
 ## 어떻게 찾았나
 
 \`\`\`bash
-npx cleanscore --dir=src --dead
+npx fixearly --dir=src --dead
 \`\`\`
 
 \`quality.io\`(루프 안 파일읽기 + DB/HTTP 순차 await)와 \`quality.dead\`(knip)가 후보를 파일:줄로

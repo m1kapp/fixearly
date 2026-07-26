@@ -1,10 +1,10 @@
 # O(n²) 채굴 파이프라인
 
-cleanscore의 O(n²) 축은 등급을 매기지 않는다(진단 전용). 대신 **PR 가능한 결함 후보**를 뽑는다.
+fixearly의 O(n²) 축은 등급을 매기지 않는다(진단 전용). 대신 **PR 가능한 결함 후보**를 뽑는다.
 `--mine` 은 그 후보 전체를 손검증용으로 덤프한다.
 
 ```bash
-npx cleanscore --dir=<backend-src> --mine
+npx fixearly --dir=<backend-src> --mine
 # 콘솔에 [zone] recv.method() — file:line (loop: ...) 전체 출력
 # <out>/quadratic-candidates.json 에도 저장
 ```
