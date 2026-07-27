@@ -87,7 +87,7 @@ function findMeta() {
   return null;
 }
 
-// 청결점수는 kit과 무관하게 동작한다. meta.json은 (선택적) kit 활용도 통계용일 뿐 —
+// 점수는 kit과 무관하게 동작한다. meta.json은 (선택적) kit 활용도 통계용일 뿐 —
 // 없으면 조용히 건너뛴다. "저자 UI kit을 강제로 요구하고 광고한다"는 인상을 주지 않기 위함.
 const metaPath = findMeta();
 let hasKitMeta = false;
@@ -247,7 +247,7 @@ function codeLineFlags(content) {
   });
 }
 
-// 코드 청결도 분석 — 분기 밀도·파일 크기 기반 휴리스틱 (typescript 미설치 시 폴백)
+// 코드 품질 분석 — 분기 밀도·파일 크기 기반 휴리스틱 (typescript 미설치 시 폴백)
 // 주석/문자열 안까지 세는 러프한 근사지만, 프로젝트 간 상대 비교엔 충분
 function analyzeQuality(content) {
   const branchTokens = content.match(/\bif\s*\(|\belse\b|\bcase\s|\bcatch\s*[({]|\?\s*[^.:]|&&|\|\|/g);
@@ -1467,7 +1467,7 @@ if (trackedSet) {
 
 // 비-프로덕션 파일 일관 제외: 테스트·타입테스트(.test-d)·벤치·스토리·__tests__.
 // (중복 축에서만 걸러 다른 축엔 포함되던 불일치 제거 — 테스트 콜로케이션이 점수를 깎던 문제.)
-// 청결점수는 "배포되는 프로덕션 코드"의 건강만 잰다. 테스트 존재 여부는 별도 신호.
+// 점수는 "배포되는 프로덕션 코드"의 건강만 잰다. 테스트 존재 여부는 별도 신호.
 const NON_SOURCE_RE = /(\.(test|spec|test-d|bench|benchmark|stories|e2e)\.[tj]sx?$)|(\/(__(tests?|mocks?|fixtures?|snapshots?)__|tests?|benchmarks?|__bench__|e2e|fixtures?|mocks?)\/)|(\.d\.ts$)/;
 // 벤더링·생성 디렉토리: 저장소에 커밋된 서드파티 코드는 미니파이가 아니어도(개발 빌드는 읽기 가능)
 // 사람이 쓴 코드가 아니다. 실제 사례: next.js의 src/compiled/ 45MB(react-dom 개발빌드 여러 벌)가
@@ -1486,7 +1486,7 @@ const EXCLUDE_RES = excludePats.map((p) =>
 // 테스트 밀도(테스트줄 ÷ 프로덕션줄) — 점수에 절대 반영하지 않는 진단.
 // 왜 점수에 안 넣나: 테스트를 채점에 섞으면 지표가 뒤집힌다(실측 — vue D46 → B70).
 // 테스트는 길지만 단순해서 '복잡 함수 비율'의 분모만 불린다 = 트리비얼한 테스트를 많이
-// 쓰면 청결점수가 오르는 게이밍이 열린다. 그래서 채점에선 빼고, 양만 따로 센다.
+// 쓰면 점수가 오르는 게이밍이 열린다. 그래서 채점에선 빼고, 양만 따로 센다.
 // 쓸모: 같은 복잡도라도 "두껍게 방어된 복잡함"과 "맨몸 복잡함"은 다른 물건이다.
 // (코퍼스 52개에서 점수와 상관 rho=0.04 — 점수가 못 보는 독립 축이라는 뜻)
 const TEST_FILE_RE = /(\.(test|spec|test-d)\.[tj]sx?$)|(\/(__tests__|tests?|e2e)\/)/;
@@ -1604,7 +1604,7 @@ for (const file of files) {
 const branchDensity = codeLines > 0 ? Math.round((totalBranches / codeLines) * 1000) / 10 : 0;
 const avgFileLines = files.length > 0 ? Math.round(codeLines / files.length) : 0;
 
-// 청결도 스코어 v2 (100점 만점)
+// 점수 계산 v2 (100점 만점)
 // AST 모드: cognitive complexity(중첩 가중, SonarQube 함수당 15 권고) + 중복 밀도(SonarQube 3% 게이트)
 // 프로젝트 크기 편향 없게 비율 기반 감점:
 // - cog>15 함수 비율 ×3 (최대 25), cog>25 함수 비율 ×5 (최대 15)
@@ -1892,7 +1892,7 @@ console.log(`  코드: ${codeLines.toLocaleString()}줄 (전체 ${totalLines.toL
 console.log(`    프론트: ${breakdown.frontend.files}개 파일, ${breakdown.frontend.codeLines.toLocaleString()}줄`);
 console.log(`    백엔드: ${breakdown.backend.files}개 파일, ${breakdown.backend.codeLines.toLocaleString()}줄`);
 console.log(`    공용: ${breakdown.shared.files}개 파일, ${breakdown.shared.codeLines.toLocaleString()}줄`);
-// kit 활용도/절약량은 @m1kapp/kit meta.json이 있을 때만 (선택적 부가정보) — 없으면 청결점수만.
+// kit 활용도/절약량은 @m1kapp/kit meta.json이 있을 때만 (선택적 부가정보) — 없으면 점수만.
 if (hasKitMeta) {
   console.log(`  kit 사용: ${usedFeatures.length}개 요소`);
   console.log(`    컴포넌트: ${usage.component.used}/${usage.component.total}개 (${usage.component.percent}%)`);
@@ -1902,7 +1902,7 @@ if (hasKitMeta) {
   console.log(`  비율: 전체의 약 ${savedPercent}%를 kit이 대신 처리`);
 }
 if (cc) {
-  console.log(`  청결도: ${qualityGrade} (${qualityScore}점) — 함수 ${cc.functions}개, cognitive 평균 ${cognitive.avg}·최대 ${cognitive.max}, cog15+ ${cognitive.over15}개·cog25+ ${cognitive.over25}개, 중복 ${duplication.percent}%, 200줄+ ${longFiles}개`);
+  console.log(`  등급: ${qualityGrade} (${qualityScore}점) — 함수 ${cc.functions}개, cognitive 평균 ${cognitive.avg}·최대 ${cognitive.max}, cog15+ ${cognitive.over15}개·cog25+ ${cognitive.over25}개, 중복 ${duplication.percent}%, 200줄+ ${longFiles}개`);
   for (const w of cognitive.worst.filter((f) => f.cog > 15)) {
     console.log(`    복잡: ${w.name} cog ${w.cog} (CC ${w.cc}) — ${w.file}:${w.line}`);
   }
@@ -1925,7 +1925,7 @@ if (cc) {
     }
   }
 } else {
-  console.log(`  청결도: ${qualityGrade} (${qualityScore}점) — 분기밀도 ${branchDensity}/100줄, 평균 ${avgFileLines}줄/파일, 200줄+ ${longFiles}개 (regex 폴백 — typescript 설치 시 AST 정밀 분석)`);
+  console.log(`  등급: ${qualityGrade} (${qualityScore}점) — 분기밀도 ${branchDensity}/100줄, 평균 ${avgFileLines}줄/파일, 200줄+ ${longFiles}개 (regex 폴백 — typescript 설치 시 AST 정밀 분석)`);
 }
 if (textbook) {
   const t = textbook;

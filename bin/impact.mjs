@@ -84,11 +84,11 @@ const tableRows = rows
 const md = `# fixearly — 실전 성과 (impact log)
 
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
-"청결점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
+"점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
 > **fixearly 임팩트 점수: ${score}**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
-> _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 청결점수와는 별개 지표.)_
+> _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
 > _(자동 생성 — \`node bin/impact.mjs\`. GitHub PR 상태 기준.)_
 

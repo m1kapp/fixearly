@@ -183,7 +183,7 @@ function itemPrompt(f, ctx) {
   return `# 결함 하나 수정: ${f.kind}
 
 ## 대상
-- 저장소: \`${ctx.projectName}\` (${ctx.cls.ko} · 청결점수 ${ctx.score} ${ctx.gradeF || ctx.grade})
+- 저장소: \`${ctx.projectName}\` (${ctx.cls.ko} · 점수 ${ctx.score} ${ctx.gradeF || ctx.grade})
 - 위치: **${f.count > 1 ? `${f.file} (${f.lines.length}곳: ${f.lines.join(', ')}행)` : f.where}**
 - 내용: ${f.what}${f.count > 1 ? ` — 같은 파일에서 ${f.count}번 반복된다. 한 번에 함께 고쳐라.` : ''}
 - 왜 지금인가: ${f.why}
@@ -274,7 +274,7 @@ function axisPrompt(pen, ctx, q) {
   return `# 축 개선: ${pen.key}
 
 ## 지금
-- 저장소 \`${ctx.projectName}\` · ${ctx.cls.ko} · 청결점수 ${ctx.score} ${ctx.gradeF || ctx.grade}
+- 저장소 \`${ctx.projectName}\` · ${ctx.cls.ko} · 점수 ${ctx.score} ${ctx.gradeF || ctx.grade}
 - **${pen.key}: ${pen.now}** (목표 ${pen.target}) — 이 항목에서 ${pen.got.toFixed(1)}점이 깎여 있다
 
 ## 목표
@@ -343,7 +343,7 @@ function scoreEffect(f, q, si) {
 function deltaRows(prev, cur) {
   const { score, si, q, files, codeLines } = cur;
   const rows = [
-    { key: "청결점수", from: prev.score, to: score, up: true },
+    { key: "점수", from: prev.score, to: score, up: true },
     { key: "긴 함수 (40줄+)", from: prev.fnOver40, to: q.fnLength?.over40, up: false, unit: "개" },
     { key: "함수 길이 상위10 평균", from: prev.fnTop10, to: si.fnTop10, up: false, unit: "줄" },
     { key: "함수 길이 p90", from: prev.fnP90, to: si.fnP90, up: false, unit: "줄" },
@@ -412,7 +412,7 @@ function buildPrompt({ projectName, grade, score, cls, rank, total, peerMed, si,
 
 ## 맥락
 - 대상: \`${projectName}\` (${cls.ko}, ${si.avgFileLines}줄/파일 평균)
-- 현재 청결점수 ${score}점 ${grade}등급 — 같은 체급 유명 오픈소스 ${total}개 중 ${rank}위 (체급 중앙 ${peerMed}점)
+- 현재 점수 ${score}점 ${grade}등급 — 같은 체급 유명 오픈소스 ${total}개 중 ${rank}위 (체급 중앙 ${peerMed}점)
 - 코퍼스 대비: 긴 함수 ${si.fnOver40Pct}% (중앙 4.0%) · 함수 길이 p90 ${si.fnP90}줄 (중앙 23줄) · 복잡 함수 ${si.over15Pct}% (중앙 2.9%) · 중복 ${si.dupPct}% (중앙 3.9%)
 
 ## 목표
