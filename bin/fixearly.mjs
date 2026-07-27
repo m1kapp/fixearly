@@ -1,14 +1,17 @@
 #!/usr/bin/env node
 /**
- * m1kkit stats — 프로젝트의 코드량과 kit 사용 현황을 분석해서 .kit-stats.json 생성
+ * fixearly — 다음에 이 코드를 고칠 때 드는 비용을 잰다.
  *
  * Usage:
- *   m1kkit stats                    # src/ 기준 분석 (git 추적 파일만, 빌드산출물 제외)
- *   m1kkit stats --dir=app          # 특정 디렉토리 기준
- *   m1kkit stats --out=public       # 출력 위치 지정
- *   m1kkit stats --dead             # (선택) knip 데드코드축 — 죽은 파일·미사용 export 감점
- *                                   #   프로젝트 전체를 1회 분석(느림). // @keep 주석 파일은 집계 제외.
- *   m1kkit stats --llm              # (선택) Claude로 네이밍·응집도 자문 — 점수엔 미반영
+ *   npx fixearly --dir=src                # 점수·등급 (git 추적 파일만, 빌드산출물 제외)
+ *   npx fixearly --dir=src --report       # 한 장짜리 HTML 리포트 (위치·고칠 목록·AI 지시문)
+ *   npx fixearly --dir=src --hotspots     # 복잡도 × 변경빈도 = 먼저 고칠 파일
+ *   npx fixearly --dir=src --dead         # (선택) knip 데드코드축 — 느림. // @keep 파일 제외
+ *   npx fixearly --dir=src --badge        # README 배지 SVG
+ *   npx fixearly --dir=src --exclude=a,b  # 모노레포에서 산출물 아닌 패키지 제외
+ *   npx fixearly --dir=src --kit          # (선택) @m1kapp/kit 사용 현황 부가 집계
+ *
+ * 측정할 때마다 .fixearly-history.json 에 스냅샷이 쌓이고, 리포트에 '지난번 대비'가 나온다.
  */
 
 import fs from "fs";
@@ -28,7 +31,10 @@ const wantDead = args.includes("--dead"); // 데드코드축(knip) 옵트인 —
 const wantBadge = args.includes("--badge"); // README·사이트 임베드용 SVG 배지 생성
 const wantMine = args.includes("--mine");   // O(n²) PR 후보 전체 덤프(손검증 파이프라인 입력)
 const wantReport = args.includes("--report") || !!getFlag("report"); // 한 장짜리 HTML 리포트
-const wantHotspots = args.includes("--hotspots"); // cog × git churn = "먼저 고칠 파일" 랭킹(git 이력 필요)
+const wantHotspots = args.includes("--hotspots");
+// @m1kapp/kit 사용 현황은 부가 정보라 옵트인이다. 범용 도구가 특정 패키지 이름을
+// 기본 경로에서 찾고 있으면 "저자 라이브러리를 광고한다"는 인상을 준다.
+const wantKit = args.includes("--kit"); // cog × git churn = "먼저 고칠 파일" 랭킹(git 이력 필요)
 
 // 등급 색 (라이트 기준) — 배지·임베드 공용
 const GRADE_COLORS = { S: "#0f7a63", A: "#12915a", B: "#7d8a2c", C: "#c0862e", D: "#cb4436", E: "#8f2f24" };
@@ -79,7 +85,11 @@ function findMeta() {
     dir = path.dirname(dir);
   }
 
-  // 3. 이 스크립트가 kit 안에 있으면 형제 dist/ 탐색
+  // 3. kit 저장소 안에서 직접 실행하는 경우 (cwd/dist/meta.json)
+  const cwdMeta = path.resolve(process.cwd(), "dist", "meta.json");
+  if (fs.existsSync(cwdMeta)) return cwdMeta;
+
+  // 4. 이 스크립트가 kit 안에 있으면 형제 dist/ 탐색
   const scriptDir = path.dirname(new URL(import.meta.url).pathname);
   const siblingMeta = path.join(scriptDir, "..", "dist", "meta.json");
   if (fs.existsSync(siblingMeta)) return siblingMeta;
@@ -87,9 +97,9 @@ function findMeta() {
   return null;
 }
 
-// 점수는 kit과 무관하게 동작한다. meta.json은 (선택적) kit 활용도 통계용일 뿐 —
-// 없으면 조용히 건너뛴다. "저자 UI kit을 강제로 요구하고 광고한다"는 인상을 주지 않기 위함.
-const metaPath = findMeta();
+// 점수는 kit과 무관하다. meta.json 은 --kit 옵트인일 때만 찾는다 —
+// 범용 도구가 기본 경로에서 특정 패키지를 뒤지면 "저자 라이브러리 광고"로 읽힌다.
+const metaPath = wantKit ? findMeta() : null;
 let hasKitMeta = false;
 if (metaPath) {
   try {
@@ -1875,7 +1885,8 @@ const stats = {
 
 // 출력
 if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
-const outPath = path.join(outDir, "kit-stats.json");
+// 산출물 파일명. --kit 모드에선 기존 소비자(m1kkit)를 위해 옛 이름을 유지한다.
+const outPath = path.join(outDir, wantKit ? "kit-stats.json" : "fixearly.json");
 fs.writeFileSync(outPath, JSON.stringify(stats, null, 2));
 
 // --badge: README·사이트에 붙일 SVG 배지 + 마크다운 스니펫
