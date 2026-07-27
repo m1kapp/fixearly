@@ -2088,7 +2088,7 @@ if ((wantHotspots || wantReport) && ts && allFns.length > 0) {
   // git churn (파일별 커밋 터치 수). 이력 없으면 스킵.
   const churn = new Map();
   try {
-    const root0 = execFileSync("git", ["-C", srcDir, "rev-parse", "--show-toplevel"], { encoding: "utf-8" }).trim();
+    const root0 = execFileSync("git", ["-C", srcDir, "rev-parse", "--show-toplevel"], { encoding: "utf-8", stdio: ["ignore", "pipe", "ignore"] }).trim();
     const rel0 = path.relative(root0, path.resolve(srcDir)) || ".";
     const recent = execFileSync("git", ["-C", root0, "log", "--since=6.months", "--no-merges", "--oneline", "--", rel0],
       { encoding: "utf-8", maxBuffer: 64 * 1024 * 1024 }).trim();
@@ -2100,7 +2100,7 @@ if ((wantHotspots || wantReport) && ts && allFns.length > 0) {
     };
   } catch { /* git 없음 — 활동량 미상 */ }
   try {
-    const root = execFileSync("git", ["-C", srcDir, "rev-parse", "--show-toplevel"], { encoding: "utf-8" }).trim();
+    const root = execFileSync("git", ["-C", srcDir, "rev-parse", "--show-toplevel"], { encoding: "utf-8", stdio: ["ignore", "pipe", "ignore"] }).trim();
     const rel = path.relative(root, path.resolve(srcDir));
     const log = execFileSync("git", ["-C", root, "log", "--no-merges", "--pretty=format:", "--name-only", "--", rel || "."],
       { encoding: "utf-8", maxBuffer: 256 * 1024 * 1024 });

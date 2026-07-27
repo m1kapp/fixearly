@@ -1,6 +1,6 @@
 {
   "name": "fixearly",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "코드가 아니라 '다음에 고칠 때 드는 비용'을 잰다 — 일찍 고치면 싸다. JS/TS 정적 분석, 100% 로컬, SSS~E 등급, 오픈소스 70개 기준선",
   "type": "module",
   "bin": {
