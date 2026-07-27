@@ -2,7 +2,7 @@
 # Re-measure all board repos at HEAD of pinned branch with the fixed engine.
 # Emits /private/tmp/board/results/<name>.json with raw metric fields.
 set -u
-ENGINE=/Users/minho/dev/personal/cleanscore/bin/cleanscore.mjs
+ENGINE=/Users/minho/dev/personal/fixearly/bin/fixearly.mjs
 ROOT=/private/tmp/board
 CLONES=$ROOT/clones
 OUT=$ROOT/results
