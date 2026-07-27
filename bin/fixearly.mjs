@@ -2023,6 +2023,12 @@ if (quadratic && quadratic.sites > 0) {
 // --hotspots: cog × git churn = "먼저 고칠 파일". 점수(무상태)와 별개 — 시간축(변경빈도)이 필요.
 // 복잡함(변경당 비쌈) × 자주변경(빈도) = 리팩터 ROI 최대. 안정적 복잡함수는 낮게(안 건드리므로).
 let hotspotRanked = [];
+// 저장소 활동량 — 최근 창(6개월) 커밋 수와 마지막 커밋 시각.
+// 아무도 안 만지는 코드에 '고쳐라' 목록을 내미는 건 일감을 만들어내는 짓이다.
+// 지표는 늘 뭔가를 지적할 수 있지만, 변경 비용은 '변경이 일어날 때만' 발생한다.
+let repoActivity = { commits6mo: null, lastCommitAt: null, tracked: false };
+// churn 원본(1회 변경도 포함). hotspotRanked 는 churn>=2 만 남기므로 '0회'와 '1회'를 구분 못 한다.
+let churnByFile = [];
 if ((wantHotspots || wantReport) && ts && allFns.length > 0) {
   // per-file 최악 cog. allFns.file 은 cwd 기준이라 srcDir 기준으로 정규화해 churn 키와 맞춘다.
   const srcAbs = path.resolve(srcDir);
@@ -2035,6 +2041,18 @@ if ((wantHotspots || wantReport) && ts && allFns.length > 0) {
   }
   // git churn (파일별 커밋 터치 수). 이력 없으면 스킵.
   const churn = new Map();
+  try {
+    const root0 = execFileSync("git", ["-C", srcDir, "rev-parse", "--show-toplevel"], { encoding: "utf-8" }).trim();
+    const rel0 = path.relative(root0, path.resolve(srcDir)) || ".";
+    const recent = execFileSync("git", ["-C", root0, "log", "--since=6.months", "--no-merges", "--oneline", "--", rel0],
+      { encoding: "utf-8", maxBuffer: 64 * 1024 * 1024 }).trim();
+    const last = execFileSync("git", ["-C", root0, "log", "-1", "--format=%cI", "--", rel0], { encoding: "utf-8" }).trim();
+    repoActivity = {
+      commits6mo: recent ? recent.split("\n").length : 0,
+      lastCommitAt: last || null,
+      tracked: true,
+    };
+  } catch { /* git 없음 — 활동량 미상 */ }
   try {
     const root = execFileSync("git", ["-C", srcDir, "rev-parse", "--show-toplevel"], { encoding: "utf-8" }).trim();
     const rel = path.relative(root, path.resolve(srcDir));
@@ -2056,6 +2074,7 @@ if ((wantHotspots || wantReport) && ts && allFns.length > 0) {
       .map((r) => ({ ...r, hot: r.cog * Math.log1p(r.churn) }))
       .sort((a, b) => b.hot - a.hot);
     hotspotRanked = ranked;
+    churnByFile = [...churn.entries()].map(([file, n]) => ({ file, churn: n }));
     if (!wantHotspots) { /* 리포트 전용 호출 — 콘솔 출력 생략 */ } else {
     console.log(`\n  ── --hotspots: 복잡 × 변경빈도 = 먼저 고칠 파일 (점수 아닌 리팩터 우선순위) ──`);
     console.log(`  ${"maxCog".padStart(6)} ${"churn".padStart(5)}   worst함수 · 파일`);
@@ -2187,6 +2206,8 @@ if (wantReport && !stats.quality.scoreInputs) {
     const html = renderReport({
       projectName, quality: stats.quality, source: stats.source, corpus, hotspots: hotspotRanked,
       previous, history: history.filter((h) => h.dir === (path.relative(process.cwd(), path.resolve(srcDir)) || ".")),
+      repoActivity,
+      churnByFile,
     });
     fs.writeFileSync(reportPath, html);
     console.log(`  ✓ 리포트 → ${path.relative(process.cwd(), reportPath)}  (브라우저로 열어보세요)\n`);

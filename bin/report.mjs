@@ -112,7 +112,8 @@ function buildFixList(q, hotspots) {
       what: `${w.name}() ${w.lines}줄`,
       where: `${w.file}:${w.line}`,
       why: churn ? `이 파일은 최근 ${churn}번 바뀌었다 — 매번 이 길이를 읽는다` : "한 번에 읽어야 하는 양이 크다",
-      weight: (w.lines || 0) * Math.log2(2 + churn),
+      weight: (w.lines || 0) * Math.log2(2 + churn) * (churn ? 1 : 0.35),
+      stable: churn === 0,
       scored: true,
     });
   }
@@ -123,7 +124,8 @@ function buildFixList(q, hotspots) {
       what: `${w.name}() 복잡도 ${w.cog}`,
       where: `${w.file}:${w.line}`,
       why: churn ? `churn ${churn}회 — 자주 만지는데 분기가 깊다` : "중첩 분기가 깊어 따라가기 어렵다",
-      weight: (w.cog || 0) * 2.2 * Math.log2(2 + churn),
+      weight: (w.cog || 0) * 2.2 * Math.log2(2 + churn) * (churn ? 1 : 0.35),
+      stable: churn === 0,
       scored: true,
     });
   }
@@ -443,7 +445,7 @@ ${top}
 - 한 커밋에 여러 항목 섞기`;
 }
 
-export function renderReport({ projectName, quality, source, corpus, hotspots, previous, history }) {
+export function renderReport({ projectName, quality, source, corpus, hotspots, previous, history, repoActivity, churnByFile }) {
   const q = quality;
   const si = q.scoreInputs;
   const score = q.score;
@@ -463,7 +465,11 @@ export function renderReport({ projectName, quality, source, corpus, hotspots, p
     : null;
   CUTS = corpus.gradeCuts;
   const A = corpus.axes;
-  const fixes = buildFixList(q, hotspots);
+  const act = repoActivity || {};
+  const repoActivityInfo = act;
+  // 동결 판정: git 이력이 있는데 최근 6개월 변경이 0건이면 '지금 고칠 이유 없음'.
+  const frozen = act.tracked === true && act.commits6mo === 0;
+  const fixes = buildFixList(q, (churnByFile && churnByFile.length ? churnByFile : hotspots));
   const pens = penaltyBreakdown(si);
   const totalPen = pens.reduce((s, p) => s + p.got, 0);
   // 지켜낸 축 — 감점 0인 항목. "잘하고 있는 것"을 먼저 보여준다.
@@ -554,6 +560,10 @@ h2{font-size:var(--t-h2);font-weight:750;letter-spacing:-.015em;line-height:1.3;
 .note,.kept,.step,.howto{border-radius:var(--r);padding:var(--s4) var(--s4);font-size:13px;line-height:1.6}
 .note{background:var(--paper-2);border-left:3px solid var(--line-2);border-radius:0 var(--r) var(--r) 0;
   color:var(--ink-2);margin-top:var(--s5)}
+.frozen{border:1px solid #d9c9a3;background:#fdfaf2;border-radius:var(--r);padding:var(--s4);
+  margin:0 0 var(--s4);font-size:13px;line-height:1.65;color:#6b5a32}
+.frozen b{color:#4a3c18}
+.tag.stable{margin-left:6px;border-color:#cfd7e2;background:var(--paper-2);color:var(--ink-3)}
 .howto{border:1px solid var(--line-2);background:var(--paper-2);color:var(--ink-2);margin:0 0 var(--s5)}
 .howto b{color:var(--ink)}
 .kept{border:1px solid var(--good-line);background:var(--good-bg);margin:0 0 var(--s5)}
@@ -749,11 +759,15 @@ footer{padding:var(--s6) 0 var(--s7);color:var(--ink-3);font-size:var(--t-sm);
 
 <section><div class="w">
   <h2>무엇부터 고칠까</h2>
+  ${frozen ? `<div class="frozen"><b>이 저장소는 지금 고칠 이유가 없다.</b>
+    최근 6개월 변경 <b>${act.commits6mo}건</b>${act.lastCommitAt ? ` · 마지막 커밋 ${esc(act.lastCommitAt.slice(0, 10))}` : ""}.
+    변경 비용은 <b>변경이 일어날 때만</b> 발생한다 — 안 만지는 코드를 고치는 건 지표를 위한 일이다.
+    아래 목록은 <b>다시 만지게 될 때</b>를 위한 참고다.</div>` : ""}
   <p class="sub">점수 순서가 아니라 <b>변경 비용</b> 순서다. 각 줄에 <b>점수 영향</b>도 적었다 — 대부분은 분포 항이라 하나로는 거의 안 움직이고, 진단 항목은 0이다. git 이력이 있으면 자주 고치는 파일을 위로 올린다.
   ${fixes.some((f) => !f.scored) ? "회색 태그는 점수에 반영되지 않는 진단이다 — 등급과 무관하게 실제 결함이다." : ""}</p>
   <table class="fx"><thead><tr><th style="width:100px">무엇</th><th>어디</th><th style="width:32%">왜</th><th class="num" style="width:86px">AI 지시문</th></tr></thead><tbody>
   ${fixes.slice(0, 14).map((f, ix) => `<tr>
-    <td><span class="tag${f.scored ? " s" : ""}">${esc(f.kind)}</span></td>
+    <td><span class="tag${f.scored ? " s" : ""}">${esc(f.kind)}</span>${f.stable ? '<span class="tag stable">안정</span>' : ""}</td>
     <td><div>${esc(f.what)}${f.count > 1 ? `<span class="cnt">같은 파일 ${f.count}곳</span>` : ""}</div>
       <div class="loc">${esc(f.count > 1 ? `${f.file}:${f.lines.join(", :")}` : f.where)}</div></td>
     <td class="why">${esc(f.why)}
