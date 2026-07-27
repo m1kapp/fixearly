@@ -30,7 +30,7 @@ const harness = isFnLikeSrc[0] + fnNameSrc[0] + cogSrc[0];
 const isFnLikeVal = isFnLikeSrc[0].match(/const isFnLike = ([\s\S]*);\n/)[1];
 const isFnLike = eval(`(${isFnLikeVal})`); // sf 비의존 — 모듈 스코프에서 find 용
 
-const cog = (code) => {
+const measure = (code) => {
   const sf = ts.createSourceFile("t.ts", code, ts.ScriptTarget.ES2020, true);
   // eslint-disable-next-line no-eval
   const cognitiveOf = eval(`${harness}\ncognitiveOf`); // direct eval: sf·isFnLike·fnName 스코프 공유
@@ -40,8 +40,9 @@ const cog = (code) => {
     else ts.forEachChild(n, find);
   };
   ts.forEachChild(sf, find);
-  return cognitiveOf(fn);
+  return cognitiveOf(fn); // v7: {cog, nest, guard}
 };
+const cogOf = (code) => measure(code).cog;
 
 // [설명, 코드, 기대값] — 값은 SonarSource Cognitive Complexity(S3776) 정본 기준.
 const CASES = [
@@ -72,10 +73,32 @@ const CASES = [
 
 let fail = 0;
 for (const [name, code, want] of CASES) {
-  const got = cog(code);
+  const got = cogOf(code);
   const ok = got === want;
   if (!ok) fail++;
   console.log(`  ${ok ? "✓" : "✗"} ${name}: got ${got} want ${want}`);
+}
+
+// v7 축: 최대 중첩 깊이(nest)와 가드 절 몫(guard).
+// cog 는 `if (!x) return` 여덟 줄과 3단 중첩을 같은 점수로 매긴다 — 읽는 비용은 전혀 다르다.
+// 이 두 값이 그 차이를 들고 있으므로 회귀로 못박는다.
+const SHAPE_CASES = [
+  // 가드만 늘어선 검증 파이프라인: 깊이 1, cog 전부가 가드 몫
+  ["가드 3연발", `function f(){ if(!a) return 1; if(!b) return 2; if(!c) return 3; }`, { nest: 1, guard: 3, cog: 3 }],
+  // 같은 cog 3인데 3단 중첩: 깊이 3, 가드 0
+  ["3단 중첩", `function f(){ if(a){ if(b){ if(c){} } } }`, { nest: 3, guard: 0, cog: 6 }],
+  // 가드 블록에 정리 코드가 몇 줄 붙어도 가드로 본다(로그·해제)
+  ["블록 가드", `function f(){ if(!a){ log(1); return 2; } body(); }`, { nest: 1, guard: 1, cog: 1 }],
+  // else 가 붙으면 빠져나가는 가드가 아니다 — 양쪽을 다 들고 읽어야 한다
+  ["else 있으면 가드 아님", `function f(){ if(a) return 1; else return 2; }`, { nest: 1, guard: 0, cog: 2 }],
+  // 루프 안 가드(continue)도 가드다
+  ["루프 안 continue 가드", `function f(){ for(const x of xs){ if(!x) continue; use(x); } }`, { nest: 2, guard: 2, cog: 3 }],
+];
+for (const [name, code, want] of SHAPE_CASES) {
+  const got = measure(code);
+  const ok = got.cog === want.cog && got.nest === want.nest && got.guard === want.guard;
+  if (!ok) fail++;
+  console.log(`  ${ok ? "✓" : "✗"} 모양: ${name}: got cog${got.cog}/깊이${got.nest}/가드${got.guard} want cog${want.cog}/깊이${want.nest}/가드${want.guard}`);
 }
 
 // O(n²) 축의 zone 분류 회귀 — 백엔드가 프론트보다 먼저 매칭돼야 한다(api/admin 라우트 오분류 방지).

@@ -343,8 +343,38 @@ function analyzeAstComplexity(ts, filePath, content) {
   // - 제어 구조: +1 + 현재 중첩 깊이, 내부는 깊이+1
   // - 논리 연산자: 같은 연산자 연쇄당 1회 (&&→|| 전환 시 +1), ?? 제외
   // - 삼항: +1+depth, else(if 아닌): +1
+  // 같은 cog 라도 읽는 비용이 다르다. 평평한 가드 절 8개(`if (!x) return`)와 3단 중첩은
+  // S3776 정의상 둘 다 8점이 될 수 있지만, 앞은 순서대로 읽으면 끝나고 뒤는 상태를 머리에 쌓아야 한다.
+  // 실측 사례: ytcc-next POST() cog 17 = 가드 8개(깊이 1) vs LandscapeStage cog 16 = 조건부 렌더 3단.
+  // 전자를 "고쳐라"라고 띄우면 도구가 틀린 일감을 만든다. 그래서 깊이를 따로 잰다.
+  // 점수엔 넣지 않는다 — 리포트의 우선순위 판정에만 쓴다(감점 축이 되면 곧바로 게이밍 대상이 된다).
   const cognitiveOf = (fn) => {
     let score = 0;
+    let guardScore = 0; // cog 중 '가드 절'이 낸 몫
+    let maxNest = 0;
+    const dive = (d) => {
+      if (d > maxNest) maxNest = d;
+      return d;
+    };
+    // 가드 절 = else 없이 곧장 빠져나가는 if. `if (!url) return 400;`
+    // 이런 분기는 하나씩 읽고 잊으면 되므로 머리에 쌓이지 않는다 — 중첩과 비용이 다르다.
+    const EXITS = new Set([
+      ts.SyntaxKind.ReturnStatement,
+      ts.SyntaxKind.ThrowStatement,
+      ts.SyntaxKind.ContinueStatement,
+      ts.SyntaxKind.BreakStatement,
+    ]);
+    const isGuard = (n) => {
+      if (n.elseStatement) return false;
+      const t = n.thenStatement;
+      if (!t) return false;
+      if (EXITS.has(t.kind)) return true;
+      // 블록이면 마지막이 탈출이고 그 앞은 부수효과 몇 줄까지만(로그·정리) 허용
+      if (ts.isBlock(t) && t.statements.length > 0 && t.statements.length <= 3) {
+        return EXITS.has(t.statements[t.statements.length - 1].kind);
+      }
+      return false;
+    };
     const LOGICAL = new Set([ts.SyntaxKind.AmpersandAmpersandToken, ts.SyntaxKind.BarBarToken]);
     // 직접 재귀 판별용 자기 이름(타입체커가 없으므로 이름 매칭 — bare identifier 호출만, 오탐 최소화).
     const selfName = fnName(fn);
@@ -364,12 +394,12 @@ function analyzeAstComplexity(ts, filePath, content) {
         case ts.SyntaxKind.CatchClause:
         case ts.SyntaxKind.ConditionalExpression: {
           score += 1 + depth;
-          ts.forEachChild(n, (c) => walk(c, depth + 1, null));
+          ts.forEachChild(n, (c) => walk(c, dive(depth + 1), null));
           return;
         }
         case ts.SyntaxKind.SwitchStatement: {
           score += 1 + depth; // switch 전체 1회 (case별 아님)
-          ts.forEachChild(n, (c) => walk(c, depth + 1, null));
+          ts.forEachChild(n, (c) => walk(c, dive(depth + 1), null));
           return;
         }
         case ts.SyntaxKind.BinaryExpression: {
@@ -398,20 +428,22 @@ function analyzeAstComplexity(ts, filePath, content) {
     // S3776: if 는 구조 증가(+1) + 중첩 증가(+depth). else-if·else 는 구조 증가(+1)만, 중첩 증가 없음.
     // else-if 를 IfStatement 케이스로 되돌리면 중첩분(+depth)이 잘못 더해진다(루프 안에 있을 때 과대계상).
     const walkIf = (n, depth, isElseIf) => {
-      score += isElseIf ? 1 : 1 + depth;
+      const inc = isElseIf ? 1 : 1 + depth;
+      score += inc;
+      if (!isElseIf && isGuard(n)) guardScore += inc;
       walk(n.expression, depth, null);
-      walk(n.thenStatement, depth + 1, null);
+      walk(n.thenStatement, dive(depth + 1), null);
       if (n.elseStatement) {
         if (n.elseStatement.kind === ts.SyntaxKind.IfStatement) {
           walkIf(n.elseStatement, depth, true); // else-if: 구조 +1만, 깊이 유지
         } else {
           score += 1; // else 자체(구조 +1)
-          walk(n.elseStatement, depth + 1, null);
+          walk(n.elseStatement, dive(depth + 1), null);
         }
       }
     };
     ts.forEachChild(fn, (c) => walk(c, 0, null));
-    return score;
+    return { cog: score, nest: maxNest, guard: guardScore };
   };
 
   const fns = [];
@@ -431,10 +463,13 @@ function analyzeAstComplexity(ts, filePath, content) {
         ts.forEachChild(x, scanNested);
       };
       ts.forEachChild(n, scanNested);
+      const cogInfo = cognitiveOf(n);
       fns.push({
         name: fnName(n),
         cc: ccOf(n),
-        cog: cognitiveOf(n),
+        cog: cogInfo.cog,
+        nest: cogInfo.nest,   // 최대 중첩 깊이
+        guard: cogInfo.guard, // cog 중 가드 절이 낸 몫 — 높으면 검증 파이프라인이라 쪼갤 이유가 없다
         line: startLine,
         // 함수 길이 — 파일 크기 대신 "한 번에 읽어야 하는 양"의 직접 측정치.
         // 파일 크기는 배치 관습(라이브러리=몰아넣기 vs 앱=쪼개기)에 좌우되고,
@@ -1661,7 +1696,11 @@ if (ts && allFns.length > 0) {
     over15: cogOver15.length,
     over25: cogOver25.length,
     top10avg: Math.round(byCog.slice(0, 10).reduce((a, f) => a + f.cog, 0) / Math.min(10, byCog.length) * 10) / 10,
-    worst: byCog.slice(0, 10).map(({ name, cog, cc, file, line }) => ({ name, cog, cc, file, line })),
+    // 깊이 분포 — cog 가 같아도 평평한 저장소와 깊은 저장소는 다르다. 점수엔 안 들어간다.
+    // reduce 로 접는다 — Math.max(...arr) 는 인자 수가 스택 한도를 넘는다(vscode 18만 함수에서 터졌다)
+    maxNest: allFns.reduce((m, f) => (f.nest > m ? f.nest : m), 0),
+    deepCount: allFns.filter((f) => (f.nest || 0) >= 4).length, // 4단 이상 = 사람이 상태를 쌓아야 하는 깊이
+    worst: byCog.slice(0, 10).map(({ name, cog, cc, nest, guard, file, line }) => ({ name, cog, cc, nest, guard, file, line })),
   };
 
   // 함수 길이 분포 — "한 번에 읽어야 하는 양". 파일 크기의 대체 후보.
@@ -1748,8 +1787,15 @@ if (ts && allFns.length > 0) {
     // 조작 불가능한 축으로 옮기려면 이 항이 대부분 저장소에 조금씩 닿아야 한다.
     // 기울기는 코퍼스 p90(6.9%)에서 캡에 닿도록 잡았다. 임계는 JSX 60줄 / 그 외 40줄.
     - Math.min(16, fnOver40Pct * 1.95)
-    // 함수 길이 p90·최장 함수: 유예=코퍼스 중앙(23줄·304줄), 로그 스케일 잔여항
-    - Math.min(6, Math.max(0, Math.log2(Math.max(1, fnLength.p90) / 23)) * 11.0)
+    // 함수 길이 p90: 유예=코퍼스 중앙(23줄), 로그 스케일 잔여항.
+    // v7 에서 볼륨을 절반으로 줄였다(6점 계수 11.0 → 3점 계수 5.5). 두 가지 실측 근거:
+    //  ① 70개 코퍼스에서 fnOver40Pct 와의 상관이 0.914 — 사실상 같은 축을 두 번 재고 있었다.
+    //  ② 그런데 계수는 이 항이 가장 가팔라서, 중앙값보다 좋은 저장소에선 다른 축이 전부
+    //     유예선 아래로 깔린 뒤 이 항만 남아 점수를 좌우했다. p90 은 함수 하나 늘고 주는 것으로
+    //     한 줄씩 움직이는 순위통계라 그 자리에 있으면 안 된다.
+    // 실측 사례(formychildren): cog15+ 함수를 저장소에서 전부 없앴는데(0.34% → 0%) p90 이
+    // 28 → 29 로 밀리며 순이익이 −1점이 됐다. 개선은 못 받고 노이즈만 맞는 구조였다.
+    - Math.min(3, Math.max(0, Math.log2(Math.max(1, fnLength.p90) / 23)) * 5.5)
     - Math.min(4, Math.max(0, Math.log2(Math.max(1, fnLength.top10avg) / 174)) * 3.60)
     // io(루프 IO·N+1)는 점수에서 뺐다: 재시도 루프·커서 페이지네이션처럼 '순차가 필수'인
     // 코드를 구분하려면 사람 검증이 필요한데(PATTERNS.md), 사람이 필요한 축을 자동 채점에
@@ -2150,7 +2196,7 @@ console.log(`\n  저장됨 → ${path.relative(process.cwd(), outPath)}\n`);
 const HISTORY_FILE = ".fixearly-history.json";
 // 채점 규칙 버전. 유예값·기울기·캡을 바꾸면 이 값을 올려야 한다 —
 // 그러지 않으면 규칙이 바뀐 뒤의 점수를 예전 점수와 나란히 놓게 되고, 진행도가 거짓말을 한다.
-const SCORING_VERSION = "v6";
+const SCORING_VERSION = "v7";
 let history = [];
 let previous = null;
 {

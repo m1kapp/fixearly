@@ -119,13 +119,23 @@ function buildFixList(q, hotspots) {
   }
   for (const w of (q.cognitive?.worst || []).slice(0, 5)) {
     const churn = churnOf.get(w.file) || 0;
+    // 복잡도가 어디서 왔는지로 우선순위를 가른다. cog 는 `if (!x) return` 여덟 줄과
+    // 3단 중첩을 같은 점수로 매기지만, 앞은 순서대로 읽고 잊으면 되고 뒤는 상태를 쌓아야 한다.
+    // 실측(v7 코퍼스): ytcc-next POST() cog 17 은 가드가 35%, formychildren
+    // LandscapeStage cog 16 은 6% 였다 — 앞을 "고쳐라"라고 띄우면 틀린 일감이 된다.
+    const guardShare = w.cog ? (w.guard || 0) / w.cog : 0;
+    const flat = guardShare >= 0.3 && (w.nest || 0) <= 2;
     items.push({
       kind: "복잡한 함수", kindEn: "complex function",
-      what: `${w.name}() 복잡도 ${w.cog}`,
+      what: `${w.name}() 복잡도 ${w.cog}${w.nest ? ` · 깊이 ${w.nest}` : ""}`,
       where: `${w.file}:${w.line}`,
-      why: churn ? `churn ${churn}회 — 자주 만지는데 분기가 깊다` : "중첩 분기가 깊어 따라가기 어렵다",
-      weight: (w.cog || 0) * 2.2 * Math.log2(2 + churn) * (churn ? 1 : 0.35),
+      why: flat
+        ? `분기 대부분이 빠져나가는 가드 절이다(${Math.round(guardShare * 100)}%) — 순서대로 읽히므로 굳이 쪼갤 이유가 없다`
+        : churn ? `churn ${churn}회 — 자주 만지는데 분기가 깊다` : "중첩 분기가 깊어 따라가기 어렵다",
+      // 평평한 가드 파이프라인은 뒤로 미룬다. 0 으로 지우진 않는다 — 가드가 30개면 그건 그것대로 문제다.
+      weight: (w.cog || 0) * 2.2 * Math.log2(2 + churn) * (churn ? 1 : 0.35) * (flat ? 0.35 : 1),
       stable: churn === 0,
+      flat,
       scored: true,
     });
   }
@@ -178,7 +188,9 @@ function buildFixList(q, hotspots) {
 function itemPrompt(f, ctx) {
   const rule = {
     "긴 함수": "의미 단위로 자른다. 잘라낸 함수에 이름을 붙일 수 없으면 자르지 않은 것이다. 줄 수를 줄이려는 기계적 분할 금지.",
-    "복잡한 함수": "중첩을 걷어낸다(빠른 반환·가드절·분기 테이블). 분기 자체를 없애려 들지 말고 깊이를 낮춰라.",
+    "복잡한 함수": f.flat
+      ? "이 함수의 분기는 대부분 곧장 빠져나가는 가드 절이라 이미 평평하다. **기본 판단은 '고치지 않는다'** — 가드를 헬퍼 뒤로 숨기면 흐름이 오히려 안 보인다. 정말 고칠 게 있다면 가드 자체가 아니라 그 뒤 본문의 중첩을 봐라."
+      : "중첩을 걷어낸다(빠른 반환·가드절·분기 테이블). 분기 자체를 없애려 들지 말고 깊이를 낮춰라.",
     "O(n²)": "먼저 바깥 배열의 실제 크기를 코드에서 역추적하라. 상수 목록·설정값이면 고치지 말고 그 근거를 적어라. 크면 Map/Set으로 O(1).",
     "루프 안 I/O": "순차가 필수인지 먼저 판단하라(재시도·커서 페이지네이션은 정상). 아니면 배치 조회나 캐시로 호출 수를 줄인다.",
   }[f.kind] || "가장 작은 변경으로 고친다.";
@@ -377,7 +389,7 @@ function penaltyBreakdown(si) {
     { key: "cog25+ 비율", cap: 12, got: cap((si.over25Pct - 1.2) * 3, 12), now: `${si.over25Pct}%`, target: "1.2% 이하" },
     { key: "복잡도 p90", cap: 9, got: cap(L2(si.p90Cog, 6) * 3.0, 9), now: String(si.p90Cog), target: "6 이하" },
     { key: "중복", cap: 9, got: cap((si.dupPct - 8) * 1.2, 9), now: `${si.dupPct}%`, target: "8% 이하" },
-    { key: "함수 길이 p90", cap: 6, got: cap(L2(si.fnP90, 23) * 11, 6), now: `${si.fnP90}줄`, target: "23줄 이하" },
+    { key: "함수 길이 p90", cap: 3, got: cap(L2(si.fnP90, 23) * 5.5, 3), now: `${si.fnP90}줄`, target: "23줄 이하" },
     { key: "평균 파일 줄", cap: 5, got: cap((si.avgFileLines - 120) / 5, 5), now: `${si.avgFileLines}줄`, target: "120줄 이하" },
     { key: "복잡도 상위10 평균", cap: 4, got: cap(L2(si.cogTop10, 65) * 2.66, 4), now: String(si.cogTop10), target: "65 이하" },
     { key: "함수 길이 상위10 평균", cap: 4, got: cap(L2(si.fnTop10, 174) * 3.6, 4), now: `${si.fnTop10}줄`, target: "174줄 이하" },
