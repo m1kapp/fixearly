@@ -985,6 +985,110 @@ function analyzeQuadraticLookups(ts, fileContents) {
   };
 }
 
+/**
+ * 독립 순차 await — 서로 참조하지 않는데 줄줄이 기다리는 I/O.
+ *
+ * O(n²)·N+1 과 다른 축이다. 저 둘은 n 이 작으면 이득이 사라지지만(Map 구축 고정비,
+ * 배치 상한), 이건 독립 호출 2개만 있어도 레이턴시가 합에서 최댓값으로 바뀐다.
+ * 즉 작은 n 에서도 이득이 유지되고, 증거가 "왕복 N회 → 1회"라 측정 논쟁이 없다.
+ *
+ * 같은 블록에서 연속으로 오는 `const x = await f()` 중 뒤엣것이 앞엣것의 바인딩을
+ * 참조하지 않는 구간을 찾는다. 의존이 있으면 구간을 끊고, Promise 조합자 안의 것은
+ * 이미 동시 실행이라 제외한다.
+ */
+function analyzeSerialAwaits(ts, fileContents) {
+  // 순수 계산 await 을 묶어봐야 이득이 없다 — I/O 로 보이는 호출만 센다.
+  const IO_HINT =
+    /(prisma|db|database|tx|trx|knex|repo|repository|entityManager|dataSource|redis|cache|kv|s3|storage|bucket|http|axios|client|api|sdk|queue|stripe|supabase|clickhouse|mongo|collection|service|fetch|query|find|get|load|list|count|aggregate|read)/i;
+
+  const sites = [];
+
+  const namesOf = (ts_, decl) => {
+    const out = new Set();
+    const collect = (name) => {
+      if (ts_.isIdentifier(name)) out.add(name.getText());
+      else if (ts_.isObjectBindingPattern(name) || ts_.isArrayBindingPattern(name)) {
+        for (const el of name.elements) if (ts_.isBindingElement(el)) collect(el.name);
+      }
+    };
+    collect(decl.name);
+    return out;
+  };
+
+  const refsOf = (node) => {
+    const out = new Set();
+    const walk = (n) => { if (ts.isIdentifier(n)) out.add(n.getText()); n.forEachChild(walk); };
+    walk(node);
+    return out;
+  };
+
+  const inCombinator = (node) => {
+    let cur = node.parent;
+    while (cur) {
+      if (
+        ts.isCallExpression(cur) &&
+        ts.isPropertyAccessExpression(cur.expression) &&
+        /^(all|allSettled|any|race)$/.test(cur.expression.name.getText()) &&
+        cur.expression.expression.getText() === "Promise"
+      ) return true;
+      cur = cur.parent;
+    }
+    return false;
+  };
+
+  for (const { file, content } of fileContents) {
+    if (!content.includes("await")) continue;
+    const sf = ts.createSourceFile(
+      file, content, ts.ScriptTarget.Latest, true,
+      /\.(tsx|jsx)$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
+    );
+
+    const scan = (statements) => {
+      let run = [];
+      const flush = () => {
+        if (run.length >= 2) {
+          const io = run.filter((r) => IO_HINT.test(r.call.getText(sf).slice(0, 80)));
+          if (io.length >= 2) {
+            sites.push({
+              file,
+              line: sf.getLineAndCharacterOfPosition(run[0].stmt.getStart(sf)).line + 1,
+              count: run.length,
+              calls: run.map((r) => r.call.getText(sf).replace(/\s+/g, " ").slice(0, 60)),
+            });
+          }
+        }
+        run = [];
+      };
+
+      for (const stmt of statements) {
+        if (!ts.isVariableStatement(stmt) || stmt.declarationList.declarations.length !== 1) { flush(); continue; }
+        const decl = stmt.declarationList.declarations[0];
+        if (!decl.initializer || !ts.isAwaitExpression(decl.initializer)) { flush(); continue; }
+        const call = decl.initializer.expression;
+        if (!ts.isCallExpression(call) || inCombinator(call)) { flush(); continue; }
+
+        const refs = refsOf(call);
+        if (run.some((prev) => [...prev.names].some((n) => refs.has(n)))) flush();
+        run.push({ names: namesOf(ts, decl), call, stmt });
+      }
+      flush();
+    };
+
+    const visit = (n) => {
+      if (ts.isBlock(n) || ts.isSourceFile(n)) scan(n.statements);
+      n.forEachChild(visit);
+    };
+    visit(sf);
+  }
+
+  sites.sort((a, b) => b.count - a.count);
+  return {
+    sites: sites.length,
+    awaits: sites.reduce((s, x) => s + x.count, 0),
+    worst: sites.slice(0, 5),
+  };
+}
+
 // 교과서 결함 3종 — 정답이 하나뿐이라 외부 기여(PR)로도 안전한 축.
 //  ① await in .forEach(): forEach는 콜백의 프라미스를 무시한다 → 기다리지 않는 "진짜 버그".
 //  ② 스프레드 누적: 루프/reduce에서 acc = [...acc, x] → 매 회 전체 복사 = O(n²).
@@ -1671,6 +1775,7 @@ let duplication = null;
 let io = null;
 let renderGates = null;
 let quadratic = null;
+let serialAwait = null;
 let typeSafety = null;
 let textbook = null;
 if (ts && allFns.length > 0) {
@@ -1728,6 +1833,7 @@ if (ts && allFns.length > 0) {
   io = analyzeIoDensity(ts, fileContents);
   renderGates = analyzeRenderGates(ts, fileContents);
   quadratic = analyzeQuadraticLookups(ts, fileContents);
+  serialAwait = analyzeSerialAwaits(ts, fileContents);
   textbook = analyzeTextbookIssues(ts, fileContents);
   typeSafety = analyzeTypeSafety(ts, fileContents);
 
@@ -1910,6 +2016,7 @@ const stats = {
     typeSafety,           // {anyType,asAny,nonNull,tsIgnore} — 타입 위생(진단 전용, 점수 미반영)
     testDensity,          // {files, lines, percent} — 테스트 두께(진단 전용, 점수 미반영 — 섞으면 지표가 뒤집힌다)
     quadratic,            // {sites, worst[], files[]} — 루프 안 O(n²) 배열 조회(진단 전용, 점수 미반영)
+    serialAwait,          // {sites, awaits, worst[]} — 독립인데 순차로 기다리는 await(진단 전용, 점수 미반영)
     renderGates,          // {hostages, worst} — fetch 하나가 무관한 UI까지 막고 있는 자리
     cc,                   // {functions, avg, p90, max, over10, over20, worst[5]} — McCabe (참고용)
     branchDensity,        // 100줄당 분기 수 (regex 근사, 참고용)
@@ -2046,6 +2153,13 @@ if (typeSafety && typeSafety.tsFiles > 0) {
     console.log(`  타입 위생: ${bits.join(" · ")} — 타입을 포기한 자리 (점수 미반영, 경계에선 정당할 수 있음)`);
     for (const w of t.tsIgnore.worst.slice(0, 3)) console.log(`    @ts-${w.what} — ${w.file}:${w.line}`);
     for (const w of t.asAny.worst.slice(0, 3)) console.log(`    ${w.text} — ${w.file}:${w.line}`);
+  }
+}
+if (serialAwait && serialAwait.sites > 0) {
+  console.log(`  독립 순차 await: ${serialAwait.sites}곳 (await ${serialAwait.awaits}개) — 서로 참조 안 하는데 줄줄이 대기, Promise.all 로 합→최댓값, 점수 미반영`);
+  for (const w of serialAwait.worst.slice(0, 4)) {
+    console.log(`    ${w.count}개 연속 — ${w.file}:${w.line}`);
+    for (const c of w.calls.slice(0, 3)) console.log(`        await ${c}`);
   }
 }
 if (quadratic && quadratic.sites > 0) {
