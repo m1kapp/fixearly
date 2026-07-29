@@ -2,7 +2,8 @@
 # Re-measure all board repos at HEAD of pinned branch with the fixed engine.
 # Emits /private/tmp/board/results/<name>.json with raw metric fields.
 set -u
-ENGINE=/Users/minho/dev/personal/fixearly/bin/fixearly.mjs
+# 저장소 위치가 바뀌어도 안 깨지게 이 스크립트 기준으로 푼다(tools/ 의 부모).
+ENGINE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/bin/fixearly.mjs"
 ROOT=/private/tmp/board
 CLONES=$ROOT/clones
 OUT=$ROOT/results
