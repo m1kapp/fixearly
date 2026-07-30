@@ -31,6 +31,8 @@
     "dev": "python3 -m http.server 4173",
     "test": "node bin/selftest.mjs",
     "impact": "node bin/impact.mjs",
-    "board": "node tools/update-board.mjs"
+    "board": "node tools/update-board.mjs",
+    "og": "python3 tools/make-og.py",
+    "cards": "python3 tools/update-impact-cards.py"
   }
 }
