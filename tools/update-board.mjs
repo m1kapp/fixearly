@@ -133,7 +133,7 @@ for (const [label, re] of [["details 열기", /<details class="rw">/g], ["detail
     process.exit(1);
   }
 }
-for (const fn of ["index.html", "landing.html"]) {
-  fs.writeFileSync(path.join(ROOT, fn), newHtml);
-  console.log(`갱신 → ${fn}`);
-}
+// index.html 만 쓴다. 예전엔 landing.html 에도 같은 내용을 썼는데, 읽은 건
+// index.html 이라서 두 파일이 서로를 덮는 관계였다. landing.html 은 삭제했다.
+fs.writeFileSync(path.join(ROOT, "index.html"), newHtml);
+console.log("갱신 → index.html");

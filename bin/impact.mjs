@@ -179,14 +179,14 @@ fs.writeFileSync(path.join(ROOT, "IMPACT.md"), md);
 fs.writeFileSync(path.join(ROOT, "impact.json"), JSON.stringify(registry, null, 1) + "\n");
 console.log("  ✓ IMPACT.md 갱신됨");
 
-// 랜딩 동기화 (landing.html / index.html): 임팩트 점수 + 각 PR 상태 배지(등장 순서 = findings 순서)
+// 랜딩(index.html) 동기화: 임팩트 점수 + 각 PR 상태 배지(등장 순서 = findings 순서)
 const statusText = (st) => {
   const L = LABEL[st] || LABEL.unknown;
   if (st === "merged") return `${L.icon} merged · 임팩트 +1`;
   if (st === "closed") return `${L.icon} closed`;
   return `${L.icon} ${L.ko} · 머지되면 임팩트 +1`;
 };
-for (const file of ["landing.html", "index.html"]) {
+for (const file of ["index.html"]) {
   const p = path.join(ROOT, file);
   if (!fs.existsSync(p)) continue;
   let s = fs.readFileSync(p, "utf-8");
