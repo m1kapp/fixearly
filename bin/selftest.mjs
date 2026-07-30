@@ -121,5 +121,69 @@ if (zoneSrc) {
   }
 }
 
+// ── 문서가 점수식과 같은 말을 하는지 ──────────────────────────────────────
+// 랜딩과 README 는 배점을 손으로 적는다. v8 에서 N+1 을 채점축에 넣었을 때
+// 두 문서가 전부 "채점축 4개"로 남아 있었고, 함수 길이는 23인데 26으로 적혀
+// 있었다. 숫자를 손으로 적는 문서는 반드시 갈리므로 여기서 고정한다.
+{
+  console.log("\n문서 ↔ 점수식 일치:");
+  const AXES = [
+    ["인지 복잡도", ["over15Pct", "over25Pct", "cognitive.p90", "cognitive.top10avg"]],
+    ["함수 길이", ["fnOver40Pct", "fnLength.p90", "fnLength.top10avg"]],
+    ["중복", ["duplication.percent"]],
+    ["파일 크기", ["longFileSeverityPct", "avgFileLines"]],
+    ["N+1", ["nplusOne"]],
+  ];
+  // AST 모드 점수식만 자른다(regex 폴백은 별도 체계).
+  const from = src.indexOf("qualityScore = Math.max(0, Math.round(");
+  const to = src.indexOf("  // regex 폴백", from);
+  const expr = src.slice(from, to);
+  const caps = new Map(AXES.map(([n]) => [n, 0]));
+  let matched = 0;
+  for (const m of expr.matchAll(/-\s*Math\.min\((\d+),\s*(.*)$/gm)) {
+    const axis = AXES.find(([, keys]) => keys.some((k) => m[2].includes(k)));
+    if (!axis) continue;
+    caps.set(axis[0], caps.get(axis[0]) + Number(m[1]));
+    matched++;
+  }
+  const total = [...caps.values()].reduce((a, b) => a + b, 0);
+  const check = (name, ok, detail) => {
+    if (!ok) fail++;
+    console.log(`  ${ok ? "✓" : "✗"} ${name}${detail ? `: ${detail}` : ""}`);
+  };
+  check("점수식 항이 모두 축에 매핑됨", matched === expr.match(/-\s*Math\.min\(/g).length,
+    `${matched}개 매핑`);
+
+  const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
+  const readme = fs.readFileSync(path.join(ROOT, "README.md"), "utf8");
+  // lead 문단은 섹션마다 있다 — 배점을 적는 건 #axes 의 것이다.
+  const axesSec = html.slice(html.indexOf('id="axes"'), html.indexOf("</section>", html.indexOf('id="axes"')));
+  const lead = axesSec.match(/<p class="lead ko">(.*?)<\/p>/s)?.[1] ?? "";
+  for (const [axis, cap] of caps) {
+    check(`랜딩 배점 ${axis} ${cap}`, lead.includes(`${axis} ${cap}`));
+    check(`README 배점 ${axis} ${cap}`,
+      new RegExp(`\\*\\*${axis.replace("+", "\\+")}\\*\\*\\s*\\|\\s*${cap}\\s*\\|`).test(readme));
+  }
+  check(`합계 ${total}`, lead.includes(`합 ${total}`) && readme.includes(`합 ${total}`));
+
+  const nAxes = caps.size;
+  check(`랜딩 제목 "축 ${nAxes}개"`, html.includes(`축 ${nAxes}개`));
+  check(`랜딩 herometa 채점축 ${nAxes}`, html.includes(`scored axes</span> ${nAxes}`));
+  check(`README 제목 "채점축 ${nAxes}개"`, readme.includes(`채점축 ${nAxes}개`));
+
+  // 진단 개수: DIAG 배열이 진짜 출처다(#dx 를 런타임에 덮어쓴다).
+  const diagBlock = html.slice(html.indexOf("const DIAG=["), html.indexOf("\n];", html.indexOf("const DIAG=[")));
+  const diag = [...diagBlock.matchAll(/^\s*\['(\w+)',/gm)].map((m) => m[1]);
+  const byCat = diag.reduce((a, k) => ((a[k] = (a[k] || 0) + 1), a), {});
+  const CHIP = { perf: "성능", bug: "정확성 버그", type: "타입 위생", hyg: "위생" };
+  for (const [k, ko] of Object.entries(CHIP)) {
+    check(`칩 "${ko} ${byCat[k]}"`, html.includes(`${ko} ${byCat[k]}<`));
+  }
+  check(`랜딩 제목 "결함 ${diag.length}종"`, html.includes(`결함 ${diag.length}종`));
+  check(`랜딩 herometa 진단 ${diag.length}`, html.includes(`diagnostics</span> ${diag.length}`));
+  check(`README "진단 ${diag.length}종"`, readme.includes(`진단 ${diag.length}종`));
+  check("채점축과 진단이 겹치지 않음", !diag.some((_, i) => diagBlock.includes("'N+1'")));
+}
+
 console.log(fail ? `\n  ${fail} FAIL` : `\n  all passed`);
 process.exit(fail ? 1 : 0);
