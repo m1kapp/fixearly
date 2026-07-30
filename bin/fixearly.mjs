@@ -998,12 +998,21 @@ function analyzeQuadraticLookups(ts, fileContents) {
         if (inLoop && recvIsPath && root &&
             (QUADRATIC_METHODS.has(method) || QUADRATIC_GROUP_METHODS.has(method))) {
           const recv = recvNode.getText(sf);
-          if (!locals.has(root)) {
+          // 수신자가 배열이 아니면 배열 스캔이 아니다. 배열 메서드는 첫 인자가 항상 함수인데,
+          // 같은 이름의 속성 호출은 값을 넘긴다 — nuxt `options.filter(template)` 은 사용자가
+          // 넘긴 술어 함수고, typescript 저장소의 `ts.filter(...)` 는 네임스페이스 유틸이다.
+          // 채점축이 된 뒤로는 이런 오탐 하나가 등급을 움직이므로 여기서 끊는다.
+          const arg0 = node.arguments[0];
+          const argIsFn = !!arg0 && (ts.isArrowFunction(arg0) || ts.isFunctionExpression(arg0));
+          if (!locals.has(root) && argIsFn) {
             const zone = quadZoneOf(file);
             const dynamicOuter = quadOuterDynamic(outerText);
             // 게이트 — 왜 이 후보가 실이득이 없는지 사유를 붙인다.
             const cuts = [];
             if (quadConstOuter(outerText, moduleConsts)) cuts.push("const-outer");
+            // 안쪽(수신자)이 모듈 상수면 O(n × 상수) = O(n) 이다. 게이트가 바깥만 보고 있어서
+            // INTERCEPTION_ROUTE_MARKERS 같은 상수 목록 조회가 이차식으로 잡히고 있었다.
+            if (CONSTish.test(root) || moduleConsts.has(root)) cuts.push("const-inner");
             if (quadIoInLoop(ts, loopNode, sf)) cuts.push("io-in-loop");
             if (quadCappedN(fnNode ? fnNode.getText(sf) : "")) cuts.push("capped-n");
             sites.push({
@@ -2571,7 +2580,7 @@ if (quadratic && quadratic.sites > 0) {
   const cutTxt = Object.keys(cb).length
     ? ` · 게이트 컷 ${quadratic.preGateCandidates - quadratic.candidates}곳(${Object.entries(cb).map(([k, v]) => `${k} ${v}`).join(", ")})`
     : "";
-  console.log(`  O(n²) 배열 조회: ${quadratic.sites}곳 (PR후보 ${quadratic.candidates}곳${cutTxt} · backend ${z.backend || 0}/frontend ${z.frontend || 0}/test ${z.test || 0}) — 루프 안 선형 탐색, Map/Set으로 O(n), 점수 미반영`);
+  console.log(`  O(n²) 배열 조회: ${quadratic.sites}곳 (PR후보 ${quadratic.candidates}곳${cutTxt} · backend ${z.backend || 0}/frontend ${z.frontend || 0}/test ${z.test || 0}) — 루프 안 선형 탐색, Map/Set으로 O(n) — PR후보 3곳 이상부터 점수 반영`);
   for (const w of quadratic.worst.slice(0, 6)) {
     const tag = w.zone === "backend" ? "★backend" : w.zone;
     console.log(`    [${tag}${w.dynamicOuter ? "" : " ·유계"}] ${w.recv}.${w.method}() — ${w.file}:${w.line}${w.outer ? `  (loop: ${w.outer})` : ""}`);

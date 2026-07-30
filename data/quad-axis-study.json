@@ -1,5 +1,5 @@
 {
- "note": "O(n²) 채점축 승격 판정 원자료(v10). candidates = 테스트·프론트 구역, 정적 외곽, 루프 안 I/O, capped-n 을 제외한 PR 손검증 대상. 파일당이 아니라 10k줄당으로 재는 이유와 종류별 층화 결과는 README 채점축 표에.",
+ "note": "O(n²) 채점축 승격 판정 원자료(v10). candidates = 테스트·프론트 구역, 정적 외곽, 루프 안 I/O, capped-n 을 제외한 PR 손검증 대상. 파일당이 아니라 10k줄당으로 재는 이유와 종류별 층화 결과는 README 채점축 표에. 오탐 가드(수신자 첫 인자가 함수여야 함 · 안쪽이 모듈 상수면 컷) 적용 후 값. candBeforeGuard 는 가드 전.",
  "measuredAt": "2026-07-30",
  "n": 37,
  "repos": [
@@ -12,7 +12,9 @@
    "sites": 0,
    "pre": 0,
    "cand": 0,
-   "zones": {}
+   "zones": {},
+   "candBeforeGuard": 0,
+   "per10k": 0
   },
   {
    "name": "storybook",
@@ -22,12 +24,14 @@
    "files": 923,
    "sites": 32,
    "pre": 24,
-   "cand": 23,
+   "cand": 22,
    "zones": {
     "other": 23,
     "frontend": 8,
     "backend": 1
-   }
+   },
+   "candBeforeGuard": 23,
+   "per10k": 1.88
   },
   {
    "name": "svelte",
@@ -42,7 +46,9 @@
     "other": 9,
     "frontend": 1,
     "backend": 3
-   }
+   },
+   "candBeforeGuard": 12,
+   "per10k": 2.9
   },
   {
    "name": "ky",
@@ -53,7 +59,9 @@
    "sites": 0,
    "pre": 0,
    "cand": 0,
-   "zones": {}
+   "zones": {},
+   "candBeforeGuard": 0,
+   "per10k": 0
   },
   {
    "name": "nanoid",
@@ -64,7 +72,9 @@
    "sites": 0,
    "pre": 0,
    "cand": 0,
-   "zones": {}
+   "zones": {},
+   "candBeforeGuard": 0,
+   "per10k": 0
   },
   {
    "name": "express",
@@ -75,7 +85,9 @@
    "sites": 0,
    "pre": 0,
    "cand": 0,
-   "zones": {}
+   "zones": {},
+   "candBeforeGuard": 0,
+   "per10k": 0
   },
   {
    "name": "immich",
@@ -88,7 +100,9 @@
    "cand": 11,
    "zones": {
     "backend": 13
-   }
+   },
+   "candBeforeGuard": 11,
+   "per10k": 2.25
   },
   {
    "name": "prettier",
@@ -101,7 +115,9 @@
    "cand": 3,
    "zones": {
     "other": 4
-   }
+   },
+   "candBeforeGuard": 3,
+   "per10k": 0.82
   },
   {
    "name": "trpc",
@@ -112,7 +128,9 @@
    "sites": 0,
    "pre": 0,
    "cand": 0,
-   "zones": {}
+   "zones": {},
+   "candBeforeGuard": 0,
+   "per10k": 0
   },
   {
    "name": "tanstack-query",
@@ -123,7 +141,9 @@
    "sites": 0,
    "pre": 0,
    "cand": 0,
-   "zones": {}
+   "zones": {},
+   "candBeforeGuard": 0,
+   "per10k": 0
   },
   {
    "name": "vitest",
@@ -136,7 +156,9 @@
    "cand": 14,
    "zones": {
     "other": 14
-   }
+   },
+   "candBeforeGuard": 14,
+   "per10k": 3.85
   },
   {
    "name": "typescript",
@@ -146,11 +168,13 @@
    "files": 528,
    "sites": 36,
    "pre": 36,
-   "cand": 36,
+   "cand": 21,
    "zones": {
     "other": 22,
     "backend": 14
-   }
+   },
+   "candBeforeGuard": 36,
+   "per10k": 0.7
   },
   {
    "name": "vue",
@@ -163,7 +187,9 @@
    "cand": 4,
    "zones": {
     "other": 4
-   }
+   },
+   "candBeforeGuard": 4,
+   "per10k": 0.88
   },
   {
    "name": "medusa",
@@ -173,11 +199,13 @@
    "files": 688,
    "sites": 7,
    "pre": 6,
-   "cand": 6,
+   "cand": 5,
    "zones": {
     "backend": 6,
     "other": 1
-   }
+   },
+   "candBeforeGuard": 6,
+   "per10k": 1.33
   },
   {
    "name": "payload",
@@ -187,12 +215,14 @@
    "files": 594,
    "sites": 44,
    "pre": 39,
-   "cand": 35,
+   "cand": 33,
    "zones": {
     "other": 37,
     "test": 5,
     "backend": 2
-   }
+   },
+   "candBeforeGuard": 35,
+   "per10k": 6.38
   },
   {
    "name": "angular",
@@ -202,12 +232,14 @@
    "files": 1855,
    "sites": 41,
    "pre": 39,
-   "cand": 39,
+   "cand": 33,
    "zones": {
     "other": 39,
     "frontend": 1,
     "test": 1
-   }
+   },
+   "candBeforeGuard": 39,
+   "per10k": 1.42
   },
   {
    "name": "excalidraw",
@@ -221,7 +253,9 @@
    "zones": {
     "other": 2,
     "frontend": 5
-   }
+   },
+   "candBeforeGuard": 1,
+   "per10k": 0.15
   },
   {
    "name": "playwright",
@@ -231,11 +265,13 @@
    "files": 302,
    "sites": 5,
    "pre": 5,
-   "cand": 5,
+   "cand": 4,
    "zones": {
     "backend": 3,
     "other": 2
-   }
+   },
+   "candBeforeGuard": 5,
+   "per10k": 0.72
   },
   {
    "name": "n8n",
@@ -248,7 +284,9 @@
    "cand": 5,
    "zones": {
     "other": 5
-   }
+   },
+   "candBeforeGuard": 5,
+   "per10k": 3.14
   },
   {
    "name": "hono",
@@ -258,10 +296,12 @@
    "files": 162,
    "sites": 2,
    "pre": 2,
-   "cand": 2,
+   "cand": 1,
    "zones": {
     "other": 2
-   }
+   },
+   "candBeforeGuard": 2,
+   "per10k": 0.53
   },
   {
    "name": "vite",
@@ -271,11 +311,13 @@
    "files": 132,
    "sites": 12,
    "pre": 12,
-   "cand": 12,
+   "cand": 11,
    "zones": {
     "other": 5,
     "backend": 7
-   }
+   },
+   "candBeforeGuard": 12,
+   "per10k": 2.97
   },
   {
    "name": "outline",
@@ -288,7 +330,9 @@
    "cand": 2,
    "zones": {
     "backend": 3
-   }
+   },
+   "candBeforeGuard": 2,
+   "per10k": 0.31
   },
   {
    "name": "immer",
@@ -299,7 +343,9 @@
    "sites": 0,
    "pre": 0,
    "cand": 0,
-   "zones": {}
+   "zones": {},
+   "candBeforeGuard": 0,
+   "per10k": 0
   },
   {
    "name": "next.js",
@@ -309,12 +355,14 @@
    "files": 1333,
    "sites": 38,
    "pre": 35,
-   "cand": 35,
+   "cand": 26,
    "zones": {
     "other": 29,
     "frontend": 1,
     "backend": 8
-   }
+   },
+   "candBeforeGuard": 35,
+   "per10k": 1.3
   },
   {
    "name": "nuxt",
@@ -324,11 +372,13 @@
    "files": 172,
    "sites": 20,
    "pre": 11,
-   "cand": 10,
+   "cand": 9,
    "zones": {
     "other": 12,
     "frontend": 8
-   }
+   },
+   "candBeforeGuard": 10,
+   "per10k": 4.62
   },
   {
    "name": "valibot",
@@ -339,7 +389,9 @@
    "sites": 0,
    "pre": 0,
    "cand": 0,
-   "zones": {}
+   "zones": {},
+   "candBeforeGuard": 0,
+   "per10k": 0
   },
   {
    "name": "eslint",
@@ -352,7 +404,9 @@
    "cand": 7,
    "zones": {
     "other": 7
-   }
+   },
+   "candBeforeGuard": 7,
+   "per10k": 1.11
   },
   {
    "name": "zustand",
@@ -363,7 +417,9 @@
    "sites": 0,
    "pre": 0,
    "cand": 0,
-   "zones": {}
+   "zones": {},
+   "candBeforeGuard": 0,
+   "per10k": 0
   },
   {
    "name": "jotai",
@@ -374,7 +430,9 @@
    "sites": 0,
    "pre": 0,
    "cand": 0,
-   "zones": {}
+   "zones": {},
+   "candBeforeGuard": 0,
+   "per10k": 0
   },
   {
    "name": "nestjs",
@@ -384,10 +442,12 @@
    "files": 483,
    "sites": 4,
    "pre": 4,
-   "cand": 4,
+   "cand": 3,
    "zones": {
     "other": 4
-   }
+   },
+   "candBeforeGuard": 4,
+   "per10k": 0.95
   },
   {
    "name": "astro",
@@ -397,11 +457,13 @@
    "files": 554,
    "sites": 24,
    "pre": 18,
-   "cand": 17,
+   "cand": 11,
    "zones": {
     "other": 18,
     "frontend": 6
-   }
+   },
+   "candBeforeGuard": 17,
+   "per10k": 1.98
   },
   {
    "name": "execa",
@@ -412,7 +474,9 @@
    "sites": 0,
    "pre": 0,
    "cand": 0,
-   "zones": {}
+   "zones": {},
+   "candBeforeGuard": 0,
+   "per10k": 0
   },
   {
    "name": "strapi",
@@ -422,13 +486,15 @@
    "files": 2122,
    "sites": 67,
    "pre": 43,
-   "cand": 42,
+   "cand": 37,
    "zones": {
     "frontend": 23,
     "other": 18,
     "backend": 25,
     "test": 1
-   }
+   },
+   "candBeforeGuard": 42,
+   "per10k": 1.85
   },
   {
    "name": "axios",
@@ -439,7 +505,9 @@
    "sites": 0,
    "pre": 0,
    "cand": 0,
-   "zones": {}
+   "zones": {},
+   "candBeforeGuard": 0,
+   "per10k": 0
   },
   {
    "name": "directus",
@@ -449,11 +517,13 @@
    "files": 763,
    "sites": 68,
    "pre": 65,
-   "cand": 65,
+   "cand": 63,
    "zones": {
     "backend": 66,
     "test": 2
-   }
+   },
+   "candBeforeGuard": 65,
+   "per10k": 10.11
   },
   {
    "name": "fastify",
@@ -464,7 +534,9 @@
    "sites": 0,
    "pre": 0,
    "cand": 0,
-   "zones": {}
+   "zones": {},
+   "candBeforeGuard": 0,
+   "per10k": 0
   },
   {
    "name": "mitt",
@@ -475,7 +547,9 @@
    "sites": 0,
    "pre": 0,
    "cand": 0,
-   "zones": {}
+   "zones": {},
+   "candBeforeGuard": 0,
+   "per10k": 0
   }
  ]
 }
