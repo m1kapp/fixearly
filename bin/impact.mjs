@@ -22,18 +22,47 @@ const checkOnly = process.argv.includes("--check");
 const registry = JSON.parse(fs.readFileSync(path.join(ROOT, "impact.json"), "utf-8"));
 const findings = registry.findings || [];
 
+/**
+ * PR 상태 — "열림" 하나로 뭉치지 않는다.
+ *
+ * 12개가 전부 '리뷰 중' 으로 보이면 실제로 뭐가 진행되고 뭐가 방치됐는지 알 수 없다.
+ * 승인만 받고 머지 버튼을 기다리는 것과, 리뷰어조차 안 붙은 것은 다른 상태다.
+ * 리뷰 목록을 한 번 더 받아 그 차이를 드러낸다.
+ */
 async function prStatus(repo, pr) {
-  const url = `https://api.github.com/repos/${repo}/pulls/${pr}`;
   const headers = { "User-Agent": "fixearly-impact", Accept: "application/vnd.github+json" };
   if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+  const get = async (u) => {
+    const res = await fetch(u, { headers });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  };
+
   try {
-    const res = await fetch(url, { headers });
-    if (!res.ok) return { state: "unknown", err: `HTTP ${res.status}` };
-    const d = await res.json();
-    // merged=true → 병합. state=open + draft → 초안. state=open → 열림. closed & !merged → 닫힘(거절).
+    const d = await get(`https://api.github.com/repos/${repo}/pulls/${pr}`);
     if (d.merged) return { state: "merged", url: d.html_url };
-    if (d.state === "open") return { state: d.draft ? "draft" : "open", url: d.html_url };
-    return { state: "closed", url: d.html_url };
+    if (d.state !== "open") return { state: "closed", url: d.html_url };
+    if (d.draft) return { state: "draft", url: d.html_url };
+
+    // 열린 PR 만 리뷰를 확인한다 — 닫힌 것에 쓸 호출을 아낀다.
+    let reviews = [];
+    try {
+      reviews = await get(`https://api.github.com/repos/${repo}/pulls/${pr}/reviews?per_page=100`);
+    } catch { /* 리뷰 조회 실패는 치명적이지 않다 — open 으로 떨어진다 */ }
+
+    // 리뷰어별 마지막 판정만 센다. APPROVED 후 COMMENTED 가 와도 승인은 유지된다.
+    const last = new Map();
+    for (const r of reviews) {
+      if (r.state === "COMMENTED") continue; // 단순 코멘트는 판정이 아니다
+      last.set(r.user?.login, r.state);
+    }
+    const verdicts = [...last.values()];
+    if (verdicts.includes("CHANGES_REQUESTED")) return { state: "changes", url: d.html_url };
+    if (verdicts.includes("APPROVED")) return { state: "approved", url: d.html_url };
+
+    // 판정은 없지만 사람이 붙은 흔적 — 리뷰어 지정 또는 리뷰 코멘트.
+    const engaged = (d.requested_reviewers || []).length > 0 || (d.review_comments || 0) > 0 || reviews.length > 0;
+    return { state: engaged ? "reviewing" : "waiting", url: d.html_url };
   } catch (e) {
     return { state: "unknown", err: e.message };
   }
@@ -41,6 +70,10 @@ async function prStatus(repo, pr) {
 
 const LABEL = {
   merged: { icon: "✅", ko: "merged", point: 1 },
+  approved: { icon: "🔵", ko: "approved · 머지 대기", point: 0 },
+  changes: { icon: "🟠", ko: "changes requested", point: 0 },
+  reviewing: { icon: "🟢", ko: "reviewing", point: 0 },
+  waiting: { icon: "⚪", ko: "awaiting review", point: 0 },
   draft: { icon: "🟡", ko: "draft", point: 0 },
   open: { icon: "🟢", ko: "open", point: 0 },
   closed: { icon: "❌", ko: "closed", point: 0 },
