@@ -281,6 +281,18 @@ footer{border-top:1px solid var(--line);padding:var(--space-xl) 0 var(--space-2x
   font-family:var(--font-mono);font-size:12.5px;color:var(--ink-3);line-height:1.9;}
 footer b{color:var(--ink-2);font-weight:600;}
 footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:var(--space-md);}
+
+/* 임팩트 — 실제로 낸 PR 목록. 카드 하나 = PR 하나. */
+.iwrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:1px;margin-top:var(--space-lg);background:var(--line);border:1px solid var(--line);border-radius:var(--radius)}
+.ic{background:var(--paper);padding:16px 18px;display:grid;gap:5px;text-decoration:none;color:inherit;position:relative;transition:background var(--dur) var(--ease)}
+.ic:hover{background:var(--paper-2)}
+.ic b{font-size:13px;color:var(--ink-2);font-weight:600}
+.it{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--ink);line-height:1.45}
+.ist{font-size:11px;color:var(--ink-3);letter-spacing:.02em}
+.idot{position:absolute;top:18px;right:16px;width:7px;height:7px;border-radius:50%}
+.idot.ok{background:var(--gS)}
+.idot.wait{background:var(--gC)}
+.idot.off{background:var(--ink-3);opacity:.45}
 </style>
 </head>
 <body>
@@ -482,7 +494,7 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
   <div class="w">
     <div class="stepno">06</div>
     <h2 class="ko">점수를 만드는 축 4개, 짚어주는 결함 17종.</h2>
-    <h2 class="en">Three axes make the score. Seventeen diagnostics point at fixes.</h2>
+    <h2 class="en">Four axes make the score. Seventeen diagnostics point at fixes.</h2>
     <p class="lead ko">채점은 함수 길이·인지 복잡도·중복·파일 크기 넷으로 한다. 감점 비중은 함수 길이 26 · 복잡도 37 · 중복 9 · 파일 크기 8(캡 기준). 나머지 17종은 등급을 건드리지 않고 파일·줄만 짚는다.</p>
     <p class="lead en">Four axes set the grade — function length 26, complexity 37, duplication 9, file size 8 (by cap). The other seventeen never touch it; they name the file and line.</p>
     <div class="pill">
@@ -530,6 +542,36 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
   </div>
 </section>
 
+<section class="step" id="impact">
+  <div class="w">
+    <div class="stepno">08</div>
+    <h2 class="ko">점수판이 아니라, 증거.</h2>
+    <h2 class="en">Not a scoreboard — evidence.</h2>
+    <p class="lead ko">여기 있는 건 fixearly 가 남의 코드에서 찾아 <b>실제로 PR 을 낸 것</b>들이다. 등급을 매기는 것과 고칠 줄을 짚는 것은 다르고, 후자는 남이 받아줘야 증명된다. 닫힌 것도 같이 둔다 — 실측해보니 이득이 작아 접은 건도 결과다.</p>
+    <p class="lead en">These are issues fixearly found in other people's code and <b>actually opened PRs for</b>. Grading is one thing; naming the line to fix is another, and only someone else merging it proves the second. Closed ones stay on the list — a patch we measured and dropped is a result too.</p>
+    <div class="iwrap">
+      <a class="ic" href="https://github.com/outline/outline/pull/13117" target="_blank" rel="noopener"><span class="idot ok"></span><b>outline · 39.8k★</b><span class="it">markdown import merge O(n²)</span><span class="ist"><span class="ko">머지됨</span><span class="en">merged</span> · #13117</span></a>
+      <a class="ic" href="https://github.com/immich-app/immich/pull/30163" target="_blank" rel="noopener"><span class="idot wait"></span><b>immich · 108k★</b><span class="it">deleteBulkMetadata N+1</span><span class="ist"><span class="ko">리뷰 중</span><span class="en">in review</span> · #30163</span></a>
+      <a class="ic" href="https://github.com/novuhq/novu/pull/12074" target="_blank" rel="noopener"><span class="idot wait"></span><b>novu · 40k★</b><span class="it">sync-agent findOne N+1</span><span class="ist"><span class="ko">리뷰 중</span><span class="en">in review</span> · #12074</span></a>
+      <a class="ic" href="https://github.com/calcom/cal.diy/pull/29828" target="_blank" rel="noopener"><span class="idot wait"></span><b>cal.com · 46729★</b><span class="it">booking member diff O(n²)</span><span class="ist"><span class="ko">리뷰 중</span><span class="en">in review</span> · #29828</span></a>
+      <a class="ic" href="https://github.com/calcom/cal.diy/pull/29832" target="_blank" rel="noopener"><span class="idot wait"></span><b>cal.com · 47k★</b><span class="it">lucky-user set rebuild in loop</span><span class="ist"><span class="ko">리뷰 중</span><span class="en">in review</span> · #29832</span></a>
+      <a class="ic" href="https://github.com/payloadcms/payload/pull/17469" target="_blank" rel="noopener"><span class="idot wait"></span><b>payload · 43.8k★</b><span class="it">dataloader doc placement O(n²)</span><span class="ist"><span class="ko">리뷰 중</span><span class="en">in review</span> · #17469</span></a>
+      <a class="ic" href="https://github.com/medusajs/medusa/pull/16188" target="_blank" rel="noopener"><span class="idot wait"></span><b>medusa · 35.3k★</b><span class="it">translations batch match O(n²)</span><span class="ist"><span class="ko">리뷰 중</span><span class="en">in review</span> · #16188</span></a>
+      <a class="ic" href="https://github.com/strapi/strapi/pull/27125" target="_blank" rel="noopener"><span class="idot wait"></span><b>strapi · 72.7k★</b><span class="it">doc-metadata localization O(n²)</span><span class="ist"><span class="ko">리뷰 중</span><span class="en">in review</span> · #27125</span></a>
+      <a class="ic" href="https://github.com/n8n-io/n8n/pull/34899" target="_blank" rel="noopener"><span class="idot wait"></span><b>n8n · 148k★</b><span class="it">resource-mapper schema validation O(n²)</span><span class="ist"><span class="ko">리뷰 중</span><span class="en">in review</span> · #34899</span></a>
+      <a class="ic" href="https://github.com/nocodb/nocodb/pull/14309" target="_blank" rel="noopener"><span class="idot wait"></span><b>nocodb · 54k★</b><span class="it">user field validation O(n²)</span><span class="ist"><span class="ko">리뷰 중</span><span class="en">in review</span> · #14309</span></a>
+      <a class="ic" href="https://github.com/medusajs/medusa/pull/16233" target="_blank" rel="noopener"><span class="idot wait"></span><b>medusa · 32k★</b><span class="it">cart variant lookup O(n²)</span><span class="ist"><span class="ko">리뷰 중</span><span class="en">in review</span> · #16233</span></a>
+      <a class="ic" href="https://github.com/langfuse/langfuse/pull/15585" target="_blank" rel="noopener"><span class="idot wait"></span><b>langfuse · 18k★</b><span class="it">eval dataset item 반복 조회</span><span class="ist"><span class="ko">리뷰 중</span><span class="en">in review</span> · #15585</span></a>
+      <a class="ic" href="https://github.com/baptisteArno/typebot.io/pull/2572" target="_blank" rel="noopener"><span class="idot wait"></span><b>typebot · 9k★</b><span class="it">in-depth analytics 순차 await</span><span class="ist"><span class="ko">리뷰 중</span><span class="en">in review</span> · #2572</span></a>
+      <a class="ic" href="https://github.com/twentyhq/twenty/pull/23231" target="_blank" rel="noopener"><span class="idot off"></span><b>twenty · 53558★</b><span class="it">view-widget-upsert O(n²)</span><span class="ist"><span class="ko">닫힘</span><span class="en">closed</span> · #23231</span></a>
+      <a class="ic" href="https://github.com/twentyhq/twenty/pull/23232" target="_blank" rel="noopener"><span class="idot off"></span><b>twenty · 37k★</b><span class="it">nested relations hydration O(n²)</span><span class="ist"><span class="ko">닫힘</span><span class="en">closed</span> · #23232</span></a>
+      <a class="ic" href="https://github.com/directus/directus/pull/27978" target="_blank" rel="noopener"><span class="idot off"></span><b>directus · 36.9k★</b><span class="it">parse-fields dedup O(n²)</span><span class="ist"><span class="ko">닫힘</span><span class="en">closed</span> · #27978</span></a>
+      <a class="ic" href="https://github.com/Budibase/budibase/pull/19320" target="_blank" rel="noopener"><span class="idot off"></span><b>budibase · 25k★</b><span class="it">ExternalRequest field lookup O(n²)</span><span class="ist"><span class="ko">닫힘</span><span class="en">closed</span> · #19320</span></a>
+    </div>
+    <p class="note ko">머지 1 · 리뷰 중 12 · 닫힘 4 — 전체 기록은 <a href="https://github.com/m1kapp/fixearly/blob/main/IMPACT.md">IMPACT.md</a>. 상태는 GitHub 에서 자동 갱신된다.</p>
+    <p class="note en">1 merged · 12 in review · 4 closed — full log in <a href="https://github.com/m1kapp/fixearly/blob/main/IMPACT.md">IMPACT.md</a>, refreshed from GitHub.</p>
+  </div>
+</section>
 <section class="cta">
   <div class="w">
     <h2 class="ko">한 줄이면 끝난다.</h2>
