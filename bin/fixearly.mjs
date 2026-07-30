@@ -1185,6 +1185,115 @@ function analyzeNPlusOne(ts, fileContents) {
  * 참조하지 않는 구간을 찾는다. 의존이 있으면 구간을 끊고, Promise 조합자 안의 것은
  * 이미 동시 실행이라 제외한다.
  */
+/**
+ * 결합도 — 저장소 안 모듈 사이의 순환 의존.
+ *
+ * 다른 축이 전부 "읽기 어려운가"를 잰다. 그런데 고치는 비용은
+ * (이해 난이도) x (몇 군데를 같이 고쳐야 하나)다. 순환에 묶인 모듈은
+ * 따로 읽을 수도, 따로 테스트할 수도, 따로 교체할 수도 없다 — 한 덩어리다.
+ *
+ * 타입 전용 import 는 간선으로 세지 않는다. 런타임에 로드되지 않으므로
+ * 초기화 순서 버그도 트리셰이킹 방해도 안 만든다. 37개 실측에서 전체 순환의
+ * 37%가 타입 전용이었다 — 섞으면 없는 문제를 보고하게 된다.
+ *
+ * 상대 경로만 해석한다. 패키지 import 는 저장소 밖이라 우리 결합도가 아니고,
+ * tsconfig 별칭은 설정을 읽어야 해서 여기선 놓친다(그만큼 과소 보고다).
+ *
+ * 진단 전용 — 점수 미반영. 35곳 실측에서 기존 점수와 rho=-0.24 로 대체로
+ * 독립이지만, 가장 많이 발동하는 앱 8곳 안에서는 rho=-0.67 로 절반쯤 겹친다.
+ * 표본이 얇아(앱 n=8, 코퍼스 70개 중 35개) 채점축 승격은 보류한다.
+ */
+function analyzeCoupling(ts, fileContents) {
+  const EXT = [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"];
+  const known = new Set(fileContents.map((f) => f.file));
+  const resolveSpec = (from, spec) => {
+    if (!spec.startsWith(".")) return null;
+    const base = path.normalize(path.join(path.dirname(from), spec));
+    if (known.has(base)) return base;
+    for (const e of EXT) if (known.has(base + e)) return base + e;
+    // ESM 관습: .js 로 적고 실제로는 .ts 를 가리킨다
+    const noExt = base.replace(/\.[cm]?js$/, "");
+    for (const e of EXT) if (known.has(noExt + e)) return noExt + e;
+    for (const e of EXT) if (known.has(path.join(base, "index" + e))) return path.join(base, "index" + e);
+    return null;
+  };
+
+  const adj = new Map(fileContents.map((f) => [f.file, new Set()]));
+  for (const { file, content } of fileContents) {
+    let sf;
+    try {
+      sf = ts.createSourceFile(file, content, ts.ScriptTarget.Latest, true,
+        /\.[jt]sx$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
+    } catch { continue; }
+    const add = (spec) => {
+      const t = resolveSpec(file, spec);
+      if (t && t !== file) adj.get(file).add(t);
+    };
+    const visit = (n) => {
+      if (ts.isImportDeclaration(n) && ts.isStringLiteral(n.moduleSpecifier)) {
+        const c = n.importClause;
+        let typeOnly = !!c && c.isTypeOnly;
+        // `import { type A, type B } from` — 항목이 전부 type 이면 런타임 간선이 아니다
+        if (c && !typeOnly && !c.name && c.namedBindings && ts.isNamedImports(c.namedBindings))
+          typeOnly = c.namedBindings.elements.length > 0 && c.namedBindings.elements.every((e) => e.isTypeOnly);
+        if (!typeOnly) add(n.moduleSpecifier.text);
+      } else if (ts.isExportDeclaration(n) && n.moduleSpecifier && ts.isStringLiteral(n.moduleSpecifier)) {
+        if (!n.isTypeOnly) add(n.moduleSpecifier.text);
+      } else if (ts.isCallExpression(n) && n.expression.kind === ts.SyntaxKind.ImportKeyword &&
+                 n.arguments[0] && ts.isStringLiteral(n.arguments[0])) {
+        add(n.arguments[0].text);
+      }
+      ts.forEachChild(n, visit);
+    };
+    ts.forEachChild(sf, visit);
+  }
+
+  // Tarjan SCC. 재귀로 쓰면 깊은 그래프(typescript 는 231개 모듈 순환)에서 스택이 넘는다.
+  const index = new Map(), low = new Map(), onStack = new Set(), stack = [];
+  const comps = [];
+  let counter = 0;
+  for (const root of known) {
+    if (index.has(root)) continue;
+    const work = [[root, 0]];
+    while (work.length) {
+      const frame = work[work.length - 1];
+      const v = frame[0];
+      if (frame[1] === 0) {
+        index.set(v, counter); low.set(v, counter); counter++;
+        stack.push(v); onStack.add(v);
+      }
+      const outs = [...adj.get(v)];
+      if (frame[1] < outs.length) {
+        const w = outs[frame[1]++];
+        if (!index.has(w)) work.push([w, 0]);
+        else if (onStack.has(w)) low.set(v, Math.min(low.get(v), index.get(w)));
+      } else {
+        if (low.get(v) === index.get(v)) {
+          const comp = [];
+          let w;
+          do { w = stack.pop(); onStack.delete(w); comp.push(w); } while (w !== v);
+          if (comp.length > 1) comps.push(comp);
+        }
+        work.pop();
+        if (work.length) {
+          const u = work[work.length - 1][0];
+          low.set(u, Math.min(low.get(u), low.get(v)));
+        }
+      }
+    }
+  }
+
+  comps.sort((a, b) => b.length - a.length);
+  const filesInCycle = comps.reduce((n, c) => n + c.length, 0);
+  return {
+    cycles: comps.length,
+    filesInCycle,
+    percent: fileContents.length ? Math.round((filesInCycle / fileContents.length) * 1000) / 10 : 0,
+    largest: comps.length ? comps[0].length : 0,
+    worst: comps.slice(0, 3).map((c) => ({ size: c.length, sample: c.slice(0, 3) })),
+  };
+}
+
 function analyzeSerialAwaits(ts, fileContents) {
   // 순수 계산 await 을 묶어봐야 이득이 없다 — I/O 로 보이는 호출만 센다.
   const IO_HINT =
@@ -1984,6 +2093,7 @@ let renderGates = null;
 let quadratic = null;
 let serialAwait = null;
 let nplusOne = null;
+let coupling = null;
 let seqIo = { sites: 0, perThousand: 0 };
 let typeSafety = null;
 let textbook = null;
@@ -2044,6 +2154,7 @@ if (ts && allFns.length > 0) {
   quadratic = analyzeQuadraticLookups(ts, fileContents);
   serialAwait = analyzeSerialAwaits(ts, fileContents);
   nplusOne = analyzeNPlusOne(ts, fileContents);
+  coupling = analyzeCoupling(ts, fileContents);
   // 불필요한 순차 I/O — N+1 과 독립 순차 await 은 같은 결함이다:
   // 안 기다려도 되는 것을 줄 세워 기다린다. 나눠 두면 각각은 축이 못 된다
   // (실측: N+1 단독은 37곳 중 1곳에서만 발동, 캡에도 못 닿았다).
@@ -2267,6 +2378,7 @@ const stats = {
     serialAwait,          // {sites, awaits, worst[]} — 독립인데 순차로 기다리는 await(★seqIo 로 점수 반영)
     nplusOne,             // {sites, perThousand, worst[]} — 루프 안 순차 DB/HTTP 조회(★seqIo 로 점수 반영)
     seqIo,                // {sites, perThousand} — 위 둘을 합친 채점축 "불필요한 순차 I/O"
+    coupling,             // {cycles, filesInCycle, percent, largest, worst[]} — 순환 의존(진단 전용, 점수 미반영)
     renderGates,          // {hostages, worst} — fetch 하나가 무관한 UI까지 막고 있는 자리
     cc,                   // {functions, avg, p90, max, over10, over20, worst[5]} — McCabe (참고용)
     branchDensity,        // 100줄당 분기 수 (regex 근사, 참고용)
@@ -2403,6 +2515,15 @@ if (typeSafety && typeSafety.tsFiles > 0) {
     console.log(`  타입 위생: ${bits.join(" · ")} — 타입을 포기한 자리 (점수 미반영, 경계에선 정당할 수 있음)`);
     for (const w of t.tsIgnore.worst.slice(0, 3)) console.log(`    @ts-${w.what} — ${w.file}:${w.line}`);
     for (const w of t.asAny.worst.slice(0, 3)) console.log(`    ${w.text} — ${w.file}:${w.line}`);
+  }
+}
+// 결합도 — 순환에 묶인 모듈은 따로 읽지도, 테스트하지도, 교체하지도 못한다.
+if (coupling && coupling.cycles > 0) {
+  console.log(`  순환 의존: ${coupling.cycles}개 (모듈 ${coupling.filesInCycle}개 = ${coupling.percent}%) — 서로를 import 해 한 덩어리가 된 자리, 점수 미반영`);
+  for (const c of coupling.worst) {
+    // 분석 대상이 cwd 밖이면 ../../.. 이 길게 붙어 읽을 수가 없다 — 공통 앞부분을 걷는다.
+    const short = (f) => f.replace(/^(\.\.\/)+/, "").replace(/^.*?\/([^/]+\/[^/]+)$/, "$1");
+    console.log(`    ${c.size}개 모듈: ${c.sample.map(short).join(" ↔ ")}${c.size > c.sample.length ? " …" : ""}`);
   }
 }
 if (serialAwait && serialAwait.sites > 0) {
