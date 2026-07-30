@@ -36,6 +36,10 @@ const wantHotspots = args.includes("--hotspots");
 // 기본 경로에서 찾고 있으면 "저자 라이브러리를 광고한다"는 인상을 준다.
 const wantKit = args.includes("--kit"); // cog × git churn = "먼저 고칠 파일" 랭킹(git 이력 필요)
 
+// 채점 규칙 버전. 유예값·기울기·캡을 바꾸면 이 값을 올려야 한다 —
+// 그러지 않으면 규칙이 바뀐 뒤의 점수를 예전 점수와 나란히 놓게 되고, 진행도가 거짓말을 한다.
+const SCORING_VERSION = "v8";
+
 // 등급 색 (라이트 기준) — 배지·임베드 공용
 const GRADE_COLORS = { S: "#0f7a63", A: "#12915a", B: "#7d8a2c", C: "#c0862e", D: "#cb4436", E: "#8f2f24" };
 
@@ -2200,6 +2204,9 @@ const stats = {
     score: qualityScore,
     grade: qualityGrade,        // 표시용 (+ 포함)
     gradeBase: qualityBase,     // 색·분포·비교용
+    // 이 점수를 만든 규칙 버전. 산출물이 스스로 밝히지 않으면 v7 로 잰 값과
+    // v8 로 잰 값이 같은 표에 섞여도 아무도 모른다 — 실제로 그럴 뻔했다.
+    scoringVersion: SCORING_VERSION,
     dead,                 // {deadFiles, keptFiles, unusedExports, filePct, exportPct, penalty, worst[]} — knip(@keep 제외), --dead 시만
     cognitive,            // {avg, p90, max, over15, over25, worst[5]} — 중첩 가중 복잡도
     fnLength,             // {avg,p90,max,over40,over80,worst[5]} — 함수 길이 분포(읽는 단위 크기)
@@ -2507,9 +2514,6 @@ console.log(`\n  저장됨 → ${path.relative(process.cwd(), outPath)}\n`);
 // 쓰레기 헬퍼로 얻는 이득도 3배). 그래서 점수는 둔감하게 두고, 체감은 자기 이력과의 비교로 준다.
 // 자기 이력은 게이밍이 안 된다 — 헬퍼를 양산해도 "긴 함수 개수"는 줄지 않는다.
 const HISTORY_FILE = ".fixearly-history.json";
-// 채점 규칙 버전. 유예값·기울기·캡을 바꾸면 이 값을 올려야 한다 —
-// 그러지 않으면 규칙이 바뀐 뒤의 점수를 예전 점수와 나란히 놓게 되고, 진행도가 거짓말을 한다.
-const SCORING_VERSION = "v8";
 let history = [];
 let previous = null;
 {
