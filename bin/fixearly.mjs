@@ -1062,6 +1062,115 @@ function analyzeQuadraticLookups(ts, fileContents) {
 }
 
 /**
+ * N+1 — 루프 안에서 순차로 도는 DB/HTTP 조회.
+ *
+ * analyzeIoDensity 는 파일 읽기(readFileSync 계열)를 보고, 이건 데이터 접근을 본다.
+ * 구조 지표(복잡도·중복·길이)와 상관이 낮아(표본 12곳 r=0.19) 새 정보를 준다 —
+ * 실측에서 S 등급 저장소가 밀도 최고인 경우가 나왔다. 그래서 점수에 넣는다.
+ *
+ * 채점에 쓰는 건 **확신 높은 부분만**이다:
+ *  - 읽기 계열만. 쓰기(create/update)를 묶는 건 반환값·트랜잭션 의미가 달라져 위험하다
+ *  - 의도적 순차(커서 페이지네이션·폴링·청크·재시도)는 제외 — 순차가 정답인 코드다
+ *  - Promise 조합자 안의 await 제외 — 이미 동시 실행이다
+ */
+const NPLUS_IO_RECV =
+  /^(prisma|db|database|tx|trx|knex|repo|repository|em|entityManager|dataSource|redis|cache|kv|s3|storage|bucket|http|axios|client|api|sdk|queue|stripe|supabase|clickhouse|mongo|collection)$/i;
+const NPLUS_READ =
+  /^(find|findOne|findFirst|findMany|findUnique|findUniqueOrThrow|findOneOrFail|findByIds?|get|getMany|query|count|aggregate|fetch|request|list)$/;
+// 순차가 의도인 반복 — 고치면 안 되는 것들.
+const NPLUS_INTENT =
+  /^(cursor|.*Depth|i\s*<|.*TIMEOUT|.*timeout|Date\.now|chunks?|batches?|retries|attempt|page|hasMore|true)/i;
+
+function analyzeNPlusOne(ts, fileContents) {
+  const sites = [];
+
+  const inCombinator = (node) => {
+    let cur = node.parent;
+    while (cur) {
+      if (
+        ts.isCallExpression(cur) &&
+        ts.isPropertyAccessExpression(cur.expression) &&
+        /^(all|allSettled|any|race)$/.test(cur.expression.name.getText()) &&
+        cur.expression.expression.getText() === "Promise"
+      ) return true;
+      cur = cur.parent;
+    }
+    return false;
+  };
+
+  const LOOPS = new Set([
+    ts.SyntaxKind.ForOfStatement, ts.SyntaxKind.ForStatement, ts.SyntaxKind.ForInStatement,
+    ts.SyntaxKind.WhileStatement, ts.SyntaxKind.DoStatement,
+  ]);
+
+  for (const { file, content } of fileContents) {
+    if (!content.includes("await")) continue;
+    const sf = ts.createSourceFile(
+      file, content, ts.ScriptTarget.Latest, true,
+      /\.(tsx|jsx)$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
+    );
+
+    const loopLabel = (n) => {
+      const e = ts.isForOfStatement(n) || ts.isForInStatement(n) ? n.expression
+        : ts.isForStatement(n) ? n.condition : n.expression;
+      return (e ? e.getText(sf) : "").replace(/\s+/g, " ").slice(0, 60);
+    };
+
+    const visit = (node) => {
+      if (LOOPS.has(node.kind) && node.statement) {
+        const label = loopLabel(node);
+        // 의도적 순차면 이 루프는 통째로 건너뛴다.
+        if (!NPLUS_INTENT.test(label.trim())) {
+          const scan = (n) => {
+            // 중첩 함수 경계는 넘지 않는다 — 콜백은 동시성 판단이 다르다.
+            if (ts.isFunctionDeclaration(n) || ts.isFunctionExpression(n) ||
+                ts.isArrowFunction(n) || ts.isMethodDeclaration(n)) return;
+            if (ts.isAwaitExpression(n) && !inCombinator(n)) {
+              const call = n.expression;
+              if (ts.isCallExpression(call) && ts.isPropertyAccessExpression(call.expression)) {
+                const method = call.expression.name.getText(sf);
+                if (NPLUS_READ.test(method)) {
+                  let root = call.expression.expression;
+                  while (ts.isPropertyAccessExpression(root) || ts.isCallExpression(root)) root = root.expression;
+                  const rootName = ts.isIdentifier(root) ? root.getText(sf) : "";
+                  const chainTail = (call.expression.expression.getText(sf).split(".").pop() || "");
+                  if (NPLUS_IO_RECV.test(rootName) ||
+                      /(repository|repo|service|store|client|prisma|db|dao|manager)$/i.test(chainTail)) {
+                    sites.push({
+                      file, line: sf.getLineAndCharacterOfPosition(n.getStart(sf)).line + 1,
+                      recv: call.expression.expression.getText(sf).slice(0, 50),
+                      method, loop: label,
+                    });
+                  }
+                }
+              }
+            }
+            ts.forEachChild(n, scan);
+          };
+          ts.forEachChild(node.statement, scan);
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    ts.forEachChild(sf, visit);
+  }
+
+  const seen = new Set();
+  const unique = sites.filter((s) => {
+    const k = `${s.file}:${s.line}`;
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+
+  const perThousand = fileContents.length
+    ? Math.round((unique.length / fileContents.length) * 1000 * 100) / 100
+    : 0;
+
+  return { sites: unique.length, perThousand, worst: unique.slice(0, 5) };
+}
+
+/**
  * 독립 순차 await — 서로 참조하지 않는데 줄줄이 기다리는 I/O.
  *
  * O(n²)·N+1 과 다른 축이다. 저 둘은 n 이 작으면 이득이 사라지지만(Map 구축 고정비,
@@ -1852,6 +1961,7 @@ let io = null;
 let renderGates = null;
 let quadratic = null;
 let serialAwait = null;
+let nplusOne = null;
 let typeSafety = null;
 let textbook = null;
 if (ts && allFns.length > 0) {
@@ -1910,6 +2020,7 @@ if (ts && allFns.length > 0) {
   renderGates = analyzeRenderGates(ts, fileContents);
   quadratic = analyzeQuadraticLookups(ts, fileContents);
   serialAwait = analyzeSerialAwaits(ts, fileContents);
+  nplusOne = analyzeNPlusOne(ts, fileContents);
   textbook = analyzeTextbookIssues(ts, fileContents);
   typeSafety = analyzeTypeSafety(ts, fileContents);
 
@@ -1933,6 +2044,7 @@ if (ts && allFns.length > 0) {
     fnOver40Pct: Math.round(fnOver40Pct * 100) / 100,
     fnP90: fnLength.p90, fnMax: fnLength.max,
     fnTop10: fnLength.top10avg, cogTop10: cognitive.top10avg,
+    nplusPer1k: nplusOne ? nplusOne.perThousand : 0,
   };
   // io = 루프 안 파일읽기 + DB/HTTP N+1(순차 await). 파일당 비율.
   // renderGates(렌더 인질)는 실측상 존경 OSS 17종서 0회 발동 = 변별력 없어 점수에서 제외.
@@ -1955,6 +2067,12 @@ if (ts && allFns.length > 0) {
     // 캡만 최대였다. 분포가 롱테일이라(valibot 43.5·drizzle 36.2·hono 23.2 vs 나머지 한 자리)
     // 대부분 저장소엔 0점 기여하고 소수만 벼락처럼 때린다. 채점기가 아니라 이상치 탐지기다.
     - Math.min(9, Math.max(0, duplication.percent - 8) * 1.2)
+    // N+1(루프 안 순차 DB/HTTP 조회). 구조 지표가 못 보는 축 — 표본 12곳에서 기존 점수와
+    // 상관 r=0.19 로 사실상 독립이고, S 등급인데 밀도 최고인 저장소가 나왔다.
+    // 유예 = 표본 중앙(1.0/1000파일). 캡 5 — 탐지 오탐률이 26%(의도적 순차 제외 기준)라
+    // 오탐 하나가 등급을 뒤집으면 안 된다. 헬퍼로 감싸면 탐지를 피할 수 있는 것도 캡을 낮추는 이유.
+    // ※ 표본이 12곳뿐 — 보드 70개 재측정 후 유예·기울기 재보정 필요.
+    - Math.min(5, Math.max(0, (nplusOne ? nplusOne.perThousand : 0) - 1.0) * 1.2)
     // ── 크기 축: 파일 크기(조작 가능) 볼륨을 줄이고, 함수 길이(조작 불가)로 무게를 옮긴다 ──
     // 근거: 같은 코드를 함수 경계에서 6파일로 기계 분할하면 옛 공식은 B71 → S98 (+27점).
     // 코드는 한 줄도 안 변했는데 점수가 뛴다. 파일 경계는 배치 관습이고, 함수 경계는 의미 단위다.
@@ -2093,6 +2211,7 @@ const stats = {
     testDensity,          // {files, lines, percent} — 테스트 두께(진단 전용, 점수 미반영 — 섞으면 지표가 뒤집힌다)
     quadratic,            // {sites, worst[], files[]} — 루프 안 O(n²) 배열 조회(진단 전용, 점수 미반영)
     serialAwait,          // {sites, awaits, worst[]} — 독립인데 순차로 기다리는 await(진단 전용, 점수 미반영)
+    nplusOne,             // {sites, perThousand, worst[]} — 루프 안 순차 DB/HTTP 조회(★점수 반영)
     renderGates,          // {hostages, worst} — fetch 하나가 무관한 UI까지 막고 있는 자리
     cc,                   // {functions, avg, p90, max, over10, over20, worst[5]} — McCabe (참고용)
     branchDensity,        // 100줄당 분기 수 (regex 근사, 참고용)
@@ -2390,7 +2509,7 @@ console.log(`\n  저장됨 → ${path.relative(process.cwd(), outPath)}\n`);
 const HISTORY_FILE = ".fixearly-history.json";
 // 채점 규칙 버전. 유예값·기울기·캡을 바꾸면 이 값을 올려야 한다 —
 // 그러지 않으면 규칙이 바뀐 뒤의 점수를 예전 점수와 나란히 놓게 되고, 진행도가 거짓말을 한다.
-const SCORING_VERSION = "v7";
+const SCORING_VERSION = "v8";
 let history = [];
 let previous = null;
 {
