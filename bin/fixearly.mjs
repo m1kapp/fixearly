@@ -863,6 +863,52 @@ function quadOuterDynamic(text) {
   if (/^\[/.test(text)) return false; // [a,b,c] 리터럴
   return true;
 }
+
+/**
+ * 후보 컷 게이트 — "이론상 O(n²)"와 "고칠 가치"는 다르다.
+ *
+ * 실측(저장소 83곳): 원시 후보 1,680개 중 실제로 제출할 만한 건 2개였다.
+ * 탈락 사유가 세 가지로 수렴해서 그걸 자동 판정한다. 컷된 것도 목록엔 남기고
+ * 사유를 붙인다 — 조용히 숨기면 도구를 믿을 수 없다.
+ */
+
+// ① 바깥 루프가 상수 목록이면 O(n²)가 아니다.
+//    SEARCHABLES(4개) × content = O(4n) = O(n). 고쳐도 상수배(실측 1.1~1.2배)만 준다.
+const CONSTish = /^[A-Z][A-Z0-9_]{2,}$/; // ALL_CAPS 식별자
+function quadConstOuter(text, moduleConsts) {
+  if (!text) return false;
+  const root = text.split(/[.[(]/)[0].trim();
+  if (!root) return false;
+  if (CONSTish.test(root)) return true;
+  return moduleConsts.has(root);
+}
+
+// ② 루프 본문이 I/O 를 기다리면 CPU 조회 비용은 반올림 오차다.
+//    cypress screenshot 건: 매칭 직후 파일마다 fs.stat + 업로드 — 그쪽이 압도한다.
+const QUAD_IO_HINT =
+  /\b(prisma|knex|repository|repo|dataSource|entityManager|redis|cache|s3|storage|axios|fetch|http|client|api|sdk|queue|stripe|supabase|clickhouse|mongo)\b|\b(readFile|readdir|stat|writeFile)\b/i;
+function quadIoInLoop(ts, loopNode, sf) {
+  if (!loopNode) return false;
+  let found = false;
+  const g = (n) => {
+    if (found) return;
+    if (ts.isAwaitExpression(n)) {
+      const t = n.expression.getText(sf).slice(0, 120);
+      if (QUAD_IO_HINT.test(t)) { found = true; return; }
+    }
+    ts.forEachChild(n, g);
+  };
+  ts.forEachChild(loopNode, g);
+  return found;
+}
+
+// ③ n 에 상한 상수가 박혀 있으면 규모가 안 큰다.
+//    dub BATCH_SIZE=100, trigger MAX_BATCH_V2_TRIGGER_ITEMS=500, next.js 라우트매처 4개.
+const QUAD_CAP_HINT =
+  /\b(BATCH_SIZE|MAX_[A-Z0-9_]+|[A-Z0-9_]+_LIMIT|PAGE_SIZE|PER_PAGE)\b|\.slice\(\s*0\s*,\s*\d{1,3}\s*\)|\b(take|limit)\s*:\s*\d{1,3}\b/;
+function quadCappedN(fnText) {
+  return !!fnText && QUAD_CAP_HINT.test(fnText);
+}
 const QUAD_ZONE_RANK = { backend: 3, other: 2, frontend: 1, test: 0 };
 
 function analyzeQuadraticLookups(ts, fileContents) {
@@ -871,6 +917,21 @@ function analyzeQuadraticLookups(ts, fileContents) {
     const kind = /\.(tsx|jsx)$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS;
     const sf = ts.createSourceFile(file, content, ts.ScriptTarget.Latest, true, kind);
     const lineOf = (n) => sf.getLineAndCharacterOfPosition(n.getStart(sf)).line + 1;
+
+    // 모듈 최상단의 const 배열/enum — 바깥 루프가 이걸 돌면 크기가 고정이다.
+    const moduleConsts = new Set();
+    for (const st of sf.statements) {
+      if (ts.isEnumDeclaration(st) && st.name) { moduleConsts.add(st.name.getText(sf)); continue; }
+      if (!ts.isVariableStatement(st)) continue;
+      for (const d of st.declarationList.declarations) {
+        if (!ts.isIdentifier(d.name) || !d.initializer) continue;
+        const init = d.initializer;
+        const isArrayish =
+          ts.isArrayLiteralExpression(init) ||
+          (ts.isAsExpression(init) && ts.isArrayLiteralExpression(init.expression));
+        if (isArrayish) moduleConsts.add(d.name.getText(sf));
+      }
+    }
     const isFnLike = (n) =>
       ts.isFunctionDeclaration(n) || ts.isFunctionExpression(n) || ts.isArrowFunction(n) || ts.isMethodDeclaration(n);
     const isLoopNode = (n) =>
@@ -903,14 +964,17 @@ function analyzeQuadraticLookups(ts, fileContents) {
       return null; // for(;;)/while: 반복대상 미상
     };
 
-    const walk = (node, inLoop, locals, outerText) => {
+    const walk = (node, inLoop, locals, outerText, loopNode, fnNode) => {
       let childInLoop = inLoop;
       let childLocals = locals;
       let childOuter = outerText;
+      let childLoop = loopNode;
+      let childFn = isFnLike(node) ? node : fnNode;
       if (isLoopNode(node)) {
         childInLoop = true;
         childLocals = new Set([...locals, ...declaredIn(node)]);
         childOuter = loopIterableText(node) ?? outerText;
+        childLoop = node;
       }
 
       if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) {
@@ -933,12 +997,18 @@ function analyzeQuadraticLookups(ts, fileContents) {
           if (!locals.has(root)) {
             const zone = quadZoneOf(file);
             const dynamicOuter = quadOuterDynamic(outerText);
+            // 게이트 — 왜 이 후보가 실이득이 없는지 사유를 붙인다.
+            const cuts = [];
+            if (quadConstOuter(outerText, moduleConsts)) cuts.push("const-outer");
+            if (quadIoInLoop(ts, loopNode, sf)) cuts.push("io-in-loop");
+            if (quadCappedN(fnNode ? fnNode.getText(sf) : "")) cuts.push("capped-n");
             sites.push({
               file, line: lineOf(node), recv, method,
               kind: QUADRATIC_GROUP_METHODS.has(method) ? "group" : "lookup",
               zone, outer: outerText || null, dynamicOuter,
-              // PR 우선순위: 백엔드 + 무계 반복이 최상, 테스트/유계 프론트가 최하.
-              rank: (QUAD_ZONE_RANK[zone] ?? 2) * 2 + (dynamicOuter ? 1 : 0),
+              cuts: cuts.length ? cuts : null,
+              // PR 우선순위: 백엔드 + 무계 반복이 최상, 게이트에 걸린 건 최하로 민다.
+              rank: (QUAD_ZONE_RANK[zone] ?? 2) * 2 + (dynamicOuter ? 1 : 0) - cuts.length * 4,
             });
           }
         }
@@ -959,21 +1029,27 @@ function analyzeQuadraticLookups(ts, fileContents) {
           ts.isPropertyAccessExpression(node.expression) &&
           ITERATING_METHODS.has(node.expression.name.getText(sf)) &&
           isFnLike(child);
-        if (!alreadyWalked) walk(child, childInLoop, childLocals, childOuter);
+        if (!alreadyWalked) walk(child, childInLoop, childLocals, childOuter, childLoop, childFn);
       });
     };
-    ts.forEachChild(sf, (n) => walk(n, false, new Set(), null));
+    ts.forEachChild(sf, (n) => walk(n, false, new Set(), null, null, null));
   }
 
   const byFile = new Map();
   for (const s of sites) byFile.set(s.file, (byFile.get(s.file) || 0) + 1);
   // PR 후보 = 백엔드/기타 + 무계 반복 + 테스트 아님. 이게 실제 손검증 대상 좁히기.
-  const candidates = sites.filter((s) => s.zone !== "test" && s.zone !== "frontend" && s.dynamicOuter);
+  const preGate = sites.filter((s) => s.zone !== "test" && s.zone !== "frontend" && s.dynamicOuter);
+  const candidates = preGate.filter((s) => !s.cuts);
+  // 왜 걸렀는지 사유별 집계 — 도구가 조용히 숨기면 신뢰할 수 없다.
+  const cutBy = {};
+  for (const s of preGate) for (const c of s.cuts || []) cutBy[c] = (cutBy[c] || 0) + 1;
   const ranked = [...sites].sort((a, b) => b.rank - a.rank);
   const zoneCount = sites.reduce((m, s) => ((m[s.zone] = (m[s.zone] || 0) + 1), m), {});
   return {
     sites: sites.length,
     candidates: candidates.length,     // PR 손검증 우선 대상 수
+    preGateCandidates: preGate.length, // 게이트 적용 전 후보 수
+    cutBy,                             // {const-outer, io-in-loop, capped-n} 사유별 컷 수
     zones: zoneCount,                  // {backend, frontend, test, other}
     worst: ranked.slice(0, 12),        // PR 가치순 상위 (기존 slice(0,8) 무순 → 랭킹)
     // 채굴용 전체 후보 목록(백엔드/기타·무계 반복·테스트 아님) — --mine 로 덤프. 손검증 파이프라인 입력.
@@ -2164,7 +2240,11 @@ if (serialAwait && serialAwait.sites > 0) {
 }
 if (quadratic && quadratic.sites > 0) {
   const z = quadratic.zones || {};
-  console.log(`  O(n²) 배열 조회: ${quadratic.sites}곳 (PR후보 ${quadratic.candidates}곳 · backend ${z.backend || 0}/frontend ${z.frontend || 0}/test ${z.test || 0}) — 루프 안 선형 탐색, Map/Set으로 O(n), 점수 미반영`);
+  const cb = quadratic.cutBy || {};
+  const cutTxt = Object.keys(cb).length
+    ? ` · 게이트 컷 ${quadratic.preGateCandidates - quadratic.candidates}곳(${Object.entries(cb).map(([k, v]) => `${k} ${v}`).join(", ")})`
+    : "";
+  console.log(`  O(n²) 배열 조회: ${quadratic.sites}곳 (PR후보 ${quadratic.candidates}곳${cutTxt} · backend ${z.backend || 0}/frontend ${z.frontend || 0}/test ${z.test || 0}) — 루프 안 선형 탐색, Map/Set으로 O(n), 점수 미반영`);
   for (const w of quadratic.worst.slice(0, 6)) {
     const tag = w.zone === "backend" ? "★backend" : w.zone;
     console.log(`    [${tag}${w.dynamicOuter ? "" : " ·유계"}] ${w.recv}.${w.method}() — ${w.file}:${w.line}${w.outer ? `  (loop: ${w.outer})` : ""}`);
