@@ -47,7 +47,16 @@ out=dict(rank=int(os.environ['RANK']), name=os.environ['NAME'], url=os.environ['
   nplus=(q.get('nplusOne') or {}).get('sites',0),
   nplusPer1k=(q.get('nplusOne') or {}).get('perThousand',0),
   serial=(q.get('serialAwait') or {}).get('sites',0),
-  scoringVersion=q.get('scoringVersion'))
+  scoringVersion=q.get('scoringVersion'),
+  # 채점축 승격 후보를 판정하려면 '기존 점수와 독립인가'를 봐야 한다. 그 상관을
+  # 계산할 원자료를 여기서 같이 담는다 — 재측정은 비싸서 두 번 돌릴 수 없다.
+  ioLoop=(q.get('io') or {}).get('uncachedLoopSites',0),
+  renderGates=len(((q.get('renderGates') or {}).get('hostages') or [])),
+  textbook={k:(v or {}).get('count',0) for k,v in (q.get('textbook') or {}).items()},
+  typeSafety={k:(q['typeSafety'][k] or {}).get('count',0)
+              for k in ('anyType','asAny','nonNull','tsIgnore') if q.get('typeSafety')},
+  anyPct=((q.get('typeSafety') or {}).get('anyType') or {}).get('pct',0),
+  tsFiles=(q.get('typeSafety') or {}).get('tsFiles',0))
 json.dump(out, open('$done_f','w'))
 print('OK',out['name'],out['sha'],out['grade'],out['score'],'maxCog',out['maxCog'],'over15',out['over15'],'fns',out['functions'])
 "
