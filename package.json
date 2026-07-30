@@ -28,6 +28,9 @@
   "license": "MIT",
   "homepage": "https://yoo-minho.github.io/fixearly",
   "scripts": {
-    "test": "node bin/selftest.mjs"
+    "dev": "python3 -m http.server 4173",
+    "test": "node bin/selftest.mjs",
+    "impact": "node bin/impact.mjs",
+    "board": "node tools/update-board.mjs"
   }
 }
