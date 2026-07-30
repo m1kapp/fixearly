@@ -1311,8 +1311,28 @@ function analyzeCoupling(ts, fileContents) {
 
 function analyzeSerialAwaits(ts, fileContents) {
   // 순수 계산 await 을 묶어봐야 이득이 없다 — I/O 로 보이는 호출만 센다.
-  const IO_HINT =
-    /(prisma|db|database|tx|trx|knex|repo|repository|entityManager|dataSource|redis|cache|kv|s3|storage|bucket|http|axios|client|api|sdk|queue|stripe|supabase|clickhouse|mongo|collection|service|fetch|query|find|get|load|list|count|aggregate|read)/i;
+  //
+  // 예전엔 호출문 전체(인자 포함)를 부분문자열로 훑어서 오탐이 났다. next.js 에서
+  // `metadataBase` 안의 "dataBase" 가 database 로, `ctx` 안의 "tx" 가 트랜잭션으로
+  // 잡혔다. 둘 다 순수 계산이라 Promise.all 이득이 0인데 채점축을 움직이고 있었다.
+  //
+  // 이제 **콜리만** 보고, 식별자를 단어로 쪼갠 뒤(카멜케이스·점·언더바) 그 단어와
+  // 맞춘다. `prisma.user.findMany` → [prisma,user,find,many] 는 잡히고,
+  // `resolveUrlValuesOfObject` → [resolve,url,values,of,object] 는 안 잡힌다.
+  const IO_WORDS = new Set([
+    "prisma", "db", "database", "tx", "trx", "knex", "repo", "repository",
+    "entitymanager", "datasource", "redis", "cache", "kv", "s3", "storage", "bucket",
+    "http", "axios", "client", "api", "sdk", "queue", "stripe", "supabase",
+    "clickhouse", "mongo", "collection", "service", "fetch", "query", "find",
+    "get", "load", "list", "count", "aggregate", "read", "insert", "update",
+    "upsert", "delete", "save", "exec", "request", "send",
+  ]);
+  /** 식별자 경로를 단어로 쪼갠다: `ctx.db.findMany` → [ctx, db, find, many] */
+  const wordsOf = (text) =>
+    text.split(/[^A-Za-z0-9]+/).flatMap((part) =>
+      part.replace(/([a-z0-9])([A-Z])/g, "$1 $2").split(/\s+/)
+    ).filter(Boolean).map((w) => w.toLowerCase());
+  const looksIO = (calleeText) => wordsOf(calleeText).some((w) => IO_WORDS.has(w));
 
   const sites = [];
 
@@ -1360,7 +1380,8 @@ function analyzeSerialAwaits(ts, fileContents) {
       let run = [];
       const flush = () => {
         if (run.length >= 2) {
-          const io = run.filter((r) => IO_HINT.test(r.call.getText(sf).slice(0, 80)));
+          // 인자가 아니라 콜리만 본다 — 인자에 우연히 든 단어로 잡히면 안 된다.
+          const io = run.filter((r) => looksIO(r.call.expression.getText(sf)));
           if (io.length >= 2) {
             sites.push({
               file,
