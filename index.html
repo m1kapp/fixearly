@@ -83,27 +83,10 @@ button{font:inherit;cursor:pointer;} :focus-visible{outline:2px solid var(--acce
   .heroart{order:-1;justify-self:center;transform:scale(.86);} }
 .heroart{position:relative;height:360px;display:flex;align-items:center;justify-content:center;
   perspective:1100px;perspective-origin:52% 42%;}
-.stage{position:relative;width:310px;height:250px;transform-style:preserve-3d;
-  transform:rotateX(56deg) rotateZ(-40deg);animation:drift 9s var(--ease-out) infinite alternate;}
 @keyframes drift{from{transform:rotateX(56deg) rotateZ(-40deg) translateZ(0);}
   to{transform:rotateX(52deg) rotateZ(-34deg) translateZ(10px);}}
-@media (prefers-reduced-motion:reduce){.stage{animation:none;}}
-.plate{position:absolute;inset:0;margin:auto;width:224px;height:138px;border-radius:15px;
-  border:1px solid var(--line-2);background:var(--paper-2);transform-style:preserve-3d;
-  box-shadow:0 22px 40px -26px rgba(15,23,35,.5);display:flex;align-items:flex-end;justify-content:flex-end;
-  gap:10px;padding:0 18px 13px;}
-.plate::after{content:"";position:absolute;left:6px;right:6px;top:100%;height:12px;border-radius:0 0 14px 14px;
-  background:color-mix(in srgb,var(--ink) 12%,transparent);filter:blur(.5px);transform:translateZ(-1px);}
-.p1{transform:translateZ(110px) translate(-33px,-33px);border-color:color-mix(in srgb,var(--accent) 60%,var(--line-2));
-  box-shadow:0 26px 44px -24px color-mix(in srgb,var(--accent) 45%,transparent);}
-.p2{transform:translateZ(88px) translate(-20px,-20px);}
-.p3{transform:translateZ(66px) translate(-7px,-7px);}
-.p4{transform:translateZ(44px) translate(7px,7px);}
-.p5{transform:translateZ(22px) translate(20px,20px);}
-.p6{transform:translateZ(0) translate(33px,33px);}
-.plate .pl{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-3);letter-spacing:.03em;white-space:nowrap;}
+@media (prefers-reduced-motion:reduce){}
 .p1 .pl{color:var(--accent);}
-.plate .pg{font-weight:800;font-size:13px;color:#fff;border-radius:6px;padding:3px 9px;}
 .heroart .glow{position:absolute;width:340px;height:200px;border-radius:50%;
   background:radial-gradient(closest-side,var(--accent-soft),transparent);filter:blur(6px);z-index:-1;}
 
@@ -293,6 +276,22 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
 .idot.ok{background:var(--gS)}
 .idot.wait{background:var(--gC)}
 .idot.off{background:var(--ink-3);opacity:.45}
+
+/* 히어로 미니 리더보드 — 접힘 위에 실제 데이터를 놓는다(장식 판 대체). */
+.mboard{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:18px 18px 14px;display:grid;gap:8px}
+.mbh{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.mbr{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--line)}
+.mbr:first-of-type{border-top:0}
+.mbn{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--ink)}
+.mbg{font-size:10px;padding:2px 6px;border-radius:4px}
+.mbr b{font-size:13px;color:var(--ink-2);min-width:28px;text-align:right}
+.mbdist{display:flex;gap:2px;height:6px;margin-top:6px}
+.mbdist i{border-radius:2px;min-width:4px}
+.mbdist .gS{background:var(--gS)}.mbdist .gA{background:var(--gA)}.mbdist .gB{background:var(--gB)}
+.mbdist .gC{background:var(--gC)}.mbdist .gD{background:var(--gD)}.mbdist .gE{background:var(--gE)}
+.mbl{font-size:11px;color:var(--ink-3);letter-spacing:.02em}
+.mba{font-size:12px;color:var(--accent);text-decoration:none;margin-top:2px}
+.mba:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -318,10 +317,10 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
   <div class="w herogrid">
    <div>
     <div class="kicker">JS / TS · CLI · <span class="ko">설치 없이</span><span class="en">zero install</span></div>
-    <h1 class="ko">코드와 함께<br>부채가 쌓인다.</h1>
-    <h1 class="en">Debt piles up<br>with the code.</h1>
-    <p class="sub ko">묻는 건 코드가 예쁜가가 아니라 <b>다음에 이걸 고칠 때 얼마가 드는가</b>다. 그 부채가 쌓인 자리를 파일·줄로 짚고, 같은 덩치·같은 종류의 유명 오픈소스 70개를 기준선 삼아 <b>S–E 등급</b>으로 급한 정도를 말해준다.</p>
-    <p class="sub en">The question isn't whether the code is pretty — it's <b>what the next change will cost</b>. It points at the files and lines where that debt piled up, and grades it <b>S–E</b> against 70 well-known repos of the same size and kind.</p>
+    <h1 class="ko">유명하다고<br>깨끗한 건 아니다.</h1>
+    <h1 class="en">Famous doesn't<br>mean clean.</h1>
+    <p class="sub ko">유명 오픈소스 <b>70개</b>를 같은 자로, <b>체급을 나눠</b> 쟀다. D 이하가 5개 — 이름 대면 다 아는 곳들이다. 묻는 건 코드가 예쁜가가 아니라 <b>다음에 이걸 고칠 때 얼마가 드는가</b>다. 네 저장소는 어디쯤인가.</p>
+    <p class="sub en">We graded <b>70 well-known open-source repos</b> with one ruler, split by <b>weight class</b>. 5 of them land at D or below — names you know. The question isn't whether the code is pretty; it's <b>what the next change will cost</b>. Where does yours land?</p>
 
     <div class="cmdrow">
       <div class="cmd"><span class="dollar">$</span><span id="cmdtext">npx fixearly --dir=src</span>
@@ -336,15 +335,24 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
     </div>
 
    </div>
-   <div class="heroart" aria-hidden="true">
+   <div class="heroart">
      <div class="glow"></div>
-     <div class="stage">
-       <div class="plate p6"><span class="pl">0–34</span><span class="pg gE">E</span></div>
-       <div class="plate p5"><span class="pl">35–54</span><span class="pg gD">D</span></div>
-       <div class="plate p4"><span class="pl">55–69</span><span class="pg gC">C</span></div>
-       <div class="plate p3"><span class="pl">70–79</span><span class="pg gB">B</span></div>
-       <div class="plate p2"><span class="pl">80–89</span><span class="pg gA">A</span></div>
-       <div class="plate p1"><span class="pl">90–100</span><span class="pg gS">S</span></div>
+     <div class="mboard">
+       <div class="mbh"><span class="ko">오픈소스 70개 · 상위</span><span class="en">70 open-source repos · top</span></div>
+       <div class="mbr"><span class="mbn">mitt</span><span class="mbg g gS">SSS</span><b>100</b></div>
+       <div class="mbr"><span class="mbn">rxjs</span><span class="mbg g gS">SSS</span><b>99</b></div>
+       <div class="mbr"><span class="mbn">execa</span><span class="mbg g gS">SSS</span><b>98</b></div>
+       <div class="mbr"><span class="mbn">discordjs</span><span class="mbg g gS">SS</span><b>95</b></div>
+       <div class="mbdist" aria-hidden="true">
+         <i class="gS" style="flex:16" title="S 16"></i>
+         <i class="gA" style="flex:21" title="A 21"></i>
+         <i class="gB" style="flex:17" title="B 17"></i>
+         <i class="gC" style="flex:11" title="C 11"></i>
+         <i class="gD" style="flex:4" title="D 4"></i>
+         <i class="gE" style="flex:1" title="E 1"></i>
+       </div>
+       <div class="mbl">S 16 · A 21 · B 17 · C 11 · D 4 · E 1</div>
+       <a class="mba" href="#board"><span class="ko">D 이하 5개 — 전체 순위표 보기 →</span><span class="en">5 at D or below — see the full table →</span></a>
      </div>
    </div>
   </div>
