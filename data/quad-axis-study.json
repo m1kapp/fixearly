@@ -1,0 +1,481 @@
+{
+ "note": "O(n²) 채점축 승격 판정 원자료(v10). candidates = 테스트·프론트 구역, 정적 외곽, 루프 안 I/O, capped-n 을 제외한 PR 손검증 대상. 파일당이 아니라 10k줄당으로 재는 이유와 종류별 층화 결과는 README 채점축 표에.",
+ "measuredAt": "2026-07-30",
+ "n": 37,
+ "repos": [
+  {
+   "name": "zod",
+   "kind": "라이브러리",
+   "score": 68,
+   "loc": 24382,
+   "files": 98,
+   "sites": 0,
+   "pre": 0,
+   "cand": 0,
+   "zones": {}
+  },
+  {
+   "name": "storybook",
+   "kind": "툴체인",
+   "score": 88,
+   "loc": 116821,
+   "files": 923,
+   "sites": 32,
+   "pre": 24,
+   "cand": 23,
+   "zones": {
+    "other": 23,
+    "frontend": 8,
+    "backend": 1
+   }
+  },
+  {
+   "name": "svelte",
+   "kind": "프레임워크",
+   "score": 69,
+   "loc": 41395,
+   "files": 343,
+   "sites": 13,
+   "pre": 12,
+   "cand": 12,
+   "zones": {
+    "other": 9,
+    "frontend": 1,
+    "backend": 3
+   }
+  },
+  {
+   "name": "ky",
+   "kind": "라이브러리",
+   "score": 77,
+   "loc": 2836,
+   "files": 27,
+   "sites": 0,
+   "pre": 0,
+   "cand": 0,
+   "zones": {}
+  },
+  {
+   "name": "nanoid",
+   "kind": "라이브러리",
+   "score": 84,
+   "loc": 240,
+   "files": 5,
+   "sites": 0,
+   "pre": 0,
+   "cand": 0,
+   "zones": {}
+  },
+  {
+   "name": "express",
+   "kind": "라이브러리",
+   "score": 90,
+   "loc": 1137,
+   "files": 6,
+   "sites": 0,
+   "pre": 0,
+   "cand": 0,
+   "zones": {}
+  },
+  {
+   "name": "immich",
+   "kind": "앱",
+   "score": 85,
+   "loc": 48816,
+   "files": 423,
+   "sites": 13,
+   "pre": 11,
+   "cand": 11,
+   "zones": {
+    "backend": 13
+   }
+  },
+  {
+   "name": "prettier",
+   "kind": "툴체인",
+   "score": 74,
+   "loc": 36763,
+   "files": 472,
+   "sites": 4,
+   "pre": 4,
+   "cand": 3,
+   "zones": {
+    "other": 4
+   }
+  },
+  {
+   "name": "trpc",
+   "kind": "라이브러리",
+   "score": 93,
+   "loc": 7295,
+   "files": 70,
+   "sites": 0,
+   "pre": 0,
+   "cand": 0,
+   "zones": {}
+  },
+  {
+   "name": "tanstack-query",
+   "kind": "라이브러리",
+   "score": 87,
+   "loc": 5685,
+   "files": 24,
+   "sites": 0,
+   "pre": 0,
+   "cand": 0,
+   "zones": {}
+  },
+  {
+   "name": "vitest",
+   "kind": "툴체인",
+   "score": 86,
+   "loc": 36330,
+   "files": 235,
+   "sites": 14,
+   "pre": 14,
+   "cand": 14,
+   "zones": {
+    "other": 14
+   }
+  },
+  {
+   "name": "typescript",
+   "kind": "툴체인",
+   "score": 71,
+   "loc": 301414,
+   "files": 528,
+   "sites": 36,
+   "pre": 36,
+   "cand": 36,
+   "zones": {
+    "other": 22,
+    "backend": 14
+   }
+  },
+  {
+   "name": "vue",
+   "kind": "프레임워크",
+   "score": 43,
+   "loc": 45412,
+   "files": 241,
+   "sites": 4,
+   "pre": 4,
+   "cand": 4,
+   "zones": {
+    "other": 4
+   }
+  },
+  {
+   "name": "medusa",
+   "kind": "앱",
+   "score": 77,
+   "loc": 37508,
+   "files": 688,
+   "sites": 7,
+   "pre": 6,
+   "cand": 6,
+   "zones": {
+    "backend": 6,
+    "other": 1
+   }
+  },
+  {
+   "name": "payload",
+   "kind": "앱",
+   "score": 41,
+   "loc": 51706,
+   "files": 594,
+   "sites": 44,
+   "pre": 39,
+   "cand": 35,
+   "zones": {
+    "other": 37,
+    "test": 5,
+    "backend": 2
+   }
+  },
+  {
+   "name": "angular",
+   "kind": "프레임워크",
+   "score": 85,
+   "loc": 232596,
+   "files": 1855,
+   "sites": 41,
+   "pre": 39,
+   "cand": 39,
+   "zones": {
+    "other": 39,
+    "frontend": 1,
+    "test": 1
+   }
+  },
+  {
+   "name": "excalidraw",
+   "kind": "앱",
+   "score": 71,
+   "loc": 67078,
+   "files": 333,
+   "sites": 7,
+   "pre": 2,
+   "cand": 1,
+   "zones": {
+    "other": 2,
+    "frontend": 5
+   }
+  },
+  {
+   "name": "playwright",
+   "kind": "툴체인",
+   "score": 88,
+   "loc": 55674,
+   "files": 302,
+   "sites": 5,
+   "pre": 5,
+   "cand": 5,
+   "zones": {
+    "backend": 3,
+    "other": 2
+   }
+  },
+  {
+   "name": "n8n",
+   "kind": "앱",
+   "score": 81,
+   "loc": 15930,
+   "files": 144,
+   "sites": 5,
+   "pre": 5,
+   "cand": 5,
+   "zones": {
+    "other": 5
+   }
+  },
+  {
+   "name": "hono",
+   "kind": "라이브러리",
+   "score": 75,
+   "loc": 18813,
+   "files": 162,
+   "sites": 2,
+   "pre": 2,
+   "cand": 2,
+   "zones": {
+    "other": 2
+   }
+  },
+  {
+   "name": "vite",
+   "kind": "툴체인",
+   "score": 68,
+   "loc": 37085,
+   "files": 132,
+   "sites": 12,
+   "pre": 12,
+   "cand": 12,
+   "zones": {
+    "other": 5,
+    "backend": 7
+   }
+  },
+  {
+   "name": "outline",
+   "kind": "앱",
+   "score": 77,
+   "loc": 64127,
+   "files": 792,
+   "sites": 3,
+   "pre": 3,
+   "cand": 2,
+   "zones": {
+    "backend": 3
+   }
+  },
+  {
+   "name": "immer",
+   "kind": "라이브러리",
+   "score": 87,
+   "loc": 2338,
+   "files": 15,
+   "sites": 0,
+   "pre": 0,
+   "cand": 0,
+   "zones": {}
+  },
+  {
+   "name": "next.js",
+   "kind": "프레임워크",
+   "score": 58,
+   "loc": 200293,
+   "files": 1333,
+   "sites": 38,
+   "pre": 35,
+   "cand": 35,
+   "zones": {
+    "other": 29,
+    "frontend": 1,
+    "backend": 8
+   }
+  },
+  {
+   "name": "nuxt",
+   "kind": "프레임워크",
+   "score": 88,
+   "loc": 19478,
+   "files": 172,
+   "sites": 20,
+   "pre": 11,
+   "cand": 10,
+   "zones": {
+    "other": 12,
+    "frontend": 8
+   }
+  },
+  {
+   "name": "valibot",
+   "kind": "라이브러리",
+   "score": 62,
+   "loc": 25453,
+   "files": 338,
+   "sites": 0,
+   "pre": 0,
+   "cand": 0,
+   "zones": {}
+  },
+  {
+   "name": "eslint",
+   "kind": "툴체인",
+   "score": 79,
+   "loc": 63010,
+   "files": 381,
+   "sites": 7,
+   "pre": 7,
+   "cand": 7,
+   "zones": {
+    "other": 7
+   }
+  },
+  {
+   "name": "zustand",
+   "kind": "라이브러리",
+   "score": 93,
+   "loc": 1208,
+   "files": 13,
+   "sites": 0,
+   "pre": 0,
+   "cand": 0,
+   "zones": {}
+  },
+  {
+   "name": "jotai",
+   "kind": "라이브러리",
+   "score": 93,
+   "loc": 3036,
+   "files": 31,
+   "sites": 0,
+   "pre": 0,
+   "cand": 0,
+   "zones": {}
+  },
+  {
+   "name": "nestjs",
+   "kind": "프레임워크",
+   "score": 95,
+   "loc": 31729,
+   "files": 483,
+   "sites": 4,
+   "pre": 4,
+   "cand": 4,
+   "zones": {
+    "other": 4
+   }
+  },
+  {
+   "name": "astro",
+   "kind": "프레임워크",
+   "score": 83,
+   "loc": 55614,
+   "files": 554,
+   "sites": 24,
+   "pre": 18,
+   "cand": 17,
+   "zones": {
+    "other": 18,
+    "frontend": 6
+   }
+  },
+  {
+   "name": "execa",
+   "kind": "라이브러리",
+   "score": 98,
+   "loc": 5726,
+   "files": 103,
+   "sites": 0,
+   "pre": 0,
+   "cand": 0,
+   "zones": {}
+  },
+  {
+   "name": "strapi",
+   "kind": "앱",
+   "score": 80,
+   "loc": 200453,
+   "files": 2122,
+   "sites": 67,
+   "pre": 43,
+   "cand": 42,
+   "zones": {
+    "frontend": 23,
+    "other": 18,
+    "backend": 25,
+    "test": 1
+   }
+  },
+  {
+   "name": "axios",
+   "kind": "라이브러리",
+   "score": 91,
+   "loc": 5535,
+   "files": 59,
+   "sites": 0,
+   "pre": 0,
+   "cand": 0,
+   "zones": {}
+  },
+  {
+   "name": "directus",
+   "kind": "앱",
+   "score": 66,
+   "loc": 62337,
+   "files": 763,
+   "sites": 68,
+   "pre": 65,
+   "cand": 65,
+   "zones": {
+    "backend": 66,
+    "test": 2
+   }
+  },
+  {
+   "name": "fastify",
+   "kind": "라이브러리",
+   "score": 80,
+   "loc": 5345,
+   "files": 31,
+   "sites": 0,
+   "pre": 0,
+   "cand": 0,
+   "zones": {}
+  },
+  {
+   "name": "mitt",
+   "kind": "라이브러리",
+   "score": 100,
+   "loc": 75,
+   "files": 1,
+   "sites": 0,
+   "pre": 0,
+   "cand": 0,
+   "zones": {}
+  }
+ ]
+}

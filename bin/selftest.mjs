@@ -133,6 +133,7 @@ if (zoneSrc) {
     ["중복", ["duplication.percent"]],
     ["파일 크기", ["longFileSeverityPct", "avgFileLines"]],
     ["순차 I/O", ["seqIo"]],
+    ["O(n²)", ["quadratic.candidates"]],
   ];
   // AST 모드 점수식만 자른다(regex 폴백은 별도 체계).
   const from = src.indexOf("qualityScore = Math.max(0, Math.round(");
@@ -140,7 +141,7 @@ if (zoneSrc) {
   const expr = src.slice(from, to);
   const caps = new Map(AXES.map(([n]) => [n, 0]));
   let matched = 0;
-  for (const m of expr.matchAll(/-\s*(?:\([^)]*\?\s*)?Math\.min\((\d+),\s*(.*)$/gm)) {
+  for (const m of expr.matchAll(/-\s*(?:\((?:[^()]|\([^()]*\))*\?\s*)?Math\.min\((\d+),\s*(.*)$/gm)) {
     const axis = AXES.find(([, keys]) => keys.some((k) => m[2].includes(k)));
     if (!axis) continue;
     caps.set(axis[0], caps.get(axis[0]) + Number(m[1]));
@@ -151,7 +152,7 @@ if (zoneSrc) {
     if (!ok) fail++;
     console.log(`  ${ok ? "✓" : "✗"} ${name}${detail ? `: ${detail}` : ""}`);
   };
-  check("점수식 항이 모두 축에 매핑됨", matched === expr.match(/-\s*(?:\([^)]*\?\s*)?Math\.min\(/g).length,
+  check("점수식 항이 모두 축에 매핑됨", matched === expr.match(/-\s*(?:\((?:[^()]|\([^()]*\))*\?\s*)?Math\.min\(/g).length,
     `${matched}개 매핑`);
 
   const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
@@ -161,8 +162,11 @@ if (zoneSrc) {
   const lead = axesSec.match(/<p class="lead ko">(.*?)<\/p>/s)?.[1] ?? "";
   for (const [axis, cap] of caps) {
     check(`랜딩 배점 ${axis} ${cap}`, lead.includes(`${axis} ${cap}`));
+    // 축 이름에 () 나 + 가 들어간다(O(n²), N+1) — 정규식 메타문자를 전부 막아야 한다.
+    // `+` 만 escape 하던 때 O(n²) 의 괄호가 캡처 그룹으로 해석돼 조용히 안 맞았다.
+    const lit = axis.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     check(`README 배점 ${axis} ${cap}`,
-      new RegExp(`\\*\\*${axis.replace("+", "\\+")}\\*\\*\\s*\\|\\s*${cap}\\s*\\|`).test(readme));
+      new RegExp(`\\*\\*${lit}\\*\\*\\s*\\|\\s*${cap}\\s*\\|`).test(readme));
   }
   check(`합계 ${total}`, lead.includes(`합 ${total}`) && readme.includes(`합 ${total}`));
 

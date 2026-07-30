@@ -38,7 +38,7 @@ const wantKit = args.includes("--kit"); // cog × git churn = "먼저 고칠 파
 
 // 채점 규칙 버전. 유예값·기울기·캡을 바꾸면 이 값을 올려야 한다 —
 // 그러지 않으면 규칙이 바뀐 뒤의 점수를 예전 점수와 나란히 놓게 되고, 진행도가 거짓말을 한다.
-const SCORING_VERSION = "v9";
+const SCORING_VERSION = "v10";
 
 // 등급 색 (라이트 기준) — 배지·임베드 공용
 const GRADE_COLORS = { S: "#0f7a63", A: "#12915a", B: "#7d8a2c", C: "#c0862e", D: "#cb4436", E: "#8f2f24" };
@@ -2200,6 +2200,9 @@ if (ts && allFns.length > 0) {
     fnTop10: fnLength.top10avg, cogTop10: cognitive.top10avg,
     seqIoSites: seqIo.sites,
     seqIoPer1k: seqIo.perThousand,
+    quadCandidates: quadratic ? quadratic.candidates : 0,
+    quadPer10kLines: quadratic && codeLines
+      ? Math.round((quadratic.candidates / codeLines) * 10000 * 100) / 100 : 0,
   };
   // io = 루프 안 파일읽기 + DB/HTTP N+1(순차 await). 파일당 비율.
   // renderGates(렌더 인질)는 실측상 존경 OSS 17종서 0회 발동 = 변별력 없어 점수에서 제외.
@@ -2263,6 +2266,29 @@ if (ts && allFns.length > 0) {
     // 28 → 29 로 밀리며 순이익이 −1점이 됐다. 개선은 못 받고 노이즈만 맞는 구조였다.
     - Math.min(3, Math.max(0, Math.log2(Math.max(1, fnLength.p90) / 23)) * 5.5)
     - Math.min(4, Math.max(0, Math.log2(Math.max(1, fnLength.top10avg) / 174)) * 3.60)
+    // O(n²) 배열 조회 — 루프 안에서 바깥 배열을 .find/.some 으로 훑는 자리.
+    //
+    // 이 축은 이 도구가 실제로 PR 을 가장 많이 만든 자리다(11건 제출, outline 머지,
+    // medusa 승인). 그런데 채점에는 안 들어가 있었다 — 등급은 안 움직이면서 "고칠 줄"만
+    // 주고 있었던 셈이다. 축은 채점도 되고 PR 도 나와야 "고칠 줄을 준다"는 약속을 지킨다.
+    //
+    // 예전에 뺀 이유는 "n 이 큰지 사람이 봐야 한다"였다. 그 우려는 유효해서 세 겹으로 막는다:
+    //  ① candidates 만 센다 — 테스트·프론트 구역 제외, 외곽이 정적이면 제외(const-outer),
+    //     루프 안에 I/O 가 있으면 제외(io-in-loop), n 이 잘려 있으면 제외(capped-n).
+    //  ② 최소 3곳 게이트 — 1~2곳으로 작은 저장소가 무너지지 않게. 37곳 중 3곳이 여기서 면제된다.
+    //  ③ 캡 5 — 제출한 O(n²) PR 중 판정 난 6건에서 4건이 닫혔다(오탐률 ~36%).
+    //     오탐이 등급을 뒤집으면 안 된다.
+    //
+    // 정규화는 파일이 아니라 **코드줄** 기준이다. 파일당으로 재면 코드줄과 rho=+0.69 로
+    // 규모를 못 지운다(큰 저장소는 파일도 크다). 10k줄당으로 바꾸면 종류 안에서
+    // 코드줄 상관이 전부 음수가 된다(툴체인 -0.14 · 프레임워크 -0.25 · 앱 -0.38).
+    // 전체 +0.64 는 종류 교란이었다 — 라이브러리 15곳 중 14곳이 0 이라서 생긴 값이다.
+    //
+    // 유예 1.0/10k줄(코퍼스 중앙 0.90 근처), 기울기 1.0 = 캡이 6.0 에서 닿는다.
+    // 37곳 중 17곳이 감점, 2곳(directus·payload)만 만점 감점.
+    - (quadratic && quadratic.candidates >= 3
+        ? Math.min(5, Math.max(0, (quadratic.candidates / Math.max(1, codeLines)) * 10000 - 1.0) * 1.0)
+        : 0)
     // io(루프 안 파일 읽기)는 점수에서 뺐다: 재시도 루프·커서 페이지네이션처럼 '순차가 필수'인
     // 코드를 구분하려면 사람 검증이 필요한데(PATTERNS.md), 사람이 필요한 축을 자동 채점에
     // 넣으면 작은 저장소가 통째로 무너진다(파일 1개·사이트 2곳 = 만렙 감점). 진단으로만 보고한다.
@@ -2380,7 +2406,7 @@ const stats = {
     textbook,             // {awaitInForEach, spreadAccumulator, regexInLoop} — 교과서 결함(진단 전용)
     typeSafety,           // {anyType,asAny,nonNull,tsIgnore} — 타입 위생(진단 전용, 점수 미반영)
     testDensity,          // {files, lines, percent} — 테스트 두께(진단 전용, 점수 미반영 — 섞으면 지표가 뒤집힌다)
-    quadratic,            // {sites, worst[], files[]} — 루프 안 O(n²) 배열 조회(진단 전용, 점수 미반영)
+    quadratic,            // {sites, candidates, worst[], files[]} — 루프 안 O(n²) 배열 조회(★candidates 가 점수 반영)
     serialAwait,          // {sites, awaits, worst[]} — 독립인데 순차로 기다리는 await(★seqIo 로 점수 반영)
     nplusOne,             // {sites, perThousand, worst[]} — 루프 안 순차 DB/HTTP 조회(★seqIo 로 점수 반영)
     seqIo,                // {sites, perThousand} — 위 둘을 합친 채점축 "불필요한 순차 I/O"
