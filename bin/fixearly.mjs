@@ -1381,13 +1381,29 @@ function analyzeTextbookIssues(ts, fileContents) {
     };
 
     // 리터럴이 자기 자신(target)을 스프레드하는가 — [...acc, x] / {...acc, k:v}
+    // 누적기가 자기 자신을 통째로 복사하는가. 스프레드 문법만 보면 재현율이 샌다 —
+    // acc.concat(x) 와 Object.assign({}, acc, …) 은 같은 O(n²)인데 다른 문법이다.
+    // 진단으로만 쓸 땐 놓쳐도 손해가 작지만, 채점축 후보로 재려면 세 형태를 다 봐야 한다.
+    // 안 그러면 "스프레드를 concat 으로 바꾸면 점수가 오른다"가 최적 전략이 된다.
     const spreadsSelf = (target, init) => {
       if (!target || !ts.isIdentifier(target)) return false;
       const name = target.getText(sf);
+      const isSelf = (e) => e && ts.isIdentifier(e) && e.getText(sf) === name;
       if (ts.isArrayLiteralExpression(init))
-        return init.elements.some((e) => ts.isSpreadElement(e) && ts.isIdentifier(e.expression) && e.expression.getText(sf) === name);
+        return init.elements.some((e) => ts.isSpreadElement(e) && isSelf(e.expression));
       if (ts.isObjectLiteralExpression(init))
-        return init.properties.some((p) => ts.isSpreadAssignment(p) && ts.isIdentifier(p.expression) && p.expression.getText(sf) === name);
+        return init.properties.some((p) => ts.isSpreadAssignment(p) && isSelf(p.expression));
+      if (ts.isCallExpression(init) && ts.isPropertyAccessExpression(init.expression)) {
+        // acc = acc.concat(x) — 수신자가 누적기 자신이면 매 회 전체 복사다.
+        if (init.expression.name.getText(sf) === "concat" && isSelf(init.expression.expression)) return true;
+        // acc = Object.assign({}, acc, {k: v}) — 첫 인자가 새 객체라 acc 를 통째로 복사한다.
+        // Object.assign(acc, …) 은 제자리 변형이라 O(n²)가 아니다 — 그건 제외된다.
+        if (init.expression.name.getText(sf) === "assign" &&
+            ts.isIdentifier(init.expression.expression) && init.expression.expression.getText(sf) === "Object" &&
+            init.arguments.length > 1 && ts.isObjectLiteralExpression(init.arguments[0]) &&
+            init.arguments[0].properties.length === 0 &&
+            init.arguments.slice(1).some(isSelf)) return true;
+      }
       return false;
     };
 
@@ -1535,7 +1551,9 @@ function analyzeTextbookIssues(ts, fileContents) {
             const g = (n) => {
               if (bad) return;
               if (n !== cb && isFnLike(n)) return;
-              if ((ts.isArrayLiteralExpression(n) || ts.isObjectLiteralExpression(n)) && spreadsSelf(acc, n)) { bad = true; return; }
+              // 호출식도 본다 — reduce 안 acc.concat(x) / Object.assign({}, acc, …) 도 같은 전체 복사다.
+              if ((ts.isArrayLiteralExpression(n) || ts.isObjectLiteralExpression(n) || ts.isCallExpression(n)) &&
+                  spreadsSelf(acc, n)) { bad = true; return; }
               ts.forEachChild(n, g);
             };
             ts.forEachChild(cb, g);
