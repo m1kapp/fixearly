@@ -1192,9 +1192,15 @@ function analyzeNPlusOne(ts, fileContents) {
  * (이해 난이도) x (몇 군데를 같이 고쳐야 하나)다. 순환에 묶인 모듈은
  * 따로 읽을 수도, 따로 테스트할 수도, 따로 교체할 수도 없다 — 한 덩어리다.
  *
- * 타입 전용 import 는 간선으로 세지 않는다. 런타임에 로드되지 않으므로
- * 초기화 순서 버그도 트리셰이킹 방해도 안 만든다. 37개 실측에서 전체 순환의
- * 37%가 타입 전용이었다 — 섞으면 없는 문제를 보고하게 된다.
+ * 재는 것은 **소스 수준** 결합이다. 방출된 번들의 순환이 아니다. tsc 는 타입
+ * 위치에서만 쓰인 import 를 기본으로 지우므로(실측: 그런 파일의 방출 결과에
+ * import 문이 아예 없다), 여기 세는 간선 일부는 tsc 산출물엔 없다. 그래도
+ * 세는 이유는 이 축이 재는 게 "사람이 이 모듈을 따로 읽고 따로 테스트할 수
+ * 있는가"이기 때문이다 — 소스에 import 가 적혀 있으면 읽는 사람에겐 의존이다.
+ * (esbuild·swc 처럼 파일 하나씩 변환하는 도구에선 실제로 런타임 간선이 된다.)
+ *
+ * `import type` 만 뺀다. 그건 저자가 "이건 타입 의존일 뿐"이라고 명시한
+ * 경우라 결합의 성격이 다르다. 37개 실측에서 전체 순환의 37%가 여기 해당했다.
  *
  * 상대 경로만 해석한다. 패키지 import 는 저장소 밖이라 우리 결합도가 아니고,
  * tsconfig 별칭은 설정을 읽어야 해서 여기선 놓친다(그만큼 과소 보고다).
@@ -2519,7 +2525,7 @@ if (typeSafety && typeSafety.tsFiles > 0) {
 }
 // 결합도 — 순환에 묶인 모듈은 따로 읽지도, 테스트하지도, 교체하지도 못한다.
 if (coupling && coupling.cycles > 0) {
-  console.log(`  순환 의존: ${coupling.cycles}개 (모듈 ${coupling.filesInCycle}개 = ${coupling.percent}%) — 서로를 import 해 한 덩어리가 된 자리, 점수 미반영`);
+  console.log(`  순환 의존: ${coupling.cycles}개 (모듈 ${coupling.filesInCycle}개 = ${coupling.percent}%) — 서로를 import 해 한 덩어리가 된 자리(소스 기준), 점수 미반영`);
   for (const c of coupling.worst) {
     // 분석 대상이 cwd 밖이면 ../../.. 이 길게 붙어 읽을 수가 없다 — 공통 앞부분을 걷는다.
     const short = (f) => f.replace(/^(\.\.\/)+/, "").replace(/^.*?\/([^/]+\/[^/]+)$/, "$1");
