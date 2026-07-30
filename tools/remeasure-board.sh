@@ -51,7 +51,8 @@ out=dict(rank=int(os.environ['RANK']), name=os.environ['NAME'], url=os.environ['
   # 채점축 승격 후보를 판정하려면 '기존 점수와 독립인가'를 봐야 한다. 그 상관을
   # 계산할 원자료를 여기서 같이 담는다 — 재측정은 비싸서 두 번 돌릴 수 없다.
   ioLoop=(q.get('io') or {}).get('uncachedLoopSites',0),
-  renderGates=len(((q.get('renderGates') or {}).get('hostages') or [])),
+  # hostages 는 목록이 아니라 개수다(엔진이 \`\${renderGates.hostages}곳\` 으로 찍는다).
+  renderGates=((q.get('renderGates') or {}).get('hostages') or 0),
   textbook={k:(v or {}).get('count',0) for k,v in (q.get('textbook') or {}).items()},
   typeSafety={k:(q['typeSafety'][k] or {}).get('count',0)
               for k in ('anyType','asAny','nonNull','tsIgnore') if q.get('typeSafety')},
