@@ -68,6 +68,32 @@ async function prStatus(repo, pr) {
   }
 }
 
+/**
+ * 저장소 별 수 — 손으로 적어두면 시점마다 갈린다.
+ * 실제로 같은 저장소가 46729★ 와 47k★ 로 갈라져 있었다. GitHub 에서 받아 통일한다.
+ */
+const starCache = new Map();
+async function repoStars(repo) {
+  if (starCache.has(repo)) return starCache.get(repo);
+  const headers = { "User-Agent": "fixearly-impact", Accept: "application/vnd.github+json" };
+  if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+  let n = null;
+  try {
+    const res = await fetch(`https://api.github.com/repos/${repo}`, { headers });
+    if (res.ok) n = (await res.json()).stargazers_count ?? null;
+  } catch { /* 실패하면 기존 라벨을 그대로 쓴다 */ }
+  starCache.set(repo, n);
+  return n;
+}
+
+/** 39812 → "39.8k" · 1200000 → "1.2m" */
+function fmtStars(n) {
+  if (n == null) return null;
+  if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, "") + "m";
+  if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, "") + "k";
+  return String(n);
+}
+
 const LABEL = {
   merged: { icon: "✅", ko: "merged", point: 1 },
   approved: { icon: "🔵", ko: "approved · 머지 대기", point: 0 },
@@ -88,7 +114,10 @@ for (const f of findings) {
   const L = LABEL[st.state] || LABEL.unknown;
   score += L.point;
   const prUrl = st.url || `https://github.com/${f.repo}/pull/${f.pr}`;
-  rows.push({ ...f, status: st.state, prUrl });
+  const stars = fmtStars(await repoStars(f.repo));
+  const label = stars ? `${String(f.repoLabel).split("·")[0].trim()} · ${stars}★` : f.repoLabel;
+  if (label !== f.repoLabel) f.repoLabel = label; // registry 도 같이 맞춘다
+  rows.push({ ...f, repoLabel: label, status: st.state, prUrl });
   console.log(`  ${L.icon} ${L.ko.padEnd(7)} #${f.pr}  ${f.title}  (${f.repo})`);
 }
 console.log(`\n  임팩트 점수: ${score} (머지 ${score}건)\n`);
@@ -146,6 +175,8 @@ npx fixearly --dir=src --dead
 `;
 
 fs.writeFileSync(path.join(ROOT, "IMPACT.md"), md);
+// 별 수를 새로 받았으면 registry 도 같이 저장한다 — 다음 실행·랜딩이 같은 값을 쓰게.
+fs.writeFileSync(path.join(ROOT, "impact.json"), JSON.stringify(registry, null, 1) + "\n");
 console.log("  ✓ IMPACT.md 갱신됨");
 
 // 랜딩 동기화 (landing.html / index.html): 임팩트 점수 + 각 PR 상태 배지(등장 순서 = findings 순서)
