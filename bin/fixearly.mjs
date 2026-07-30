@@ -38,7 +38,7 @@ const wantKit = args.includes("--kit"); // cog × git churn = "먼저 고칠 파
 
 // 채점 규칙 버전. 유예값·기울기·캡을 바꾸면 이 값을 올려야 한다 —
 // 그러지 않으면 규칙이 바뀐 뒤의 점수를 예전 점수와 나란히 놓게 되고, 진행도가 거짓말을 한다.
-const SCORING_VERSION = "v8";
+const SCORING_VERSION = "v9";
 
 // 등급 색 (라이트 기준) — 배지·임베드 공용
 const GRADE_COLORS = { S: "#0f7a63", A: "#12915a", B: "#7d8a2c", C: "#c0862e", D: "#cb4436", E: "#8f2f24" };
@@ -1966,6 +1966,7 @@ let renderGates = null;
 let quadratic = null;
 let serialAwait = null;
 let nplusOne = null;
+let seqIo = { sites: 0, perThousand: 0 };
 let typeSafety = null;
 let textbook = null;
 if (ts && allFns.length > 0) {
@@ -2025,6 +2026,20 @@ if (ts && allFns.length > 0) {
   quadratic = analyzeQuadraticLookups(ts, fileContents);
   serialAwait = analyzeSerialAwaits(ts, fileContents);
   nplusOne = analyzeNPlusOne(ts, fileContents);
+  // 불필요한 순차 I/O — N+1 과 독립 순차 await 은 같은 결함이다:
+  // 안 기다려도 되는 것을 줄 세워 기다린다. 나눠 두면 각각은 축이 못 된다
+  // (실측: N+1 단독은 37곳 중 1곳에서만 발동, 캡에도 못 닿았다).
+  // 반드시 두 분석이 끝난 뒤에 계산한다 — 앞에 두면 nplusOne 이 아직 null 이라
+  // 조용히 N+1 만 빠진 값이 나온다(실제로 그렇게 immich 가 26곳 대신 24곳으로 나왔다).
+  {
+    const sites = nplusOne.sites + serialAwait.sites;
+    seqIo = {
+      sites,
+      perThousand: fileContents.length
+        ? Math.round((sites / fileContents.length) * 1000 * 100) / 100
+        : 0,
+    };
+  }
   textbook = analyzeTextbookIssues(ts, fileContents);
   typeSafety = analyzeTypeSafety(ts, fileContents);
 
@@ -2048,7 +2063,8 @@ if (ts && allFns.length > 0) {
     fnOver40Pct: Math.round(fnOver40Pct * 100) / 100,
     fnP90: fnLength.p90, fnMax: fnLength.max,
     fnTop10: fnLength.top10avg, cogTop10: cognitive.top10avg,
-    nplusPer1k: nplusOne ? nplusOne.perThousand : 0,
+    seqIoSites: seqIo.sites,
+    seqIoPer1k: seqIo.perThousand,
   };
   // io = 루프 안 파일읽기 + DB/HTTP N+1(순차 await). 파일당 비율.
   // renderGates(렌더 인질)는 실측상 존경 OSS 17종서 0회 발동 = 변별력 없어 점수에서 제외.
@@ -2071,12 +2087,23 @@ if (ts && allFns.length > 0) {
     // 캡만 최대였다. 분포가 롱테일이라(valibot 43.5·drizzle 36.2·hono 23.2 vs 나머지 한 자리)
     // 대부분 저장소엔 0점 기여하고 소수만 벼락처럼 때린다. 채점기가 아니라 이상치 탐지기다.
     - Math.min(9, Math.max(0, duplication.percent - 8) * 1.2)
-    // N+1(루프 안 순차 DB/HTTP 조회). 구조 지표가 못 보는 축 — 표본 12곳에서 기존 점수와
-    // 상관 r=0.19 로 사실상 독립이고, S 등급인데 밀도 최고인 저장소가 나왔다.
-    // 유예 = 표본 중앙(1.0/1000파일). 캡 5 — 탐지 오탐률이 26%(의도적 순차 제외 기준)라
-    // 오탐 하나가 등급을 뒤집으면 안 된다. 헬퍼로 감싸면 탐지를 피할 수 있는 것도 캡을 낮추는 이유.
-    // ※ 표본이 12곳뿐 — 보드 70개 재측정 후 유예·기울기 재보정 필요.
-    - Math.min(5, Math.max(0, (nplusOne ? nplusOne.perThousand : 0) - 1.0) * 1.2)
+    // 불필요한 순차 I/O = N+1(루프 안 행마다 조회) + 독립 순차 await(서로 안 엮인 것을 줄 세움).
+    // 구조 지표가 못 보는 축이다 — 37곳 재측정에서 기존 점수와 rho=-0.18 로 사실상 독립이다.
+    //
+    // v8 은 N+1 만 넣었고 그건 실패였다: 37곳 중 1곳(immich)에서만 발동했고 그 값조차
+    // 캡에 못 닿아, 캡 5점짜리 축이 저장소 하나만 건드리는 장식이었다. 승격 근거로 쓴
+    // 표본 12곳이 백엔드 위주였는데 코퍼스는 라이브러리 쪽으로 쏠려 있다(라이브러리 15·
+    // 툴체인 7·프레임워크 7 대 앱 8). 라이브러리는 DB 를 안 돌아 구조적으로 0 이다.
+    // 같은 결함 부류인 독립 순차 await 을 합치니 발동이 1곳 → 11곳(30%)이 됐다.
+    //
+    // 유예·기울기는 37곳 실측 분포에서 잡았다(발동 11곳: 3.00~61.47/1000파일):
+    //  · 최소 3곳 게이트 — 1~2곳은 의도적 순차(재시도·커서 페이지네이션)일 수 있다.
+    //    밀도만 쓰면 작은 저장소가 사이트 한둘로 무너진다(파일 100개·1곳 = 밀도 10).
+    //  · 유예 3.0/1000파일 — 그 아래는 0점.
+    //  · 기울기 0.185 = 캡이 30.0 에서 닿는다. 37곳 중 3곳(immich·directus·strapi)만 만점 감점.
+    //  · 캡 5 유지 — 오탐이 남는다(N+1 탐지 오탐률 26%, 의도적 순차 제외 기준).
+    //    헬퍼로 감싸면 탐지를 피할 수 있는 것도 캡을 낮게 두는 이유다.
+    - (seqIo.sites >= 3 ? Math.min(5, Math.max(0, seqIo.perThousand - 3.0) * 0.185) : 0)
     // ── 크기 축: 파일 크기(조작 가능) 볼륨을 줄이고, 함수 길이(조작 불가)로 무게를 옮긴다 ──
     // 근거: 같은 코드를 함수 경계에서 6파일로 기계 분할하면 옛 공식은 B71 → S98 (+27점).
     // 코드는 한 줄도 안 변했는데 점수가 뛴다. 파일 경계는 배치 관습이고, 함수 경계는 의미 단위다.
@@ -2219,8 +2246,9 @@ const stats = {
     typeSafety,           // {anyType,asAny,nonNull,tsIgnore} — 타입 위생(진단 전용, 점수 미반영)
     testDensity,          // {files, lines, percent} — 테스트 두께(진단 전용, 점수 미반영 — 섞으면 지표가 뒤집힌다)
     quadratic,            // {sites, worst[], files[]} — 루프 안 O(n²) 배열 조회(진단 전용, 점수 미반영)
-    serialAwait,          // {sites, awaits, worst[]} — 독립인데 순차로 기다리는 await(진단 전용, 점수 미반영)
-    nplusOne,             // {sites, perThousand, worst[]} — 루프 안 순차 DB/HTTP 조회(★점수 반영)
+    serialAwait,          // {sites, awaits, worst[]} — 독립인데 순차로 기다리는 await(★seqIo 로 점수 반영)
+    nplusOne,             // {sites, perThousand, worst[]} — 루프 안 순차 DB/HTTP 조회(★seqIo 로 점수 반영)
+    seqIo,                // {sites, perThousand} — 위 둘을 합친 채점축 "불필요한 순차 I/O"
     renderGates,          // {hostages, worst} — fetch 하나가 무관한 UI까지 막고 있는 자리
     cc,                   // {functions, avg, p90, max, over10, over20, worst[5]} — McCabe (참고용)
     branchDensity,        // 100줄당 분기 수 (regex 근사, 참고용)
@@ -2360,7 +2388,7 @@ if (typeSafety && typeSafety.tsFiles > 0) {
   }
 }
 if (serialAwait && serialAwait.sites > 0) {
-  console.log(`  독립 순차 await: ${serialAwait.sites}곳 (await ${serialAwait.awaits}개) — 서로 참조 안 하는데 줄줄이 대기, Promise.all 로 합→최댓값, 점수 미반영`);
+  console.log(`  독립 순차 await: ${serialAwait.sites}곳 (await ${serialAwait.awaits}개) — 서로 참조 안 하는데 줄줄이 대기, Promise.all 로 합→최댓값, 점수 반영`);
   for (const w of serialAwait.worst.slice(0, 4)) {
     console.log(`    ${w.count}개 연속 — ${w.file}:${w.line}`);
     for (const c of w.calls.slice(0, 3)) console.log(`        await ${c}`);
