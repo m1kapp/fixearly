@@ -292,6 +292,18 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
 .mbl{font-size:11px;color:var(--ink-3);letter-spacing:.02em}
 .mba{font-size:12px;color:var(--accent);text-decoration:none;margin-top:2px}
 .mba:hover{text-decoration:underline}
+
+/* 단계 내비 — 지금 어느 지점인지 보이게. 번호는 섹션의 stepno 와 같은 값. */
+.navlinks{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.navlinks::-webkit-scrollbar{display:none}
+.navlinks a{display:inline-flex;align-items:baseline;gap:6px;white-space:nowrap;padding-bottom:2px;border-bottom:1.5px solid transparent;transition:color var(--dur) var(--ease),border-color var(--dur) var(--ease)}
+.navlinks a .sn{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.04em}
+.navlinks a:hover{color:var(--ink)}
+.navlinks a[aria-current="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.navlinks a[aria-current="true"] .sn{color:var(--accent)}
+@media (max-width:900px){.navlinks{gap:14px}.navlinks a .ko,.navlinks a .en{display:none}
+  [data-lang="en"] .navlinks a .en{display:none}
+  .navlinks a .sn{font-size:12px}}
 </style>
 </head>
 <body>
@@ -299,10 +311,14 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
   <div class="in">
     <div class="brand">fix<span>early</span></div>
     <div class="navlinks">
-      <a href="#how"><span class="ko">쓰는 법</span><span class="en">How it works</span></a>
-      <a href="#report"><span class="ko">리포트</span><span class="en">report</span></a>
-      <a href="#board"><span class="ko">70개 측정</span><span class="en">70 repos</span></a>
-      <a href="#axes"><span class="ko">무엇을 재나</span><span class="en">What it measures</span></a>
+      <a href="#how" data-spy="how"><span class="sn">01</span><span class="ko">쓰는 법</span><span class="en">How</span></a>
+      <a href="#lines" data-spy="lines"><span class="sn">02</span><span class="ko">고칠 줄</span><span class="en">Lines</span></a>
+      <a href="#first" data-spy="first"><span class="sn">03</span><span class="ko">우선순위</span><span class="en">Priority</span></a>
+      <a href="#report" data-spy="report"><span class="sn">04</span><span class="ko">리포트</span><span class="en">Report</span></a>
+      <a href="#board" data-spy="board"><span class="sn">05</span><span class="ko">70개 측정</span><span class="en">70 repos</span></a>
+      <a href="#axes" data-spy="axes"><span class="sn">06</span><span class="ko">무엇을 재나</span><span class="en">Metrics</span></a>
+      <a href="#why" data-spy="why"><span class="sn">07</span><span class="ko">왜 다른가</span><span class="en">Why</span></a>
+      <a href="#impact" data-spy="impact"><span class="sn">08</span><span class="ko">실전 성과</span><span class="en">Impact</span></a>
     </div>
     <div class="navcta">
       <div class="lang" role="group" aria-label="언어">
@@ -391,7 +407,7 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
   </div>
 </section>
 
-<section class="step">
+<section class="step" id="lines">
   <div class="w">
     <div class="stepno">02</div>
     <h2 class="ko">등급 옆에, 고칠 줄을 같이 준다.</h2>
@@ -414,7 +430,7 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
   </div>
 </section>
 
-<section class="step">
+<section class="step" id="first">
   <div class="w">
     <div class="stepno">03</div>
     <h2 class="ko">그래서, 무엇부터 손대야 하나.</h2>
@@ -529,7 +545,7 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
   </div>
 </section>
 
-<section class="step">
+<section class="step" id="why">
   <div class="w">
     <div class="stepno">07</div>
     <h2 class="ko">왜 이 점수는 다른가.</h2>
@@ -576,8 +592,10 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
       <a class="ic" href="https://github.com/directus/directus/pull/27978" target="_blank" rel="noopener"><span class="idot off"></span><b>directus · 36.9k★</b><span class="it">parse-fields dedup O(n²)</span><span class="ist"><span class="ko">닫힘</span><span class="en">closed</span> · #27978</span></a>
       <a class="ic" href="https://github.com/Budibase/budibase/pull/19320" target="_blank" rel="noopener"><span class="idot off"></span><b>budibase · 25k★</b><span class="it">ExternalRequest field lookup O(n²)</span><span class="ist"><span class="ko">닫힘</span><span class="en">closed</span> · #19320</span></a>
     </div>
-    <p class="note ko">머지 1 · 리뷰 중 12 · 닫힘 4 — 전체 기록은 <a href="https://github.com/m1kapp/fixearly/blob/main/IMPACT.md">IMPACT.md</a>. 상태는 GitHub 에서 자동 갱신된다.</p>
-    <p class="note en">1 merged · 12 in review · 4 closed — full log in <a href="https://github.com/m1kapp/fixearly/blob/main/IMPACT.md">IMPACT.md</a>, refreshed from GitHub.</p>
+    <div class="note">
+      <p class="ko">머지 1 · 리뷰 중 12 · 닫힘 4 — 전체 기록은 <a href="https://github.com/m1kapp/fixearly/blob/main/IMPACT.md">IMPACT.md</a>. 상태는 GitHub 에서 자동 갱신된다.</p>
+      <p class="en">1 merged · 12 in review · 4 closed — full log in <a href="https://github.com/m1kapp/fixearly/blob/main/IMPACT.md">IMPACT.md</a>, refreshed from GitHub.</p>
+    </div>
   </div>
 </section>
 <section class="cta">
@@ -774,6 +792,27 @@ document.addEventListener('click',e=>{
     setTimeout(()=>{C.removeAttribute('data-done');C.textContent='copy';},1400);return;}
 });
 (function(){let s;try{s=localStorage.getItem('cs-lang');}catch(e){}setLang(s||'ko');})();
+
+/* 스크롤 스파이 — 현재 보이는 섹션의 내비 링크에 aria-current 를 준다.
+   JS 가 없어도 앵커 링크는 그대로 동작하므로 순수 향상이다. */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.navlinks a[data-spy]'));
+  if (!links.length || !('IntersectionObserver' in window)) return;
+  var byId = {};
+  links.forEach(function(a){ byId[a.getAttribute('data-spy')] = a; });
+  var visible = {};
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ visible[e.target.id] = e.isIntersecting ? e.intersectionRatio : 0; });
+    var best = null, bestR = 0;
+    Object.keys(visible).forEach(function(id){ if (visible[id] > bestR) { bestR = visible[id]; best = id; } });
+    links.forEach(function(a){ a.removeAttribute('aria-current'); });
+    if (best && byId[best]) byId[best].setAttribute('aria-current', 'true');
+  }, { threshold: [0.15, 0.4, 0.7], rootMargin: '-72px 0px -55% 0px' });
+  links.forEach(function(a){
+    var el = document.getElementById(a.getAttribute('data-spy'));
+    if (el) io.observe(el);
+  });
+})();
 </script>
 </body>
 </html>
