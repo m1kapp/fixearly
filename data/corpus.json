@@ -1,6 +1,6 @@
 {
  "version": "v11",
- "n": 69,
+ "n": 74,
  "measuredAt": "2026-07-31",
  "classes": [
   {
@@ -177,6 +177,27 @@
    "avg": 66,
    "maxNest": 6,
    "deep": 3
+  },
+  {
+   "name": "adonisjs",
+   "score": 93,
+   "grade": "S",
+   "gradeF": "SS",
+   "files": 19,
+   "loc": 1228,
+   "kind": "프레임워크",
+   "ver": "7.3.5",
+   "fn40": 2.4,
+   "fnP90": 15,
+   "fnMax": 63,
+   "fnTop10": 34.1,
+   "cogTop10": 8.2,
+   "cog15": 0.8,
+   "maxCog": 32,
+   "dup": 5.3,
+   "avg": 65,
+   "maxNest": 4,
+   "deep": 1
   },
   {
    "name": "cypress",
@@ -471,6 +492,27 @@
    "avg": 44,
    "maxNest": 6,
    "deep": 2
+  },
+  {
+   "name": "qwik",
+   "score": 88,
+   "grade": "A",
+   "gradeF": "A+",
+   "files": 286,
+   "loc": 49261,
+   "kind": "프레임워크",
+   "ver": "2.0.0-beta.38",
+   "fn40": 2.4,
+   "fnP90": 22,
+   "fnMax": 289,
+   "fnTop10": 191.9,
+   "cogTop10": 122.4,
+   "cog15": 2.3,
+   "maxCog": 174,
+   "dup": 7.6,
+   "avg": 172,
+   "maxNest": 11,
+   "deep": 80
   },
   {
    "name": "storybook",
@@ -891,6 +933,27 @@
    "avg": 111,
    "maxNest": 7,
    "deep": 29
+  },
+  {
+   "name": "sveltekit",
+   "score": 79,
+   "grade": "B",
+   "gradeF": "B+",
+   "files": 156,
+   "loc": 23139,
+   "kind": "프레임워크",
+   "ver": "3.0.0-next.13",
+   "fn40": 4.4,
+   "fnP90": 22,
+   "fnMax": 383,
+   "fnTop10": 215.1,
+   "cogTop10": 111.1,
+   "cog15": 4.0,
+   "maxCog": 258,
+   "dup": 1.7,
+   "avg": 148,
+   "maxNest": 10,
+   "deep": 37
   },
   {
    "name": "outline",
@@ -1376,6 +1439,27 @@
    "deep": 70
   },
   {
+   "name": "typeorm",
+   "score": 61,
+   "grade": "C",
+   "gradeF": "C",
+   "files": 438,
+   "loc": 74814,
+   "kind": "라이브러리",
+   "ver": "1.1.0",
+   "fn40": 5.0,
+   "fnP90": 25,
+   "fnMax": 891,
+   "fnTop10": 386.7,
+   "cogTop10": 87.8,
+   "cog15": 2.4,
+   "maxCog": 140,
+   "dup": 24.3,
+   "avg": 171,
+   "maxNest": 6,
+   "deep": 31
+  },
+  {
    "name": "react-hook-form",
    "score": 57,
    "grade": "C",
@@ -1542,6 +1626,27 @@
    "avg": 87,
    "maxNest": 10,
    "deep": 74
+  },
+  {
+   "name": "elysia",
+   "score": 31,
+   "grade": "E",
+   "gradeF": "E+",
+   "files": 37,
+   "loc": 20623,
+   "kind": "프레임워크",
+   "ver": "1.4.29",
+   "fn40": 8.7,
+   "fnP90": 35,
+   "fnMax": 1314,
+   "fnTop10": 327,
+   "cogTop10": 188.4,
+   "cog15": 8.3,
+   "maxCog": 826,
+   "dup": 15.2,
+   "avg": 557,
+   "maxNest": 9,
+   "deep": 33
   }
  ]
 }

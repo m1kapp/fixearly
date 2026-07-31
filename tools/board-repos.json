@@ -768,5 +768,60 @@
   "branch": "main",
   "sha": "b685b40d",
   "sub": "."
+ },
+ {
+  "rank": 71,
+  "url": "https://github.com/sveltejs/kit",
+  "name": "sveltekit",
+  "kcls": "k-fw",
+  "klabel": "프레임워크",
+  "stars": "20.7k",
+  "branch": "version-3",
+  "sha": "",
+  "sub": "packages/kit/src"
+ },
+ {
+  "rank": 72,
+  "url": "https://github.com/QwikDev/qwik",
+  "name": "qwik",
+  "kcls": "k-fw",
+  "klabel": "프레임워크",
+  "stars": "22k",
+  "branch": "main",
+  "sha": "",
+  "sub": "packages/qwik/src"
+ },
+ {
+  "rank": 73,
+  "url": "https://github.com/adonisjs/core",
+  "name": "adonisjs",
+  "kcls": "k-fw",
+  "klabel": "프레임워크",
+  "stars": "19.1k",
+  "branch": "7.x",
+  "sha": "",
+  "sub": "src"
+ },
+ {
+  "rank": 74,
+  "url": "https://github.com/elysiajs/elysia",
+  "name": "elysia",
+  "kcls": "k-fw",
+  "klabel": "프레임워크",
+  "stars": "18.8k",
+  "branch": "main",
+  "sha": "",
+  "sub": "src"
+ },
+ {
+  "rank": 75,
+  "url": "https://github.com/typeorm/typeorm",
+  "name": "typeorm",
+  "kcls": "k-lib",
+  "klabel": "라이브러리",
+  "stars": "36.6k",
+  "branch": "master",
+  "sha": "",
+  "sub": "src"
  }
 ]

@@ -149,22 +149,76 @@ def fix_kind_sentence(html):
     return html, total
 
 
+# ── ④ 히어로 미니보드 — 상위 4행·등급 분포 막대·분포 라벨·"D 이하 N개" ─────
+def fix_hero(html):
+    total = 0
+    order = ["S", "A", "B", "C", "D", "E"]
+    dist = defaultdict(int)
+    for r in rows:
+        dist[r["grade"]] += 1
+    top = sorted(rows, key=lambda r: (-r["score"], r["name"]))[:4]
+
+    mbr = "".join(
+        f'<div class="mbr"><span class="mbn">{r["name"]}</span>'
+        f'<span class="mbg g g{r["grade"]}">{r["gradeF"]}</span><b>{r["score"]}</b></div>'
+        for r in top)
+    m = re.search(r'(<div class="mbh">.*?</div>)\s*((?:<div class="mbr">.*?</div>\s*)+)', html, re.S)
+    if not m:
+        problems.append("히어로 미니보드 상위 행을 못 찾음")
+    elif re.sub(r"\s+", "", m.group(2)) != re.sub(r"\s+", "", mbr):
+        html = html[: m.start(2)] + "\n       " + mbr + "\n       " + html[m.end(2):]
+        total += 1
+
+    bars = "".join(f'<i class="g{g}" style="flex:{dist[g]}" title="{g} {dist[g]}"></i>'
+                   for g in order if dist[g])
+    m = re.search(r'(<div class="mbdist" aria-hidden="true">)(.*?)(</div>)', html, re.S)
+    if not m:
+        problems.append("히어로 분포 막대를 못 찾음")
+    elif m.group(2) != bars:
+        html = html[: m.start(2)] + bars + html[m.end(2):]
+        total += 1
+
+    label = " · ".join(f"{g} {dist[g]}" for g in order if dist[g])
+    m = re.search(r'(<div class="mbl">)([^<]*)(</div>)', html)
+    if not m:
+        problems.append("히어로 분포 라벨을 못 찾음")
+    elif m.group(2) != label:
+        html = html[: m.start(2)] + label + html[m.end(2):]
+        total += 1
+
+    low = dist["D"] + dist["E"]
+    for pat, want_txt in (
+        (r'(<a class="mba" href="#board"><span class="ko">)([^<]*)(</span>)',
+         f"D 이하 {low}개 — 전체 순위표 보기 →"),
+        (r'(<span class="en">)(\d+ at D or below — see the full table →)(</span>)',
+         f"{low} at D or below — see the full table →"),
+    ):
+        m = re.search(pat, html)
+        if not m:
+            problems.append("히어로 'D 이하' 링크를 못 찾음")
+        elif m.group(2) != want_txt:
+            html = html[: m.start(2)] + want_txt + html[m.end(2):]
+            total += 1
+    return html, total
+
+
 new = html
 new, a = fix_static(new)
 new, b = fix_js(new)
 new, c = fix_kind_sentence(new)
-n = a + b + c
+new, d = fix_hero(new)
+n = a + b + c + d
 
 if problems:
     for p in problems:
         print(f"  ✗ {p}")
 if CHECK:
     print(f"{'맞지 않는 값 ' + str(n) + '건' if n else '코퍼스 라벨이 corpus.json 과 일치한다'}"
-          f"  (정적 {a} · JS {b} · 종류문장 {c})")
+          f"  (정적 {a} · JS {b} · 종류문장 {c} · 히어로 {d})")
     sys.exit(1 if (n or problems) else 0)
 
 if n:
     open(f"{ROOT}/index.html", "w", encoding="utf-8").write(new)
-print(f"갱신 {n}건 (정적 {a} · JS {b} · 종류문장 {c}) · 중앙값 "
+print(f"갱신 {n}건 (정적 {a} · JS {b} · 종류문장 {c} · 히어로 {d}) · 중앙값 "
       + " · ".join(f"{k} {g(want[k][0])}" for k, _ in METRICS))
 sys.exit(1 if problems else 0)
