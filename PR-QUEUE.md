@@ -9,8 +9,9 @@
 
 ## 제출 기준 — 우리 실적으로 보정한 것
 
-판정 난 8건 중 머지 2·승인 2, 닫힘 4다. 스킬의 사전 게이트를 통과하고도 닫힌 것들이라,
-그 4건이 왜 닫혔는지가 게이트보다 정확한 기준이다.
+판정이 난 것의 개수는 아래 [지금 열려 있는 것](#지금-열려-있는-것) 블록이 자동으로 센다.
+여기 표는 **왜 그렇게 됐는지**만 남긴다 — 스킬의 사전 게이트를 통과하고도 닫힌 4건이 있고,
+그 사유가 게이트보다 정확한 기준이다.
 
 | PR | 결과 | 닫힌 이유 (원문) |
 |---|---|---|
@@ -18,6 +19,7 @@
 | nocodb#14309 | 머지 | — (질문 없이 머지, 6일 20시간) |
 | medusa#16188 | 승인 | — |
 | novu#12074 | 승인 | — |
+| vite#23114 | 승인 | — (당일 승인, 질문 없음) |
 | twenty#23231 | 닫힘 | "redundant with #23232" |
 | twenty#23232 | 닫힘 | 같은 저장소 2건 중 하나 |
 | directus#27978 | 닫힘 | "performance gains for **this edge case** don't justify the churn, especially since there are **larger optimization opportunities**" |
@@ -33,6 +35,10 @@ directus 에서 실증됐다. 벤치를 정직하게 냈고 "n>1000 에서만 �
 
 벤치 표에서 *그 코드가 가장 흔하게 만나는 크기* 행을 짚고, 거기서 1.3배 미만이면 안 낸다.
 표의 마지막 줄이 아니라 가운데 줄을 본다.
+
+다만 vite#23114 은 작은 쪽(50청크)에서 0.84x 인 표를 그대로 내고도 당일 승인됐다. 표본
+1건이라 기준을 풀지는 않지만, **directus 가 닫힌 건 표 모양이 아니라 "더 큰 최적화 기회가
+있다"는 영역 판단이었다**는 쪽이 더 맞아 보인다.
 
 ### ② 같은 영역에 열린 perf 이슈가 있으면 먼저 읽는다
 
@@ -61,7 +67,7 @@ budibase 의 "denounce" 는 사유가 없다. 요청받지 않은 최적화는 �
 |---|---|---|
 | typeorm#12746 | 20~100 테이블 → 4.3x ~ 22x | 통과 |
 | Ghost#29704 | n 무관 (왕복 3 → 1) | 통과 |
-| vite#23114 | 200~600 청크 → 2.3x ~ 5.6x | 통과. 다만 50청크에서 0.84x 라 **작은 프로젝트 리뷰어에겐 directus 와 같은 인상**을 줄 수 있다 |
+| vite#23114 | 200~600 청크 → 2.3x ~ 5.6x | **승인됨.** 50청크에서 0.84x 라 directus 와 같은 인상을 줄까 걱정했는데, sapphi-red 는 당일에 질문 없이 승인했다 |
 
 ## 속도 규칙
 
@@ -73,18 +79,29 @@ budibase 의 "denounce" 는 사유가 없다. 요청받지 않은 최적화는 �
 
 ## 지금 열려 있는 것
 
-| PR | 축 | 상태 |
-|---|---|---|
-| [outline#13117](https://github.com/outline/outline/pull/13117) | O(n²) | ✅ 머지 |
-| [nocodb#14309](https://github.com/nocodb/nocodb/pull/14309) | O(n²) | ✅ 머지 (6일 20시간) |
-| [novu#12074](https://github.com/novuhq/novu/pull/12074) | N+1 | 🔵 승인 · 머지 대기 |
-| [medusa#16188](https://github.com/medusajs/medusa/pull/16188) | O(n²) | 🔵 승인 · 머지 대기 |
-| [n8n#34899](https://github.com/n8n-io/n8n/pull/34899) | O(n²) | 🟠 변경 요청 → 반영 완료, 재검토 대기 |
-| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 |
-| [Ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 순차 I/O | ⚪ 대기 |
-| [vite#23114](https://github.com/vitejs/vite/pull/23114) | O(n²) | ⚪ 대기 |
+<!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
+| PR | 축 | 상태 | 경과 |
+|---|---|---|---|
+| [medusa#16188](https://github.com/medusajs/medusa/pull/16188) | O(n²) | 🔵 승인 · 머지 대기 | 7일째 |
+| [novu#12074](https://github.com/novuhq/novu/pull/12074) | N+1 | 🔵 승인 · 머지 대기 | 7일째 |
+| [vite#23114](https://github.com/vitejs/vite/pull/23114) | O(n²) | 🔵 승인 · 머지 대기 | 오늘 |
+| [n8n#34899](https://github.com/n8n-io/n8n/pull/34899) | O(n²) | 🟠 변경 요청 | 7일째 |
+| [immich#30163](https://github.com/immich-app/immich/pull/30163) | N+1 | 🟢 리뷰 진행 | 8일째 |
+| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | 🟢 리뷰 진행 | 2일째 |
+| [ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 순차 I/O | ⚪ 대기 | 오늘 |
+| [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 순차 I/O | ⚪ 대기 | 2일째 |
+| [cal.com#29828](https://github.com/calcom/cal.diy/pull/29828) | O(n²) | ⚪ 대기 | 7일째 |
+| [cal.com#29832](https://github.com/calcom/cal.diy/pull/29832) | 루프 불변 인덱스 재구축 | ⚪ 대기 | 7일째 |
+| [medusa#16233](https://github.com/medusajs/medusa/pull/16233) | O(n²) | ⚪ 대기 | 2일째 |
+| [payload#17469](https://github.com/payloadcms/payload/pull/17469) | O(n²) | ⚪ 대기 | 7일째 |
+| [strapi#27125](https://github.com/strapi/strapi/pull/27125) | O(n²) | ⚪ 대기 | 7일째 |
+| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 오늘 |
 
-**열린 것이 6건이다. 큐에서 새로 꺼내기 전에 이쪽부터 정리한다.**
+**열린 것 14건.** 판정 난 9건 중 머지 2 · 승인 3 · 닫힘 4.
+<!-- /auto:open -->
+
+큐에서 새로 꺼내기 전에 이쪽부터 정리한다. 속도 규칙상 열린 것이 5건을 넘으면 멈춘다.
+머지된 것은 여기 두지 않는다 — 끝난 일이고, 전체 기록은 [IMPACT.md](IMPACT.md) 에 있다.
 
 ## 큐 (측정 완료 · 미제출)
 

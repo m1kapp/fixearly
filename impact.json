@@ -6,7 +6,8 @@
    "repo": "immich-app/immich",
    "repoLabel": "immich · 109.4k★",
    "pr": 30163,
-   "createdAt": "2026-07-23T15:26:09Z"
+   "createdAt": "2026-07-23T15:26:09Z",
+   "status": "reviewing"
   },
   {
    "title": "sync-agent findOne N+1",
@@ -14,7 +15,8 @@
    "repo": "novuhq/novu",
    "repoLabel": "novu · 39.4k★",
    "pr": 12074,
-   "createdAt": "2026-07-23T23:16:52Z"
+   "createdAt": "2026-07-23T23:16:52Z",
+   "status": "approved"
   },
   {
    "title": "booking member diff O(n²)",
@@ -22,7 +24,8 @@
    "repo": "calcom/cal.diy",
    "repoLabel": "cal.com · 47.1k★",
    "pr": 29828,
-   "createdAt": "2026-07-24T00:51:16Z"
+   "createdAt": "2026-07-24T00:51:16Z",
+   "status": "waiting"
   },
   {
    "title": "view-widget-upsert O(n²)",
@@ -31,7 +34,8 @@
    "repoLabel": "twenty · 54k★",
    "pr": 23231,
    "createdAt": "2026-07-24T01:00:49Z",
-   "closedAt": "2026-07-24T07:31:11Z"
+   "closedAt": "2026-07-24T07:31:11Z",
+   "status": "closed"
   },
   {
    "title": "nested relations hydration O(n²)",
@@ -40,7 +44,8 @@
    "repoLabel": "twenty · 54k★",
    "pr": 23232,
    "createdAt": "2026-07-24T01:48:53Z",
-   "closedAt": "2026-07-24T16:25:37Z"
+   "closedAt": "2026-07-24T16:25:37Z",
+   "status": "closed"
   },
   {
    "title": "lucky-user set rebuild in loop",
@@ -48,7 +53,8 @@
    "repo": "calcom/cal.diy",
    "repoLabel": "cal.com · 47.1k★",
    "pr": 29832,
-   "createdAt": "2026-07-24T08:00:48Z"
+   "createdAt": "2026-07-24T08:00:48Z",
+   "status": "waiting"
   },
   {
    "title": "dataloader doc placement O(n²)",
@@ -56,7 +62,8 @@
    "repo": "payloadcms/payload",
    "repoLabel": "payload · 43.9k★",
    "pr": 17469,
-   "createdAt": "2026-07-24T12:40:04Z"
+   "createdAt": "2026-07-24T12:40:04Z",
+   "status": "waiting"
   },
   {
    "title": "translations batch match O(n²)",
@@ -64,7 +71,8 @@
    "repo": "medusajs/medusa",
    "repoLabel": "medusa · 35.5k★",
    "pr": 16188,
-   "createdAt": "2026-07-24T12:46:08Z"
+   "createdAt": "2026-07-24T12:46:08Z",
+   "status": "approved"
   },
   {
    "title": "markdown import merge O(n²)",
@@ -73,7 +81,8 @@
    "repoLabel": "outline · 39.9k★",
    "pr": 13117,
    "createdAt": "2026-07-24T12:49:22Z",
-   "mergedAt": "2026-07-30T03:04:09Z"
+   "mergedAt": "2026-07-30T03:04:09Z",
+   "status": "merged"
   },
   {
    "title": "doc-metadata localization O(n²)",
@@ -81,7 +90,8 @@
    "repo": "strapi/strapi",
    "repoLabel": "strapi · 72.8k★",
    "pr": 27125,
-   "createdAt": "2026-07-24T13:00:08Z"
+   "createdAt": "2026-07-24T13:00:08Z",
+   "status": "waiting"
   },
   {
    "title": "parse-fields dedup O(n²)",
@@ -90,7 +100,8 @@
    "repoLabel": "directus · 36.9k★",
    "pr": 27978,
    "createdAt": "2026-07-24T13:03:10Z",
-   "closedAt": "2026-07-29T19:34:55Z"
+   "closedAt": "2026-07-29T19:34:55Z",
+   "status": "closed"
   },
   {
    "title": "resource-mapper schema validation O(n²)",
@@ -98,7 +109,8 @@
    "repo": "n8n-io/n8n",
    "repoLabel": "n8n · 198.8k★",
    "pr": 34899,
-   "createdAt": "2026-07-24T13:05:42Z"
+   "createdAt": "2026-07-24T13:05:42Z",
+   "status": "changes"
   },
   {
    "title": "user field validation O(n²)",
@@ -107,7 +119,8 @@
    "repoLabel": "nocodb · 64.4k★",
    "pr": 14309,
    "createdAt": "2026-07-24T13:48:20Z",
-   "mergedAt": "2026-07-31T09:51:55Z"
+   "mergedAt": "2026-07-31T09:51:55Z",
+   "status": "merged"
   },
   {
    "title": "ExternalRequest field lookup O(n²)",
@@ -116,7 +129,8 @@
    "repoLabel": "budibase · 28.2k★",
    "pr": 19320,
    "createdAt": "2026-07-24T15:50:52Z",
-   "closedAt": "2026-07-27T16:18:58Z"
+   "closedAt": "2026-07-27T16:18:58Z",
+   "status": "closed"
   },
   {
    "title": "cart variant lookup O(n²)",
@@ -124,7 +138,8 @@
    "repo": "medusajs/medusa",
    "repoLabel": "medusa · 35.5k★",
    "pr": 16233,
-   "createdAt": "2026-07-29T05:16:25Z"
+   "createdAt": "2026-07-29T05:16:25Z",
+   "status": "waiting"
   },
   {
    "title": "eval dataset item 반복 조회",
@@ -133,7 +148,8 @@
    "repo": "langfuse/langfuse",
    "repoLabel": "langfuse · 32.2k★",
    "pr": 15585,
-   "createdAt": "2026-07-29T14:13:47Z"
+   "createdAt": "2026-07-29T14:13:47Z",
+   "status": "reviewing"
   },
   {
    "title": "in-depth analytics 순차 await",
@@ -142,7 +158,8 @@
    "repo": "baptisteArno/typebot.io",
    "repoLabel": "typebot · 10.2k★",
    "pr": 2572,
-   "createdAt": "2026-07-29T15:06:43Z"
+   "createdAt": "2026-07-29T15:06:43Z",
+   "status": "waiting"
   },
   {
    "title": "loadTables 카탈로그 전량 재스캔",
@@ -151,7 +168,8 @@
    "repo": "typeorm/typeorm",
    "repoLabel": "typeorm · 36.6k★",
    "pr": 12746,
-   "createdAt": "2026-07-31T05:18:11Z"
+   "createdAt": "2026-07-31T05:18:11Z",
+   "status": "waiting"
   },
   {
    "title": "growth stats 집계 3회 직렬",
@@ -160,7 +178,8 @@
    "repo": "TryGhost/Ghost",
    "repoLabel": "ghost · 54.6k★",
    "pr": 29704,
-   "createdAt": "2026-07-31T05:35:10Z"
+   "createdAt": "2026-07-31T05:35:10Z",
+   "status": "waiting"
   },
   {
    "title": "pure CSS 청크 선형 조회",
@@ -169,7 +188,8 @@
    "repo": "vitejs/vite",
    "repoLabel": "vite · 82.2k★",
    "pr": 23114,
-   "createdAt": "2026-07-31T06:36:11Z"
+   "createdAt": "2026-07-31T06:36:11Z",
+   "status": "approved"
   }
  ]
 }

@@ -118,6 +118,9 @@ for (const f of findings) {
   const stars = fmtStars(await repoStars(f.repo));
   const label = stars ? `${String(f.repoLabel).split("·")[0].trim()} · ${stars}★` : f.repoLabel;
   if (label !== f.repoLabel) f.repoLabel = label; // registry 도 같이 맞춘다
+  // 상태와 날짜를 registry 에 남긴다 — 랜딩 카드가 "며칠째"·"며칠 만에"를 보여주고,
+  // PR-QUEUE.md 생성기가 네트워크 없이 --check 를 돌 수 있다.
+  f.status = st.state;
   // 걸린 날짜를 registry 에 남긴다 — 랜딩 카드가 "며칠째"·"며칠 만에"를 보여준다.
   if (st.createdAt) f.createdAt = st.createdAt;
   if (st.mergedAt) f.mergedAt = st.mergedAt; else delete f.mergedAt;
