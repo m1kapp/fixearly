@@ -29,7 +29,7 @@
   "homepage": "https://fixearly.m1k.app",
   "scripts": {
     "dev": "python3 -m http.server 4173",
-    "test": "node bin/selftest.mjs && python3 tools/update-corpus-labels.py --check && python3 tools/add-board-rows.py --check",
+    "test": "node bin/selftest.mjs && python3 tools/update-corpus-labels.py --check && python3 tools/add-board-rows.py --check && python3 tools/update-history-ui.py --check",
     "impact": "node bin/impact.mjs",
     "board": "node tools/update-board.mjs",
     "og": "python3 tools/make-og.py",
@@ -39,6 +39,7 @@
     "boarddata": "python3 tools/update-board-data.py",
     "rows": "python3 tools/add-board-rows.py",
     "measure": "bash tools/remeasure-board.sh",
-    "refresh": "python3 tools/rebuild-corpus.py && python3 tools/update-board-data.py && python3 tools/add-board-rows.py && python3 tools/update-corpus-labels.py && node tools/update-board.mjs && python3 tools/make-og.py"
+    "refresh": "python3 tools/rebuild-corpus.py && python3 tools/update-board-data.py && python3 tools/add-board-rows.py && python3 tools/update-corpus-labels.py && python3 tools/build-score-history.py && python3 tools/update-history-ui.py && node tools/update-board.mjs && python3 tools/make-og.py",
+    "history": "python3 tools/build-score-history.py && python3 tools/update-history-ui.py"
   }
 }

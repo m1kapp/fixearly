@@ -1,0 +1,1621 @@
+{
+ "note": "채점 규칙 버전별 점수. 규칙이 다르면 점수를 나란히 비교할 수 없다 — 이 표는 '무엇이 바뀌어서 점수가 움직였는지'를 보여주기 위한 것이지, 저장소가 좋아졌다/나빠졌다는 뜻이 아니다.",
+ "rulesets": [
+  {
+   "version": "v6",
+   "date": "2026-07-26",
+   "n": 70,
+   "changed": "함수 길이 축 신설. 최악값 1개 대신 상위 10개 평균을 쓰기 시작 — '제일 나쁜 하나만 고치고 끝'이 최적 전략이 되는 걸 막는다."
+  },
+  {
+   "version": "v7",
+   "date": "2026-07-26",
+   "n": 70,
+   "changed": "분기의 모양(중첩 깊이·가드 절)을 재기 시작. 함수 길이 p90 이 40줄+ 비율과 상관 0.914 로 같은 축을 두 번 재고 있어 볼륨을 절반으로 줄였다."
+  },
+  {
+   "version": "v11",
+   "date": "2026-07-31",
+   "n": 74,
+   "changed": "파일 크기 항이 코퍼스 p90(280줄) 훨씬 전인 145줄에서 이미 만점 감점에 닿고 있었다 — 캡을 14→5 로 줄이면서 나눗수를 안 고친 누락이다. 70곳 중 29곳이 캡에 붙어 150줄짜리와 2,000줄짜리를 구분 못 했다. 기울기를 고쳤다. 같은 판에서 O(n²)와 순차 I/O 를 채점축으로 올렸다(v10)."
+  },
+  {
+   "version": "v12",
+   "date": "2026-07-31",
+   "n": 74,
+   "changed": "O(n²) 탐지에 멤버십 조회(includes/indexOf)를 넣었다 — 루프 안에서 배열을 훑는 가장 흔한 형태인데 빠져 있었다. 수신자가 배열이라는 증거가 있을 때만 센다. 재현율이 오르자 분포가 밀려 유예·기울기를 규칙대로(유예=중앙, 캡은 p90에서) 되돌릴 수 있게 됐다."
+  }
+ ],
+ "repos": {
+  "adonisjs": [
+   {
+    "version": "v11",
+    "score": 93,
+    "grade": "SS"
+   },
+   {
+    "version": "v12",
+    "score": 93,
+    "grade": "SS"
+   }
+  ],
+  "angular": [
+   {
+    "version": "v6",
+    "score": 84,
+    "grade": "A"
+   },
+   {
+    "version": "v7",
+    "score": 84,
+    "grade": "A"
+   },
+   {
+    "version": "v11",
+    "score": 85,
+    "grade": "A"
+   },
+   {
+    "version": "v12",
+    "score": 85,
+    "grade": "A"
+   }
+  ],
+  "astro": [
+   {
+    "version": "v6",
+    "score": 82,
+    "grade": "A"
+   },
+   {
+    "version": "v7",
+    "score": 83,
+    "grade": "A"
+   },
+   {
+    "version": "v11",
+    "score": 82,
+    "grade": "A"
+   },
+   {
+    "version": "v12",
+    "score": 81,
+    "grade": "A"
+   }
+  ],
+  "axios": [
+   {
+    "version": "v6",
+    "score": 91,
+    "grade": "S"
+   },
+   {
+    "version": "v7",
+    "score": 91,
+    "grade": "S"
+   },
+   {
+    "version": "v11",
+    "score": 91,
+    "grade": "S"
+   },
+   {
+    "version": "v12",
+    "score": 91,
+    "grade": "S"
+   }
+  ],
+  "babel": [
+   {
+    "version": "v6",
+    "score": 66,
+    "grade": "C+"
+   },
+   {
+    "version": "v7",
+    "score": 68,
+    "grade": "C+"
+   },
+   {
+    "version": "v11",
+    "score": 69,
+    "grade": "C+"
+   },
+   {
+    "version": "v12",
+    "score": 68,
+    "grade": "C+"
+   }
+  ],
+  "budibase": [
+   {
+    "version": "v6",
+    "score": 72,
+    "grade": "B"
+   },
+   {
+    "version": "v7",
+    "score": 74,
+    "grade": "B"
+   },
+   {
+    "version": "v11",
+    "score": 68,
+    "grade": "C+"
+   },
+   {
+    "version": "v12",
+    "score": 68,
+    "grade": "C+"
+   }
+  ],
+  "cypress": [
+   {
+    "version": "v6",
+    "score": 93,
+    "grade": "SS"
+   },
+   {
+    "version": "v7",
+    "score": 93,
+    "grade": "SS"
+   },
+   {
+    "version": "v11",
+    "score": 93,
+    "grade": "SS"
+   },
+   {
+    "version": "v12",
+    "score": 93,
+    "grade": "SS"
+   }
+  ],
+  "dayjs": [
+   {
+    "version": "v6",
+    "score": 88,
+    "grade": "A+"
+   },
+   {
+    "version": "v7",
+    "score": 88,
+    "grade": "A+"
+   },
+   {
+    "version": "v11",
+    "score": 88,
+    "grade": "A+"
+   },
+   {
+    "version": "v12",
+    "score": 88,
+    "grade": "A+"
+   }
+  ],
+  "directus": [
+   {
+    "version": "v6",
+    "score": 70,
+    "grade": "B"
+   },
+   {
+    "version": "v7",
+    "score": 72,
+    "grade": "B"
+   },
+   {
+    "version": "v11",
+    "score": 61,
+    "grade": "C"
+   },
+   {
+    "version": "v12",
+    "score": 61,
+    "grade": "C"
+   }
+  ],
+  "discordjs": [
+   {
+    "version": "v6",
+    "score": 95,
+    "grade": "SS"
+   },
+   {
+    "version": "v7",
+    "score": 95,
+    "grade": "SS"
+   },
+   {
+    "version": "v11",
+    "score": 90,
+    "grade": "S"
+   },
+   {
+    "version": "v12",
+    "score": 88,
+    "grade": "A+"
+   }
+  ],
+  "drizzle-orm": [
+   {
+    "version": "v6",
+    "score": 83,
+    "grade": "A"
+   },
+   {
+    "version": "v7",
+    "score": 83,
+    "grade": "A"
+   },
+   {
+    "version": "v11",
+    "score": 83,
+    "grade": "A"
+   },
+   {
+    "version": "v12",
+    "score": 82,
+    "grade": "A"
+   }
+  ],
+  "echarts": [
+   {
+    "version": "v6",
+    "score": 75,
+    "grade": "B"
+   },
+   {
+    "version": "v7",
+    "score": 77,
+    "grade": "B+"
+   },
+   {
+    "version": "v11",
+    "score": 80,
+    "grade": "A"
+   },
+   {
+    "version": "v12",
+    "score": 80,
+    "grade": "A"
+   }
+  ],
+  "elysia": [
+   {
+    "version": "v11",
+    "score": 31,
+    "grade": "E+"
+   },
+   {
+    "version": "v12",
+    "score": 27,
+    "grade": "E+"
+   }
+  ],
+  "eslint": [
+   {
+    "version": "v6",
+    "score": 78,
+    "grade": "B+"
+   },
+   {
+    "version": "v7",
+    "score": 79,
+    "grade": "B+"
+   },
+   {
+    "version": "v11",
+    "score": 83,
+    "grade": "A"
+   },
+   {
+    "version": "v12",
+    "score": 83,
+    "grade": "A"
+   }
+  ],
+  "excalidraw": [
+   {
+    "version": "v6",
+    "score": 68,
+    "grade": "C+"
+   },
+   {
+    "version": "v7",
+    "score": 71,
+    "grade": "B"
+   },
+   {
+    "version": "v11",
+    "score": 74,
+    "grade": "B"
+   },
+   {
+    "version": "v12",
+    "score": 74,
+    "grade": "B"
+   }
+  ],
+  "execa": [
+   {
+    "version": "v6",
+    "score": 98,
+    "grade": "SSS"
+   },
+   {
+    "version": "v7",
+    "score": 98,
+    "grade": "SSS"
+   },
+   {
+    "version": "v11",
+    "score": 98,
+    "grade": "SSS"
+   },
+   {
+    "version": "v12",
+    "score": 98,
+    "grade": "SSS"
+   }
+  ],
+  "express": [
+   {
+    "version": "v6",
+    "score": 90,
+    "grade": "S"
+   },
+   {
+    "version": "v7",
+    "score": 90,
+    "grade": "S"
+   },
+   {
+    "version": "v11",
+    "score": 93,
+    "grade": "SS"
+   },
+   {
+    "version": "v12",
+    "score": 93,
+    "grade": "SS"
+   }
+  ],
+  "fastify": [
+   {
+    "version": "v6",
+    "score": 80,
+    "grade": "A"
+   },
+   {
+    "version": "v7",
+    "score": 80,
+    "grade": "A"
+   },
+   {
+    "version": "v11",
+    "score": 83,
+    "grade": "A"
+   },
+   {
+    "version": "v12",
+    "score": 83,
+    "grade": "A"
+   }
+  ],
+  "formbricks": [
+   {
+    "version": "v6",
+    "score": 76,
+    "grade": "B+"
+   },
+   {
+    "version": "v7",
+    "score": 79,
+    "grade": "B+"
+   },
+   {
+    "version": "v11",
+    "score": 73,
+    "grade": "B"
+   },
+   {
+    "version": "v12",
+    "score": 72,
+    "grade": "B"
+   }
+  ],
+  "ghost": [
+   {
+    "version": "v6",
+    "score": 87,
+    "grade": "A+"
+   },
+   {
+    "version": "v7",
+    "score": 87,
+    "grade": "A+"
+   },
+   {
+    "version": "v11",
+    "score": 80,
+    "grade": "A"
+   },
+   {
+    "version": "v12",
+    "score": 77,
+    "grade": "B+"
+   }
+  ],
+  "hono": [
+   {
+    "version": "v6",
+    "score": 75,
+    "grade": "B"
+   },
+   {
+    "version": "v7",
+    "score": 75,
+    "grade": "B"
+   },
+   {
+    "version": "v11",
+    "score": 75,
+    "grade": "B"
+   },
+   {
+    "version": "v12",
+    "score": 75,
+    "grade": "B"
+   }
+  ],
+  "immer": [
+   {
+    "version": "v6",
+    "score": 87,
+    "grade": "A+"
+   },
+   {
+    "version": "v7",
+    "score": 87,
+    "grade": "A+"
+   },
+   {
+    "version": "v11",
+    "score": 91,
+    "grade": "S"
+   },
+   {
+    "version": "v12",
+    "score": 91,
+    "grade": "S"
+   }
+  ],
+  "immich": [
+   {
+    "version": "v6",
+    "score": 90,
+    "grade": "S"
+   },
+   {
+    "version": "v7",
+    "score": 90,
+    "grade": "S"
+   },
+   {
+    "version": "v11",
+    "score": 84,
+    "grade": "A"
+   },
+   {
+    "version": "v12",
+    "score": 83,
+    "grade": "A"
+   }
+  ],
+  "jest": [
+   {
+    "version": "v6",
+    "score": 83,
+    "grade": "A"
+   },
+   {
+    "version": "v7",
+    "score": 84,
+    "grade": "A"
+   },
+   {
+    "version": "v11",
+    "score": 85,
+    "grade": "A"
+   },
+   {
+    "version": "v12",
+    "score": 85,
+    "grade": "A"
+   }
+  ],
+  "jotai": [
+   {
+    "version": "v6",
+    "score": 93,
+    "grade": "SS"
+   },
+   {
+    "version": "v7",
+    "score": 93,
+    "grade": "SS"
+   },
+   {
+    "version": "v11",
+    "score": 93,
+    "grade": "SS"
+   },
+   {
+    "version": "v12",
+    "score": 93,
+    "grade": "SS"
+   }
+  ],
+  "ky": [
+   {
+    "version": "v6",
+    "score": 77,
+    "grade": "B+"
+   },
+   {
+    "version": "v7",
+    "score": 77,
+    "grade": "B+"
+   },
+   {
+    "version": "v11",
+    "score": 77,
+    "grade": "B+"
+   },
+   {
+    "version": "v12",
+    "score": 77,
+    "grade": "B+"
+   }
+  ],
+  "lexical": [
+   {
+    "version": "v6",
+    "score": 50,
+    "grade": "D+"
+   },
+   {
+    "version": "v7",
+    "score": 52,
+    "grade": "D+"
+   },
+   {
+    "version": "v11",
+    "score": 53,
+    "grade": "D+"
+   },
+   {
+    "version": "v12",
+    "score": 53,
+    "grade": "D+"
+   }
+  ],
+  "lodash": [
+   {
+    "version": "v6",
+    "score": 87,
+    "grade": "A+"
+   },
+   {
+    "version": "v7",
+    "score": 87,
+    "grade": "A+"
+   },
+   {
+    "version": "v11",
+    "score": 85,
+    "grade": "A"
+   },
+   {
+    "version": "v12",
+    "score": 85,
+    "grade": "A"
+   }
+  ],
+  "medusa": [
+   {
+    "version": "v6",
+    "score": 75,
+    "grade": "B"
+   },
+   {
+    "version": "v7",
+    "score": 78,
+    "grade": "B+"
+   },
+   {
+    "version": "v11",
+    "score": 77,
+    "grade": "B+"
+   },
+   {
+    "version": "v12",
+    "score": 77,
+    "grade": "B+"
+   }
+  ],
+  "mitt": [
+   {
+    "version": "v6",
+    "score": 100,
+    "grade": "SSS"
+   },
+   {
+    "version": "v7",
+    "score": 100,
+    "grade": "SSS"
+   },
+   {
+    "version": "v11",
+    "score": 100,
+    "grade": "SSS"
+   },
+   {
+    "version": "v12",
+    "score": 100,
+    "grade": "SSS"
+   }
+  ],
+  "mobx": [
+   {
+    "version": "v6",
+    "score": 92,
+    "grade": "S"
+   },
+   {
+    "version": "v7",
+    "score": 92,
+    "grade": "S"
+   },
+   {
+    "version": "v11",
+    "score": 91,
+    "grade": "S"
+   },
+   {
+    "version": "v12",
+    "score": 91,
+    "grade": "S"
+   }
+  ],
+  "mongoose": [
+   {
+    "version": "v6",
+    "score": 52,
+    "grade": "D+"
+   },
+   {
+    "version": "v7",
+    "score": 53,
+    "grade": "D+"
+   },
+   {
+    "version": "v11",
+    "score": 51,
+    "grade": "D+"
+   },
+   {
+    "version": "v12",
+    "score": 50,
+    "grade": "D+"
+   }
+  ],
+  "n8n": [
+   {
+    "version": "v6",
+    "score": 80,
+    "grade": "A"
+   },
+   {
+    "version": "v7",
+    "score": 81,
+    "grade": "A"
+   },
+   {
+    "version": "v11",
+    "score": 79,
+    "grade": "B+"
+   },
+   {
+    "version": "v12",
+    "score": 76,
+    "grade": "B+"
+   }
+  ],
+  "nanoid": [
+   {
+    "version": "v6",
+    "score": 84,
+    "grade": "A"
+   },
+   {
+    "version": "v7",
+    "score": 84,
+    "grade": "A"
+   },
+   {
+    "version": "v11",
+    "score": 84,
+    "grade": "A"
+   },
+   {
+    "version": "v12",
+    "score": 84,
+    "grade": "A"
+   }
+  ],
+  "nestjs": [
+   {
+    "version": "v6",
+    "score": 95,
+    "grade": "SS"
+   },
+   {
+    "version": "v7",
+    "score": 95,
+    "grade": "SS"
+   },
+   {
+    "version": "v11",
+    "score": 95,
+    "grade": "SS"
+   },
+   {
+    "version": "v12",
+    "score": 93,
+    "grade": "SS"
+   }
+  ],
+  "next.js": [
+   {
+    "version": "v6",
+    "score": 55,
+    "grade": "C"
+   },
+   {
+    "version": "v7",
+    "score": 58,
+    "grade": "C"
+   },
+   {
+    "version": "v11",
+    "score": 62,
+    "grade": "C"
+   },
+   {
+    "version": "v12",
+    "score": 62,
+    "grade": "C"
+   }
+  ],
+  "nocodb": [
+   {
+    "version": "v6",
+    "score": 54,
+    "grade": "D+"
+   },
+   {
+    "version": "v7",
+    "score": 57,
+    "grade": "C"
+   },
+   {
+    "version": "v11",
+    "score": 49,
+    "grade": "D+"
+   },
+   {
+    "version": "v12",
+    "score": 49,
+    "grade": "D+"
+   }
+  ],
+  "node": [
+   {
+    "version": "v6",
+    "score": 76,
+    "grade": "B+"
+   },
+   {
+    "version": "v7",
+    "score": 76,
+    "grade": "B+"
+   },
+   {
+    "version": "v11",
+    "score": 76,
+    "grade": "B+"
+   },
+   {
+    "version": "v12",
+    "score": 76,
+    "grade": "B+"
+   }
+  ],
+  "nuxt": [
+   {
+    "version": "v6",
+    "score": 88,
+    "grade": "A+"
+   },
+   {
+    "version": "v7",
+    "score": 88,
+    "grade": "A+"
+   },
+   {
+    "version": "v11",
+    "score": 85,
+    "grade": "A"
+   },
+   {
+    "version": "v12",
+    "score": 83,
+    "grade": "A"
+   }
+  ],
+  "nx": [
+   {
+    "version": "v6",
+    "score": 62,
+    "grade": "C"
+   },
+   {
+    "version": "v7",
+    "score": 65,
+    "grade": "C+"
+   },
+   {
+    "version": "v11",
+    "score": 66,
+    "grade": "C+"
+   },
+   {
+    "version": "v12",
+    "score": 64,
+    "grade": "C+"
+   }
+  ],
+  "outline": [
+   {
+    "version": "v6",
+    "score": 76,
+    "grade": "B+"
+   },
+   {
+    "version": "v7",
+    "score": 79,
+    "grade": "B+"
+   },
+   {
+    "version": "v11",
+    "score": 78,
+    "grade": "B+"
+   },
+   {
+    "version": "v12",
+    "score": 77,
+    "grade": "B+"
+   }
+  ],
+  "payload": [
+   {
+    "version": "v6",
+    "score": 39,
+    "grade": "D"
+   },
+   {
+    "version": "v7",
+    "score": 42,
+    "grade": "D"
+   },
+   {
+    "version": "v11",
+    "score": 36,
+    "grade": "D"
+   },
+   {
+    "version": "v12",
+    "score": 36,
+    "grade": "D"
+   }
+  ],
+  "playwright": [
+   {
+    "version": "v6",
+    "score": 90,
+    "grade": "S"
+   },
+   {
+    "version": "v7",
+    "score": 90,
+    "grade": "S"
+   },
+   {
+    "version": "v11",
+    "score": 93,
+    "grade": "SS"
+   },
+   {
+    "version": "v12",
+    "score": 93,
+    "grade": "SS"
+   }
+  ],
+  "pnpm": [
+   {
+    "version": "v6",
+    "score": 69,
+    "grade": "C+"
+   },
+   {
+    "version": "v7",
+    "score": 71,
+    "grade": "B"
+   },
+   {
+    "version": "v11",
+    "score": 70,
+    "grade": "B"
+   },
+   {
+    "version": "v12",
+    "score": 69,
+    "grade": "C+"
+   }
+  ],
+  "prettier": [
+   {
+    "version": "v6",
+    "score": 73,
+    "grade": "B"
+   },
+   {
+    "version": "v7",
+    "score": 74,
+    "grade": "B"
+   },
+   {
+    "version": "v11",
+    "score": 74,
+    "grade": "B"
+   },
+   {
+    "version": "v12",
+    "score": 74,
+    "grade": "B"
+   }
+  ],
+  "prisma": [
+   {
+    "version": "v6",
+    "score": 93,
+    "grade": "SS"
+   },
+   {
+    "version": "v7",
+    "score": 93,
+    "grade": "SS"
+   }
+  ],
+  "puppeteer": [
+   {
+    "version": "v6",
+    "score": 88,
+    "grade": "A+"
+   },
+   {
+    "version": "v7",
+    "score": 88,
+    "grade": "A+"
+   },
+   {
+    "version": "v11",
+    "score": 91,
+    "grade": "S"
+   },
+   {
+    "version": "v12",
+    "score": 91,
+    "grade": "S"
+   }
+  ],
+  "qwik": [
+   {
+    "version": "v11",
+    "score": 88,
+    "grade": "A+"
+   },
+   {
+    "version": "v12",
+    "score": 87,
+    "grade": "A+"
+   }
+  ],
+  "react": [
+   {
+    "version": "v6",
+    "score": 28,
+    "grade": "E+"
+   },
+   {
+    "version": "v7",
+    "score": 31,
+    "grade": "E+"
+   },
+   {
+    "version": "v11",
+    "score": 45,
+    "grade": "D"
+   },
+   {
+    "version": "v12",
+    "score": 45,
+    "grade": "D"
+   }
+  ],
+  "react-hook-form": [
+   {
+    "version": "v6",
+    "score": 54,
+    "grade": "D+"
+   },
+   {
+    "version": "v7",
+    "score": 57,
+    "grade": "C"
+   },
+   {
+    "version": "v11",
+    "score": 57,
+    "grade": "C"
+   },
+   {
+    "version": "v12",
+    "score": 57,
+    "grade": "C"
+   }
+  ],
+  "react-router": [
+   {
+    "version": "v6",
+    "score": 76,
+    "grade": "B+"
+   },
+   {
+    "version": "v7",
+    "score": 78,
+    "grade": "B+"
+   },
+   {
+    "version": "v11",
+    "score": 77,
+    "grade": "B+"
+   },
+   {
+    "version": "v12",
+    "score": 77,
+    "grade": "B+"
+   }
+  ],
+  "redux": [
+   {
+    "version": "v6",
+    "score": 83,
+    "grade": "A"
+   },
+   {
+    "version": "v7",
+    "score": 85,
+    "grade": "A"
+   },
+   {
+    "version": "v11",
+    "score": 85,
+    "grade": "A"
+   },
+   {
+    "version": "v12",
+    "score": 85,
+    "grade": "A"
+   }
+  ],
+  "remix": [
+   {
+    "version": "v6",
+    "score": 85,
+    "grade": "A"
+   },
+   {
+    "version": "v7",
+    "score": 85,
+    "grade": "A"
+   },
+   {
+    "version": "v11",
+    "score": 89,
+    "grade": "A+"
+   },
+   {
+    "version": "v12",
+    "score": 89,
+    "grade": "A+"
+   }
+  ],
+  "rollup": [
+   {
+    "version": "v6",
+    "score": 87,
+    "grade": "A+"
+   },
+   {
+    "version": "v7",
+    "score": 87,
+    "grade": "A+"
+   },
+   {
+    "version": "v11",
+    "score": 87,
+    "grade": "A+"
+   },
+   {
+    "version": "v12",
+    "score": 87,
+    "grade": "A+"
+   }
+  ],
+  "rxjs": [
+   {
+    "version": "v6",
+    "score": 99,
+    "grade": "SSS"
+   },
+   {
+    "version": "v7",
+    "score": 99,
+    "grade": "SSS"
+   },
+   {
+    "version": "v11",
+    "score": 99,
+    "grade": "SSS"
+   },
+   {
+    "version": "v12",
+    "score": 99,
+    "grade": "SSS"
+   }
+  ],
+  "socket.io": [
+   {
+    "version": "v6",
+    "score": 91,
+    "grade": "S"
+   },
+   {
+    "version": "v7",
+    "score": 91,
+    "grade": "S"
+   },
+   {
+    "version": "v11",
+    "score": 92,
+    "grade": "S"
+   },
+   {
+    "version": "v12",
+    "score": 92,
+    "grade": "S"
+   }
+  ],
+  "solid": [
+   {
+    "version": "v6",
+    "score": 84,
+    "grade": "A"
+   },
+   {
+    "version": "v7",
+    "score": 84,
+    "grade": "A"
+   },
+   {
+    "version": "v11",
+    "score": 84,
+    "grade": "A"
+   },
+   {
+    "version": "v12",
+    "score": 84,
+    "grade": "A"
+   }
+  ],
+  "storybook": [
+   {
+    "version": "v6",
+    "score": 88,
+    "grade": "A+"
+   },
+   {
+    "version": "v7",
+    "score": 88,
+    "grade": "A+"
+   },
+   {
+    "version": "v11",
+    "score": 88,
+    "grade": "A+"
+   },
+   {
+    "version": "v12",
+    "score": 87,
+    "grade": "A+"
+   }
+  ],
+  "strapi": [
+   {
+    "version": "v6",
+    "score": 85,
+    "grade": "A"
+   },
+   {
+    "version": "v7",
+    "score": 85,
+    "grade": "A"
+   },
+   {
+    "version": "v11",
+    "score": 80,
+    "grade": "A"
+   },
+   {
+    "version": "v12",
+    "score": 78,
+    "grade": "B+"
+   }
+  ],
+  "svelte": [
+   {
+    "version": "v6",
+    "score": 69,
+    "grade": "C+"
+   },
+   {
+    "version": "v7",
+    "score": 69,
+    "grade": "C+"
+   },
+   {
+    "version": "v11",
+    "score": 67,
+    "grade": "C+"
+   },
+   {
+    "version": "v12",
+    "score": 65,
+    "grade": "C+"
+   }
+  ],
+  "sveltekit": [
+   {
+    "version": "v11",
+    "score": 79,
+    "grade": "B+"
+   },
+   {
+    "version": "v12",
+    "score": 79,
+    "grade": "B+"
+   }
+  ],
+  "tailwind": [
+   {
+    "version": "v6",
+    "score": 56,
+    "grade": "C"
+   },
+   {
+    "version": "v7",
+    "score": 57,
+    "grade": "C"
+   },
+   {
+    "version": "v11",
+    "score": 57,
+    "grade": "C"
+   },
+   {
+    "version": "v12",
+    "score": 57,
+    "grade": "C"
+   }
+  ],
+  "tanstack-query": [
+   {
+    "version": "v6",
+    "score": 87,
+    "grade": "A+"
+   },
+   {
+    "version": "v7",
+    "score": 87,
+    "grade": "A+"
+   },
+   {
+    "version": "v11",
+    "score": 88,
+    "grade": "A+"
+   },
+   {
+    "version": "v12",
+    "score": 88,
+    "grade": "A+"
+   }
+  ],
+  "three": [
+   {
+    "version": "v6",
+    "score": 76,
+    "grade": "B+"
+   },
+   {
+    "version": "v7",
+    "score": 76,
+    "grade": "B+"
+   },
+   {
+    "version": "v11",
+    "score": 76,
+    "grade": "B+"
+   },
+   {
+    "version": "v12",
+    "score": 76,
+    "grade": "B+"
+   }
+  ],
+  "trpc": [
+   {
+    "version": "v6",
+    "score": 93,
+    "grade": "SS"
+   },
+   {
+    "version": "v7",
+    "score": 93,
+    "grade": "SS"
+   },
+   {
+    "version": "v11",
+    "score": 93,
+    "grade": "SS"
+   },
+   {
+    "version": "v12",
+    "score": 93,
+    "grade": "SS"
+   }
+  ],
+  "typeorm": [
+   {
+    "version": "v11",
+    "score": 61,
+    "grade": "C"
+   },
+   {
+    "version": "v12",
+    "score": 61,
+    "grade": "C"
+   }
+  ],
+  "typescript": [
+   {
+    "version": "v6",
+    "score": 70,
+    "grade": "B"
+   },
+   {
+    "version": "v7",
+    "score": 71,
+    "grade": "B"
+   },
+   {
+    "version": "v11",
+    "score": 71,
+    "grade": "B"
+   },
+   {
+    "version": "v12",
+    "score": 71,
+    "grade": "B"
+   }
+  ],
+  "valibot": [
+   {
+    "version": "v6",
+    "score": 62,
+    "grade": "C"
+   },
+   {
+    "version": "v7",
+    "score": 62,
+    "grade": "C"
+   },
+   {
+    "version": "v11",
+    "score": 62,
+    "grade": "C"
+   },
+   {
+    "version": "v12",
+    "score": 62,
+    "grade": "C"
+   }
+  ],
+  "vite": [
+   {
+    "version": "v6",
+    "score": 66,
+    "grade": "C+"
+   },
+   {
+    "version": "v7",
+    "score": 68,
+    "grade": "C+"
+   },
+   {
+    "version": "v11",
+    "score": 66,
+    "grade": "C+"
+   },
+   {
+    "version": "v12",
+    "score": 64,
+    "grade": "C+"
+   }
+  ],
+  "vitest": [
+   {
+    "version": "v6",
+    "score": 86,
+    "grade": "A+"
+   },
+   {
+    "version": "v7",
+    "score": 86,
+    "grade": "A+"
+   },
+   {
+    "version": "v11",
+    "score": 87,
+    "grade": "A+"
+   },
+   {
+    "version": "v12",
+    "score": 85,
+    "grade": "A"
+   }
+  ],
+  "vscode": [
+   {
+    "version": "v6",
+    "score": 79,
+    "grade": "B+"
+   },
+   {
+    "version": "v7",
+    "score": 79,
+    "grade": "B+"
+   },
+   {
+    "version": "v11",
+    "score": 77,
+    "grade": "B+"
+   },
+   {
+    "version": "v12",
+    "score": 75,
+    "grade": "B"
+   }
+  ],
+  "vue": [
+   {
+    "version": "v6",
+    "score": 40,
+    "grade": "D"
+   },
+   {
+    "version": "v7",
+    "score": 43,
+    "grade": "D"
+   },
+   {
+    "version": "v11",
+    "score": 46,
+    "grade": "D"
+   },
+   {
+    "version": "v12",
+    "score": 45,
+    "grade": "D"
+   }
+  ],
+  "webpack": [
+   {
+    "version": "v6",
+    "score": 60,
+    "grade": "C"
+   },
+   {
+    "version": "v7",
+    "score": 61,
+    "grade": "C"
+   },
+   {
+    "version": "v11",
+    "score": 63,
+    "grade": "C"
+   },
+   {
+    "version": "v12",
+    "score": 63,
+    "grade": "C"
+   }
+  ],
+  "zod": [
+   {
+    "version": "v6",
+    "score": 68,
+    "grade": "C+"
+   },
+   {
+    "version": "v7",
+    "score": 68,
+    "grade": "C+"
+   },
+   {
+    "version": "v11",
+    "score": 69,
+    "grade": "C+"
+   },
+   {
+    "version": "v12",
+    "score": 69,
+    "grade": "C+"
+   }
+  ],
+  "zustand": [
+   {
+    "version": "v6",
+    "score": 93,
+    "grade": "SS"
+   },
+   {
+    "version": "v7",
+    "score": 93,
+    "grade": "SS"
+   },
+   {
+    "version": "v11",
+    "score": 93,
+    "grade": "SS"
+   },
+   {
+    "version": "v12",
+    "score": 93,
+    "grade": "SS"
+   }
+  ]
+ }
+}
