@@ -290,7 +290,7 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
 .ic{background:var(--paper);padding:16px 18px;display:grid;gap:5px;text-decoration:none;color:inherit;position:relative;transition:background var(--dur) var(--ease)}
 .ic:hover{background:var(--paper-2)}
 .ic b{font-size:13px;color:var(--ink-2);font-weight:600}
-.it{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--ink);line-height:1.45}
+.it{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;font-weight:500;color:var(--ink);line-height:1.4;letter-spacing:-.1px}
 .ist{font-size:11px;color:var(--ink-3);letter-spacing:.02em;display:flex;align-items:center;flex-wrap:wrap}
 .ist .prn{margin-left:6px;opacity:.7}
 /* 진행 트레일 — 제출·리뷰·승인·머지 4노드. 어디까지 왔는지 한눈에. */
@@ -350,6 +350,10 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
 
 .ist .age{margin-left:6px;padding:1px 6px;border-radius:999px;background:var(--paper-3);color:var(--ink-3);font-size:10.5px;font-weight:600;flex:none}
 .ic.done .age{background:color-mix(in srgb,var(--gS) 14%,var(--paper));color:var(--gS)}
+
+/* 카드 위계: 제목(무엇을 고쳤나) > 저장소명 > 한 줄 설명 > 상태. */
+.ic .iw{display:block;margin-top:-2px;font-size:10.5px;color:var(--ink-3);line-height:1.3;letter-spacing:.01em}
+.ic.off .iw{opacity:.7}
 </style>
 </head>
 <body>
