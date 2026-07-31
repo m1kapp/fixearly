@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 1**
+> **fixearly 임팩트 점수: 2**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -23,7 +23,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `doc-metadata localization O(n²)` | [strapi · 72.8k★](https://github.com/strapi/strapi) | O(n²) (localization별 versions.find — 복합키 Map으로 O(1)) | [#27125](https://github.com/strapi/strapi/pull/27125) | ⚪ awaiting review | — |
 | `parse-fields dedup O(n²)` | [directus · 36.9k★](https://github.com/directus/directus) | O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1)) | [#27978](https://github.com/directus/directus/pull/27978) | ❌ closed | — |
 | `resource-mapper schema validation O(n²)` | [n8n · 198.8k★](https://github.com/n8n-io/n8n) | O(n²) (value별 schema.find — id Map으로 O(1)) | [#34899](https://github.com/n8n-io/n8n/pull/34899) | 🟠 changes requested | — |
-| `user field validation O(n²)` | [nocodb · 64.4k★](https://github.com/nocodb/nocodb) | O(n²) (value별 baseUsers.find ×4 — id·email Map으로 O(1)) | [#14309](https://github.com/nocodb/nocodb/pull/14309) | ⚪ awaiting review | — |
+| `user field validation O(n²)` | [nocodb · 64.4k★](https://github.com/nocodb/nocodb) | O(n²) (value별 baseUsers.find ×4 — id·email Map으로 O(1)) | [#14309](https://github.com/nocodb/nocodb/pull/14309) | ✅ merged | +1 |
 | `ExternalRequest field lookup O(n²)` | [budibase · 28.2k★](https://github.com/Budibase/budibase) | O(n²) (행 필드별 fieldNames.find — Set으로 O(1)) | [#19320](https://github.com/Budibase/budibase/pull/19320) | ❌ closed | — |
 | `cart variant lookup O(n²)` | [medusa · 35.5k★](https://github.com/medusajs/medusa) | O(n²) 배열 조회 (장바구니 아이템마다 variants 선형 스캔 → Map) | [#16233](https://github.com/medusajs/medusa/pull/16233) | ⚪ awaiting review | — |
 | `eval dataset item 반복 조회` | [langfuse · 32.2k★](https://github.com/langfuse/langfuse) | 중복 쿼리 (변수마다 동일 WHERE 로 같은 행 재조회 → 컬럼 합쳐 1회) | [#15585](https://github.com/langfuse/langfuse/pull/15585) | 🟢 reviewing | — |

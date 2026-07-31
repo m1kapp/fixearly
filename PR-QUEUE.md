@@ -9,12 +9,13 @@
 
 ## 제출 기준 — 우리 실적으로 보정한 것
 
-판정 난 7건 중 머지·승인 3, 닫힘 4다. 스킬의 사전 게이트를 통과하고도 닫힌 것들이라,
+판정 난 8건 중 머지 2·승인 2, 닫힘 4다. 스킬의 사전 게이트를 통과하고도 닫힌 것들이라,
 그 4건이 왜 닫혔는지가 게이트보다 정확한 기준이다.
 
 | PR | 결과 | 닫힌 이유 (원문) |
 |---|---|---|
 | outline#13117 | 머지 | — (질문 없이 머지) |
+| nocodb#14309 | 머지 | — (질문 없이 머지, 6일 20시간) |
 | medusa#16188 | 승인 | — |
 | novu#12074 | 승인 | — |
 | twenty#23231 | 닫힘 | "redundant with #23232" |
@@ -75,6 +76,7 @@ budibase 의 "denounce" 는 사유가 없다. 요청받지 않은 최적화는 �
 | PR | 축 | 상태 |
 |---|---|---|
 | [outline#13117](https://github.com/outline/outline/pull/13117) | O(n²) | ✅ 머지 |
+| [nocodb#14309](https://github.com/nocodb/nocodb/pull/14309) | O(n²) | ✅ 머지 (6일 20시간) |
 | [novu#12074](https://github.com/novuhq/novu/pull/12074) | N+1 | 🔵 승인 · 머지 대기 |
 | [medusa#16188](https://github.com/medusajs/medusa/pull/16188) | O(n²) | 🔵 승인 · 머지 대기 |
 | [n8n#34899](https://github.com/n8n-io/n8n/pull/34899) | O(n²) | 🟠 변경 요청 → 반영 완료, 재검토 대기 |
@@ -82,7 +84,7 @@ budibase 의 "denounce" 는 사유가 없다. 요청받지 않은 최적화는 �
 | [Ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 순차 I/O | ⚪ 대기 |
 | [vite#23114](https://github.com/vitejs/vite/pull/23114) | O(n²) | ⚪ 대기 |
 
-**열린 것이 이미 6건이다. 큐에서 새로 꺼내기 전에 이쪽부터 정리한다.**
+**열린 것이 6건이다. 큐에서 새로 꺼내기 전에 이쪽부터 정리한다.**
 
 ## 큐 (측정 완료 · 미제출)
 
