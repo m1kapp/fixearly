@@ -101,5 +101,17 @@ assert m
 h = h[: m.start(2)] + "\n      " + rows + h[m.end(2):]
 
 
+# 요약 줄(note)도 같은 출처에서 다시 만든다 — 카드만 갱신하면 이 줄이 조용히 낡는다(실제로 그랬다).
+counts = {k: len(v) for k, v in grouped.items() if v}
+ko_line = " · ".join(f"{META[k][0]} {n}" for k, n in counts.items())
+en_line = " · ".join(f"{n} {META[k][1]}" for k, n in counts.items())
+h = re.sub(
+    r'(<p class="ko">)[^<]*?( — 전체 기록은 <a href="https://github\.com/m1kapp/fixearly/blob/main/IMPACT\.md">)',
+    rf"\g<1>{ko_line}\g<2>", h, count=1)
+h = re.sub(
+    r'(<p class="en">)[^<]*?( — full log in <a href="https://github\.com/m1kapp/fixearly/blob/main/IMPACT\.md">)',
+    rf"\g<1>{en_line}\g<2>", h, count=1)
+
 open(f"{ROOT}/index.html", "w", encoding="utf-8").write(h)
-print("카드 개편:", {k: len(v) for k, v in grouped.items() if v})
+print("카드 개편:", counts)
+print("요약 줄:", ko_line)

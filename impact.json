@@ -81,7 +81,7 @@
    "title": "resource-mapper schema validation O(n²)",
    "type": "O(n²) (value별 schema.find — id Map으로 O(1))",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 198.7k★",
+   "repoLabel": "n8n · 198.8k★",
    "pr": 34899
   },
   {
@@ -118,6 +118,13 @@
    "repo": "baptisteArno/typebot.io",
    "repoLabel": "typebot · 10.2k★",
    "pr": 2572
+  },
+  {
+   "title": "loadTables 카탈로그 전량 재스캔",
+   "type": "O(n²) (테이블마다 columns·constraints·fks·indices 전량 스캔 — Map 그룹핑으로 O(1))",
+   "repo": "typeorm/typeorm",
+   "repoLabel": "typeorm · 36.6k★",
+   "pr": 12746
   }
  ]
 }
