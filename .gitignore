@@ -4,3 +4,8 @@ node_modules/
 # 엔진이 남기는 로컬 측정 이력 — 기계마다 값이 달라 공유하면 진행도가 거짓말을 한다.
 .fixearly-history.json
 .vercel
+
+# fixearly 자기 실행 산출물 — 사이트와 무관하다.
+# vercel.json 이 없어서 public/ 이 커밋되면 Vercel 이 그걸 출력 디렉터리로 잡고
+# 루트 index.html 이 404 가 된다. 실제로 한 번 그렇게 내려갔다.
+public/
