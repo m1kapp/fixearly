@@ -1,0 +1,1182 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light">
+<title>fixearly — api/src</title>
+<style>
+/* ── 토큰: 타입 스케일·간격 스케일을 고정한다. 임의값 금지 ── */
+:root{
+  color-scheme:light;
+  --ink:#12141a; --ink-2:#4a5160; --ink-3:#8891a0; --paper:#fff; --paper-2:#f7f8fa;
+  --line:#e9ebf0; --line-2:#d6dae2; --accent:#2f6df6;
+  --good:#12915a; --good-bg:#f2faf5; --good-line:#cbe6d8; --bad:#cb4436; --warn:#c0862e;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Pretendard","Segoe UI",Roboto,sans-serif;
+  /* 타입 5단 */
+  --t-xs:11px; --t-sm:12.5px; --t-md:14px; --t-lg:16px; --t-h2:19px;
+  /* 간격 8의 배수 */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px;
+  --r:10px; --r-sm:7px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:var(--t-md);line-height:1.6;word-break:keep-all;overflow-wrap:break-word;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.w{max-width:960px;margin:0 auto;padding:0 var(--s5)}
+
+/* ── 헤더 ── */
+header{border-bottom:1px solid var(--line);padding:var(--s6) 0 var(--s5)}
+.brand{font-family:var(--mono);font-size:var(--t-xs);letter-spacing:.09em;color:var(--ink-3);text-transform:uppercase}
+h1{font-size:clamp(26px,4vw,34px);line-height:1.15;letter-spacing:-.028em;font-weight:800;margin:var(--s2) 0 0}
+.hero{display:flex;flex-wrap:wrap;gap:var(--s3) var(--s5);align-items:center;margin-top:var(--s4);min-width:0}
+.big{display:flex;align-items:center;gap:var(--s3)}
+.g{display:inline-flex;align-items:center;justify-content:center;min-width:44px;padding:0 8px;height:44px;border-radius:9px;
+  color:#fff;font-weight:800;font-size:21px;line-height:1}
+.sc{font-size:42px;font-weight:850;letter-spacing:-.03em;line-height:44px}
+.meta{font-family:var(--mono);font-size:var(--t-sm);color:var(--ink-2);display:flex;
+  gap:var(--s1) var(--s4);flex-wrap:wrap;flex:1 1 300px;min-width:0}
+.meta span{white-space:nowrap}
+
+/* ── 섹션 ── */
+section{padding:var(--s7) 0;border-bottom:1px solid var(--line)}
+h2{font-size:var(--t-h2);font-weight:750;letter-spacing:-.015em;line-height:1.3;margin:0 0 var(--s1)}
+.sub{color:var(--ink-2);font-size:13.5px;line-height:1.6;margin:0 0 var(--s5);max-width:62em}
+
+/* ── 분포 스트립 ── */
+.strip{position:relative;height:42px;margin:var(--s5) 0 var(--s2);border-radius:var(--r-sm);
+  background:linear-gradient(90deg,#fdeceb,#fdf5e8 45%,#eef8f1)}
+.strip .pt{position:absolute;top:13px;width:2px;height:16px;background:var(--ink-3);opacity:.5;transform:translateX(-1px)}
+.strip .me{position:absolute;top:-6px;transform:translateX(-50%);white-space:nowrap}
+.strip .me b{display:inline-block;background:var(--ink);color:#fff;font-family:var(--mono);
+  font-size:var(--t-sm);font-weight:700;padding:3px 9px;border-radius:6px}
+.strip .me::after{content:"";display:block;width:2px;height:22px;background:var(--ink);margin:2px auto 0}
+.axis{display:flex;justify-content:space-between;font-family:var(--mono);font-size:var(--t-xs);color:var(--ink-3)}
+
+/* ── 축 막대 ── */
+.met{display:grid;grid-template-columns:minmax(160px,230px) 1fr 76px;gap:var(--s4);align-items:center;
+  padding:var(--s3) 0;border-bottom:1px solid var(--line)}
+.met:last-of-type{border-bottom:0}
+.ml{font-size:13.5px;line-height:1.4}
+.ml small{display:block;color:var(--ink-3);font-size:var(--t-xs);font-family:var(--mono);margin-top:2px}
+.bar{position:relative;height:8px;background:var(--paper-2);border-radius:99px}
+.bar i{display:block;height:100%;border-radius:99px}
+.bar u{position:absolute;top:-3px;width:1px;height:14px;background:var(--ink-3);opacity:.45}
+.mv{text-align:right;font-family:var(--mono);font-weight:700;font-size:13.5px}
+
+/* ── 카드 공통 ── */
+.note,.kept,.step,.howto{border-radius:var(--r);padding:var(--s4) var(--s4);font-size:13px;line-height:1.6}
+.note{background:var(--paper-2);border-left:3px solid var(--line-2);border-radius:0 var(--r) var(--r) 0;
+  color:var(--ink-2);margin-top:var(--s5)}
+.frozen{border:1px solid #d9c9a3;background:#fdfaf2;border-radius:var(--r);padding:var(--s4);
+  margin:0 0 var(--s4);font-size:13px;line-height:1.65;color:#6b5a32}
+.frozen b{color:#4a3c18}
+.tag.stable{margin-left:6px;border-color:#cfd7e2;background:var(--paper-2);color:var(--ink-3)}
+.howto{border:1px solid var(--line-2);background:var(--paper-2);color:var(--ink-2);margin:0 0 var(--s5)}
+.howto b{color:var(--ink)}
+.kept{border:1px solid var(--good-line);background:var(--good-bg);margin:0 0 var(--s5)}
+.kept .kt{font-family:var(--mono);font-size:var(--t-xs);letter-spacing:.06em;text-transform:uppercase;
+  color:var(--good);margin-bottom:var(--s3)}
+.kc{display:inline-block;border:1px solid var(--good-line);background:#fff;border-radius:99px;
+  padding:3px 11px;margin:0 var(--s2) var(--s2) 0;font-size:var(--t-sm);color:#2c5c44}
+.kc b{font-family:var(--mono);font-weight:700}
+.kept .kn{margin:var(--s1) 0 0;font-size:var(--t-sm);color:#3f6b55}
+.step{border:1px solid var(--line-2);border-left:3px solid var(--accent);border-radius:0 var(--r) var(--r) 0;margin:var(--s5) 0 0}
+.step .st{font-family:var(--mono);font-size:var(--t-xs);letter-spacing:.06em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:var(--s2)}
+.step p{margin:0}
+.step .sg{margin-top:var(--s3);font-family:var(--mono);font-size:13.5px;display:flex;gap:var(--s2);
+  align-items:baseline;flex-wrap:wrap}
+.step .sg span{color:var(--ink-3)}
+.step .sg b{color:var(--good);font-size:15px}
+.step .sn{margin-top:var(--s2);font-size:var(--t-xs);color:var(--ink-3)}
+
+/* ── 감점 행 ── */
+.pen{display:grid;grid-template-columns:minmax(210px,272px) minmax(90px,1fr) 116px 78px;gap:var(--s4);align-items:center;
+  padding:var(--s3) 0;border-bottom:1px solid var(--line)}
+.pen:last-of-type{border-bottom:0}
+.pen .pb{height:8px;background:var(--paper-2);border-radius:99px;display:flex;overflow:hidden}
+.pen .pb i{display:block;height:100%}
+.pen .pb i.ok{background:#bfe3cd}
+.pen .pb i.no{background:var(--bad)}
+.pa{text-align:right}
+.pen .pv{text-align:right;font-family:var(--mono);font-size:var(--t-sm);color:var(--ink-3);white-space:nowrap}
+.pen .pv b{color:var(--ink);font-weight:700;font-size:13.5px}
+
+/* ── 표 공통 ── */
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--ink-3);font-size:var(--t-xs);font-family:var(--mono);
+  text-transform:uppercase;letter-spacing:.06em;padding:0 var(--s3) var(--s2) 0;border-bottom:1px solid var(--line-2);white-space:nowrap}
+td{padding:var(--s3) var(--s3) var(--s3) 0;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.tag{display:inline-block;font-family:var(--mono);font-size:10.5px;padding:2px 8px;border-radius:99px;
+  border:1px solid var(--line-2);color:var(--ink-2);white-space:nowrap;line-height:1.5}
+.tag.s{border-color:#c9d6f8;color:#2f5fd0;background:#f4f7ff}
+.loc{font-family:var(--mono);font-size:var(--t-sm);color:var(--ink-2);word-break:break-all;margin-top:3px}
+.why{color:var(--ink-3);font-size:var(--t-sm);line-height:1.55}
+.eff{display:inline-block;margin-top:var(--s2);font-family:var(--mono);font-size:10.5px;
+  border-radius:99px;padding:2px 8px;border:1px solid var(--line-2);color:var(--ink-3);white-space:nowrap}
+.eff.up{border-color:#bfe3cd;background:var(--good-bg);color:#1d7a52;font-weight:700}
+.eff.none{border-style:dashed}
+.effn{display:block;margin-top:3px;font-size:10.5px;color:var(--ink-3);line-height:1.45}
+.cnt{display:inline-block;margin-left:var(--s2);font-family:var(--mono);font-size:10.5px;color:var(--ink-3);
+  border:1px solid var(--line-2);border-radius:99px;padding:1px 8px}
+.fx th.num,td.act{text-align:right}
+td.act{white-space:nowrap}
+
+/* ── 버튼 ── */
+.cp{border:1px solid var(--line-2);background:var(--paper);border-radius:var(--r-sm);padding:7px 15px;
+  font-size:var(--t-sm);font-weight:650;font-family:var(--sans);color:var(--ink);cursor:pointer;
+  min-width:74px;text-align:center;box-sizing:border-box;line-height:1.4;
+  transition:border-color .15s ease,color .15s ease}
+.cp:hover{border-color:var(--accent);color:var(--accent)}
+.cp.ok{border-color:var(--good);color:var(--good)}
+.cp.mini{padding:5px 0;font-size:var(--t-sm);font-weight:600;border-radius:6px;min-width:64px}
+
+/* ── 아코디언 ── */
+.acc{margin-top:var(--s4);border-top:1px solid var(--line)}
+.acc summary,.ex summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:var(--s2);
+  font-family:var(--mono);font-size:var(--t-sm);color:var(--ink-2)}
+.acc summary{padding:var(--s3) 0}
+.acc summary::-webkit-details-marker,.ex summary::-webkit-details-marker{display:none}
+.acc summary::before,.ex summary::before{content:"+";font-weight:700;color:var(--ink-3)}
+.acc[open] summary::before,.ex[open] summary::before{content:"−"}
+.acc summary:hover,.ex summary:hover{color:var(--accent)}
+.ex{margin-top:var(--s3);border-top:1px solid var(--line)}
+.ex summary{padding:var(--s3) 0 0;font-size:var(--t-xs);color:var(--ink-3)}
+.ex pre{background:#0f1218;color:#dfe4ec;font-family:var(--mono);font-size:11.5px;line-height:1.65;
+  padding:var(--s4);border-radius:9px;overflow:auto;max-height:320px;white-space:pre-wrap;
+  word-break:break-word;margin:var(--s3) 0 var(--s1)}
+
+/* ── 동료 표 ── */
+.rt{margin:var(--s1) 0 var(--s4);width:100%}
+.rt th{padding:0 var(--s3) var(--s2) 0}
+.rt td{padding:var(--s2) var(--s3) var(--s2) 0;font-size:13.5px}
+.rt tr:hover td{background:var(--paper-2)}
+.rt .rn{font-weight:600}
+.rt .rv{font-family:var(--mono);font-size:var(--t-xs);color:var(--ink-3);font-weight:400}
+.rt .rk{color:var(--ink-3);font-size:var(--t-sm);white-space:nowrap}
+.rt .rf{font-family:var(--mono);font-size:var(--t-sm);color:var(--ink-2);text-align:right;white-space:nowrap}
+.rt .rg{text-align:right;white-space:nowrap;font-family:var(--mono)}
+.rt .rg b{display:inline-block;min-width:26px;text-align:right;font-weight:750;font-size:13.5px}
+.rt .gg{display:inline-block;min-width:26px;text-align:center;border-radius:4px;padding:1px 5px;
+  margin-right:var(--s2);color:#fff;font-size:10.5px;font-weight:750}
+.rt tr.mine td{background:#eaf1ff;border-top:1px solid #b9cdfa;border-bottom:1px solid #b9cdfa;font-weight:650}
+.rt tr.mine:hover td{background:#e2ebff}
+.rt tr.mine .rn{color:var(--accent);padding-left:9px}
+.rt tr.mine .rf{color:var(--ink)}
+.rt tr.mine td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+
+dialog{border:1px solid var(--line-2);border-radius:var(--r);padding:0;max-width:min(94vw,720px);width:100%;
+  background:var(--paper);color:var(--ink);box-shadow:0 24px 60px rgba(18,20,26,.22)}
+dialog::backdrop{background:rgba(18,20,26,.42)}
+/* 모바일 = 바텀시트 */
+@media(max-width:560px){
+  dialog{position:fixed;left:0;right:0;bottom:0;top:auto;margin:0;width:100%;max-width:100%;
+    max-height:90vh;border-radius:18px 18px 0 0;border-bottom:0;display:flex;flex-direction:column;
+    animation:sheetUp .22s ease-out}
+  dialog::before{content:"";flex:none;width:40px;height:4px;border-radius:99px;background:var(--line-2);margin:9px auto 2px}
+  .pd-h{padding:var(--s3) var(--s4)}
+  #pd-b{flex:1 1 auto;min-height:0;max-height:none;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:var(--s4);font-size:11px}
+  .pd-f{padding:var(--s3) var(--s4) calc(var(--s4) + env(safe-area-inset-bottom))}
+  .pd-f .cp{flex:1 1 120px}
+}
+@keyframes sheetUp{from{transform:translateY(14%);opacity:.5}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){dialog{animation:none}}
+.pd-h{display:flex;align-items:center;gap:var(--s3);padding:var(--s4) var(--s5);border-bottom:1px solid var(--line)}
+.pd-h b{font-size:14px;font-weight:700;font-family:var(--mono);min-width:0;overflow-wrap:anywhere}
+.pd-x{margin-left:auto;border:0;background:transparent;color:var(--ink-3);font-size:20px;line-height:1;
+  padding:2px 6px;border-radius:6px;cursor:pointer}
+.pd-x:hover{background:var(--paper-2);color:var(--ink)}
+#pd-b{background:#0f1218;color:#dfe4ec;font-family:var(--mono);font-size:11.5px;line-height:1.7;
+  padding:var(--s4) var(--s5);margin:0;max-height:min(58vh,520px);overflow:auto;white-space:pre-wrap;word-break:break-word}
+.pd-f{display:flex;align-items:center;gap:var(--s3);padding:var(--s4) var(--s5);flex-wrap:wrap}
+.pd-n{font-size:var(--t-sm);color:var(--ink-3)}
+.dl{display:grid;gap:0}
+.dr{display:grid;grid-template-columns:minmax(160px,240px) 1fr 96px;gap:var(--s4);align-items:center;
+  padding:var(--s3) 0;border-bottom:1px solid var(--line)}
+.dr:last-child{border-bottom:0}
+.dk{font-size:13.5px}
+.dv{font-family:var(--mono);font-size:13px;display:flex;gap:var(--s2);align-items:baseline;flex-wrap:wrap}
+.dv .d0{color:var(--ink-3)}
+.dv .dar{color:var(--ink-3)}
+.dv b{font-weight:700}
+.dd{text-align:right;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--ink-3);white-space:nowrap}
+.dr.good .dd{color:var(--good)}
+.dr.good .dv b{color:var(--good)}
+.dr.bad .dd{color:var(--bad)}
+.dr.bad .dv b{color:var(--bad)}
+.warn{color:var(--bad)}
+footer{padding:var(--s6) 0 var(--s7);color:var(--ink-3);font-size:var(--t-sm);
+  font-family:var(--mono);line-height:1.8}
+
+/* ── 좁은 화면 ── */
+@media(max-width:720px){
+  .w{padding:0 var(--s4)}
+  section{padding:var(--s6) 0}
+  .met{grid-template-columns:1fr;gap:var(--s2);padding:var(--s3) 0}
+  .pen{grid-template-columns:1fr;gap:var(--s2)}
+  .mv,.pen .pv,.pa{text-align:left}
+  .dr{grid-template-columns:1fr;gap:var(--s1)}
+  .dd{text-align:left}
+  .fx thead{display:none}
+  .fx tr{display:block;padding:var(--s3) 0;border-bottom:1px solid var(--line)}
+  .fx td{display:block;border:0;padding:2px 0}
+  .fx td.why{padding-top:var(--s2)}
+  .fx td.act{text-align:left;padding-top:var(--s3)}
+  .rt th:nth-child(4),.rt td:nth-child(4),.rt .rk{display:none}
+  .rt td{padding:var(--s2) var(--s2) var(--s2) 0}
+}
+</style></head><body>
+<header><div class="w">
+  <div class="brand">fixearly · v12 · 코퍼스 74개 기준</div>
+  <h1>api/src</h1>
+  <div class="hero">
+    <div class="big"><span class="g" style="background:#c0862e">C</span><span class="sc">61</span></div>
+    <div class="meta">
+      <span>미들급</span>
+      <span>763파일</span>
+      <span>62,337 코드줄</span>
+      <span>함수 3,269개</span>
+      <span>체급 내 13/15위 · 체급 중앙 75점</span>
+    </div>
+  </div>
+</div></header>
+
+<section><div class="w">
+  <h2>어디쯤인가</h2>
+  <p class="sub">같은 체급(미들급, 60,000~120,000줄) 유명 오픈소스 14개 위에 이 저장소를 찍은 것.</p>
+  <div class="strip"><span class="pt" style="left:89%" title="remix 89"></span><span class="pt" style="left:87%" title="storybook 87"></span><span class="pt" style="left:83%" title="eslint 83"></span><span class="pt" style="left:80%" title="echarts 80"></span><span class="pt" style="left:77%" title="ghost 77"></span><span class="pt" style="left:77%" title="outline 77"></span><span class="pt" style="left:76%" title="three 76"></span><span class="pt" style="left:74%" title="excalidraw 74"></span><span class="pt" style="left:69%" title="pnpm 69"></span><span class="pt" style="left:68%" title="babel 68"></span><span class="pt" style="left:68%" title="budibase 68"></span><span class="pt" style="left:64%" title="nx 64"></span><span class="pt" style="left:61%" title="directus 61"></span><span class="pt" style="left:61%" title="typeorm 61"></span><span class="me" style="left:61%"><b>61</b></span></div>
+  <div class="axis"><span>0</span><span>35 · D</span><span>55 · C</span><span>70 · B</span><span>80 · A</span><span>90 · S</span><span>100</span></div>
+  <div class="note">막대 위 회색 눈금이 동료 저장소다. 가장 가까운 동료: directus 61 · typeorm 61 · nx 64</div>
+  <details class="acc"><summary>같은 체급 14개 전부 보기</summary>
+    <table class="rt"><thead><tr>
+    <th>저장소</th><th>종류</th><th class="num">파일</th><th class="num">코드줄</th><th class="num">등급</th>
+  </tr></thead><tbody><tr>
+    <td class="rn">remix</td>
+    <td class="rk">프레임워크</td>
+    <td class="rf">406</td>
+    <td class="rf">68,311</td>
+    <td class="rg"><span class="gg" style="background:#12915a">A+</span><b>89</b></td>
+  </tr><tr>
+    <td class="rn">storybook <span class="rv">v10.6.0-alpha.3</span></td>
+    <td class="rk">툴체인</td>
+    <td class="rf">923</td>
+    <td class="rf">116,821</td>
+    <td class="rg"><span class="gg" style="background:#12915a">A+</span><b>87</b></td>
+  </tr><tr>
+    <td class="rn">eslint <span class="rv">v10.8.0</span></td>
+    <td class="rk">툴체인</td>
+    <td class="rf">381</td>
+    <td class="rf">63,010</td>
+    <td class="rg"><span class="gg" style="background:#12915a">A</span><b>83</b></td>
+  </tr><tr>
+    <td class="rn">echarts <span class="rv">v6.1.0</span></td>
+    <td class="rk">라이브러리</td>
+    <td class="rf">533</td>
+    <td class="rf">90,980</td>
+    <td class="rg"><span class="gg" style="background:#12915a">A</span><b>80</b></td>
+  </tr><tr>
+    <td class="rn">ghost <span class="rv">v6.55.0-rc.0</span></td>
+    <td class="rk">앱</td>
+    <td class="rf">1,458</td>
+    <td class="rf">100,973</td>
+    <td class="rg"><span class="gg" style="background:#7d8a2c">B+</span><b>77</b></td>
+  </tr><tr>
+    <td class="rn">outline <span class="rv">v1.9.1</span></td>
+    <td class="rk">앱</td>
+    <td class="rf">792</td>
+    <td class="rf">64,127</td>
+    <td class="rg"><span class="gg" style="background:#7d8a2c">B+</span><b>77</b></td>
+  </tr><tr>
+    <td class="rn">three <span class="rv">v0.185.0</span></td>
+    <td class="rk">라이브러리</td>
+    <td class="rf">745</td>
+    <td class="rf">74,115</td>
+    <td class="rg"><span class="gg" style="background:#7d8a2c">B+</span><b>76</b></td>
+  </tr><tr>
+    <td class="rn">excalidraw <span class="rv">v0.18.0</span></td>
+    <td class="rk">앱</td>
+    <td class="rf">333</td>
+    <td class="rf">67,078</td>
+    <td class="rg"><span class="gg" style="background:#7d8a2c">B</span><b>74</b></td>
+  </tr><tr>
+    <td class="rn">pnpm</td>
+    <td class="rk">툴체인</td>
+    <td class="rf">796</td>
+    <td class="rf">83,876</td>
+    <td class="rg"><span class="gg" style="background:#c0862e">C+</span><b>69</b></td>
+  </tr><tr>
+    <td class="rn">babel <span class="rv">v8.0.4</span></td>
+    <td class="rk">엔진·컴파일러</td>
+    <td class="rf">643</td>
+    <td class="rf">80,190</td>
+    <td class="rg"><span class="gg" style="background:#c0862e">C+</span><b>68</b></td>
+  </tr><tr>
+    <td class="rn">budibase <span class="rv">v0.0.0</span></td>
+    <td class="rk">앱</td>
+    <td class="rf">531</td>
+    <td class="rf">77,582</td>
+    <td class="rg"><span class="gg" style="background:#c0862e">C+</span><b>68</b></td>
+  </tr><tr>
+    <td class="rn">nx <span class="rv">v0.0.1</span></td>
+    <td class="rk">툴체인</td>
+    <td class="rf">596</td>
+    <td class="rf">93,638</td>
+    <td class="rg"><span class="gg" style="background:#c0862e">C+</span><b>64</b></td>
+  </tr><tr>
+    <td class="rn">directus <span class="rv">v38.0.0</span></td>
+    <td class="rk">앱</td>
+    <td class="rf">763</td>
+    <td class="rf">62,337</td>
+    <td class="rg"><span class="gg" style="background:#c0862e">C</span><b>61</b></td>
+  </tr><tr>
+    <td class="rn">typeorm <span class="rv">v1.1.0</span></td>
+    <td class="rk">라이브러리</td>
+    <td class="rf">438</td>
+    <td class="rf">74,814</td>
+    <td class="rg"><span class="gg" style="background:#c0862e">C</span><b>61</b></td>
+  </tr><tr>
+    <td class="rn">api/src</td>
+    <td class="rk"></td>
+    <td class="rf">763</td>
+    <td class="rf">62,337</td>
+    <td class="rg"><span class="gg" style="background:#c0862e">C</span><b>61</b></td>
+  </tr></tbody></table>
+  </details>
+
+</div></section>
+
+<section><div class="w">
+  <h2>축별 위치</h2>
+  <p class="sub">막대의 세로 눈금이 코퍼스 중앙값. 초록=중앙 이하 · 주황=상위 25%까지 · 빨강=그 위.</p>
+  <div class="met">
+    <div class="ml">긴 함수 비율<small>40줄+ (JSX 60줄+) · 중앙 3.9</small></div>
+    <div class="bar"><i style="width:39.92857142857143%;background:#c0862e"></i><u style="left:27.857142857142858%"></u></div>
+    <div class="mv">5.59%</div></div><div class="met">
+    <div class="ml">함수 길이 p90<small>한 번에 읽는 양 · 중앙 23</small></div>
+    <div class="bar"><i style="width:40%;background:#c0862e"></i><u style="left:32.857142857142854%"></u></div>
+    <div class="mv">28줄</div></div><div class="met">
+    <div class="ml">함수 길이 상위10 평균<small>최악 10개 평균 · 중앙 174.4</small></div>
+    <div class="bar"><i style="width:42.76666666666667%;background:#c0862e"></i><u style="left:29.06666666666667%"></u></div>
+    <div class="mv">256.6줄</div></div><div class="met">
+    <div class="ml">복잡 함수 비율<small>cog 15 초과 · 중앙 2.9</small></div>
+    <div class="bar"><i style="width:52.25%;background:#c0862e"></i><u style="left:36.25%"></u></div>
+    <div class="mv">4.18%</div></div><div class="met">
+    <div class="ml">복잡도 상위10 평균<small>최악 10개 평균 · 중앙 64.7</small></div>
+    <div class="bar"><i style="width:31.43333333333333%;background:#c0862e"></i><u style="left:21.566666666666666%"></u></div>
+    <div class="mv">94.3</div></div><div class="met">
+    <div class="ml">중복<small>토큰 단위 · 중앙 3.9</small></div>
+    <div class="bar"><i style="width:48.8%;background:#cb4436"></i><u style="left:15.6%"></u></div>
+    <div class="mv">12.2%</div></div><div class="met">
+    <div class="ml">평균 파일 줄<small>보조 항 · 중앙 120.5</small></div>
+    <div class="bar"><i style="width:27.333333333333332%;background:#12915a"></i><u style="left:40.166666666666664%"></u></div>
+    <div class="mv">82줄</div></div>
+</div></section>
+
+<section><div class="w">
+  <h2>무엇부터 고칠까</h2>
+  
+  <p class="sub">점수 순서가 아니라 <b>변경 비용</b> 순서다. 각 줄에 <b>점수 영향</b>도 적었다 — 대부분은 분포 항이라 하나로는 거의 안 움직이고, 진단 항목은 0이다. git 이력이 있으면 자주 고치는 파일을 위로 올린다.
+  회색 태그는 점수에 반영되지 않는 진단이다 — 등급과 무관하게 실제 결함이다.</p>
+  <table class="fx"><thead><tr><th style="width:100px">무엇</th><th>어디</th><th style="width:32%">왜</th><th class="num" style="width:86px">AI 지시문</th></tr></thead><tbody>
+  <tr>
+    <td><span class="tag s">긴 함수</span></td>
+    <td><div>getReadableTypes() 642줄</div>
+      <div class="loc">api/src/services/graphql/schema/read.ts:35</div></td>
+    <td class="why">이 파일은 최근 1번 바뀌었다 — 매번 이 길이를 읽는다
+      <span class="eff up">점수 +1.3</span>
+      <span class="effn">상위10 평균 항이 함께 내려간다</span></td>
+    <td class="act"><button class="cp mini" data-open="i0" data-title="긴 함수 · api/src/services/graphql/schema/read.ts:35">지시문</button>
+      <script type="text/plain" id="i0"># 결함 하나 수정: 긴 함수
+
+## 대상
+- 저장소: `api/src` (미들급 · 점수 61 C)
+- 위치: **api/src/services/graphql/schema/read.ts:35**
+- 내용: getReadableTypes() 642줄
+- 왜 지금인가: 이 파일은 최근 1번 바뀌었다 — 매번 이 길이를 읽는다
+
+## 방법
+의미 단위로 자른다. 잘라낸 함수에 이름을 붙일 수 없으면 자르지 않은 것이다. 줄 수를 줄이려는 기계적 분할 금지.
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서를 바꾸지 않는다.
+2. 이 항목 **하나만** 고친다. 눈에 보이는 다른 문제는 손대지 말고 목록으로만 남겨라.
+3. 커밋 1개로 끝낸다. 타입체크·테스트를 통과시키고, 실패하면 되돌린다.
+4. 새 의존성·포맷팅 일괄 변경·주석만 추가하는 변경 금지.
+
+## 보고
+1. 고쳤는지 / 안 고쳤는지와 그 이유 (안 고치는 판단도 정답일 수 있다)
+2. diff
+3. **동작이 같다는 근거** — 통과한 테스트 이름이나 수동 검증 절차. 확인 안 했으면 "확인 안 함"이라고 쓴다.</script></td></tr><tr>
+    <td><span class="tag s">긴 함수</span></td>
+    <td><div>injectSystemResolvers() 302줄</div>
+      <div class="loc">api/src/services/graphql/resolvers/system.ts:38</div></td>
+    <td class="why">이 파일은 최근 1번 바뀌었다 — 매번 이 길이를 읽는다
+      <span class="eff">점수 +0.49</span>
+      <span class="effn">분포 항 — 여러 개 고쳐야 움직인다</span></td>
+    <td class="act"><button class="cp mini" data-open="i1" data-title="긴 함수 · api/src/services/graphql/resolvers/system.ts:38">지시문</button>
+      <script type="text/plain" id="i1"># 결함 하나 수정: 긴 함수
+
+## 대상
+- 저장소: `api/src` (미들급 · 점수 61 C)
+- 위치: **api/src/services/graphql/resolvers/system.ts:38**
+- 내용: injectSystemResolvers() 302줄
+- 왜 지금인가: 이 파일은 최근 1번 바뀌었다 — 매번 이 길이를 읽는다
+
+## 방법
+의미 단위로 자른다. 잘라낸 함수에 이름을 붙일 수 없으면 자르지 않은 것이다. 줄 수를 줄이려는 기계적 분할 금지.
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서를 바꾸지 않는다.
+2. 이 항목 **하나만** 고친다. 눈에 보이는 다른 문제는 손대지 말고 목록으로만 남겨라.
+3. 커밋 1개로 끝낸다. 타입체크·테스트를 통과시키고, 실패하면 되돌린다.
+4. 새 의존성·포맷팅 일괄 변경·주석만 추가하는 변경 금지.
+
+## 보고
+1. 고쳤는지 / 안 고쳤는지와 그 이유 (안 고치는 판단도 정답일 수 있다)
+2. diff
+3. **동작이 같다는 근거** — 통과한 테스트 이름이나 수동 검증 절차. 확인 안 했으면 "확인 안 함"이라고 쓴다.</script></td></tr><tr>
+    <td><span class="tag s">복잡한 함수</span></td>
+    <td><div>parseFields() 복잡도 122 · 깊이 5</div>
+      <div class="loc">api/src/database/get-ast-from-query/lib/parse-fields.ts:33</div></td>
+    <td class="why">churn 1회 — 자주 만지는데 분기가 깊다
+      <span class="eff up">점수 +0.5</span>
+      <span class="effn">상위10 평균 항이 함께 내려간다</span></td>
+    <td class="act"><button class="cp mini" data-open="i2" data-title="복잡한 함수 · api/src/database/get-ast-from-query/lib/parse-fields.ts:33">지시문</button>
+      <script type="text/plain" id="i2"># 결함 하나 수정: 복잡한 함수
+
+## 대상
+- 저장소: `api/src` (미들급 · 점수 61 C)
+- 위치: **api/src/database/get-ast-from-query/lib/parse-fields.ts:33**
+- 내용: parseFields() 복잡도 122 · 깊이 5
+- 왜 지금인가: churn 1회 — 자주 만지는데 분기가 깊다
+
+## 방법
+중첩을 걷어낸다(빠른 반환·가드절·분기 테이블). 분기 자체를 없애려 들지 말고 깊이를 낮춰라.
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서를 바꾸지 않는다.
+2. 이 항목 **하나만** 고친다. 눈에 보이는 다른 문제는 손대지 말고 목록으로만 남겨라.
+3. 커밋 1개로 끝낸다. 타입체크·테스트를 통과시키고, 실패하면 되돌린다.
+4. 새 의존성·포맷팅 일괄 변경·주석만 추가하는 변경 금지.
+
+## 보고
+1. 고쳤는지 / 안 고쳤는지와 그 이유 (안 고치는 판단도 정답일 수 있다)
+2. diff
+3. **동작이 같다는 근거** — 통과한 테스트 이름이나 수동 검증 절차. 확인 안 했으면 "확인 안 함"이라고 쓴다.</script></td></tr><tr>
+    <td><span class="tag s">긴 함수</span></td>
+    <td><div>(anonymous)() 262줄</div>
+      <div class="loc">api/src/utils/generate-translations.ts:97</div></td>
+    <td class="why">이 파일은 최근 1번 바뀌었다 — 매번 이 길이를 읽는다
+      <span class="eff">점수 +0.40</span>
+      <span class="effn">분포 항 — 여러 개 고쳐야 움직인다</span></td>
+    <td class="act"><button class="cp mini" data-open="i3" data-title="긴 함수 · api/src/utils/generate-translations.ts:97">지시문</button>
+      <script type="text/plain" id="i3"># 결함 하나 수정: 긴 함수
+
+## 대상
+- 저장소: `api/src` (미들급 · 점수 61 C)
+- 위치: **api/src/utils/generate-translations.ts:97**
+- 내용: (anonymous)() 262줄
+- 왜 지금인가: 이 파일은 최근 1번 바뀌었다 — 매번 이 길이를 읽는다
+
+## 방법
+의미 단위로 자른다. 잘라낸 함수에 이름을 붙일 수 없으면 자르지 않은 것이다. 줄 수를 줄이려는 기계적 분할 금지.
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서를 바꾸지 않는다.
+2. 이 항목 **하나만** 고친다. 눈에 보이는 다른 문제는 손대지 말고 목록으로만 남겨라.
+3. 커밋 1개로 끝낸다. 타입체크·테스트를 통과시키고, 실패하면 되돌린다.
+4. 새 의존성·포맷팅 일괄 변경·주석만 추가하는 변경 금지.
+
+## 보고
+1. 고쳤는지 / 안 고쳤는지와 그 이유 (안 고치는 판단도 정답일 수 있다)
+2. diff
+3. **동작이 같다는 근거** — 통과한 테스트 이름이나 수동 검증 절차. 확인 안 했으면 "확인 안 함"이라고 쓴다.</script></td></tr><tr>
+    <td><span class="tag s">복잡한 함수</span></td>
+    <td><div>scan() 복잡도 113 · 깊이 8</div>
+      <div class="loc">api/src/websocket/collab/calculate-cache-metadata.ts:30</div></td>
+    <td class="why">churn 1회 — 자주 만지는데 분기가 깊다
+      <span class="eff">점수 +0.48</span>
+      <span class="effn">복잡도 축은 이미 기준선 안 — 점수는 거의 안 움직인다</span></td>
+    <td class="act"><button class="cp mini" data-open="i4" data-title="복잡한 함수 · api/src/websocket/collab/calculate-cache-metadata.ts:30">지시문</button>
+      <script type="text/plain" id="i4"># 결함 하나 수정: 복잡한 함수
+
+## 대상
+- 저장소: `api/src` (미들급 · 점수 61 C)
+- 위치: **api/src/websocket/collab/calculate-cache-metadata.ts:30**
+- 내용: scan() 복잡도 113 · 깊이 8
+- 왜 지금인가: churn 1회 — 자주 만지는데 분기가 깊다
+
+## 방법
+중첩을 걷어낸다(빠른 반환·가드절·분기 테이블). 분기 자체를 없애려 들지 말고 깊이를 낮춰라.
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서를 바꾸지 않는다.
+2. 이 항목 **하나만** 고친다. 눈에 보이는 다른 문제는 손대지 말고 목록으로만 남겨라.
+3. 커밋 1개로 끝낸다. 타입체크·테스트를 통과시키고, 실패하면 되돌린다.
+4. 새 의존성·포맷팅 일괄 변경·주석만 추가하는 변경 금지.
+
+## 보고
+1. 고쳤는지 / 안 고쳤는지와 그 이유 (안 고치는 판단도 정답일 수 있다)
+2. diff
+3. **동작이 같다는 근거** — 통과한 테스트 이름이나 수동 검증 절차. 확인 안 했으면 "확인 안 함"이라고 쓴다.</script></td></tr><tr>
+    <td><span class="tag s">복잡한 함수</span></td>
+    <td><div>generatePaths() 복잡도 110 · 깊이 7</div>
+      <div class="loc">api/src/services/specifications.ts:173</div></td>
+    <td class="why">churn 1회 — 자주 만지는데 분기가 깊다
+      <span class="eff">점수 +0.47</span>
+      <span class="effn">복잡도 축은 이미 기준선 안 — 점수는 거의 안 움직인다</span></td>
+    <td class="act"><button class="cp mini" data-open="i5" data-title="복잡한 함수 · api/src/services/specifications.ts:173">지시문</button>
+      <script type="text/plain" id="i5"># 결함 하나 수정: 복잡한 함수
+
+## 대상
+- 저장소: `api/src` (미들급 · 점수 61 C)
+- 위치: **api/src/services/specifications.ts:173**
+- 내용: generatePaths() 복잡도 110 · 깊이 7
+- 왜 지금인가: churn 1회 — 자주 만지는데 분기가 깊다
+
+## 방법
+중첩을 걷어낸다(빠른 반환·가드절·분기 테이블). 분기 자체를 없애려 들지 말고 깊이를 낮춰라.
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서를 바꾸지 않는다.
+2. 이 항목 **하나만** 고친다. 눈에 보이는 다른 문제는 손대지 말고 목록으로만 남겨라.
+3. 커밋 1개로 끝낸다. 타입체크·테스트를 통과시키고, 실패하면 되돌린다.
+4. 새 의존성·포맷팅 일괄 변경·주석만 추가하는 변경 금지.
+
+## 보고
+1. 고쳤는지 / 안 고쳤는지와 그 이유 (안 고치는 판단도 정답일 수 있다)
+2. diff
+3. **동작이 같다는 근거** — 통과한 테스트 이름이나 수동 검증 절차. 확인 안 했으면 "확인 안 함"이라고 쓴다.</script></td></tr><tr>
+    <td><span class="tag s">복잡한 함수</span></td>
+    <td><div>apply() 복잡도 109 · 깊이 6</div>
+      <div class="loc">api/src/cli/commands/schema/apply.ts:36</div></td>
+    <td class="why">churn 1회 — 자주 만지는데 분기가 깊다
+      <span class="eff">점수 +0.46</span>
+      <span class="effn">복잡도 축은 이미 기준선 안 — 점수는 거의 안 움직인다</span></td>
+    <td class="act"><button class="cp mini" data-open="i6" data-title="복잡한 함수 · api/src/cli/commands/schema/apply.ts:36">지시문</button>
+      <script type="text/plain" id="i6"># 결함 하나 수정: 복잡한 함수
+
+## 대상
+- 저장소: `api/src` (미들급 · 점수 61 C)
+- 위치: **api/src/cli/commands/schema/apply.ts:36**
+- 내용: apply() 복잡도 109 · 깊이 6
+- 왜 지금인가: churn 1회 — 자주 만지는데 분기가 깊다
+
+## 방법
+중첩을 걷어낸다(빠른 반환·가드절·분기 테이블). 분기 자체를 없애려 들지 말고 깊이를 낮춰라.
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서를 바꾸지 않는다.
+2. 이 항목 **하나만** 고친다. 눈에 보이는 다른 문제는 손대지 말고 목록으로만 남겨라.
+3. 커밋 1개로 끝낸다. 타입체크·테스트를 통과시키고, 실패하면 되돌린다.
+4. 새 의존성·포맷팅 일괄 변경·주석만 추가하는 변경 금지.
+
+## 보고
+1. 고쳤는지 / 안 고쳤는지와 그 이유 (안 고치는 판단도 정답일 수 있다)
+2. diff
+3. **동작이 같다는 근거** — 통과한 테스트 이름이나 수동 검증 절차. 확인 안 했으면 "확인 안 함"이라고 쓴다.</script></td></tr><tr>
+    <td><span class="tag s">긴 함수</span></td>
+    <td><div>parseFields() 229줄</div>
+      <div class="loc">api/src/database/get-ast-from-query/lib/parse-fields.ts:33</div></td>
+    <td class="why">이 파일은 최근 1번 바뀌었다 — 매번 이 길이를 읽는다
+      <span class="eff">점수 +0.33</span>
+      <span class="effn">분포 항 — 여러 개 고쳐야 움직인다</span></td>
+    <td class="act"><button class="cp mini" data-open="i7" data-title="긴 함수 · api/src/database/get-ast-from-query/lib/parse-fields.ts:33">지시문</button>
+      <script type="text/plain" id="i7"># 결함 하나 수정: 긴 함수
+
+## 대상
+- 저장소: `api/src` (미들급 · 점수 61 C)
+- 위치: **api/src/database/get-ast-from-query/lib/parse-fields.ts:33**
+- 내용: parseFields() 229줄
+- 왜 지금인가: 이 파일은 최근 1번 바뀌었다 — 매번 이 길이를 읽는다
+
+## 방법
+의미 단위로 자른다. 잘라낸 함수에 이름을 붙일 수 없으면 자르지 않은 것이다. 줄 수를 줄이려는 기계적 분할 금지.
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서를 바꾸지 않는다.
+2. 이 항목 **하나만** 고친다. 눈에 보이는 다른 문제는 손대지 말고 목록으로만 남겨라.
+3. 커밋 1개로 끝낸다. 타입체크·테스트를 통과시키고, 실패하면 되돌린다.
+4. 새 의존성·포맷팅 일괄 변경·주석만 추가하는 변경 금지.
+
+## 보고
+1. 고쳤는지 / 안 고쳤는지와 그 이유 (안 고치는 판단도 정답일 수 있다)
+2. diff
+3. **동작이 같다는 근거** — 통과한 테스트 이름이나 수동 검증 절차. 확인 안 했으면 "확인 안 함"이라고 쓴다.</script></td></tr><tr>
+    <td><span class="tag s">긴 함수</span></td>
+    <td><div>processO2M() 213줄</div>
+      <div class="loc">api/src/services/payload.ts:765</div></td>
+    <td class="why">이 파일은 최근 1번 바뀌었다 — 매번 이 길이를 읽는다
+      <span class="eff">점수 +0.29</span>
+      <span class="effn">분포 항 — 여러 개 고쳐야 움직인다</span></td>
+    <td class="act"><button class="cp mini" data-open="i8" data-title="긴 함수 · api/src/services/payload.ts:765">지시문</button>
+      <script type="text/plain" id="i8"># 결함 하나 수정: 긴 함수
+
+## 대상
+- 저장소: `api/src` (미들급 · 점수 61 C)
+- 위치: **api/src/services/payload.ts:765**
+- 내용: processO2M() 213줄
+- 왜 지금인가: 이 파일은 최근 1번 바뀌었다 — 매번 이 길이를 읽는다
+
+## 방법
+의미 단위로 자른다. 잘라낸 함수에 이름을 붙일 수 없으면 자르지 않은 것이다. 줄 수를 줄이려는 기계적 분할 금지.
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서를 바꾸지 않는다.
+2. 이 항목 **하나만** 고친다. 눈에 보이는 다른 문제는 손대지 말고 목록으로만 남겨라.
+3. 커밋 1개로 끝낸다. 타입체크·테스트를 통과시키고, 실패하면 되돌린다.
+4. 새 의존성·포맷팅 일괄 변경·주석만 추가하는 변경 금지.
+
+## 보고
+1. 고쳤는지 / 안 고쳤는지와 그 이유 (안 고치는 판단도 정답일 수 있다)
+2. diff
+3. **동작이 같다는 근거** — 통과한 테스트 이름이나 수동 검증 절차. 확인 안 했으면 "확인 안 함"이라고 쓴다.</script></td></tr><tr>
+    <td><span class="tag s">긴 함수</span></td>
+    <td><div>createApp() 212줄</div>
+      <div class="loc">api/src/app.ts:95</div></td>
+    <td class="why">이 파일은 최근 1번 바뀌었다 — 매번 이 길이를 읽는다
+      <span class="eff">점수 +0.29</span>
+      <span class="effn">분포 항 — 여러 개 고쳐야 움직인다</span></td>
+    <td class="act"><button class="cp mini" data-open="i9" data-title="긴 함수 · api/src/app.ts:95">지시문</button>
+      <script type="text/plain" id="i9"># 결함 하나 수정: 긴 함수
+
+## 대상
+- 저장소: `api/src` (미들급 · 점수 61 C)
+- 위치: **api/src/app.ts:95**
+- 내용: createApp() 212줄
+- 왜 지금인가: 이 파일은 최근 1번 바뀌었다 — 매번 이 길이를 읽는다
+
+## 방법
+의미 단위로 자른다. 잘라낸 함수에 이름을 붙일 수 없으면 자르지 않은 것이다. 줄 수를 줄이려는 기계적 분할 금지.
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서를 바꾸지 않는다.
+2. 이 항목 **하나만** 고친다. 눈에 보이는 다른 문제는 손대지 말고 목록으로만 남겨라.
+3. 커밋 1개로 끝낸다. 타입체크·테스트를 통과시키고, 실패하면 되돌린다.
+4. 새 의존성·포맷팅 일괄 변경·주석만 추가하는 변경 금지.
+
+## 보고
+1. 고쳤는지 / 안 고쳤는지와 그 이유 (안 고치는 판단도 정답일 수 있다)
+2. diff
+3. **동작이 같다는 근거** — 통과한 테스트 이름이나 수동 검증 절차. 확인 안 했으면 "확인 안 함"이라고 쓴다.</script></td></tr><tr>
+    <td><span class="tag s">긴 함수</span></td>
+    <td><div>login() 207줄</div>
+      <div class="loc">api/src/services/authentication.ts:58</div></td>
+    <td class="why">이 파일은 최근 1번 바뀌었다 — 매번 이 길이를 읽는다
+      <span class="eff">점수 +0.28</span>
+      <span class="effn">분포 항 — 여러 개 고쳐야 움직인다</span></td>
+    <td class="act"><button class="cp mini" data-open="i10" data-title="긴 함수 · api/src/services/authentication.ts:58">지시문</button>
+      <script type="text/plain" id="i10"># 결함 하나 수정: 긴 함수
+
+## 대상
+- 저장소: `api/src` (미들급 · 점수 61 C)
+- 위치: **api/src/services/authentication.ts:58**
+- 내용: login() 207줄
+- 왜 지금인가: 이 파일은 최근 1번 바뀌었다 — 매번 이 길이를 읽는다
+
+## 방법
+의미 단위로 자른다. 잘라낸 함수에 이름을 붙일 수 없으면 자르지 않은 것이다. 줄 수를 줄이려는 기계적 분할 금지.
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서를 바꾸지 않는다.
+2. 이 항목 **하나만** 고친다. 눈에 보이는 다른 문제는 손대지 말고 목록으로만 남겨라.
+3. 커밋 1개로 끝낸다. 타입체크·테스트를 통과시키고, 실패하면 되돌린다.
+4. 새 의존성·포맷팅 일괄 변경·주석만 추가하는 변경 금지.
+
+## 보고
+1. 고쳤는지 / 안 고쳤는지와 그 이유 (안 고치는 판단도 정답일 수 있다)
+2. diff
+3. **동작이 같다는 근거** — 통과한 테스트 이름이나 수동 검증 절차. 확인 안 했으면 "확인 안 함"이라고 쓴다.</script></td></tr><tr>
+    <td><span class="tag s">복잡한 함수</span></td>
+    <td><div>(anonymous)() 복잡도 92 · 깊이 5</div>
+      <div class="loc">api/src/services/import/import.ts:669</div></td>
+    <td class="why">churn 1회 — 자주 만지는데 분기가 깊다
+      <span class="eff">점수 +0.39</span>
+      <span class="effn">복잡도 축은 이미 기준선 안 — 점수는 거의 안 움직인다</span></td>
+    <td class="act"><button class="cp mini" data-open="i11" data-title="복잡한 함수 · api/src/services/import/import.ts:669">지시문</button>
+      <script type="text/plain" id="i11"># 결함 하나 수정: 복잡한 함수
+
+## 대상
+- 저장소: `api/src` (미들급 · 점수 61 C)
+- 위치: **api/src/services/import/import.ts:669**
+- 내용: (anonymous)() 복잡도 92 · 깊이 5
+- 왜 지금인가: churn 1회 — 자주 만지는데 분기가 깊다
+
+## 방법
+중첩을 걷어낸다(빠른 반환·가드절·분기 테이블). 분기 자체를 없애려 들지 말고 깊이를 낮춰라.
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서를 바꾸지 않는다.
+2. 이 항목 **하나만** 고친다. 눈에 보이는 다른 문제는 손대지 말고 목록으로만 남겨라.
+3. 커밋 1개로 끝낸다. 타입체크·테스트를 통과시키고, 실패하면 되돌린다.
+4. 새 의존성·포맷팅 일괄 변경·주석만 추가하는 변경 금지.
+
+## 보고
+1. 고쳤는지 / 안 고쳤는지와 그 이유 (안 고치는 판단도 정답일 수 있다)
+2. diff
+3. **동작이 같다는 근거** — 통과한 테스트 이름이나 수동 검증 절차. 확인 안 했으면 "확인 안 함"이라고 쓴다.</script></td></tr><tr>
+    <td><span class="tag s">긴 함수</span></td>
+    <td><div>(anonymous)() 178줄</div>
+      <div class="loc">api/src/services/items.ts:144</div></td>
+    <td class="why">이 파일은 최근 1번 바뀌었다 — 매번 이 길이를 읽는다
+      <span class="eff">점수 +0.22</span>
+      <span class="effn">분포 항 — 여러 개 고쳐야 움직인다</span></td>
+    <td class="act"><button class="cp mini" data-open="i12" data-title="긴 함수 · api/src/services/items.ts:144">지시문</button>
+      <script type="text/plain" id="i12"># 결함 하나 수정: 긴 함수
+
+## 대상
+- 저장소: `api/src` (미들급 · 점수 61 C)
+- 위치: **api/src/services/items.ts:144**
+- 내용: (anonymous)() 178줄
+- 왜 지금인가: 이 파일은 최근 1번 바뀌었다 — 매번 이 길이를 읽는다
+
+## 방법
+의미 단위로 자른다. 잘라낸 함수에 이름을 붙일 수 없으면 자르지 않은 것이다. 줄 수를 줄이려는 기계적 분할 금지.
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서를 바꾸지 않는다.
+2. 이 항목 **하나만** 고친다. 눈에 보이는 다른 문제는 손대지 말고 목록으로만 남겨라.
+3. 커밋 1개로 끝낸다. 타입체크·테스트를 통과시키고, 실패하면 되돌린다.
+4. 새 의존성·포맷팅 일괄 변경·주석만 추가하는 변경 금지.
+
+## 보고
+1. 고쳤는지 / 안 고쳤는지와 그 이유 (안 고치는 판단도 정답일 수 있다)
+2. diff
+3. **동작이 같다는 근거** — 통과한 테스트 이름이나 수동 검증 절차. 확인 안 했으면 "확인 안 함"이라고 쓴다.</script></td></tr><tr>
+    <td><span class="tag">O(n²)</span></td>
+    <td><div>find — 루프 안 배열 스캔<span class="cnt">같은 파일 3곳</span></div>
+      <div class="loc">api/src/services/collections.ts:384, :391, :446</div></td>
+    <td class="why">Map/Set으로 바꾸면 O(1). 다만 n이 실제로 큰지 먼저 확인할 것
+      <span class="eff none">점수 무관</span>
+      <span class="effn">진단 항목 — 점수에 반영되지 않는다 (성능·정확성 문제)</span></td>
+    <td class="act"><button class="cp mini" data-open="i13" data-title="O(n²) · api/src/services/collections.ts:384">지시문</button>
+      <script type="text/plain" id="i13"># 결함 하나 수정: O(n²)
+
+## 대상
+- 저장소: `api/src` (미들급 · 점수 61 C)
+- 위치: **api/src/services/collections.ts (3곳: 384, 391, 446행)**
+- 내용: find — 루프 안 배열 스캔 — 같은 파일에서 3번 반복된다. 한 번에 함께 고쳐라.
+- 왜 지금인가: Map/Set으로 바꾸면 O(1). 다만 n이 실제로 큰지 먼저 확인할 것
+
+## 방법
+먼저 바깥 배열의 실제 크기를 코드에서 역추적하라. 상수 목록·설정값이면 고치지 말고 그 근거를 적어라. 크면 Map/Set으로 O(1).
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서를 바꾸지 않는다.
+2. 이 항목 **하나만** 고친다. 눈에 보이는 다른 문제는 손대지 말고 목록으로만 남겨라.
+3. 커밋 1개로 끝낸다. 타입체크·테스트를 통과시키고, 실패하면 되돌린다.
+4. 새 의존성·포맷팅 일괄 변경·주석만 추가하는 변경 금지.
+
+## 보고
+1. 고쳤는지 / 안 고쳤는지와 그 이유 (안 고치는 판단도 정답일 수 있다)
+2. diff
+3. **동작이 같다는 근거** — 통과한 테스트 이름이나 수동 검증 절차. 확인 안 했으면 "확인 안 함"이라고 쓴다.</script></td></tr>
+  </tbody></table>
+  
+</div></section>
+
+<section><div class="w">
+  <h2>점수 지도</h2>
+  <p class="sub">각 줄의 <b>[복사]</b>는 그 축을 <b>실제로</b> 낮추는 작업 지시문이다 — 후보 목록과 "이렇게 하면 반칙" 규칙이 함께 들어간다.
+  100점에서 시작해 축마다 깎인다. <b>지켜낸 71점</b>이 왼쪽, 깎인 28.7점이 오른쪽이다. 추정이 아니라 계산값.</p>
+
+  <div class="kept"><div class="kt">이미 지켜낸 축 — 감점 0</div>
+    <span class="kc">평균 파일 줄 <b>82줄</b></span>
+    <p class="kn">이 축들은 코퍼스 기준선 안쪽이다. 여기 손댈 필요 없다.</p></div>
+
+  <div class="pen">
+    <div>긴 함수 비율<br><span class="loc">지금 5.59% → 목표 4.0% 이하</span></div>
+    <div class="pb"><i class="ok" style="width:32%"></i><i class="no" style="width:68%"></i></div>
+    <div class="pv"><b>5.1</b> 확보 · −10.9</div>
+    <div class="pa"><button class="cp mini" data-open="a0" data-title="축 개선 · 긴 함수 비율">지시문</button>
+      <script type="text/plain" id="a0"># 축 개선: 긴 함수 비율
+
+## 지금
+- 저장소 `api/src` · 미들급 · 점수 61 C
+- **긴 함수 비율: 5.59%** (목표 4.0% 이하) — 이 항목에서 10.9점이 깎여 있다
+
+## 목표
+40줄(JSX 60줄)을 넘는 함수의 비율을 코퍼스 중앙 4.0%까지 낮춘다.
+점수는 결과일 뿐이다. **읽고 고치는 비용이 실제로 줄지 않으면 실패**로 친다.
+
+## 방법
+함수를 의미 단위로 쪼갠다. 잘라낸 조각에 이름을 붙일 수 없으면 자르지 않은 것이다.
+
+## 후보 (측정값에서 뽑은 것)
+1. getReadableTypes() 642줄 — api/src/services/graphql/schema/read.ts:35
+2. injectSystemResolvers() 302줄 — api/src/services/graphql/resolvers/system.ts:38
+3. (anonymous)() 262줄 — api/src/utils/generate-translations.ts:97
+4. parseFields() 229줄 — api/src/database/get-ast-from-query/lib/parse-fields.ts:33
+5. processO2M() 213줄 — api/src/services/payload.ts:765
+6. createApp() 212줄 — api/src/app.ts:95
+
+## 금지
+- 한 함수를 기계적으로 3등분해 줄 수만 맞추기
+- 로직을 다른 파일로 옮겨 숫자만 옮기기
+- 확인 없이 "개선했다"고 주장하기
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서 유지.
+2. 후보 하나 = 커밋 하나. 커밋마다 타입체크·테스트 통과.
+3. 전부 고칠 필요 없다. **안 고치는 판단과 그 이유**도 결과물이다.
+
+## 보고
+1. 후보별 [고침 / 안 고침 + 이유]
+2. 커밋별 diff와 한 줄 요약
+3. **동작이 같다는 근거** — 통과한 테스트 이름 또는 수동 검증 절차
+4. `npx fixearly --dir=<경로> --report` 재실행 후 이 항목 수치 전후 비교</script></div></div><div class="pen">
+    <div>중복<br><span class="loc">지금 12.2% → 목표 8% 이하</span></div>
+    <div class="pb"><i class="ok" style="width:44%"></i><i class="no" style="width:56%"></i></div>
+    <div class="pv"><b>4.0</b> 확보 · −5.0</div>
+    <div class="pa"><button class="cp mini" data-open="a1" data-title="축 개선 · 중복">지시문</button>
+      <script type="text/plain" id="a1"># 축 개선: 중복
+
+## 지금
+- 저장소 `api/src` · 미들급 · 점수 61 C
+- **중복: 12.2%** (목표 8% 이하) — 이 항목에서 5.0점이 깎여 있다
+
+## 목표
+토큰 중복 밀도를 8% 아래로 낮춘다.
+점수는 결과일 뿐이다. **읽고 고치는 비용이 실제로 줄지 않으면 실패**로 친다.
+
+## 방법
+**같은 이유로 함께 바뀔 코드만** 합친다. 우연히 닮은 코드는 그대로 두는 게 맞다.
+
+## 후보 (측정값에서 뽑은 것)
+1. api/src/__utils__/snapshots.ts — 중복 토큰 1797
+2. api/src/services/graphql/resolvers/system-global.ts — 중복 토큰 1174
+3. api/src/services/collections.ts — 중복 토큰 1148
+
+## 금지
+- 우연히 닮은 두 모듈에서 공용 헬퍼 추출 (결합도만 오른다)
+- 빌드 타깃별 의도적 사본 통합
+- 확인 없이 "개선했다"고 주장하기
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서 유지.
+2. 후보 하나 = 커밋 하나. 커밋마다 타입체크·테스트 통과.
+3. 전부 고칠 필요 없다. **안 고치는 판단과 그 이유**도 결과물이다.
+
+## 보고
+1. 후보별 [고침 / 안 고침 + 이유]
+2. 커밋별 diff와 한 줄 요약
+3. **동작이 같다는 근거** — 통과한 테스트 이름 또는 수동 검증 절차
+4. `npx fixearly --dir=<경로> --report` 재실행 후 이 항목 수치 전후 비교</script></div></div><div class="pen">
+    <div>200줄+ 파일<br><span class="loc">지금 4.68% → 목표 —</span></div>
+    <div class="pb"><i class="ok" style="width:0%"></i><i class="no" style="width:100%"></i></div>
+    <div class="pv"><b>0.0</b> 확보 · −3.0</div>
+    <div class="pa"><button class="cp mini" data-open="a2" data-title="축 개선 · 200줄+ 파일">지시문</button>
+      <script type="text/plain" id="a2"># 축 개선: 200줄+ 파일
+
+## 지금
+- 저장소 `api/src` · 미들급 · 점수 61 C
+- **200줄+ 파일: 4.68%** (목표 —) — 이 항목에서 3.0점이 깎여 있다
+
+## 목표
+200줄 넘는 파일의 비중을 낮춘다.
+점수는 결과일 뿐이다. **읽고 고치는 비용이 실제로 줄지 않으면 실패**로 친다.
+
+## 방법
+책임이 섞인 파일만 고른다. 단일 책임인데 긴 파일은 그대로 둔다.
+
+## 후보 (측정값에서 뽑은 것)
+가장 긴 파일: api/src/database/migrations/20201029C-remove-system-fields.ts (1644줄) · 200줄 넘는 파일 51개
+
+## 금지
+- 기계적 분할
+- 확인 없이 "개선했다"고 주장하기
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서 유지.
+2. 후보 하나 = 커밋 하나. 커밋마다 타입체크·테스트 통과.
+3. 전부 고칠 필요 없다. **안 고치는 판단과 그 이유**도 결과물이다.
+
+## 보고
+1. 후보별 [고침 / 안 고침 + 이유]
+2. 커밋별 diff와 한 줄 요약
+3. **동작이 같다는 근거** — 통과한 테스트 이름 또는 수동 검증 절차
+4. `npx fixearly --dir=<경로> --report` 재실행 후 이 항목 수치 전후 비교</script></div></div><div class="pen">
+    <div>cog15+ 비율<br><span class="loc">지금 4.18% → 목표 3.0% 이하</span></div>
+    <div class="pb"><i class="ok" style="width:80%"></i><i class="no" style="width:20%"></i></div>
+    <div class="pv"><b>9.6</b> 확보 · −2.4</div>
+    <div class="pa"><button class="cp mini" data-open="a3" data-title="축 개선 · cog15+ 비율">지시문</button>
+      <script type="text/plain" id="a3"># 축 개선: cog15+ 비율
+
+## 지금
+- 저장소 `api/src` · 미들급 · 점수 61 C
+- **cog15+ 비율: 4.18%** (목표 3.0% 이하) — 이 항목에서 2.4점이 깎여 있다
+
+## 목표
+인지 복잡도 15를 넘는 함수 비율을 3.0% 아래로 낮춘다.
+점수는 결과일 뿐이다. **읽고 고치는 비용이 실제로 줄지 않으면 실패**로 친다.
+
+## 방법
+중첩을 걷어낸다 — 빠른 반환·가드절·분기 테이블·조건 추출. 분기 개수가 아니라 깊이를 줄여라.
+
+## 후보 (측정값에서 뽑은 것)
+1. parseFields() 복잡도 122 — api/src/database/get-ast-from-query/lib/parse-fields.ts:33
+2. scan() 복잡도 113 — api/src/websocket/collab/calculate-cache-metadata.ts:30
+3. generatePaths() 복잡도 110 — api/src/services/specifications.ts:173
+4. apply() 복잡도 109 — api/src/cli/commands/schema/apply.ts:36
+5. (anonymous)() 복잡도 92 — api/src/services/import/import.ts:669
+6. parseFields() 복잡도 87 — api/src/services/graphql/schema/parse-query.ts:41
+
+## 금지
+- 조건을 헬퍼로 빼서 복잡도만 다른 함수로 이동시키기
+- 확인 없이 "개선했다"고 주장하기
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서 유지.
+2. 후보 하나 = 커밋 하나. 커밋마다 타입체크·테스트 통과.
+3. 전부 고칠 필요 없다. **안 고치는 판단과 그 이유**도 결과물이다.
+
+## 보고
+1. 후보별 [고침 / 안 고침 + 이유]
+2. 커밋별 diff와 한 줄 요약
+3. **동작이 같다는 근거** — 통과한 테스트 이름 또는 수동 검증 절차
+4. `npx fixearly --dir=<경로> --report` 재실행 후 이 항목 수치 전후 비교</script></div></div><div class="pen">
+    <div>함수 길이 상위10 평균<br><span class="loc">지금 256.6줄 → 목표 174줄 이하</span></div>
+    <div class="pb"><i class="ok" style="width:50%"></i><i class="no" style="width:50%"></i></div>
+    <div class="pv"><b>2.0</b> 확보 · −2.0</div>
+    <div class="pa"><button class="cp mini" data-open="a4" data-title="축 개선 · 함수 길이 상위10 평균">지시문</button>
+      <script type="text/plain" id="a4"># 축 개선: 함수 길이 상위10 평균
+
+## 지금
+- 저장소 `api/src` · 미들급 · 점수 61 C
+- **함수 길이 상위10 평균: 256.6줄** (목표 174줄 이하) — 이 항목에서 2.0점이 깎여 있다
+
+## 목표
+가장 긴 함수 10개의 평균을 174줄 아래로 내린다 (하나만 고치면 다음 순위가 올라온다 — 여러 개를 줄여야 움직인다).
+점수는 결과일 뿐이다. **읽고 고치는 비용이 실제로 줄지 않으면 실패**로 친다.
+
+## 방법
+단계별로 이름 있는 함수로 추출. 추출할 때마다 커밋하고 동작을 확인한다.
+
+## 후보 (측정값에서 뽑은 것)
+1. getReadableTypes() 642줄 — api/src/services/graphql/schema/read.ts:35
+2. injectSystemResolvers() 302줄 — api/src/services/graphql/resolvers/system.ts:38
+3. (anonymous)() 262줄 — api/src/utils/generate-translations.ts:97
+4. parseFields() 229줄 — api/src/database/get-ast-from-query/lib/parse-fields.ts:33
+5. processO2M() 213줄 — api/src/services/payload.ts:765
+6. createApp() 212줄 — api/src/app.ts:95
+7. login() 207줄 — api/src/services/authentication.ts:58
+8. (anonymous)() 178줄 — api/src/services/items.ts:144
+9. (anonymous)() 161줄 — api/src/services/graphql/schema/index.ts:67
+10. resolveSystemAdmin() 160줄 — api/src/services/graphql/resolvers/system-admin.ts:16
+
+## 금지
+- 본문을 다른 파일로 통째 이동
+- 확인 없이 "개선했다"고 주장하기
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서 유지.
+2. 후보 하나 = 커밋 하나. 커밋마다 타입체크·테스트 통과.
+3. 전부 고칠 필요 없다. **안 고치는 판단과 그 이유**도 결과물이다.
+
+## 보고
+1. 후보별 [고침 / 안 고침 + 이유]
+2. 커밋별 diff와 한 줄 요약
+3. **동작이 같다는 근거** — 통과한 테스트 이름 또는 수동 검증 절차
+4. `npx fixearly --dir=<경로> --report` 재실행 후 이 항목 수치 전후 비교</script></div></div><div class="pen">
+    <div>cog25+ 비율<br><span class="loc">지금 1.78% → 목표 1.2% 이하</span></div>
+    <div class="pb"><i class="ok" style="width:86%"></i><i class="no" style="width:15%"></i></div>
+    <div class="pv"><b>10.3</b> 확보 · −1.7</div>
+    <div class="pa"><button class="cp mini" data-open="a5" data-title="축 개선 · cog25+ 비율">지시문</button>
+      <script type="text/plain" id="a5"># 축 개선: cog25+ 비율
+
+## 지금
+- 저장소 `api/src` · 미들급 · 점수 61 C
+- **cog25+ 비율: 1.78%** (목표 1.2% 이하) — 이 항목에서 1.7점이 깎여 있다
+
+## 목표
+인지 복잡도 25를 넘는 함수 비율을 1.2% 아래로 낮춘다.
+점수는 결과일 뿐이다. **읽고 고치는 비용이 실제로 줄지 않으면 실패**로 친다.
+
+## 방법
+가장 깊은 중첩부터 평탄화한다. 상태 분기가 많다면 상태를 먼저 정리하라.
+
+## 후보 (측정값에서 뽑은 것)
+1. parseFields() 복잡도 122 — api/src/database/get-ast-from-query/lib/parse-fields.ts:33
+2. scan() 복잡도 113 — api/src/websocket/collab/calculate-cache-metadata.ts:30
+3. generatePaths() 복잡도 110 — api/src/services/specifications.ts:173
+4. apply() 복잡도 109 — api/src/cli/commands/schema/apply.ts:36
+5. (anonymous)() 복잡도 92 — api/src/services/import/import.ts:669
+6. parseFields() 복잡도 87 — api/src/services/graphql/schema/parse-query.ts:41
+
+## 금지
+- 조건을 헬퍼로 빼서 복잡도만 옮기기
+- 확인 없이 "개선했다"고 주장하기
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서 유지.
+2. 후보 하나 = 커밋 하나. 커밋마다 타입체크·테스트 통과.
+3. 전부 고칠 필요 없다. **안 고치는 판단과 그 이유**도 결과물이다.
+
+## 보고
+1. 후보별 [고침 / 안 고침 + 이유]
+2. 커밋별 diff와 한 줄 요약
+3. **동작이 같다는 근거** — 통과한 테스트 이름 또는 수동 검증 절차
+4. `npx fixearly --dir=<경로> --report` 재실행 후 이 항목 수치 전후 비교</script></div></div><div class="pen">
+    <div>함수 길이 p90<br><span class="loc">지금 28줄 → 목표 23줄 이하</span></div>
+    <div class="pb"><i class="ok" style="width:48%"></i><i class="no" style="width:52%"></i></div>
+    <div class="pv"><b>1.4</b> 확보 · −1.6</div>
+    <div class="pa"><button class="cp mini" data-open="a6" data-title="축 개선 · 함수 길이 p90">지시문</button>
+      <script type="text/plain" id="a6"># 축 개선: 함수 길이 p90
+
+## 지금
+- 저장소 `api/src` · 미들급 · 점수 61 C
+- **함수 길이 p90: 28줄** (목표 23줄 이하) — 이 항목에서 1.6점이 깎여 있다
+
+## 목표
+함수 길이 상위 10%를 23줄 아래로 내린다.
+점수는 결과일 뿐이다. **읽고 고치는 비용이 실제로 줄지 않으면 실패**로 친다.
+
+## 방법
+긴 함수 목록 위에서부터 의미 단위로 분해.
+
+## 후보 (측정값에서 뽑은 것)
+1. getReadableTypes() 642줄 — api/src/services/graphql/schema/read.ts:35
+2. injectSystemResolvers() 302줄 — api/src/services/graphql/resolvers/system.ts:38
+3. (anonymous)() 262줄 — api/src/utils/generate-translations.ts:97
+4. parseFields() 229줄 — api/src/database/get-ast-from-query/lib/parse-fields.ts:33
+5. processO2M() 213줄 — api/src/services/payload.ts:765
+6. createApp() 212줄 — api/src/app.ts:95
+
+## 금지
+- 줄바꿈·포맷팅으로 줄 수 줄이기
+- 확인 없이 "개선했다"고 주장하기
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서 유지.
+2. 후보 하나 = 커밋 하나. 커밋마다 타입체크·테스트 통과.
+3. 전부 고칠 필요 없다. **안 고치는 판단과 그 이유**도 결과물이다.
+
+## 보고
+1. 후보별 [고침 / 안 고침 + 이유]
+2. 커밋별 diff와 한 줄 요약
+3. **동작이 같다는 근거** — 통과한 테스트 이름 또는 수동 검증 절차
+4. `npx fixearly --dir=<경로> --report` 재실행 후 이 항목 수치 전후 비교</script></div></div><div class="pen">
+    <div>복잡도 상위10 평균<br><span class="loc">지금 94.3 → 목표 65 이하</span></div>
+    <div class="pb"><i class="ok" style="width:64%"></i><i class="no" style="width:36%"></i></div>
+    <div class="pv"><b>2.6</b> 확보 · −1.4</div>
+    <div class="pa"><button class="cp mini" data-open="a7" data-title="축 개선 · 복잡도 상위10 평균">지시문</button>
+      <script type="text/plain" id="a7"># 축 개선: 복잡도 상위10 평균
+
+## 지금
+- 저장소 `api/src` · 미들급 · 점수 61 C
+- **복잡도 상위10 평균: 94.3** (목표 65 이하) — 이 항목에서 1.4점이 깎여 있다
+
+## 목표
+가장 복잡한 함수 10개의 평균 복잡도를 65 아래로 낮춘다.
+점수는 결과일 뿐이다. **읽고 고치는 비용이 실제로 줄지 않으면 실패**로 친다.
+
+## 방법
+가장 깊은 분기부터. 상태 머신이면 테이블로, 검증이면 가드절로.
+
+## 후보 (측정값에서 뽑은 것)
+1. parseFields() 복잡도 122 — api/src/database/get-ast-from-query/lib/parse-fields.ts:33
+2. scan() 복잡도 113 — api/src/websocket/collab/calculate-cache-metadata.ts:30
+3. generatePaths() 복잡도 110 — api/src/services/specifications.ts:173
+4. apply() 복잡도 109 — api/src/cli/commands/schema/apply.ts:36
+5. (anonymous)() 복잡도 92 — api/src/services/import/import.ts:669
+6. parseFields() 복잡도 87 — api/src/services/graphql/schema/parse-query.ts:41
+7. processDates() 복잡도 82 — api/src/services/payload.ts:416
+8. processO2M() 복잡도 79 — api/src/services/payload.ts:765
+9. removeTemporaryFields() 복잡도 75 — api/src/database/run-ast/utils/remove-temporary-fields.ts:7
+10. getAsset() 복잡도 74 — api/src/services/assets.ts:208
+
+## 금지
+- 조건 일부를 다른 함수로 옮겨 숫자만 낮추기
+- 확인 없이 "개선했다"고 주장하기
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서 유지.
+2. 후보 하나 = 커밋 하나. 커밋마다 타입체크·테스트 통과.
+3. 전부 고칠 필요 없다. **안 고치는 판단과 그 이유**도 결과물이다.
+
+## 보고
+1. 후보별 [고침 / 안 고침 + 이유]
+2. 커밋별 diff와 한 줄 요약
+3. **동작이 같다는 근거** — 통과한 테스트 이름 또는 수동 검증 절차
+4. `npx fixearly --dir=<경로> --report` 재실행 후 이 항목 수치 전후 비교</script></div></div><div class="pen">
+    <div>복잡도 p90<br><span class="loc">지금 7 → 목표 6 이하</span></div>
+    <div class="pb"><i class="ok" style="width:93%"></i><i class="no" style="width:7%"></i></div>
+    <div class="pv"><b>8.3</b> 확보 · −0.7</div>
+    <div class="pa"><button class="cp mini" data-open="a8" data-title="축 개선 · 복잡도 p90">지시문</button>
+      <script type="text/plain" id="a8"># 축 개선: 복잡도 p90
+
+## 지금
+- 저장소 `api/src` · 미들급 · 점수 61 C
+- **복잡도 p90: 7** (목표 6 이하) — 이 항목에서 0.7점이 깎여 있다
+
+## 목표
+복잡한 쪽 10% 함수의 복잡도를 낮춘다 (분포를 내리는 일이라 함수 하나로는 안 움직인다).
+점수는 결과일 뿐이다. **읽고 고치는 비용이 실제로 줄지 않으면 실패**로 친다.
+
+## 방법
+worst 목록부터 순서대로. 한 번에 하나씩, 커밋마다 테스트 통과.
+
+## 후보 (측정값에서 뽑은 것)
+1. parseFields() 복잡도 122 — api/src/database/get-ast-from-query/lib/parse-fields.ts:33
+2. scan() 복잡도 113 — api/src/websocket/collab/calculate-cache-metadata.ts:30
+3. generatePaths() 복잡도 110 — api/src/services/specifications.ts:173
+4. apply() 복잡도 109 — api/src/cli/commands/schema/apply.ts:36
+5. (anonymous)() 복잡도 92 — api/src/services/import/import.ts:669
+6. parseFields() 복잡도 87 — api/src/services/graphql/schema/parse-query.ts:41
+
+## 금지
+- 큰 함수 하나만 고치고 끝내기 (분포 지표라 효과 없음)
+- 확인 없이 "개선했다"고 주장하기
+
+## 규칙
+1. **동작 100% 불변.** 공개 시그니처·반환 타입·에러 종류·호출 순서 유지.
+2. 후보 하나 = 커밋 하나. 커밋마다 타입체크·테스트 통과.
+3. 전부 고칠 필요 없다. **안 고치는 판단과 그 이유**도 결과물이다.
+
+## 보고
+1. 후보별 [고침 / 안 고침 + 이유]
+2. 커밋별 diff와 한 줄 요약
+3. **동작이 같다는 근거** — 통과한 테스트 이름 또는 수동 검증 절차
+4. `npx fixearly --dir=<경로> --report` 재실행 후 이 항목 수치 전후 비교</script></div></div>
+
+
+  <div class="note"><b>점수를 올리려고 고치지 마라.</b> 위 "무엇부터 고칠까"를 먼저 하고 점수는 따라오게 두는 편이 낫다.
+  파일을 의미 없이 쪼개면 평균 파일 줄만 내려가고 읽기는 더 나빠진다 — 그래서 그 항목의 배점을 5점으로 낮췄다.</div>
+</div></section>
+
+<footer><div class="w">
+  이건 특정 기준으로 바라본 한 단면이다. 설계·테스트·문서·보안·성능·커뮤니티는 재지 않는다.<br>
+  기준선: 유명 오픈소스 74개 (2026-07-31 측정) · 채점축 4개 · 진단 17종
+</div></footer>
+<dialog id="pdlg">
+  <div class="pd-h"><b id="pd-t"></b><button class="pd-x" data-close>×</button></div>
+  <pre id="pd-b"></pre>
+  <div class="pd-f"><button class="cp" id="pd-c">복사</button>
+    <span class="pd-n">Claude Code·Codex·Cursor에 붙여넣으면 된다</span></div>
+</dialog>
+<script>
+const dlg = () => document.getElementById('pdlg');
+document.addEventListener('click', function (ev) {
+  const open = ev.target.closest('[data-open]');
+  if (open) {
+    const src = document.getElementById(open.getAttribute('data-open')); if (!src) return;
+    document.getElementById('pd-t').textContent = open.getAttribute('data-title') || '작업 지시문';
+    document.getElementById('pd-b').textContent = src.textContent;
+    dlg().showModal(); return;
+  }
+  if (ev.target.closest('[data-close]')) { dlg().close(); return; }
+  // 백드롭 클릭 — 클릭이 dialog 자신에 떨어지면 내용 바깥이다
+  if (ev.target === dlg()) { dlg().close(); return; }
+  const cp = ev.target.closest('#pd-c');
+  if (cp) {
+    const t = document.getElementById('pd-b').textContent;
+    const done = () => { cp.textContent = '복사됨 ✓'; cp.classList.add('ok');
+      setTimeout(() => { cp.textContent = '복사'; cp.classList.remove('ok'); }, 1800); };
+    const fallback = () => { const a = document.createElement('textarea'); a.value = t; document.body.appendChild(a);
+      a.select(); try { document.execCommand('copy'); } catch (e) {} a.remove(); done(); };
+    if (navigator.clipboard) { navigator.clipboard.writeText(t).then(done, fallback); } else { fallback(); }
+  }
+});
+</script>
+</body></html>

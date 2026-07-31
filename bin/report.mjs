@@ -283,6 +283,25 @@ function axisPrompt(pen, ctx, q) {
       cands: `가장 긴 파일: ${q.maxFile?.path || "—"} (${q.maxFile?.lines || 0}줄) · 200줄 넘는 파일 ${q.longFiles || 0}개`,
       ban: "- 기계적 분할",
     },
+    "순차 I/O": {
+      goal: "안 기다려도 되는데 줄 세워 기다리는 자리를 없앤다 — 왕복의 합을 최댓값으로",
+      how: "루프 안에서 행마다 조회하면 IN 절 한 번으로 합치고, 서로 참조하지 않는 await 는 Promise.all 로 편다. "
+        + "커넥션을 공유하는 자리(트랜잭션·단일 QueryRunner)는 묶어도 드라이버가 직렬화하므로 이득이 없다 — 먼저 확인할 것.",
+      cands: list([...((q.nplusOne || {}).worst || []), ...((q.serialAwait || {}).worst || [])].slice(0, 6),
+        (w) => `${w.file}:${w.line}${w.count ? ` — ${w.count}개 연속` : ""}`),
+      ban: "- 재시도 루프·커서 페이지네이션처럼 순차가 맞는 자리를 병렬로 바꾸기\n"
+        + "- 앞 호출이 검증인데 뒤와 묶어, 검증 실패에도 뒤가 실행되게 만들기\n"
+        + "- 동시성 상한 없이 전부 펼쳐 커넥션을 소진하기",
+    },
+    "O(n²) 배열 조회": {
+      goal: "행 루프 안에서 바깥 배열을 훑는 자리를 Map/Set 조회로 바꾼다",
+      how: "루프 밖에서 키로 한 번 묶고 조회만 한다. 술어는 그대로 두고 판정 시점만 옮긴다.",
+      cands: list(((q.quadratic || {}).candidateList || []).slice(0, 6),
+        (c) => `${c.recv}.${c.method}() — ${c.file}:${c.line} (바깥: ${String(c.outer || "?").slice(0, 40)})`),
+      ban: "- 안쪽이 고정 목록인 자리를 바꾸기 — O(n x 상수)라 이득이 없다\n"
+        + "- 작은 n 에서 Map 구축 고정비가 스캔보다 비싼데도 바꾸기 (재보고 판단할 것)\n"
+        + "- 스캔을 concat·includes 같은 다른 이름으로 옮겨 탐지만 피하기",
+    },
   }[pen.key] || { goal: `${pen.key}를 목표(${pen.target})까지 낮춘다`, how: "가장 큰 기여부터 순서대로.", cands: "(후보 목록 없음)", ban: "- 지표만 겨냥한 변경" };
 
   return `# 축 개선: ${pen.key}
@@ -390,10 +409,19 @@ function penaltyBreakdown(si) {
     { key: "복잡도 p90", cap: 9, got: cap(L2(si.p90Cog, 6) * 3.0, 9), now: String(si.p90Cog), target: "6 이하" },
     { key: "중복", cap: 9, got: cap((si.dupPct - 8) * 1.2, 9), now: `${si.dupPct}%`, target: "8% 이하" },
     { key: "함수 길이 p90", cap: 3, got: cap(L2(si.fnP90, 23) * 5.5, 3), now: `${si.fnP90}줄`, target: "23줄 이하" },
-    { key: "평균 파일 줄", cap: 5, got: cap((si.avgFileLines - 120) / 5, 5), now: `${si.avgFileLines}줄`, target: "120줄 이하" },
+    { key: "평균 파일 줄", cap: 5, got: cap((si.avgFileLines - 120) * 0.03125, 5), now: `${si.avgFileLines}줄`, target: "120줄 이하" },
     { key: "복잡도 상위10 평균", cap: 4, got: cap(L2(si.cogTop10, 65) * 2.66, 4), now: String(si.cogTop10), target: "65 이하" },
     { key: "함수 길이 상위10 평균", cap: 4, got: cap(L2(si.fnTop10, 174) * 3.6, 4), now: `${si.fnTop10}줄`, target: "174줄 이하" },
-    { key: "200줄+ 파일", cap: 3, got: cap(si.longFileSeverityPct * 1.3, 3), now: `${si.longFileSeverityPct}%`, target: "—" },
+    { key: "200줄+ 파일", cap: 3, got: cap(si.longFileSeverityPct * 1.3, 3), now: `${si.longFileSeverityPct}%`, target: "200줄 초과 파일 줄이기" },
+    // v9·v10 에서 들어온 두 축. 여기 빠져 있어서 지도의 합이 실제 감점과 10점까지
+    // 어긋났다(directus: 실제 38.7 vs 지도 28.7). 헤드라인 숫자가 틀리는 건
+    // 이 제품이 제일 감당 못 하는 종류의 결함이라 축이 늘면 반드시 같이 넣는다.
+    { key: "순차 I/O", cap: 5,
+      got: si.seqIoSites < 3 ? 0 : cap((si.seqIoPer1k - 3.0) * 0.185, 5),
+      now: `${si.seqIoSites}곳 (${si.seqIoPer1k}/1000파일)`, target: "3.0/1000파일 이하" },
+    { key: "O(n²) 배열 조회", cap: 5,
+      got: si.quadCandidates < 3 ? 0 : cap((si.quadPer10kLines - 1.5) * 1.30, 5),
+      now: `${si.quadCandidates}곳 (${si.quadPer10kLines}/10k줄)`, target: "1.5/10k줄 이하" },
   ].sort((a, b) => b.got - a.got);
 }
 
