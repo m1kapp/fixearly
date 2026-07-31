@@ -1,0 +1,567 @@
+{
+ "note": "새 채점축 후보 4종 판정(2026-07-31). 통계는 넷 다 통과했지만 이중 기준의 나머지 반쪽(지점이 주장을 뒷받침하는가 · 기계적 PR 이 되는가)에서 전부 탈락. 재현: tools/axis-probe.mjs",
+ "verdicts": {
+  "동기 I/O": "탈락 — 전체 245곳 중 서버 경로는 24곳(6/37)뿐. 나머지는 vite 의존성 최적화·vitest 스캐폴딩·nuxt 빌드·storybook builder, next.js 는 compiled/ 아래 번들된 벤더 코드였다. 남은 24곳도 dev 서버 기동·안드로이드 셋업 같은 1회성이 대부분.",
+  "무제한 팬아웃": "탈락 — 수정에 동시성 제한기(p-limit 등)가 필요해 의존성 추가와 설계 결정이 따른다. 기계적이지 않고 메인테이너가 설계 판단으로 본다.",
+  "중복 await": "탈락 — 탐지가 호출 \"텍스트\"를 비교해서, 루프나 변수 재대입으로 값만 바뀌는 호출을 중복으로 센다(outline 마이그레이션: tableName 재대입하며 같은 텍스트 4회). 분기별 호출도 못 가른다.",
+  "깊은 복사": "탈락 — structuredClone 은 JSON 왕복과 동작이 다르다(Date·RegExp·Map). 행동 보존이 아니라 위험하고, 신호도 약하다(10/37, p90 0.39)."
+ },
+ "n": 37,
+ "repos": [
+  {
+   "name": "angular",
+   "kind": "프레임워크",
+   "score": 85,
+   "loc": 232596,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 7,
+   "dupAwait": 112,
+   "deepClone": 4,
+   "sample": []
+  },
+  {
+   "name": "astro",
+   "kind": "프레임워크",
+   "score": 83,
+   "loc": 55614,
+   "syncIo": 34,
+   "syncIoServer": 0,
+   "fanout": 6,
+   "dupAwait": 11,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "axios",
+   "kind": "라이브러리",
+   "score": 91,
+   "loc": 5535,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 0,
+   "dupAwait": 0,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "directus",
+   "kind": "앱",
+   "score": 71,
+   "loc": 62337,
+   "syncIo": 2,
+   "syncIoServer": 0,
+   "fanout": 11,
+   "dupAwait": 56,
+   "deepClone": 1,
+   "sample": []
+  },
+  {
+   "name": "eslint",
+   "kind": "툴체인",
+   "score": 79,
+   "loc": 63010,
+   "syncIo": 5,
+   "syncIoServer": 1,
+   "fanout": 2,
+   "dupAwait": 2,
+   "deepClone": 0,
+   "sample": [
+    {
+     "file": "services/suppressions-service.js",
+     "line": 120,
+     "name": "existsSync",
+     "where": "async-fn",
+     "server": true
+    }
+   ]
+  },
+  {
+   "name": "excalidraw",
+   "kind": "앱",
+   "score": 71,
+   "loc": 67078,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 3,
+   "dupAwait": 3,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "execa",
+   "kind": "라이브러리",
+   "score": 98,
+   "loc": 5726,
+   "syncIo": 2,
+   "syncIoServer": 0,
+   "fanout": 0,
+   "dupAwait": 1,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "express",
+   "kind": "라이브러리",
+   "score": 90,
+   "loc": 1137,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 0,
+   "dupAwait": 0,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "fastify",
+   "kind": "라이브러리",
+   "score": 80,
+   "loc": 5345,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 0,
+   "dupAwait": 0,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "hono",
+   "kind": "라이브러리",
+   "score": 75,
+   "loc": 18813,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 0,
+   "dupAwait": 1,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "immer",
+   "kind": "라이브러리",
+   "score": 87,
+   "loc": 2338,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 0,
+   "dupAwait": 0,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "immich",
+   "kind": "앱",
+   "score": 86,
+   "loc": 48816,
+   "syncIo": 7,
+   "syncIoServer": 3,
+   "fanout": 10,
+   "dupAwait": 29,
+   "deepClone": 0,
+   "sample": [
+    {
+     "file": "services/storage.service.ts",
+     "line": 33,
+     "name": "existsSync",
+     "where": "loop",
+     "server": true
+    },
+    {
+     "file": "services/storage.service.ts",
+     "line": 168,
+     "name": "mkdirSync",
+     "where": "async-fn",
+     "server": true
+    },
+    {
+     "file": "services/transcoding.service.ts",
+     "line": 205,
+     "name": "mkdirSync",
+     "where": "async-fn",
+     "server": true
+    }
+   ]
+  },
+  {
+   "name": "jotai",
+   "kind": "라이브러리",
+   "score": 93,
+   "loc": 3036,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 0,
+   "dupAwait": 0,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "ky",
+   "kind": "라이브러리",
+   "score": 77,
+   "loc": 2836,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 0,
+   "dupAwait": 1,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "medusa",
+   "kind": "앱",
+   "score": 78,
+   "loc": 37508,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 1,
+   "dupAwait": 4,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "mitt",
+   "kind": "라이브러리",
+   "score": 100,
+   "loc": 75,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 0,
+   "dupAwait": 0,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "n8n",
+   "kind": "앱",
+   "score": 81,
+   "loc": 15930,
+   "syncIo": 1,
+   "syncIoServer": 0,
+   "fanout": 2,
+   "dupAwait": 12,
+   "deepClone": 1,
+   "sample": []
+  },
+  {
+   "name": "nanoid",
+   "kind": "라이브러리",
+   "score": 84,
+   "loc": 240,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 0,
+   "dupAwait": 0,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "nestjs",
+   "kind": "프레임워크",
+   "score": 95,
+   "loc": 31729,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 8,
+   "dupAwait": 0,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "next.js",
+   "kind": "프레임워크",
+   "score": 58,
+   "loc": 200293,
+   "syncIo": 42,
+   "syncIoServer": 7,
+   "fanout": 22,
+   "dupAwait": 82,
+   "deepClone": 16,
+   "sample": [
+    {
+     "file": "server/app-render/encryption-utils-server.ts",
+     "line": 21,
+     "name": "existsSync",
+     "where": "async-fn",
+     "server": true
+    },
+    {
+     "file": "server/app-render/encryption-utils-server.ts",
+     "line": 54,
+     "name": "existsSync",
+     "where": "async-fn",
+     "server": true
+    },
+    {
+     "file": "server/dev/next-dev-server.ts",
+     "line": 648,
+     "name": "existsSync",
+     "where": "async-fn",
+     "server": true
+    }
+   ]
+  },
+  {
+   "name": "nuxt",
+   "kind": "프레임워크",
+   "score": 88,
+   "loc": 19478,
+   "syncIo": 13,
+   "syncIoServer": 0,
+   "fanout": 10,
+   "dupAwait": 8,
+   "deepClone": 1,
+   "sample": []
+  },
+  {
+   "name": "outline",
+   "kind": "앱",
+   "score": 79,
+   "loc": 64127,
+   "syncIo": 3,
+   "syncIoServer": 0,
+   "fanout": 24,
+   "dupAwait": 25,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "payload",
+   "kind": "앱",
+   "score": 42,
+   "loc": 51706,
+   "syncIo": 1,
+   "syncIoServer": 0,
+   "fanout": 19,
+   "dupAwait": 20,
+   "deepClone": 2,
+   "sample": []
+  },
+  {
+   "name": "playwright",
+   "kind": "툴체인",
+   "score": 90,
+   "loc": 55674,
+   "syncIo": 15,
+   "syncIoServer": 5,
+   "fanout": 14,
+   "dupAwait": 17,
+   "deepClone": 0,
+   "sample": [
+    {
+     "file": "server/android/android.ts",
+     "line": 190,
+     "name": "existsSync",
+     "where": "async-fn",
+     "server": true
+    },
+    {
+     "file": "server/bidi/third_party/firefoxPrefs.ts",
+     "line": 20,
+     "name": "existsSync",
+     "where": "async-fn",
+     "server": true
+    },
+    {
+     "file": "server/registry/dependencies.ts",
+     "line": 312,
+     "name": "existsSync",
+     "where": "async-fn",
+     "server": true
+    }
+   ]
+  },
+  {
+   "name": "prettier",
+   "kind": "툴체인",
+   "score": 74,
+   "loc": 36763,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 0,
+   "dupAwait": 2,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "storybook",
+   "kind": "툴체인",
+   "score": 88,
+   "loc": 116821,
+   "syncIo": 10,
+   "syncIoServer": 0,
+   "fanout": 21,
+   "dupAwait": 16,
+   "deepClone": 2,
+   "sample": []
+  },
+  {
+   "name": "strapi",
+   "kind": "앱",
+   "score": 85,
+   "loc": 200453,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 18,
+   "dupAwait": 30,
+   "deepClone": 3,
+   "sample": []
+  },
+  {
+   "name": "svelte",
+   "kind": "프레임워크",
+   "score": 69,
+   "loc": 41395,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 0,
+   "dupAwait": 1,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "tanstack-query",
+   "kind": "라이브러리",
+   "score": 87,
+   "loc": 5685,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 0,
+   "dupAwait": 0,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "trpc",
+   "kind": "라이브러리",
+   "score": 93,
+   "loc": 7295,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 2,
+   "dupAwait": 0,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "typescript",
+   "kind": "툴체인",
+   "score": 71,
+   "loc": 301414,
+   "syncIo": 17,
+   "syncIoServer": 0,
+   "fanout": 0,
+   "dupAwait": 0,
+   "deepClone": 2,
+   "sample": []
+  },
+  {
+   "name": "valibot",
+   "kind": "라이브러리",
+   "score": 62,
+   "loc": 25453,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 12,
+   "dupAwait": 0,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "vite",
+   "kind": "툴체인",
+   "score": 68,
+   "loc": 37085,
+   "syncIo": 21,
+   "syncIoServer": 6,
+   "fanout": 12,
+   "dupAwait": 12,
+   "deepClone": 0,
+   "sample": [
+    {
+     "file": "node/server/index.ts",
+     "line": 1253,
+     "name": "execSync",
+     "where": "async-fn",
+     "server": true
+    },
+    {
+     "file": "node/server/index.ts",
+     "line": 1256,
+     "name": "execSync",
+     "where": "async-fn",
+     "server": true
+    },
+    {
+     "file": "node/server/index.ts",
+     "line": 1282,
+     "name": "readFileSync",
+     "where": "async-fn",
+     "server": true
+    }
+   ]
+  },
+  {
+   "name": "vitest",
+   "kind": "툴체인",
+   "score": 86,
+   "loc": 36330,
+   "syncIo": 27,
+   "syncIoServer": 2,
+   "fanout": 13,
+   "dupAwait": 12,
+   "deepClone": 0,
+   "sample": [
+    {
+     "file": "node/resolver.ts",
+     "line": 118,
+     "name": "existsSync",
+     "where": "loop",
+     "server": true
+    },
+    {
+     "file": "node/resolver.ts",
+     "line": 130,
+     "name": "existsSync",
+     "where": "loop",
+     "server": true
+    }
+   ]
+  },
+  {
+   "name": "vue",
+   "kind": "프레임워크",
+   "score": 43,
+   "loc": 45412,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 0,
+   "dupAwait": 0,
+   "deepClone": 0,
+   "sample": []
+  },
+  {
+   "name": "zod",
+   "kind": "라이브러리",
+   "score": 68,
+   "loc": 24382,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 1,
+   "dupAwait": 0,
+   "deepClone": 4,
+   "sample": []
+  },
+  {
+   "name": "zustand",
+   "kind": "라이브러리",
+   "score": 93,
+   "loc": 1208,
+   "syncIo": 0,
+   "syncIoServer": 0,
+   "fanout": 0,
+   "dupAwait": 0,
+   "deepClone": 0,
+   "sample": []
+  }
+ ]
+}
