@@ -52,24 +52,36 @@ STAR = ('<svg class="st" viewBox="0 0 16 16" width="11" height="11" aria-hidden=
 
 
 def elapsed(f, key):
-    """카드에 붙일 경과 표시. 머지·닫힘은 '며칠 만에', 진행 중은 '며칠째'.
+    """카드에 붙일 (한글, 영어, 머지월) 삼중.
 
     시간은 사람이 제일 먼저 읽는 신호다 — 6일 만에 머지된 것과 3주째 대기 중인
     것은 같은 '진행'이 아니다. 날짜는 impact.mjs 가 GitHub 에서 받아 registry 에
     남긴다(createdAt/mergedAt/closedAt).
+
+    카드의 다른 글자는 전부 ko/en 쌍인데 이것만 한글이었다. 영어 쪽은 짧게 간다 —
+    끝난 건 걸린 기간(in 6d), 진행 중인 건 며칠째인지(day 7). '일째'가 '7번째 날'
+    이라 day 7 이 그대로 맞는 대응이다.
+
+    머지된 건 언제 끝났는지도 남긴다("'26.7"). 기간만 있으면 6일이 언제의 6일인지
+    모른다.
     """
     import datetime as _d
     born = f.get("createdAt")
     if not born:
-        return ""
+        return ("", "", "")
     parse = lambda t: _d.datetime.fromisoformat(t.replace("Z", "+00:00"))
     start = parse(born)
-    done = f.get("mergedAt") or f.get("closedAt")
+    merged = f.get("mergedAt")
+    done = merged or f.get("closedAt")
     end = parse(done) if done else _d.datetime.now(_d.timezone.utc)
     days = (end - start).days
+    # 머지월만 적는다. 닫힌 건 굳이 날짜를 새기지 않는다.
+    on = f"'{parse(merged):%y}.{parse(merged).month}" if merged else ""
     if done:
-        return f"{days}일 만에" if days >= 1 else "당일"
-    return f"{days}일째" if days >= 1 else "오늘"
+        return ((f"{days}일 만에", f"in {days}d", on) if days >= 1
+                else ("당일", "same day", on))
+    return ((f"{days}일째", f"day {days}", "") if days >= 1
+            else ("오늘", "today", ""))
 
 
 def esc(t):
@@ -131,8 +143,10 @@ def card(f, key):
     # 닫힌 건 트레일을 안 그린다 — 진행이 없으니 진행 표시도 없다.
     mark = "" if ended else trail(at)
     cls = "ic" + (" done" if key == "merged" else "") + (" off" if ended else "")
-    age = elapsed(f, key)
-    age_html = f'<span class="age">{age}</span>' if age else ""
+    age_ko, age_en, on = elapsed(f, key)
+    on_html = f'<span class="on">{on}</span>' if on else ""
+    age_html = (f'<span class="age"><span class="ko">{age_ko}</span>'
+                f'<span class="en">{age_en}</span></span>') if age_ko else ""
     src = AVATAR.get(f["repo"])
     fav = f'<img class="ifav" src="{src}" alt="" width="15" height="15" loading="lazy">' if src else ""
     bk, be = BLURB.get(f["repo"], ("", ""))
@@ -146,7 +160,7 @@ def card(f, key):
         f'<span class="it">{esc(f["title"])}</span>'
         f'<span class="ist">{mark}'
         f'<span class="ko">{ko}</span><span class="en">{en}</span>'
-        f'{age_html}'
+        f'{on_html}{age_html}'
         f'<span class="prn">#{f["pr"]}</span></span></a>'
     )
 
