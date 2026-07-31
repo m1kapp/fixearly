@@ -33,13 +33,14 @@
     "impact": "node bin/impact.mjs",
     "board": "node tools/update-board.mjs",
     "og": "python3 tools/make-og.py",
-    "cards": "python3 tools/update-impact-cards.py",
+    "cards": "python3 tools/fetch-repo-avatars.py && python3 tools/update-impact-cards.py",
     "labels": "python3 tools/update-corpus-labels.py",
     "corpus": "python3 tools/rebuild-corpus.py",
     "boarddata": "python3 tools/update-board-data.py",
     "rows": "python3 tools/add-board-rows.py",
     "measure": "bash tools/remeasure-board.sh",
     "refresh": "python3 tools/rebuild-corpus.py && python3 tools/update-board-data.py && python3 tools/add-board-rows.py && python3 tools/update-corpus-labels.py && python3 tools/build-score-history.py && python3 tools/update-history-ui.py && node tools/update-board.mjs && python3 tools/make-og.py",
-    "history": "python3 tools/build-score-history.py && python3 tools/update-history-ui.py"
+    "history": "python3 tools/build-score-history.py && python3 tools/update-history-ui.py",
+    "avatars": "python3 tools/fetch-repo-avatars.py"
   }
 }

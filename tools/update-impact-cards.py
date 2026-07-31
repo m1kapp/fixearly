@@ -14,6 +14,10 @@ import sys
 import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 findings = json.load(open(f"{ROOT}/impact.json", encoding="utf-8"))["findings"]
+# 저장소 아이콘은 data URI 로 박는다 — 랜딩은 외부 리소스가 0개다.
+# tools/fetch-repo-avatars.py 가 만든다.
+_av = f"{ROOT}/data/repo-avatars.json"
+AVATAR = json.load(open(_av, encoding="utf-8")) if os.path.exists(_av) else {}
 md = open(f"{ROOT}/IMPACT.md", encoding="utf-8").read()
 
 STAGE = [
@@ -129,13 +133,15 @@ def card(f, key):
     cls = "ic" + (" done" if key == "merged" else "") + (" off" if ended else "")
     age = elapsed(f, key)
     age_html = f'<span class="age">{age}</span>' if age else ""
+    src = AVATAR.get(f["repo"])
+    fav = f'<img class="ifav" src="{src}" alt="" width="15" height="15" loading="lazy">' if src else ""
     bk, be = BLURB.get(f["repo"], ("", ""))
     what = (f'<span class="iw"><span class="ko">{esc(bk)}</span>'
             f'<span class="en">{esc(be)}</span></span>') if bk else ""
     return (
         f'<a class="{cls}" href="{url}" target="_blank" rel="noopener">'
         f'{GH_MARK}'
-        f'<b>{esc(name)}{star_html}</b>'
+        f'<b>{fav}{esc(name)}{star_html}</b>'
         f'{what}'
         f'<span class="it">{esc(f["title"])}</span>'
         f'<span class="ist">{mark}'
@@ -169,10 +175,14 @@ h = re.sub(
     rf"\g<1>{en_line}\g<2>", h, count=1)
 
 # 새 저장소에 한 줄 설명을 안 붙이면 카드에 이름만 남는다 — 조용히 비는 쪽이라 검사한다.
-missing = sorted({f["repo"] for f in findings} - set(BLURB))
-if missing:
-    for r in missing:
-        print(f"  ✗ BLURB 없음: {r}")
+repos = {f["repo"] for f in findings}
+missing = sorted(repos - set(BLURB))
+noicon = sorted(repos - set(AVATAR))
+for r in missing:
+    print(f"  ✗ BLURB 없음: {r}")
+for r in noicon:
+    print(f"  ✗ 아이콘 없음(python3 tools/fetch-repo-avatars.py): {r}")
+missing = missing + noicon
 
 if "--check" in sys.argv:
     print(f"{'설명 누락 ' + str(len(missing)) + '곳' if missing else '카드 설명이 저장소 전부를 덮는다'}"
