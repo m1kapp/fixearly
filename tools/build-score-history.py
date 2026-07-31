@@ -80,6 +80,13 @@ for name in names:
     if len(track) > 1:
         history[name] = track
 
+# 규칙을 바꿔 재측정하면 행은 자동으로 생기는데 설명은 손으로 적는다 — 안 적으면
+# 랜딩에 빈칸이 나간다. 조용히 비는 쪽이라 여기서 막는다.
+undocumented = [v["version"] for v in versions if not RULESETS.get(v["version"])]
+if undocumented:
+    sys.exit(f"RULESETS 에 설명이 없는 판: {', '.join(undocumented)} "
+             f"— tools/build-score-history.py 의 RULESETS 에 무엇이 바뀌었는지 적어라")
+
 out = {
     "note": "채점 규칙 버전별 점수. 규칙이 다르면 점수를 나란히 비교할 수 없다 — "
             "이 표는 '무엇이 바뀌어서 점수가 움직였는지'를 보여주기 위한 것이지, "

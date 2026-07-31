@@ -87,13 +87,15 @@ block_ko = "".join(
     for r in hist["rulesets"])
 section = (
     '<div class="rulesets" id="rulesets">'
-    '<div class="rs-h"><span class="ko">채점 규칙이 바뀐 판</span>'
-    '<span class="en">ruleset changes</span></div>'
+    '<div class="rs-h"><span class="ko">보드에 발행된 채점 판</span>'
+    '<span class="en">published rulesets</span></div>'
     '<div class="note"><p class="ko">규칙이 다르면 점수를 나란히 놓을 수 없다. '
     '아래는 <b>무엇이 바뀌어서 점수가 움직였는지</b>이지, 저장소가 좋아졌다·나빠졌다는 뜻이 아니다. '
+    '보드를 다시 발행한 판만 싣는다 — 발행 없이 지나간 판은 아무도 그 점수를 본 적이 없다. '
     f'현재 판은 <b>{cur}</b>다.</p>'
     '<p class="en">Scores from different rulesets are not comparable. This lists '
-    '<b>what changed in the ruler</b>, not whether a project improved — the board is on '
+    '<b>what changed in the ruler</b>, not whether a project improved. Only rulesets the '
+    'board was republished under are listed — the board is on '
     f'<b>{cur}</b>.</p></div>'
     + block_ko + '</div>')
 if 'id="rulesets"' not in html:

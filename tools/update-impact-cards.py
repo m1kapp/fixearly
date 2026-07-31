@@ -9,6 +9,7 @@ update-impact-cards — IMPACT.md 의 PR 상태를 랜딩 08 섹션 카드로 �
 """
 import json
 import re
+import sys
 
 import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -92,6 +93,32 @@ def trail(at):
     return f'<span class="trail" aria-hidden="true">{"".join(out)}</span>'
 
 
+# 카드에 저장소 이름만 있으면 "novu 가 뭔데" 에서 읽기가 멈춘다. 한 줄 설명을 붙인다.
+# GitHub description 을 그대로 쓰지 않는 이유: 마케팅 문구라 길고 자기소개다
+# ("The world's most flexible commerce platform for agents and developers").
+# 무엇을 하는 물건인지만 남긴다. 새 저장소는 여기 없으면 빈칸으로 나가고,
+# --check 가 잡는다.
+BLURB = {
+    "outline/outline": ("팀 위키·문서", "team knowledge base"),
+    "nocodb/nocodb": ("노코드 DB · Airtable 대안", "no-code database"),
+    "novuhq/novu": ("알림 인프라", "notification infrastructure"),
+    "medusajs/medusa": ("커머스 백엔드", "commerce backend"),
+    "vitejs/vite": ("프런트엔드 빌드 도구", "frontend build tool"),
+    "n8n-io/n8n": ("워크플로 자동화", "workflow automation"),
+    "immich-app/immich": ("셀프호스팅 사진 보관", "self-hosted photo library"),
+    "langfuse/langfuse": ("LLM 관측·평가", "LLM observability"),
+    "calcom/cal.diy": ("일정 예약", "scheduling"),
+    "payloadcms/payload": ("헤드리스 CMS · Next.js", "headless CMS"),
+    "strapi/strapi": ("헤드리스 CMS", "headless CMS"),
+    "baptisteArno/typebot.io": ("챗봇 빌더", "chatbot builder"),
+    "typeorm/typeorm": ("TypeScript ORM", "TypeScript ORM"),
+    "TryGhost/Ghost": ("퍼블리싱·뉴스레터", "publishing & newsletters"),
+    "twentyhq/twenty": ("오픈소스 CRM", "open-source CRM"),
+    "directus/directus": ("데이터 백엔드", "data backend"),
+    "Budibase/budibase": ("사내 도구 빌더", "internal tools builder"),
+}
+
+
 def card(f, key):
     ko, en, at, ended = META[key]
     url = f"https://github.com/{f['repo']}/pull/{f['pr']}"
@@ -102,10 +129,14 @@ def card(f, key):
     cls = "ic" + (" done" if key == "merged" else "") + (" off" if ended else "")
     age = elapsed(f, key)
     age_html = f'<span class="age">{age}</span>' if age else ""
+    bk, be = BLURB.get(f["repo"], ("", ""))
+    what = (f'<span class="iw"><span class="ko">{esc(bk)}</span>'
+            f'<span class="en">{esc(be)}</span></span>') if bk else ""
     return (
         f'<a class="{cls}" href="{url}" target="_blank" rel="noopener">'
         f'{GH_MARK}'
         f'<b>{esc(name)}{star_html}</b>'
+        f'{what}'
         f'<span class="it">{esc(f["title"])}</span>'
         f'<span class="ist">{mark}'
         f'<span class="ko">{ko}</span><span class="en">{en}</span>'
@@ -136,6 +167,17 @@ h = re.sub(
 h = re.sub(
     r'(<p class="en">)[^<]*?( — full log in <a href="https://github\.com/m1kapp/fixearly/blob/main/IMPACT\.md">)',
     rf"\g<1>{en_line}\g<2>", h, count=1)
+
+# 새 저장소에 한 줄 설명을 안 붙이면 카드에 이름만 남는다 — 조용히 비는 쪽이라 검사한다.
+missing = sorted({f["repo"] for f in findings} - set(BLURB))
+if missing:
+    for r in missing:
+        print(f"  ✗ BLURB 없음: {r}")
+
+if "--check" in sys.argv:
+    print(f"{'설명 누락 ' + str(len(missing)) + '곳' if missing else '카드 설명이 저장소 전부를 덮는다'}"
+          f" ({len(findings)}건 / {len({f['repo'] for f in findings})}곳)")
+    sys.exit(1 if missing else 0)
 
 open(f"{ROOT}/index.html", "w", encoding="utf-8").write(h)
 print("카드 개편:", counts)
