@@ -11,11 +11,11 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 
 | 발견 | repo | 유형 | PR | 상태 | 점수 |
 |------|------|------|----|------|------|
-| `deleteBulkMetadata N+1` | [immich · 109.3k★](https://github.com/immich-app/immich) | N+1 (루프 안 순차 DELETE, item당 왕복 1회) | [#30163](https://github.com/immich-app/immich/pull/30163) | 🟢 reviewing | — |
+| `deleteBulkMetadata N+1` | [immich · 109.4k★](https://github.com/immich-app/immich) | N+1 (루프 안 순차 DELETE, item당 왕복 1회) | [#30163](https://github.com/immich-app/immich/pull/30163) | 🟢 reviewing | — |
 | `sync-agent findOne N+1` | [novu · 39.4k★](https://github.com/novuhq/novu) | N+1 (for 루프 안 findOne, 소스 통합당 쿼리 1회) | [#12074](https://github.com/novuhq/novu/pull/12074) | 🔵 approved · 머지 대기 | — |
 | `booking member diff O(n²)` | [cal.com · 47.1k★](https://github.com/calcom/cal.diy) | O(n²) 배열 조회 (루프 안 .some() 선형스캔 4회 → Set) | [#29828](https://github.com/calcom/cal.diy/pull/29828) | ⚪ awaiting review | — |
-| `view-widget-upsert O(n²)` | [twenty · 53.9k★](https://github.com/twentyhq/twenty) | O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map) | [#23231](https://github.com/twentyhq/twenty/pull/23231) | ❌ closed | — |
-| `nested relations hydration O(n²)` | [twenty · 53.9k★](https://github.com/twentyhq/twenty) | O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map) | [#23232](https://github.com/twentyhq/twenty/pull/23232) | ❌ closed | — |
+| `view-widget-upsert O(n²)` | [twenty · 54k★](https://github.com/twentyhq/twenty) | O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map) | [#23231](https://github.com/twentyhq/twenty/pull/23231) | ❌ closed | — |
+| `nested relations hydration O(n²)` | [twenty · 54k★](https://github.com/twentyhq/twenty) | O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map) | [#23232](https://github.com/twentyhq/twenty/pull/23232) | ❌ closed | — |
 | `lucky-user set rebuild in loop` | [cal.com · 47.1k★](https://github.com/calcom/cal.diy) | 루프 불변 인덱스 재구축 (while마다 new Set 재구축 → 호이스팅) | [#29832](https://github.com/calcom/cal.diy/pull/29832) | ⚪ awaiting review | — |
 | `dataloader doc placement O(n²)` | [payload · 43.9k★](https://github.com/payloadcms/payload) | O(n²) (배치당 keys.findIndex 전체 스캔 — Map으로 O(1)) | [#17469](https://github.com/payloadcms/payload/pull/17469) | ⚪ awaiting review | — |
 | `translations batch match O(n²)` | [medusa · 35.5k★](https://github.com/medusajs/medusa) | O(n²) (batch당 filter+some 전체 스캔 — Set으로 O(1)) | [#16188](https://github.com/medusajs/medusa/pull/16188) | 🔵 approved · 머지 대기 | — |
