@@ -162,7 +162,7 @@
    "title": "pure CSS 청크 선형 조회",
    "type": "O(n²) (청크 x import 마다 pureCssChunkNames 전량 스캔 — Set으로 O(1))",
    "repo": "vitejs/vite",
-   "repoLabel": "vite · 82.1k★",
+   "repoLabel": "vite · 82.2k★",
    "pr": 23114,
    "createdAt": "2026-07-31T06:36:11Z"
   }

@@ -1,0 +1,7 @@
+# 언어 통계에서 제외 — 랜딩과 샘플 리포트는 제품이 아니다.
+#
+# 없으면 저장소가 HTML 로 잡힌다(index.html 441KB > bin/*.mjs 285KB). JS/TS 분석기인데
+# 프로필 고정 카드와 저장소 헤더에 "● HTML" 이 뜬다. 둘 다 사람이 읽는 산출물이지
+# 도구의 코드가 아니다.
+index.html           linguist-documentation
+.report-preview.html linguist-documentation
