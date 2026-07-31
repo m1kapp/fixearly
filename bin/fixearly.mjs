@@ -38,7 +38,7 @@ const wantKit = args.includes("--kit"); // cog × git churn = "먼저 고칠 파
 
 // 채점 규칙 버전. 유예값·기울기·캡을 바꾸면 이 값을 올려야 한다 —
 // 그러지 않으면 규칙이 바뀐 뒤의 점수를 예전 점수와 나란히 놓게 되고, 진행도가 거짓말을 한다.
-const SCORING_VERSION = "v11";
+const SCORING_VERSION = "v12";
 
 // 등급 색 (라이트 기준) — 배지·임베드 공용
 const GRADE_COLORS = { S: "#0f7a63", A: "#12915a", B: "#7d8a2c", C: "#c0862e", D: "#cb4436", E: "#8f2f24" };
@@ -849,6 +849,10 @@ const QUADRATIC_METHODS = new Set(["find", "findIndex", "some"]);
 // filter는 "그룹핑" 형제 패턴 — 고치는 법이 다르다(Map<key, T> 가 아니라 Map<key, T[]>).
 // 역시 배열 전용이라 문자열 오탐이 없다.
 const QUADRATIC_GROUP_METHODS = new Set(["filter"]);
+// 멤버십 조회 — 루프 안에서 배열을 훑는 가장 흔한 형태인데 오래 빠져 있었다.
+// 그냥 넣으면 문자열 연산이 쏟아진다(`path.includes("/")`). 그래서 수신자가
+// **배열이라는 증거**가 있을 때만 센다(아래 arrayVars). Set.has 는 O(1)이라 제외한다.
+const QUADRATIC_MEMBERSHIP_METHODS = new Set(["includes", "indexOf", "lastIndexOf"]);
 
 // O(n²) 사이트를 PR 가치순으로 가른다. 같은 O(n²)라도 프론트 UI 루프(n=메뉴·필터, 유계)와
 // 백엔드 유저데이터 루프(n=요청·행, 무계)는 PR감이 천지차. zone(파일경로)이 지배적 신호다.
@@ -936,6 +940,46 @@ function analyzeQuadraticLookups(ts, fileContents) {
         if (isArrayish) moduleConsts.add(d.name.getText(sf));
       }
     }
+    // 배열이라는 증거가 있는 이름만 모은다. 멤버십 조회(includes/indexOf)는 문자열에도
+    // 같은 이름이 있어서, 증거 없이 세면 `url.includes("/")` 같은 것이 전부 잡힌다.
+    // 증거: 배열 리터럴 초기화 · 배열을 만드는 호출 · T[] / Array<T> 타입 주석.
+    const ARRAY_MAKERS = new Set(["map", "filter", "flatMap", "slice", "concat", "split",
+      "from", "keys", "values", "entries", "sort", "reverse", "flat"]);
+    const arrayVars = new Set();
+    const smallLiteralVars = new Set();
+    {
+      const looksArray = (init, type) => {
+        if (type && (ts.isArrayTypeNode(type) ||
+            (ts.isTypeReferenceNode(type) && type.typeName.getText(sf) === "Array"))) return true;
+        if (!init) return false;
+        if (ts.isArrayLiteralExpression(init)) return true;
+        if (ts.isAsExpression(init)) return looksArray(init.expression, init.type);
+        if (ts.isCallExpression(init) && ts.isPropertyAccessExpression(init.expression))
+          return ARRAY_MAKERS.has(init.expression.name.getText(sf));
+        return false;
+      };
+      const walkDecl = (n) => {
+        if ((ts.isVariableDeclaration(n) || ts.isParameter(n) || ts.isPropertyDeclaration(n)) &&
+            n.name && ts.isIdentifier(n.name) && looksArray(n.initializer, n.type)) {
+          const nm = n.name.getText(sf);
+          arrayVars.add(nm);
+          // 함수 안에서 선언된 작은 고정 목록도 사실상 상수다 — 스코프가 아니라 크기로 본다.
+          // `const listTypes = ["a","b","c"]` 를 루프에서 훑는 건 O(n x 3) = O(n) 이다.
+          // 모듈 상수만 걸러서는 이걸 못 잡는다(실측: outline·ghost 의 멤버십 후보에 섞여 있었다).
+          const init = n.initializer;
+          if (init && ts.isArrayLiteralExpression(init) &&
+              // 빈 리터럴은 제외한다 — `const seen = []` 뒤에 push 로 자라는 누적기이지
+              // 고정 목록이 아니다. 크기 0 을 "작다"로 보면 진짜 O(n²)를 지운다.
+              init.elements.length >= 1 && init.elements.length <= 12 &&
+              !init.elements.some((e) => ts.isSpreadElement(e))) {
+            smallLiteralVars.add(nm);
+          }
+        }
+        ts.forEachChild(n, walkDecl);
+      };
+      ts.forEachChild(sf, walkDecl);
+    }
+
     const isFnLike = (n) =>
       ts.isFunctionDeclaration(n) || ts.isFunctionExpression(n) || ts.isArrowFunction(n) || ts.isMethodDeclaration(n);
     const isLoopNode = (n) =>
@@ -995,15 +1039,21 @@ function analyzeQuadraticLookups(ts, fileContents) {
         };
         const recvIsPath = ts.isIdentifier(recvNode) || ts.isPropertyAccessExpression(recvNode);
         const root = recvIsPath ? recvRoot(recvNode) : null;
+        // 멤버십 조회는 수신자가 배열이라는 증거가 있을 때만. this.x·a.b 경로는 증거를
+        // 못 잡으므로 보수적으로 제외한다 — 과소 보고가 오탐보다 낫다.
+        const isMembership = QUADRATIC_MEMBERSHIP_METHODS.has(method) &&
+          ts.isIdentifier(recvNode) && arrayVars.has(recvNode.getText(sf));
         if (inLoop && recvIsPath && root &&
-            (QUADRATIC_METHODS.has(method) || QUADRATIC_GROUP_METHODS.has(method))) {
+            (QUADRATIC_METHODS.has(method) || QUADRATIC_GROUP_METHODS.has(method) || isMembership)) {
           const recv = recvNode.getText(sf);
           // 수신자가 배열이 아니면 배열 스캔이 아니다. 배열 메서드는 첫 인자가 항상 함수인데,
           // 같은 이름의 속성 호출은 값을 넘긴다 — nuxt `options.filter(template)` 은 사용자가
           // 넘긴 술어 함수고, typescript 저장소의 `ts.filter(...)` 는 네임스페이스 유틸이다.
           // 채점축이 된 뒤로는 이런 오탐 하나가 등급을 움직이므로 여기서 끊는다.
           const arg0 = node.arguments[0];
-          const argIsFn = !!arg0 && (ts.isArrowFunction(arg0) || ts.isFunctionExpression(arg0));
+          // 멤버십 조회는 값을 넘기므로 이 가드를 적용하면 안 된다 — 대신 배열 증거로 걸렀다.
+          const argIsFn = isMembership ||
+            (!!arg0 && (ts.isArrowFunction(arg0) || ts.isFunctionExpression(arg0)));
           if (!locals.has(root) && argIsFn) {
             const zone = quadZoneOf(file);
             const dynamicOuter = quadOuterDynamic(outerText);
@@ -1012,7 +1062,8 @@ function analyzeQuadraticLookups(ts, fileContents) {
             if (quadConstOuter(outerText, moduleConsts)) cuts.push("const-outer");
             // 안쪽(수신자)이 모듈 상수면 O(n × 상수) = O(n) 이다. 게이트가 바깥만 보고 있어서
             // INTERCEPTION_ROUTE_MARKERS 같은 상수 목록 조회가 이차식으로 잡히고 있었다.
-            if (CONSTish.test(root) || moduleConsts.has(root)) cuts.push("const-inner");
+            if (CONSTish.test(root) || moduleConsts.has(root) || smallLiteralVars.has(root))
+              cuts.push("const-inner");
             if (quadIoInLoop(ts, loopNode, sf)) cuts.push("io-in-loop");
             if (quadCappedN(fnNode ? fnNode.getText(sf) : "")) cuts.push("capped-n");
             sites.push({
@@ -2323,16 +2374,16 @@ if (ts && allFns.length > 0) {
     // 코드줄 상관이 전부 음수가 된다(툴체인 -0.14 · 프레임워크 -0.25 · 앱 -0.38).
     // 전체 +0.64 는 종류 교란이었다 — 라이브러리 15곳 중 14곳이 0 이라서 생긴 값이다.
     //
-    // 유예 1.0/10k줄(코퍼스 중앙 0.81 근처), 기울기 1.0 = 캡이 6.0 에서 닿는다.
+    // 유예 1.5/10k줄 = 코퍼스 중앙값, 기울기 1.30 = 캡이 p90(5.34)에서 닿는다.
+    // 이 엔진의 보정 규칙("유예=중앙 · 캡은 p90 에서") 그대로다.
     //
-    // 이 기울기는 "캡은 p90 에서 닿게"라는 이 엔진의 보정 규칙을 **의도적으로** 벗어난다
-    // (74곳 p90 은 3.95, 캡은 6.0 = p90 의 152%). 중복 축이 유예를 중앙 위로 올린 것과
-    // 같은 종류의 의도적 이탈이다: 판정 난 O(n²) PR 6건 중 4건이 닫혔다. 오탐률이 그만큼
-    // 남아 있는 축은 캡뿐 아니라 기울기도 완만해야 한다 — 캡을 p90 에서 닿게 하면
-    // 만점 감점이 5곳에서 크게 늘고, 그중 일부는 손검증에서 떨어질 자리다.
-    // 74곳 재검증: 발동 29곳 · 만점 5곳 · 기존 점수와 rho=-0.20.
+    // v11 까지는 이 항이 규칙을 벗어나 있었다(캡이 p90 의 152% 지점). 그게 오탐 대비
+    // 의도적 완화라고 적어뒀는데, 실은 상당 부분 **과소 탐지의 증상**이었다 — v12 에서
+    // 멤버십 조회(includes/indexOf)를 탐지에 넣자 분포가 위로 밀리면서 같은 캡이 저절로
+    // p90 의 112% 가 됐다. 탐지가 실제 분포를 담게 되니 규칙을 그냥 따를 수 있게 됐다.
+    // 74곳: 감점 34곳 · 만점 6곳 · 기존 점수와 rho=-0.31.
     - (quadratic && quadratic.candidates >= 3
-        ? Math.min(5, Math.max(0, (quadratic.candidates / Math.max(1, codeLines)) * 10000 - 1.0) * 1.0)
+        ? Math.min(5, Math.max(0, (quadratic.candidates / Math.max(1, codeLines)) * 10000 - 1.5) * 1.30)
         : 0)
     // io(루프 안 파일 읽기)는 점수에서 뺐다: 재시도 루프·커서 페이지네이션처럼 '순차가 필수'인
     // 코드를 구분하려면 사람 검증이 필요한데(PATTERNS.md), 사람이 필요한 축을 자동 채점에
