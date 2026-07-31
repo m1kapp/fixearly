@@ -26,13 +26,16 @@
     "typescript": "^5.4.0"
   },
   "license": "MIT",
-  "homepage": "https://yoo-minho.github.io/fixearly",
+  "homepage": "https://fixearly.m1k.app",
   "scripts": {
     "dev": "python3 -m http.server 4173",
-    "test": "node bin/selftest.mjs",
+    "test": "node bin/selftest.mjs && python3 tools/update-corpus-labels.py --check",
     "impact": "node bin/impact.mjs",
     "board": "node tools/update-board.mjs",
     "og": "python3 tools/make-og.py",
-    "cards": "python3 tools/update-impact-cards.py"
+    "cards": "python3 tools/update-impact-cards.py",
+    "labels": "python3 tools/update-corpus-labels.py",
+    "corpus": "python3 tools/rebuild-corpus.py",
+    "boarddata": "python3 tools/update-board-data.py"
   }
 }

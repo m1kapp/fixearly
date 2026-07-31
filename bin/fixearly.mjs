@@ -2000,6 +2000,10 @@ let testDensity = null;
   }
   testDensity = { files: testFiles.length, lines: testLines, percent: null };
 }
+// percent 는 codeLines 가 정해진 뒤에 채운다(아래 파일 순회에서 누적된다).
+// 예전엔 이 값을 JSON 을 쓴 뒤에 계산해서, 산출물엔 늘 null 이 박히고 CLI 만
+// 실제 값을 찍었다. 보드 DATA 를 그 산출물로 다시 만들었더니 69행 전부
+// 테스트 두께가 사라졌다 — 콘솔과 파일이 다른 말을 하면 안 된다.
 {
   const before = files.length;
   files = files.filter((f) => {
@@ -2414,6 +2418,11 @@ const usage = {
   util: { used: usedByCategory.util, total: kitTotalFeatures.util, percent: kitTotalFeatures.util > 0 ? Math.round((usedByCategory.util / kitTotalFeatures.util) * 100) : 0 },
 };
 
+// 테스트 두께 비율 — 산출물에 담기려면 stats 조립 전에 확정돼야 한다.
+if (testDensity) {
+  testDensity.percent = codeLines > 0 ? Math.round((testDensity.lines / codeLines) * 1000) / 10 : null;
+}
+
 const stats = {
   generatedAt: new Date().toISOString(),
   kitVersion,
@@ -2564,7 +2573,6 @@ if (textbook) {
   }
 }
 if (testDensity) {
-  testDensity.percent = codeLines > 0 ? Math.round((testDensity.lines / codeLines) * 1000) / 10 : null;
   if (testDensity.files > 0) {
     // 코퍼스 52개 중앙 102% — 아래면 '맨몸 복잡함' 쪽, 위면 '방어된 복잡함' 쪽으로 읽는다.
     const rel = testDensity.percent >= 102 ? "코퍼스 중앙(102%) 이상" : "코퍼스 중앙(102%) 미만";

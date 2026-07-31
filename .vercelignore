@@ -1,0 +1,12 @@
+# 랜딩은 정적 4파일이면 된다 — 엔진·데이터·도구는 배포에 안 실린다
+bin
+data
+tools
+node_modules
+*.md
+LICENSE
+impact.json
+pre-pr.json
+package.json
+package-lock.json
+.fixearly-history.json

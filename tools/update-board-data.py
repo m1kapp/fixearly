@@ -30,6 +30,7 @@ prev = {r["name"]: r for r in json.loads(m.group(1))}
 corpus = {r["name"]: r for r in json.load(open(f"{ROOT}/data/corpus.json", encoding="utf-8"))["repos"]}
 r1 = lambda v: round(v, 1) if isinstance(v, (int, float)) else v
 
+
 rows, dropped = [], []
 for name, c in corpus.items():
     f = f"{BOARD}/o_{name}/fixearly.json"
@@ -53,7 +54,10 @@ for name, c in corpus.items():
         "stars": p.get("stars", ""), "kind": c["kind"], "ver": c["ver"],
         "sha": sha or p.get("sha", ""), "url": p.get("url", ""),
         "sub": p.get("sub", ""), "exw": p.get("exw", ""),
-        "td": r1((q.get("testDensity") or {}).get("percent") or 0),
+        # 테스트 두께(td)는 뺐다. 엔진은 --dir 아래만 훑는데 대부분의 저장소는
+        # 테스트를 그 밖에 둔다(mitt 은 src/ 를 재고 테스트는 test/ 에 있다).
+        # 옛 DATA 의 값은 방법론을 재현할 수 없었고, 재구성한 값은 원값과 크게
+        # 어긋났다(rxjs 12.4 vs 1034). 방어 못 하는 숫자는 안 보여준다.
     })
 
 rows.sort(key=lambda r: (-r["score"], r["name"]))

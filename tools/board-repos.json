@@ -83,8 +83,8 @@
   "kcls": "k-lib",
   "klabel": "라이브러리",
   "stars": "47.4k",
-  "branch": "main",
-  "sha": "f2b3abd",
+  "branch": "7.9.x",
+  "sha": "787e3a8",
   "sub": "packages/client/src"
  },
  {
