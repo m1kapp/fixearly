@@ -125,6 +125,13 @@
    "repo": "typeorm/typeorm",
    "repoLabel": "typeorm · 36.6k★",
    "pr": 12746
+  },
+  {
+   "title": "growth stats 집계 3회 직렬",
+   "type": "독립 순차 await (postId 하나로만 매개되는 집계 3개 직렬 → Promise.all, 합→최댓값)",
+   "repo": "TryGhost/Ghost",
+   "repoLabel": "ghost · 54.6k★",
+   "pr": 29704
   }
  ]
 }
