@@ -27,6 +27,27 @@ const getFlag = (name) => {
 
 const srcDir = path.resolve(process.cwd(), getFlag("dir") || "src");
 const outDir = path.resolve(process.cwd(), getFlag("out") || "public");
+
+// 파일 경로 표시 기준. 저장소 안에서 돌리면 cwd 가 맞지만, --dir 이 cwd 밖을
+// 가리키면 `../../../../../private/tmp/...` 같은 것이 리포트에 그대로 찍힌다.
+// 클릭도 안 되고 읽을 수도 없다. cwd 기준이 밖으로 나가면 분석 대상의 git 루트로,
+// 그것도 없으면 분석 대상 자체로 떨어진다.
+const DISPLAY_BASE = (() => {
+  const fromCwd = path.relative(process.cwd(), srcDir);
+  if (!fromCwd.startsWith("..")) return process.cwd();
+  try {
+    const root = execFileSync("git", ["-C", srcDir, "rev-parse", "--show-toplevel"], {
+      encoding: "utf-8", stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
+    if (root) return root;
+  } catch { /* git repo 가 아니면 분석 대상 기준으로 */ }
+  return srcDir;
+})();
+/** 사람이 읽을 파일 경로. 기준 밖으로 나가면 그때만 cwd 로 물러선다. */
+const relDisplay = (f) => {
+  const r = path.relative(DISPLAY_BASE, f);
+  return r.startsWith("..") ? path.relative(process.cwd(), f) : r;
+};
 const wantDead = args.includes("--dead"); // 데드코드축(knip) 옵트인 — 느리므로 기본 off
 const wantBadge = args.includes("--badge"); // README·사이트 임베드용 SVG 배지 생성
 const wantMine = args.includes("--mine");   // O(n²) PR 후보 전체 덤프(손검증 파이프라인 입력)
@@ -2152,11 +2173,11 @@ for (const file of files) {
   totalBranches += q.branches;
   totalFunctions += q.functions;
   if (ts) {
-    const rel = path.relative(process.cwd(), file);
+    const rel = relDisplay(file);
     for (const fn of analyzeAstComplexity(ts, file, content)) allFns.push({ ...fn, file: rel });
     fileContents.push({ file: rel, content });
   }
-  if (counts.code > maxFile.lines) maxFile = { path: path.relative(process.cwd(), file), lines: counts.code };
+  if (counts.code > maxFile.lines) maxFile = { path: relDisplay(file), lines: counts.code };
   if (counts.code > 260) {
     longFiles++;
     longFileSeverity += Math.min(2, (counts.code - 260) / 300);
@@ -2492,7 +2513,7 @@ const stats = {
   generatedAt: new Date().toISOString(),
   kitVersion,
   source: {
-    dir: path.relative(process.cwd(), srcDir),
+    dir: relDisplay(srcDir) || ".",
     files: files.length,
     totalLines,
     codeLines,
