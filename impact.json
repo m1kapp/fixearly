@@ -128,6 +128,7 @@
   },
   {
    "title": "eval dataset item 반복 조회",
+   "titleEn": "eval dataset item re-read",
    "type": "중복 쿼리 (변수마다 동일 WHERE 로 같은 행 재조회 → 컬럼 합쳐 1회)",
    "repo": "langfuse/langfuse",
    "repoLabel": "langfuse · 32.2k★",
@@ -136,6 +137,7 @@
   },
   {
    "title": "in-depth analytics 순차 await",
+   "titleEn": "in-depth analytics serial awaits",
    "type": "독립 순차 await (독립 groupBy 3개 직렬 → Promise.all, 합→최댓값)",
    "repo": "baptisteArno/typebot.io",
    "repoLabel": "typebot · 10.2k★",
@@ -144,6 +146,7 @@
   },
   {
    "title": "loadTables 카탈로그 전량 재스캔",
+   "titleEn": "loadTables full catalog rescan",
    "type": "O(n²) (테이블마다 columns·constraints·fks·indices 전량 스캔 — Map 그룹핑으로 O(1))",
    "repo": "typeorm/typeorm",
    "repoLabel": "typeorm · 36.6k★",
@@ -152,6 +155,7 @@
   },
   {
    "title": "growth stats 집계 3회 직렬",
+   "titleEn": "growth stats 3 serial aggregates",
    "type": "독립 순차 await (postId 하나로만 매개되는 집계 3개 직렬 → Promise.all, 합→최댓값)",
    "repo": "TryGhost/Ghost",
    "repoLabel": "ghost · 54.6k★",
@@ -160,6 +164,7 @@
   },
   {
    "title": "pure CSS 청크 선형 조회",
+   "titleEn": "pure CSS chunk linear lookup",
    "type": "O(n²) (청크 x import 마다 pureCssChunkNames 전량 스캔 — Set으로 O(1))",
    "repo": "vitejs/vite",
    "repoLabel": "vite · 82.2k★",

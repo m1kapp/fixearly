@@ -149,6 +149,11 @@ def card(f, key):
                 f'<span class="en">{age_en}</span></span>') if age_ko else ""
     src = AVATAR.get(f["repo"])
     fav = f'<img class="ifav" src="{src}" alt="" width="15" height="15" loading="lazy">' if src else ""
+    # 원래 영어인 제목은 그대로 둔다 — 한국어 화면에서도 코드 용어는 영어가 자연스럽다.
+    # 한글이 섞인 것만 ko/en 으로 쪼갠다.
+    ten = f.get("titleEn")
+    title_html = (f'<span class="ko">{esc(f["title"])}</span>'
+                  f'<span class="en">{esc(ten)}</span>') if ten else esc(f["title"])
     bk, be = BLURB.get(f["repo"], ("", ""))
     what = (f'<span class="iw"><span class="ko">{esc(bk)}</span>'
             f'<span class="en">{esc(be)}</span></span>') if bk else ""
@@ -157,7 +162,7 @@ def card(f, key):
         f'{GH_MARK}'
         f'<b>{fav}{esc(name)}{star_html}</b>'
         f'{what}'
-        f'<span class="it">{esc(f["title"])}</span>'
+        f'<span class="it">{title_html}</span>'
         f'<span class="ist">{mark}'
         f'<span class="ko">{ko}</span><span class="en">{en}</span>'
         f'{on_html}{age_html}'
@@ -189,6 +194,11 @@ h = re.sub(
     rf"\g<1>{en_line}\g<2>", h, count=1)
 
 # 새 저장소에 한 줄 설명을 안 붙이면 카드에 이름만 남는다 — 조용히 비는 쪽이라 검사한다.
+notranslated = sorted(f["title"] for f in findings
+                      if re.search(r"[가-힣]", f["title"]) and not f.get("titleEn"))
+for t in notranslated:
+    print(f"  ✗ 영어 제목 없음(impact.json 의 titleEn): {t}")
+
 repos = {f["repo"] for f in findings}
 missing = sorted(repos - set(BLURB))
 noicon = sorted(repos - set(AVATAR))
@@ -196,7 +206,7 @@ for r in missing:
     print(f"  ✗ BLURB 없음: {r}")
 for r in noicon:
     print(f"  ✗ 아이콘 없음(python3 tools/fetch-repo-avatars.py): {r}")
-missing = missing + noicon
+missing = missing + noicon + notranslated
 
 if "--check" in sys.argv:
     print(f"{'설명 누락 ' + str(len(missing)) + '곳' if missing else '카드 설명이 저장소 전부를 덮는다'}"
