@@ -83,9 +83,9 @@ budibase 의 "denounce" 는 사유가 없다. 요청받지 않은 최적화는 �
 | PR | 축 | 상태 | 경과 |
 |---|---|---|---|
 | [medusa#16188](https://github.com/medusajs/medusa/pull/16188) | O(n²) | 🔵 승인 · 머지 대기 | 7일째 |
+| [n8n#34899](https://github.com/n8n-io/n8n/pull/34899) | O(n²) | 🔵 승인 · 머지 대기 | 7일째 |
 | [novu#12074](https://github.com/novuhq/novu/pull/12074) | N+1 | 🔵 승인 · 머지 대기 | 7일째 |
 | [vite#23114](https://github.com/vitejs/vite/pull/23114) | O(n²) | 🔵 승인 · 머지 대기 | 오늘 |
-| [n8n#34899](https://github.com/n8n-io/n8n/pull/34899) | O(n²) | 🟠 변경 요청 | 7일째 |
 | [immich#30163](https://github.com/immich-app/immich/pull/30163) | N+1 | 🟢 리뷰 진행 | 8일째 |
 | [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | 🟢 리뷰 진행 | 2일째 |
 | [ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 순차 I/O | ⚪ 대기 | 오늘 |
@@ -97,7 +97,7 @@ budibase 의 "denounce" 는 사유가 없다. 요청받지 않은 최적화는 �
 | [strapi#27125](https://github.com/strapi/strapi/pull/27125) | O(n²) | ⚪ 대기 | 7일째 |
 | [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 오늘 |
 
-**열린 것 14건.** 판정 난 9건 중 머지 2 · 승인 3 · 닫힘 4.
+**열린 것 14건.** 판정 난 10건 중 머지 2 · 승인 4 · 닫힘 4.
 <!-- /auto:open -->
 
 큐에서 새로 꺼내기 전에 이쪽부터 정리한다. 속도 규칙상 열린 것이 5건을 넘으면 멈춘다.
