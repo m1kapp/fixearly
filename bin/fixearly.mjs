@@ -934,10 +934,18 @@ function analyzeQuadraticLookups(ts, fileContents) {
       for (const d of st.declarationList.declarations) {
         if (!ts.isIdentifier(d.name) || !d.initializer) continue;
         const init = d.initializer;
-        const isArrayish =
-          ts.isArrayLiteralExpression(init) ||
-          (ts.isAsExpression(init) && ts.isArrayLiteralExpression(init.expression));
-        if (isArrayish) moduleConsts.add(d.name.getText(sf));
+        // 모듈 최상단 const 는 프로세스 수명 동안 고정이다. 리터럴뿐 아니라 배열을 만드는
+        // 호출로 파생된 것도 마찬가지다 — svelte 의 `const abstract_roles =
+        // aria_roles.filter(...)` 는 ARIA 명세 테이블에서 한 번 만들어지는 고정 목록인데,
+        // 리터럴만 보던 때는 이걸 데이터로 착각해 O(n²)로 잡았다.
+        const ARRAY_FROM_CALL = new Set(["map", "filter", "flatMap", "slice", "concat",
+          "split", "from", "keys", "values", "entries", "sort", "reverse", "flat", "of"]);
+        const arrayish = (e) =>
+          ts.isArrayLiteralExpression(e) ||
+          (ts.isAsExpression(e) && arrayish(e.expression)) ||
+          (ts.isCallExpression(e) && ts.isPropertyAccessExpression(e.expression) &&
+            ARRAY_FROM_CALL.has(e.expression.name.getText(sf)));
+        if (arrayish(init)) moduleConsts.add(d.name.getText(sf));
       }
     }
     // 배열이라는 증거가 있는 이름만 모은다. 멤버십 조회(includes/indexOf)는 문자열에도
