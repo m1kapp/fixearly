@@ -101,7 +101,9 @@ if 'id="rulesets"' not in html:
     if not m3:
         problems.append("보드 섹션 끝을 못 찾음")
     else:
-        html = html[: m3.start(1)] + "</div>" + section + html[m3.start(1) + len("</div>"):]
+        # 섹션은 .w(폭 제한) 를 닫는 </div> **앞**에 넣는다. 뒤에 넣으면 폭 제한을
+        # 벗어나 본문이 오른쪽으로 흘러넘친다 — 실제로 그렇게 나갔다.
+        html = html[: m3.start(1)] + section + "</div>" + html[m3.start(1) + len("</div>"):]
         edits += 1
 if ".rulesets{" not in html:
     css = ("\n.rulesets{margin-top:var(--space-lg)}"

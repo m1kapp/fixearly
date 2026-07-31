@@ -202,23 +202,60 @@ def fix_hero(html):
     return html, total
 
 
+
+# ── 코퍼스 '개수' 표기 ────────────────────────────────────────────────────
+# 중앙값은 위에서 맞추는데 "오픈소스 70개" 같은 개수는 아무도 안 봐서 74로 늘린 뒤에도
+# 8곳이 70으로 남아 있었다. 단위를 명시한 형태만 잡는다 — 규칙 이력의 "v6 · 70곳" 은
+# 그 판의 실제 코퍼스 크기라 건드리면 안 된다(그래서 '곳' 은 패턴에 넣지 않는다).
+COUNT_PATTERNS = [
+    r"오픈소스 (\d+)개",
+    r"OSS (\d+)개",
+    r"(\d+)개 측정",
+    r"(\d+)개 결과 보기",
+    r"(\d+)개 분포로 보기",
+    r"(\d+)개 코퍼스",
+    r"(\d+)개의 등급 분포",
+    r"(\d+) repos</span>",
+    r"See (\d+) results",
+    r"(\d+) well-known",
+    r"(\d+) open-source",
+]
+N = len(rows)
+
+
+def fix_counts(html):
+    total = 0
+    for pat in COUNT_PATTERNS:
+        out, pos = [], 0
+        for m in re.finditer(pat, html):
+            if int(m.group(1)) == N:
+                continue
+            out.append(html[pos:m.start(1)] + str(N))
+            pos = m.end(1)
+            total += 1
+        if out:
+            out.append(html[pos:])
+            html = "".join(out)
+    return html, total
+
 new = html
 new, a = fix_static(new)
 new, b = fix_js(new)
 new, c = fix_kind_sentence(new)
 new, d = fix_hero(new)
-n = a + b + c + d
+new, e = fix_counts(new)
+n = a + b + c + d + e
 
 if problems:
     for p in problems:
         print(f"  ✗ {p}")
 if CHECK:
     print(f"{'맞지 않는 값 ' + str(n) + '건' if n else '코퍼스 라벨이 corpus.json 과 일치한다'}"
-          f"  (정적 {a} · JS {b} · 종류문장 {c} · 히어로 {d})")
+          f"  (정적 {a} · JS {b} · 종류문장 {c} · 히어로 {d} · 개수 {e})")
     sys.exit(1 if (n or problems) else 0)
 
 if n:
     open(f"{ROOT}/index.html", "w", encoding="utf-8").write(new)
-print(f"갱신 {n}건 (정적 {a} · JS {b} · 종류문장 {c} · 히어로 {d}) · 중앙값 "
+print(f"갱신 {n}건 (정적 {a} · JS {b} · 종류문장 {c} · 히어로 {d} · 개수 {e}) · 중앙값 "
       + " · ".join(f"{k} {g(want[k][0])}" for k, _ in METRICS))
 sys.exit(1 if problems else 0)
