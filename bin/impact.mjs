@@ -40,9 +40,10 @@ async function prStatus(repo, pr) {
 
   try {
     const d = await get(`https://api.github.com/repos/${repo}/pulls/${pr}`);
-    if (d.merged) return { state: "merged", url: d.html_url };
-    if (d.state !== "open") return { state: "closed", url: d.html_url };
-    if (d.draft) return { state: "draft", url: d.html_url };
+    const at = { createdAt: d.created_at, mergedAt: d.merged_at, closedAt: d.closed_at };
+    if (d.merged) return { state: "merged", url: d.html_url, ...at };
+    if (d.state !== "open") return { state: "closed", url: d.html_url, ...at };
+    if (d.draft) return { state: "draft", url: d.html_url, ...at };
 
     // 열린 PR 만 리뷰를 확인한다 — 닫힌 것에 쓸 호출을 아낀다.
     let reviews = [];
@@ -57,12 +58,12 @@ async function prStatus(repo, pr) {
       last.set(r.user?.login, r.state);
     }
     const verdicts = [...last.values()];
-    if (verdicts.includes("CHANGES_REQUESTED")) return { state: "changes", url: d.html_url };
-    if (verdicts.includes("APPROVED")) return { state: "approved", url: d.html_url };
+    if (verdicts.includes("CHANGES_REQUESTED")) return { state: "changes", url: d.html_url, ...at };
+    if (verdicts.includes("APPROVED")) return { state: "approved", url: d.html_url, ...at };
 
     // 판정은 없지만 사람이 붙은 흔적 — 리뷰어 지정 또는 리뷰 코멘트.
     const engaged = (d.requested_reviewers || []).length > 0 || (d.review_comments || 0) > 0 || reviews.length > 0;
-    return { state: engaged ? "reviewing" : "waiting", url: d.html_url };
+    return { state: engaged ? "reviewing" : "waiting", url: d.html_url, ...at };
   } catch (e) {
     return { state: "unknown", err: e.message };
   }
@@ -117,6 +118,10 @@ for (const f of findings) {
   const stars = fmtStars(await repoStars(f.repo));
   const label = stars ? `${String(f.repoLabel).split("·")[0].trim()} · ${stars}★` : f.repoLabel;
   if (label !== f.repoLabel) f.repoLabel = label; // registry 도 같이 맞춘다
+  // 걸린 날짜를 registry 에 남긴다 — 랜딩 카드가 "며칠째"·"며칠 만에"를 보여준다.
+  if (st.createdAt) f.createdAt = st.createdAt;
+  if (st.mergedAt) f.mergedAt = st.mergedAt; else delete f.mergedAt;
+  if (st.closedAt && !st.mergedAt) f.closedAt = st.closedAt; else delete f.closedAt;
   rows.push({ ...f, repoLabel: label, status: st.state, prUrl });
   console.log(`  ${L.icon} ${L.ko.padEnd(7)} #${f.pr}  ${f.title}  (${f.repo})`);
 }

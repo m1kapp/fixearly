@@ -45,6 +45,28 @@ STAR = ('<svg class="st" viewBox="0 0 16 16" width="11" height="11" aria-hidden=
         '<path d="M8 .25l2.06 4.55 4.94.53-3.68 3.33 1.02 4.87L8 11.1l-4.34 2.43 1.02-4.87L1 5.33l4.94-.53z"/></svg>')
 
 
+
+def elapsed(f, key):
+    """카드에 붙일 경과 표시. 머지·닫힘은 '며칠 만에', 진행 중은 '며칠째'.
+
+    시간은 사람이 제일 먼저 읽는 신호다 — 6일 만에 머지된 것과 3주째 대기 중인
+    것은 같은 '진행'이 아니다. 날짜는 impact.mjs 가 GitHub 에서 받아 registry 에
+    남긴다(createdAt/mergedAt/closedAt).
+    """
+    import datetime as _d
+    born = f.get("createdAt")
+    if not born:
+        return ""
+    parse = lambda t: _d.datetime.fromisoformat(t.replace("Z", "+00:00"))
+    start = parse(born)
+    done = f.get("mergedAt") or f.get("closedAt")
+    end = parse(done) if done else _d.datetime.now(_d.timezone.utc)
+    days = (end - start).days
+    if done:
+        return f"{days}일 만에" if days >= 1 else "당일"
+    return f"{days}일째" if days >= 1 else "오늘"
+
+
 def esc(t):
     return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
@@ -78,6 +100,8 @@ def card(f, key):
     # 닫힌 건 트레일을 안 그린다 — 진행이 없으니 진행 표시도 없다.
     mark = "" if ended else trail(at)
     cls = "ic" + (" done" if key == "merged" else "") + (" off" if ended else "")
+    age = elapsed(f, key)
+    age_html = f'<span class="age">{age}</span>' if age else ""
     return (
         f'<a class="{cls}" href="{url}" target="_blank" rel="noopener">'
         f'{GH_MARK}'
@@ -85,6 +109,7 @@ def card(f, key):
         f'<span class="it">{esc(f["title"])}</span>'
         f'<span class="ist">{mark}'
         f'<span class="ko">{ko}</span><span class="en">{en}</span>'
+        f'{age_html}'
         f'<span class="prn">#{f["pr"]}</span></span></a>'
     )
 
