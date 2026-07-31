@@ -22,6 +22,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BOARD = os.environ.get("BOARD_ROOT", "/private/tmp/board")
 
 repos = {r["name"]: r for r in json.load(open(f"{ROOT}/tools/board-repos.json", encoding="utf-8"))}
+# 종류는 사람이 정한 분류라 측정으로 덮으면 안 된다. 기존 corpus 를 정본으로 두고,
+# 거기 없는 새 저장소만 board-repos 의 klabel 로 채운다. (한 번 덮어서 vue·svelte·
+# angular 가 엔진·컴파일러 → 프레임워크로 잘못 옮겨간 적이 있다 — 동종 기준선이 틀어진다.)
+PREV_KIND = {r["name"]: r["kind"] for r in json.load(open(f"{ROOT}/data/corpus.json", encoding="utf-8"))["repos"] if r.get("kind")}
 
 
 def pkg_version(name):
@@ -62,7 +66,7 @@ def row(name, j):
         "gradeF": q["grade"],
         "files": s["files"],
         "loc": s["codeLines"],
-        "kind": meta.get("klabel", ""),
+        "kind": PREV_KIND.get(name) or meta.get("klabel", ""),
         "ver": pkg_version(name),
         "fn40": r1(si["fnOver40Pct"]),
         "fnP90": fn["p90"],
