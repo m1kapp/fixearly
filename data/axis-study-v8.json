@@ -1,8 +1,10 @@
 {
  "note": "채점축 승격 후보 판정용 원자료. v8 엔진으로 board-repos.json 의 저장소를 브랜치 HEAD 에서 재측정한 값. prisma 는 upstream 이 packages/client 를 없애 제외됐다. 재생성: BOARD_ROOT=... bash tools/remeasure-board.sh 뒤 tools/axis-study.py",
- "scoringVersion": "v8",
+ "sampleScope": "2026-07-30 시점 37곳 표본에서 잰 값이다. 코퍼스는 그 뒤 74곳으로 늘었고 채점 규칙도 v8 → v11 로 바뀌었으므로, 여기 숫자를 현재 코퍼스의 값으로 인용하면 안 된다. 이 파일은 당시 내린 결정의 근거로만 남긴다. 74곳 재검증 결과는 README 채점축 표에 있다.",
+ "engineVersionAtMeasure": "v8",
  "measuredAt": "2026-07-30",
  "n": 37,
+ "scoringVersion": "v8",
  "kinds": {
   "앱": 8,
   "프레임워크": 7,

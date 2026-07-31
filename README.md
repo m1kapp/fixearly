@@ -202,6 +202,26 @@ npx fixearly --dir=src --badge
 
 ---
 
+## 코퍼스를 다시 재는 법
+
+채점 규칙을 바꾸면 발표된 보드가 옛 규칙 값으로 남는다. 이 도구는 "규칙이 다른 점수를 나란히 놓으면
+진행도가 거짓말을 한다"를 원칙으로 내세우므로, 규칙을 올렸으면 여기까지 와야 끝이다.
+
+```bash
+BOARD_ROOT=/private/tmp/board npm run measure   # 클론 갱신 + 전량 재측정 (오래 걸린다)
+BOARD_ROOT=/private/tmp/board npm run refresh   # corpus → DATA → 정적행 → 라벨 → 보드 → og
+npm test                                        # 빠뜨린 게 있으면 여기서 걸린다
+```
+
+`measure` 는 이미 있는 클론도 브랜치 HEAD 로 당긴다(`BOARD_NO_PULL=1` 로 끔). 예전엔 있으면 그냥 써서
+"재측정"이 옛 커밋을 다시 재는 일이 됐다.
+
+`refresh` 가 손대는 곳이 여섯 군데인 이유는 보드에 표현이 두 벌 있기 때문이다 — JS 가 그리는
+`const DATA`(사람이 보는 쪽)와 정적 `<details>` 행(JS 막힌 환경용 폴백). 하나만 고치면 새로고침에
+되돌아온다. `npm test` 가 라벨·정적행 누락을 잡는다.
+
+---
+
 ## 라이선스
 
 MIT

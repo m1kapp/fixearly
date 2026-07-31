@@ -1,5 +1,7 @@
 {
  "note": "\"한 단어로 순환을 끊을 수 있는 자리\"(값 import 인데 타입으로만 쓰임) 탐색 결과. PR 감인지 판정하려고 쟀다. 결론: PR 아님 — ① tsc 가 이미 그 import 를 지운다(실측 확인)라 tsc 빌드에선 이득 0, esbuild/swc 에서만 실효 ② emitDecoratorMetadata 를 쓰는 저장소(nestjs)에선 클래스 타입을 import type 으로 바꾸면 DI 가 깨지는데 이 프로브는 인터페이스와 클래스를 구분 못 한다 ③ 규모(nestjs 192곳)가 리뷰 가능한 PR 범위를 넘는다. 재현: tools/type-import-probe.mjs",
+ "sampleScope": "2026-07-30 시점 37곳 표본에서 잰 값이다. 코퍼스는 그 뒤 74곳으로 늘었고 채점 규칙도 v8 → v11 로 바뀌었으므로, 여기 숫자를 현재 코퍼스의 값으로 인용하면 안 된다. 이 파일은 당시 내린 결정의 근거로만 남긴다. 74곳 재검증 결과는 README 채점축 표에 있다.",
+ "engineVersionAtMeasure": "v8",
  "measuredAt": "2026-07-30",
  "n": 37,
  "repos": [

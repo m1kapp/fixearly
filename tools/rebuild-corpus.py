@@ -12,6 +12,7 @@ rebuild-corpus — 재측정 산출물에서 data/corpus.json 을 다시 만든�
 
 사용: BOARD_ROOT=/private/tmp/board python3 tools/rebuild-corpus.py
 """
+import datetime
 import glob
 import json
 import os
@@ -82,6 +83,19 @@ def row(name, j):
     }
 
 
+def measured_at():
+    """측정일. 환경변수가 없으면 산출물 중 가장 최근 것의 날짜를 쓴다 —
+    빈 문자열이 들어가면 "언제 잰 값인지"가 사라지고, 그건 이 도구가 막으려는 바로 그것이다."""
+    env = os.environ.get("MEASURED_AT")
+    if env:
+        return env
+    files = glob.glob(f"{BOARD}/o_*/fixearly.json")
+    if not files:
+        return ""
+    newest = max(os.path.getmtime(f) for f in files)
+    return datetime.date.fromtimestamp(newest).isoformat()
+
+
 rows, versions = [], set()
 for f in sorted(glob.glob(f"{BOARD}/o_*/fixearly.json")):
     name = re.sub(r"^o_", "", os.path.basename(os.path.dirname(f)))
@@ -102,7 +116,7 @@ rows.sort(key=lambda r: (-r["score"], r["name"]))
 out = {
     "version": versions.pop(),
     "n": len(rows),
-    "measuredAt": os.environ.get("MEASURED_AT", ""),
+    "measuredAt": measured_at(),
     "classes": json.load(open(f"{ROOT}/data/corpus.json", encoding="utf-8")).get("classes"),
     "axes": json.load(open(f"{ROOT}/data/corpus.json", encoding="utf-8")).get("axes"),
     "repos": rows,

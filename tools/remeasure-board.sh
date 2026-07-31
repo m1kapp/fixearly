@@ -23,6 +23,19 @@ python3 -c "import json;[print(d['name']+'|'+d['url']+'|'+d['branch']+'|'+d['sub
   if [ ! -d "$dir/.git" ]; then
     echo "clone $name ($branch)..."
     git clone --depth 1 -b "$branch" -q "$url" "$dir" 2>/dev/null || git clone --depth 1 -q "$url" "$dir" 2>/dev/null
+  elif [ -z "${BOARD_NO_PULL:-}" ]; then
+    # 이미 있는 클론은 브랜치 HEAD 로 당긴다. 예전엔 있으면 그냥 썼는데, 그러면
+    # "재측정"이 옛 커밋을 다시 재는 것이 된다 — prisma 의 측정 경로가 upstream 에서
+    # 사라진 걸 늦게 안 것도 클론이 그대로였기 때문이다. 기록되는 sha 도 옛것이 된다.
+    # 측정용 사본이라 로컬 변경은 없다고 보고 강제로 맞춘다. BOARD_NO_PULL=1 로 끈다.
+    before=$(cd "$dir" && git rev-parse --short HEAD 2>/dev/null)
+    if (cd "$dir" && git fetch -q --depth 1 origin "$branch" 2>/dev/null &&
+        git reset -q --hard FETCH_HEAD 2>/dev/null && git clean -qfd 2>/dev/null); then
+      after=$(cd "$dir" && git rev-parse --short HEAD)
+      [ "$before" != "$after" ] && echo "pull $name ($before -> $after)"
+    else
+      echo "WARN pull $name 실패 — 있는 클론($before)으로 잰다"
+    fi
   fi
   [ -d "$dir/.git" ] || { echo "FAIL clone $name"; continue; }
   sha=$(cd "$dir" && git rev-parse --short HEAD)
