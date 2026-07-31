@@ -67,7 +67,7 @@
    "title": "doc-metadata localization O(n²)",
    "type": "O(n²) (localization별 versions.find — 복합키 Map으로 O(1))",
    "repo": "strapi/strapi",
-   "repoLabel": "strapi · 72.7k★",
+   "repoLabel": "strapi · 72.8k★",
    "pr": 27125
   },
   {
@@ -132,6 +132,13 @@
    "repo": "TryGhost/Ghost",
    "repoLabel": "ghost · 54.6k★",
    "pr": 29704
+  },
+  {
+   "title": "pure CSS 청크 선형 조회",
+   "type": "O(n²) (청크 x import 마다 pureCssChunkNames 전량 스캔 — Set으로 O(1))",
+   "repo": "vitejs/vite",
+   "repoLabel": "vite · 82.1k★",
+   "pr": 23114
   }
  ]
 }

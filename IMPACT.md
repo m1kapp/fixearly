@@ -20,7 +20,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `dataloader doc placement O(n²)` | [payload · 43.9k★](https://github.com/payloadcms/payload) | O(n²) (배치당 keys.findIndex 전체 스캔 — Map으로 O(1)) | [#17469](https://github.com/payloadcms/payload/pull/17469) | ⚪ awaiting review | — |
 | `translations batch match O(n²)` | [medusa · 35.5k★](https://github.com/medusajs/medusa) | O(n²) (batch당 filter+some 전체 스캔 — Set으로 O(1)) | [#16188](https://github.com/medusajs/medusa/pull/16188) | 🔵 approved · 머지 대기 | — |
 | `markdown import merge O(n²)` | [outline · 39.9k★](https://github.com/outline/outline) | O(n²) (형제 out.find title 스캔 — Map으로 O(1)) | [#13117](https://github.com/outline/outline/pull/13117) | ✅ merged | +1 |
-| `doc-metadata localization O(n²)` | [strapi · 72.7k★](https://github.com/strapi/strapi) | O(n²) (localization별 versions.find — 복합키 Map으로 O(1)) | [#27125](https://github.com/strapi/strapi/pull/27125) | ⚪ awaiting review | — |
+| `doc-metadata localization O(n²)` | [strapi · 72.8k★](https://github.com/strapi/strapi) | O(n²) (localization별 versions.find — 복합키 Map으로 O(1)) | [#27125](https://github.com/strapi/strapi/pull/27125) | ⚪ awaiting review | — |
 | `parse-fields dedup O(n²)` | [directus · 36.9k★](https://github.com/directus/directus) | O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1)) | [#27978](https://github.com/directus/directus/pull/27978) | ❌ closed | — |
 | `resource-mapper schema validation O(n²)` | [n8n · 198.8k★](https://github.com/n8n-io/n8n) | O(n²) (value별 schema.find — id Map으로 O(1)) | [#34899](https://github.com/n8n-io/n8n/pull/34899) | 🟠 changes requested | — |
 | `user field validation O(n²)` | [nocodb · 64.4k★](https://github.com/nocodb/nocodb) | O(n²) (value별 baseUsers.find ×4 — id·email Map으로 O(1)) | [#14309](https://github.com/nocodb/nocodb/pull/14309) | ⚪ awaiting review | — |
@@ -30,6 +30,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `in-depth analytics 순차 await` | [typebot · 10.2k★](https://github.com/baptisteArno/typebot.io) | 독립 순차 await (독립 groupBy 3개 직렬 → Promise.all, 합→최댓값) | [#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | ⚪ awaiting review | — |
 | `loadTables 카탈로그 전량 재스캔` | [typeorm · 36.6k★](https://github.com/typeorm/typeorm) | O(n²) (테이블마다 columns·constraints·fks·indices 전량 스캔 — Map 그룹핑으로 O(1)) | [#12746](https://github.com/typeorm/typeorm/pull/12746) | ⚪ awaiting review | — |
 | `growth stats 집계 3회 직렬` | [ghost · 54.6k★](https://github.com/TryGhost/Ghost) | 독립 순차 await (postId 하나로만 매개되는 집계 3개 직렬 → Promise.all, 합→최댓값) | [#29704](https://github.com/TryGhost/Ghost/pull/29704) | ⚪ awaiting review | — |
+| `pure CSS 청크 선형 조회` | [vite · 82.1k★](https://github.com/vitejs/vite) | O(n²) (청크 x import 마다 pureCssChunkNames 전량 스캔 — Set으로 O(1)) | [#23114](https://github.com/vitejs/vite/pull/23114) | ⚪ awaiting review | — |
 
 ## 규칙
 
