@@ -31,6 +31,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `loadTables 카탈로그 전량 재스캔` | [typeorm · 36.6k★](https://github.com/typeorm/typeorm) | O(n²) (테이블마다 columns·constraints·fks·indices 전량 스캔 — Map 그룹핑으로 O(1)) | [#12746](https://github.com/typeorm/typeorm/pull/12746) | ⚪ awaiting review | — |
 | `growth stats 집계 3회 직렬` | [ghost · 54.6k★](https://github.com/TryGhost/Ghost) | 독립 순차 await (postId 하나로만 매개되는 집계 3개 직렬 → Promise.all, 합→최댓값) | [#29704](https://github.com/TryGhost/Ghost/pull/29704) | ⚪ awaiting review | — |
 | `pure CSS 청크 선형 조회` | [vite · 82.2k★](https://github.com/vitejs/vite) | O(n²) (청크 x import 마다 pureCssChunkNames 전량 스캔 — Set으로 O(1)) | [#23114](https://github.com/vitejs/vite/pull/23114) | 🔵 approved · 머지 대기 | — |
+| `resize 핸들러 안 미사용 Map` | [excalidraw · 128.8k★](https://github.com/excalidraw/excalidraw) | 쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제) | [#11805](https://github.com/excalidraw/excalidraw/pull/11805) | ⚪ awaiting review | — |
 
 ## 규칙
 

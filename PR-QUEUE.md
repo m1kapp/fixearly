@@ -108,20 +108,21 @@ budibase 의 "denounce" 는 사유가 없다. 요청받지 않은 최적화는 �
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 |
 |---|---|---|---|
-| [medusa#16188](https://github.com/medusajs/medusa/pull/16188) | O(n²) | 🔵 승인 · 머지 대기 | 7일째 |
+| [medusa#16188](https://github.com/medusajs/medusa/pull/16188) | O(n²) | 🔵 승인 · 머지 대기 | 8일째 |
 | [novu#12074](https://github.com/novuhq/novu/pull/12074) | N+1 | 🔵 승인 · 머지 대기 | 8일째 |
 | [vite#23114](https://github.com/vitejs/vite/pull/23114) | O(n²) | 🔵 승인 · 머지 대기 | 1일째 |
 | [immich#30163](https://github.com/immich-app/immich/pull/30163) | N+1 | 🟢 리뷰 진행 | 8일째 |
-| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | 🟢 리뷰 진행 | 2일째 |
+| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | 🟢 리뷰 진행 | 3일째 |
 | [ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 순차 I/O | ⚪ 대기 | 1일째 |
 | [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 순차 I/O | ⚪ 대기 | 2일째 |
 | [cal.com#29828](https://github.com/calcom/cal.diy/pull/29828) | O(n²) | ⚪ 대기 | 8일째 |
+| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 |
 | [medusa#16233](https://github.com/medusajs/medusa/pull/16233) | O(n²) | ⚪ 대기 | 3일째 |
-| [payload#17469](https://github.com/payloadcms/payload/pull/17469) | O(n²) | ⚪ 대기 | 7일째 |
-| [strapi#27125](https://github.com/strapi/strapi/pull/27125) | O(n²) | ⚪ 대기 | 7일째 |
+| [payload#17469](https://github.com/payloadcms/payload/pull/17469) | O(n²) | ⚪ 대기 | 8일째 |
+| [strapi#27125](https://github.com/strapi/strapi/pull/27125) | O(n²) | ⚪ 대기 | 8일째 |
 | [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 1일째 |
 
-**열린 것 12건.** 판정 난 11건 중 머지 3 · 승인 3 · 닫힘 5.
+**열린 것 13건.** 판정 난 11건 중 머지 3 · 승인 3 · 닫힘 5.
 <!-- /auto:open -->
 
 큐에서 새로 꺼내기 전에 이쪽부터 정리한다. 속도 규칙상 열린 것이 5건을 넘으면 멈춘다.
@@ -129,9 +130,16 @@ budibase 의 "denounce" 는 사유가 없다. 요청받지 않은 최적화는 �
 
 ## 큐 (측정 완료 · 미제출)
 
-**지금은 하나도 못 낸다** — 열린 것이 12건이라 속도 규칙(5건 상한)에 걸린다.
-아래는 코퍼스 75곳을 `쓰기만 하는 컬렉션` 으로 훑어 나온 15건 중, 손검증까지 끝낸
-것들이다. 열린 것이 5건 밑으로 내려가면 저장소당 1건·하루 1건으로 꺼낸다.
+아래는 코퍼스를 `쓰기만 하는 컬렉션` 으로 훑어 나온 15건 중 손검증까지 끝낸 것들이다.
+열린 것이 5건 상한을 넘겨 있어 평시엔 하나도 못 내지만, **excalidraw#11805 는 축
+커버리지 예외로 냈다** — 이 축은 머지가 0건이라 규칙이 아직 미검증이었다.
+예외는 이걸로 닫힌다. 나머지는 열린 것이 5건 밑으로 내려간 뒤 저장소당 1건·하루 1건으로 꺼낸다.
+
+**왜 excalidraw 를 골랐나** — 확률을 재고 골랐다. CLA 없음, 정리 PR 6건 평균
+**0.0일** 머지(외부 기여자 1줄짜리도 당일), 우리 열린 PR 없음. 무엇보다 근거가
+"미세 최적화"가 아니라 **"2023년 6월 #6123 이후 2년간 아무도 안 읽은 코드"** 라
+directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리사이즈 포인터 핸들러
+안이라 매 틱 이중 순회를 버린다는 점도 붙는다.
 
 고침이 전부 "지우기"라 크기가 작고 동작이 안 변한다. 다만 **작다고 통과하는 게
 아니다**(budibase 는 +10/−6 으로 닫혔다) — 꺼낼 때 그 저장소의 게이트 0 과 회전
@@ -147,7 +155,8 @@ budibase 의 "denounce" 는 사유가 없다. 요청받지 않은 최적화는 �
 | react | `CollectHoistablePropertyLoads.ts:499` · `AlignReactiveScopesToBlockScopesHIR.ts:78` | 컴파일러 패스 2건 |
 | vscode | `chatToolPicker.ts:261` | `mcpServerByTool.set(...)` 뒤 조회 없음 |
 | next.js | `export/index.ts:285` | `excludedPrerenderRoutes.add(page)` — 이름과 달리 제외에 안 쓰인다 |
-| ghost · astro · pnpm · nx · excalidraw | 각 1건 | 같은 형태 |
+| ghost · astro · pnpm · nx | 각 1건 | 같은 형태 |
+| ~~excalidraw~~ | `App.tsx:13467` | **제출됨 → #11805** (축 커버리지 예외) |
 
 react 건은 소비자가 주석 처리돼 있어 **PR 로 내면 "왜 지우냐"가 아니라 "이거
 살릴 건가 지울 건가"를 묻는 게 된다** — 지우는 PR 보다 이슈가 맞을 수 있다.

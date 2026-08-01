@@ -214,6 +214,16 @@
    "status": "approved",
    "outcomeNote": "당일 승인, 질문 없음",
    "outcomeNoteEn": "approved same day, no questions"
+  },
+  {
+   "title": "resize 핸들러 안 미사용 Map",
+   "titleEn": "unused Map in resize handler",
+   "type": "쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제)",
+   "repo": "excalidraw/excalidraw",
+   "repoLabel": "excalidraw · 128.8k★",
+   "pr": 11805,
+   "createdAt": "2026-08-01T14:22:45Z",
+   "status": "waiting"
   }
  ]
 }
