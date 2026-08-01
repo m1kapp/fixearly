@@ -108,7 +108,28 @@ budibase 의 "denounce" 는 사유가 없다. 요청받지 않은 최적화는 �
 
 ## 큐 (측정 완료 · 미제출)
 
-지금은 비어 있다. 오늘 측정한 것은 전부 제출했거나 게이트에서 떨어졌다.
+**지금은 하나도 못 낸다** — 열린 것이 12건이라 속도 규칙(5건 상한)에 걸린다.
+아래는 코퍼스 75곳을 `쓰기만 하는 컬렉션` 으로 훑어 나온 15건 중, 손검증까지 끝낸
+것들이다. 열린 것이 5건 밑으로 내려가면 저장소당 1건·하루 1건으로 꺼낸다.
+
+고침이 전부 "지우기"라 크기가 작고 동작이 안 변한다. 다만 **작다고 통과하는 게
+아니다**(budibase 는 +10/−6 으로 닫혔다) — 꺼낼 때 그 저장소의 게이트 0 과 회전
+속도를 먼저 본다.
+
+| 저장소 | 자리 | 형태 |
+|---|---|---|
+| storybook | `StoryIndexGenerator.ts:826` | 이중 forEach 안에서 `invalidated.add(dep)` — 읽는 곳 없음 |
+| rollup | `Chunk.ts:1343` | `renderedModuleSources.set(module, source)` 뒤 소비 없음 |
+| angular | `slot_allocation.ts:25` | 주석은 "다음 순회에서 slotMap 을 쓴다"는데 안 쓴다 |
+| angular | `temporary_variables.ts:57` · `migration.ts:261` | 같은 형태 2건 |
+| react | `renderer.js:817` | 읽는 코드가 `/* DISABLED: …/pull/28417 */` 주석 안에 있다 |
+| react | `CollectHoistablePropertyLoads.ts:499` · `AlignReactiveScopesToBlockScopesHIR.ts:78` | 컴파일러 패스 2건 |
+| vscode | `chatToolPicker.ts:261` | `mcpServerByTool.set(...)` 뒤 조회 없음 |
+| next.js | `export/index.ts:285` | `excludedPrerenderRoutes.add(page)` — 이름과 달리 제외에 안 쓰인다 |
+| ghost · astro · pnpm · nx · excalidraw | 각 1건 | 같은 형태 |
+
+react 건은 소비자가 주석 처리돼 있어 **PR 로 내면 "왜 지우냐"가 아니라 "이거
+살릴 건가 지울 건가"를 묻는 게 된다** — 지우는 PR 보다 이슈가 맞을 수 있다.
 
 ## 훑었고 낼 것이 없던 곳
 

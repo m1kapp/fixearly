@@ -1842,6 +1842,27 @@ function analyzeTextbookIssues(ts, fileContents) {
 /** 쓰기만 하는 Map/Set 을 한 파일에서 찾는다. analyzeTextbookIssues 가 파일마다 부른다. */
 function collectWriteOnly(ts, sf, file, lineOf, out) {
   const WRITE = new Set(["set", "add", "delete", "clear"]);
+
+  // 내보낸 이름은 이 파일만 봐서는 판단할 수 없다 — 읽는 쪽이 다른 모듈에 있다.
+  // react 의 `export const allNativeEvents = new Set()` 가 그랬다: 이 파일엔 .add 뿐이고
+  // DOMPluginEventSystem 이 .forEach, ReactDOMEventHandle 이 .has 로 읽는다.
+  // 코퍼스 검증에서 이 계열이 오탐의 전부였다. export 는 통째로 뺀다.
+  const exported = new Set();
+  const markExports = (n) => {
+    if (ts.isVariableStatement(n) &&
+        n.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)) {
+      for (const d of n.declarationList.declarations)
+        if (ts.isIdentifier(d.name)) exported.add(d.name.getText(sf));
+    }
+    // export { a, b } — 선언과 떨어져 있는 형태
+    if (ts.isExportDeclaration(n) && n.exportClause && ts.isNamedExports(n.exportClause)) {
+      for (const e of n.exportClause.elements) exported.add((e.propertyName ?? e.name).getText(sf));
+    }
+    if (ts.isExportAssignment(n) && ts.isIdentifier(n.expression)) exported.add(n.expression.getText(sf));
+    ts.forEachChild(n, markExports);
+  };
+  ts.forEachChild(sf, markExports);
+
   // 후보: const/let x = new Map()/new Set(). 이름 → 선언 노드
   const cand = new Map();
   const findDecls = (n) => {
@@ -1850,6 +1871,7 @@ function collectWriteOnly(ts, sf, file, lineOf, out) {
       const ctor = n.initializer.expression.getText(sf);
       if (ctor === "Map" || ctor === "Set") {
         const name = n.name.getText(sf);
+        if (exported.has(name)) return; // 모듈 밖에서 읽힐 수 있다
         // 같은 이름이 두 번 선언되면(다른 스코프) 스코프 없이는 구분 못 한다 — 통째로 포기.
         cand.set(name, cand.has(name) ? null : { node: n, ctor });
       }
@@ -1868,10 +1890,15 @@ function collectWriteOnly(ts, sf, file, lineOf, out) {
       // 선언의 이름 자리 자체는 참조가 아니다
       if (!(d && d.node && d.node.name === n)) {
         const p = n.parent;
-        const isWriteReceiver =
-          p && ts.isPropertyAccessExpression(p) && p.expression === n &&
+        // 쓰기 메서드라도 **반환값을 쓰면 읽기다.** tailwind 의
+        // `if (skipExit.delete(node)) return` 이 그랬다 — delete 는 있었는지 여부를
+        // 돌려주고, 그 불리언이 곧 조회다. add/set 도 자기 자신을 돌려주므로
+        // 체이닝하거나 인자로 넘기면 컬렉션이 밖으로 새어 나간다.
+        // 그래서 '값이 버려지는 호출'일 때만 쓰기로 센다.
+        const call = p && ts.isPropertyAccessExpression(p) && p.expression === n &&
           p.parent && ts.isCallExpression(p.parent) && p.parent.expression === p &&
-          WRITE.has(p.name.getText(sf));
+          WRITE.has(p.name.getText(sf)) ? p.parent : null;
+        const isWriteReceiver = !!call && ts.isExpressionStatement(call.parent);
         // 재할당(x = …)도 읽기로 친다 — 다른 값이 들어오면 이 분석의 전제가 깨진다.
         const isReassign =
           p && ts.isBinaryExpression(p) && p.left === n &&
