@@ -10,20 +10,25 @@
 ## 제출 기준 — 우리 실적으로 보정한 것
 
 판정이 난 것의 개수는 아래 [지금 열려 있는 것](#지금-열려-있는-것) 블록이 자동으로 센다.
-여기 표는 **왜 그렇게 됐는지**만 남긴다 — 스킬의 사전 게이트를 통과하고도 닫힌 4건이 있고,
-그 사유가 게이트보다 정확한 기준이다.
+아래 표가 남기는 건 **왜 그렇게 됐는지**다 — 스킬의 사전 게이트를 통과하고도 닫힌 건들이
+있고, 그 사유가 게이트보다 정확한 기준이다. 사유의 출처는 `impact.json` 하나다(랜딩
+카드도 같은 값을 쓴다). 손으로 두 벌 적으면 반드시 갈리므로 여기서는 생성만 한다.
 
-| PR | 결과 | 닫힌 이유 (원문) |
+<!-- auto:decided — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
+| PR | 결과 | 사유·메모 |
 |---|---|---|
-| outline#13117 | 머지 | — (질문 없이 머지) |
-| nocodb#14309 | 머지 | — (질문 없이 머지, 6일 20시간) |
-| medusa#16188 | 승인 | — |
-| novu#12074 | 승인 | — |
-| vite#23114 | 승인 | — (당일 승인, 질문 없음) |
-| twenty#23231 | 닫힘 | "redundant with #23232" |
-| twenty#23232 | 닫힘 | 같은 저장소 2건 중 하나 |
-| directus#27978 | 닫힘 | "performance gains for **this edge case** don't justify the churn, especially since there are **larger optimization opportunities**" |
-| budibase#19320 | 닫힘 | "denounce" (사유 없음) |
+| [outline#13117](https://github.com/outline/outline/pull/13117) | 머지 | 질문 없이 머지 |
+| [nocodb#14309](https://github.com/nocodb/nocodb/pull/14309) | 머지 | 질문 없이 머지 |
+| [n8n#34899](https://github.com/n8n-io/n8n/pull/34899) | 머지 | 봇이 요구한 changeset prefix 만 고치고 통과 |
+| [novu#12074](https://github.com/novuhq/novu/pull/12074) | 승인 | 승인 후 머지 대기 |
+| [medusa#16188](https://github.com/medusajs/medusa/pull/16188) | 승인 | 승인 후 머지 대기 |
+| [vite#23114](https://github.com/vitejs/vite/pull/23114) | 승인 | 당일 승인, 질문 없음 |
+| [budibase#19320](https://github.com/Budibase/budibase/pull/19320) | 닫힘 | 사유 없이 닫힘. 요청받지 않은 최적화는 그냥 거절될 수 있다 |
+| [twenty#23231](https://github.com/twentyhq/twenty/pull/23231) | 닫힘 | "redundant with #23232" — 같은 저장소에 겹치는 2건을 냈다 |
+| [twenty#23232](https://github.com/twentyhq/twenty/pull/23232) | 닫힘 | 겹친 2건 중 나머지. 사유는 남지 않았다 |
+| [directus#27978](https://github.com/directus/directus/pull/27978) | 닫힘 | "이 엣지 케이스의 성능 이득은 churn 을 정당화하지 못한다 — 더 큰 최적화 기회가 있다" |
+| [cal.com#29832](https://github.com/calcom/cal.diy/pull/29832) | 닫힘 | 우리가 접었다 — 같은 저장소에 2건이 열려 있어 큰 쪽(#29828)에 리뷰를 몰아줬다 |
+<!-- /auto:decided -->
 
 **크기는 판별자가 아니다.** budibase 는 +10/−6 으로 닫혔고 medusa 는 +71/−6 으로 승인됐다.
 머지된 outline 이 +12/−1 로 제일 작긴 하지만, 작다고 통과하는 게 아니다.
@@ -84,7 +89,7 @@ budibase 의 "denounce" 는 사유가 없다. 요청받지 않은 최적화는 �
 |---|---|---|---|
 | [medusa#16188](https://github.com/medusajs/medusa/pull/16188) | O(n²) | 🔵 승인 · 머지 대기 | 7일째 |
 | [novu#12074](https://github.com/novuhq/novu/pull/12074) | N+1 | 🔵 승인 · 머지 대기 | 8일째 |
-| [vite#23114](https://github.com/vitejs/vite/pull/23114) | O(n²) | 🔵 승인 · 머지 대기 | 오늘 |
+| [vite#23114](https://github.com/vitejs/vite/pull/23114) | O(n²) | 🔵 승인 · 머지 대기 | 1일째 |
 | [immich#30163](https://github.com/immich-app/immich/pull/30163) | N+1 | 🟢 리뷰 진행 | 8일째 |
 | [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | 🟢 리뷰 진행 | 2일째 |
 | [ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 순차 I/O | ⚪ 대기 | 1일째 |
@@ -156,5 +161,6 @@ budibase 의 "denounce" 는 사유가 없다. 요청받지 않은 최적화는 �
 
 ---
 
-*이 문서는 손으로 갱신한다. 후보 밀도는 `npm run measure` 뒤 `data/corpus.json` 과
-`$BOARD_ROOT/o_<name>/fixearly.json` 의 `scoreInputs` 에서 나온다.*
+*마커(`auto:decided`·`auto:open`)로 감싼 두 표는 `tools/update-pr-queue.py` 가
+`impact.json` 에서 만든다. 나머지 판단·사유는 손으로 쓴다. 후보 밀도는 `npm run measure`
+뒤 `data/corpus.json` 과 `$BOARD_ROOT/o_<name>/fixearly.json` 의 `scoreInputs` 에서 나온다.*

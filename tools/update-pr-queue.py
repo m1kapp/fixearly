@@ -24,6 +24,8 @@ DOC = f"{ROOT}/PR-QUEUE.md"
 CHECK = "--check" in sys.argv
 BEGIN = "<!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->"
 END = "<!-- /auto:open -->"
+D_BEGIN = "<!-- auto:decided — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->"
+D_END = "<!-- /auto:decided -->"
 
 LABEL = {
     "merged": "✅ 머지", "approved": "🔵 승인 · 머지 대기", "changes": "🟠 변경 요청",
@@ -79,6 +81,21 @@ body.append(f"**열린 것 {len(rows)}건.** 판정 난 {len(decided) + len(appr
             f"닫힘 {len(decided) - len(merged)}.")
 block = BEGIN + "\n" + "\n".join(body) + "\n" + END
 
+# ── 판정 난 것 표 — 닫힌 사유가 여기와 impact.json 두 곳에 살면 반드시 갈린다.
+# 사유의 출처는 impact.json 하나로 두고(랜딩 카드도 같은 값을 쓴다) 표는 생성한다.
+# 머지·승인 건의 "질문 없이 머지" 같은 판단은 outcomeNote 로 같이 실어 보존한다.
+D_LABEL = {"merged": "머지", "approved": "승인", "closed": "닫힘"}
+D_ORDER = {"merged": 0, "approved": 1, "closed": 2}
+decided_rows = sorted((f for f in findings if f.get("status") in D_LABEL),
+                      key=lambda f: (D_ORDER[f["status"]], f["pr"]))
+dbody = ["| PR | 결과 | 사유·메모 |", "|---|---|---|"]
+for f in decided_rows:
+    name = str(f["repoLabel"]).split("·")[0].strip()
+    why = f.get("closedReason") or f.get("outcomeNote") or "—"
+    dbody.append(f"| [{name}#{f['pr']}](https://github.com/{f['repo']}/pull/{f['pr']}) "
+                 f"| {D_LABEL[f['status']]} | {why} |")
+dblock = D_BEGIN + "\n" + "\n".join(dbody) + "\n" + D_END
+
 doc = open(DOC, encoding="utf-8").read()
 m = re.search(re.escape(BEGIN) + r".*?" + re.escape(END), doc, re.S)
 if not m:
@@ -99,18 +116,32 @@ def without_age(block_text):
     return re.sub(r"\|[^|\n]*\|\s*$", "|", block_text, flags=re.M)
 
 
+dm = re.search(re.escape(D_BEGIN) + r".*?" + re.escape(D_END), doc, re.S)
+if not dm:
+    print(f"  ✗ 마커가 없다. PR-QUEUE.md 의 '제출 기준' 표 자리에 넣어라:\n"
+          f"    {D_BEGIN}\n    {D_END}")
+    sys.exit(1)
+d_same = dm.group(0) == dblock
+
 if CHECK:
     # 표가 낡은 게 아니라 날짜만 넘어간 경우를 구분해서 알려준다.
     stale = without_age(m.group(0)) != without_age(block)
-    if stale:
-        print(f"PR 큐 표가 낡았다 (열린 것 {len(rows)}건) — python3 tools/update-pr-queue.py")
+    if stale or not d_same:
+        what = "열린 것" if stale else "판정 난 것"
+        print(f"PR 큐 {what} 표가 낡았다 (열린 것 {len(rows)}건) — python3 tools/update-pr-queue.py")
     elif not same:
         print("PR 큐 표가 impact.json 과 일치한다 (경과 표기만 하루치 밀림)")
     else:
         print("PR 큐 표가 impact.json 과 일치한다")
-    sys.exit(1 if stale else 0)
+    sys.exit(1 if (stale or not d_same) else 0)
 
-if not same:
-    open(DOC, "w", encoding="utf-8").write(doc[: m.start()] + block + doc[m.end():])
-print(f"PR-QUEUE.md {'갱신' if not same else '변경 없음'} · 열린 것 {len(rows)}건 · "
-      f"머지 {len(merged)} 승인 {len(approved)} 닫힘 {len(decided) - len(merged)}")
+# 뒤에서부터 쓴다 — 앞을 먼저 바꾸면 뒤 매치의 오프셋이 밀린다.
+first, second = sorted([(m, block, same), (dm, dblock, d_same)], key=lambda x: x[0].start())
+if not (same and d_same):
+    for mm, bb, ok in (second, first):
+        if not ok:
+            doc = doc[: mm.start()] + bb + doc[mm.end():]
+    open(DOC, "w", encoding="utf-8").write(doc)
+print(f"PR-QUEUE.md {'갱신' if not (same and d_same) else '변경 없음'} · 열린 것 {len(rows)}건 · "
+      f"머지 {len(merged)} 승인 {len(approved)} 닫힘 {len(decided) - len(merged)} · "
+      f"판정 표 {len(decided_rows)}행")
