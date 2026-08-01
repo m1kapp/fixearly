@@ -10,7 +10,9 @@
  */
 import ts from "typescript";
 import fs from "fs";
+import os from "os";
 import path from "path";
+import { spawnSync } from "child_process";
 import { fileURLToPath } from "url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -187,6 +189,55 @@ if (zoneSrc) {
   check(`랜딩 herometa 진단 ${diag.length}`, html.includes(`diagnostics</span> ${diag.length}`));
   check(`README "진단 ${diag.length}종"`, readme.includes(`진단 ${diag.length}종`));
   check("채점축과 진단이 겹치지 않음", !diag.some((_, i) => diagBlock.includes("'N+1'")));
+}
+
+// ── 탐지기 픽스처: 참·거짓 양쪽을 고정한다 ────────────────────────────────
+// 코퍼스 검증에서만 잡힌 오탐 두 계열(export 된 이름 · 반환값을 쓰는 delete/add)이
+// 있었다. 그때 재보지 않았으면 그대로 나갔다. 픽스처가 저장소 밖(스크래치패드)에
+// 있으면 다음 사람은 같은 걸 다시 손으로 재야 하므로 여기에 고정한다.
+// 오탐이 되살아나면 코퍼스를 다시 받기 전에 여기서 먼저 빨간불이 뜬다.
+{
+  console.log("\n탐지기 픽스처:");
+  const check = (name, ok) => {
+    if (!ok) fail++;
+    console.log(`  ${ok ? "✓" : "✗"} ${name}`);
+  };
+  const FIXTURES = [
+    {
+      file: "write-only-collection.ts",
+      // analyzeTextbookIssues 가 돌려주는 키
+      key: "writeOnlyCollection",
+      label: "쓰기만 하는 컬렉션",
+      hit: ["seen", "audit"],
+      miss: ["known", "bag", "passed", "built", "registry", "later", "skip", "chained"],
+    },
+  ];
+  for (const fx of FIXTURES) {
+    const p = path.join(ROOT, "tools", "fixtures", fx.file);
+    if (!fs.existsSync(p)) { check(`픽스처 ${fx.file} 존재`, false); continue; }
+    // 엔진을 그대로 실행해서 본다. 내부 함수를 떼어내 eval 하면 모듈 상수까지
+    // 같이 끌어와야 하고, 그 목록이 엔진과 조용히 어긋난다. 실행 경로를 통째로
+    // 재는 쪽이 픽스처의 목적(회귀 고정)에 맞다.
+    // tools/fixtures 를 그대로 가리키면 엔진이 "비-프로덕션·벤더 파일"로 걸러
+    // 0개 분석이 된다(경로에 tools/fixtures 가 들어가서). 중립적인 src/ 로 복사해
+    // 실제 소스처럼 재게 한다.
+    const out = fs.mkdtempSync(path.join(os.tmpdir(), "fixearly-fx-"));
+    fs.mkdirSync(path.join(out, "src"));
+    fs.copyFileSync(p, path.join(out, "src", fx.file));
+    const r = spawnSync(process.execPath,
+      [path.join(ROOT, "bin", "fixearly.mjs"), `--dir=${path.join(out, "src")}`],
+      { cwd: out, encoding: "utf8" }); // cwd 를 옮겨 산출물(public/)이 저장소에 안 남게
+    const text0 = (r.stdout || "") + (r.stderr || "");
+    fs.rmSync(out, { recursive: true, force: true });
+    if (/regex 근사 모드/.test(text0)) check(`${fx.key} AST 모드로 측정됨`, false);
+    const text = text0;
+    const head = text.match(new RegExp(`${fx.label}: (\\d+)곳`));
+    const names = new Set([...text.matchAll(/^\s{4}([A-Za-z_$][\w$]*) = new (?:Map|Set)\(\)/gm)].map((m) => m[1]));
+    for (const n of fx.hit) check(`${fx.key} 잡음 "${n}"`, names.has(n));
+    for (const n of fx.miss) check(`${fx.key} 안 잡음 "${n}"`, !names.has(n));
+    // 출력은 상위 몇 건만 찍히므로 총량도 따로 본다 — 오탐이 늘면 여기가 먼저 깨진다.
+    check(`${fx.key} 총 ${fx.hit.length}건`, head ? Number(head[1]) === fx.hit.length : false);
+  }
 }
 
 console.log(fail ? `\n  ${fail} FAIL` : `\n  all passed`);
