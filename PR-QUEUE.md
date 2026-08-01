@@ -87,13 +87,13 @@ budibase 의 "denounce" 는 사유가 없다. 요청받지 않은 최적화는 �
 | [vite#23114](https://github.com/vitejs/vite/pull/23114) | O(n²) | 🔵 승인 · 머지 대기 | 오늘 |
 | [immich#30163](https://github.com/immich-app/immich/pull/30163) | N+1 | 🟢 리뷰 진행 | 8일째 |
 | [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | 🟢 리뷰 진행 | 2일째 |
-| [ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 순차 I/O | ⚪ 대기 | 오늘 |
+| [ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 순차 I/O | ⚪ 대기 | 1일째 |
 | [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 순차 I/O | ⚪ 대기 | 2일째 |
 | [cal.com#29828](https://github.com/calcom/cal.diy/pull/29828) | O(n²) | ⚪ 대기 | 8일째 |
-| [medusa#16233](https://github.com/medusajs/medusa/pull/16233) | O(n²) | ⚪ 대기 | 2일째 |
+| [medusa#16233](https://github.com/medusajs/medusa/pull/16233) | O(n²) | ⚪ 대기 | 3일째 |
 | [payload#17469](https://github.com/payloadcms/payload/pull/17469) | O(n²) | ⚪ 대기 | 7일째 |
 | [strapi#27125](https://github.com/strapi/strapi/pull/27125) | O(n²) | ⚪ 대기 | 7일째 |
-| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 오늘 |
+| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 1일째 |
 
 **열린 것 12건.** 판정 난 11건 중 머지 3 · 승인 3 · 닫힘 5.
 <!-- /auto:open -->

@@ -145,7 +145,14 @@ def card(f, key):
     cls = "ic" + (" done" if key == "merged" else "") + (" off" if ended else "")
     age_ko, age_en, on = elapsed(f, key)
     on_html = f'<span class="on">{on}</span>' if on else ""
-    age_html = (f'<span class="age"><span class="ko">{age_ko}</span>'
+    # 경과는 생성 시점의 값이라 그대로 두면 시간이 지날수록 거짓말이 된다 —
+    # "오늘"이라고 적힌 일주일 된 PR 이 걸려 있게 된다. 기준 시각을 같이 심어
+    # 읽는 시점에 다시 계산한다(index.html 의 .age[data-since] 루프).
+    # 생성된 글자는 JS 가 막힌 환경의 폴백으로 남는다.
+    since = f.get("createdAt") or ""
+    until = f.get("mergedAt") or f.get("closedAt") or ""
+    attrs = f' data-since="{since}"' + (f' data-until="{until}"' if until else "")
+    age_html = (f'<span class="age"{attrs}><span class="ko">{age_ko}</span>'
                 f'<span class="en">{age_en}</span></span>') if age_ko else ""
     src = AVATAR.get(f["repo"])
     fav = f'<img class="ifav" src="{src}" alt="" width="15" height="15" loading="lazy">' if src else ""

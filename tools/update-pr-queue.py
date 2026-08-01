@@ -87,10 +87,28 @@ if not m:
     sys.exit(1)
 
 same = m.group(0) == block
+
+
+def without_age(block_text):
+    """경과 열을 지운 사본. --check 는 이걸로 비교한다.
+
+    경과는 생성 시점 기준으로 계산해 박히는데 검사는 실행 시점에 다시 계산한다 —
+    그래서 아무것도 안 바뀌어도 날짜가 넘어가면 '오늘'이 '1일째'가 되면서 테스트가
+    깨졌다. 커밋 직후엔 통과하고 다음 날 CI 는 빨간불이라는 뜻이다. 상태·개수가
+    어긋나는 건 여전히 잡되, 시계만으로는 안 깨지게 마지막 열을 빼고 본다."""
+    return re.sub(r"\|[^|\n]*\|\s*$", "|", block_text, flags=re.M)
+
+
 if CHECK:
-    print("PR 큐 표가 impact.json 과 일치한다" if same
-          else f"PR 큐 표가 낡았다 (열린 것 {len(rows)}건) — python3 tools/update-pr-queue.py")
-    sys.exit(0 if same else 1)
+    # 표가 낡은 게 아니라 날짜만 넘어간 경우를 구분해서 알려준다.
+    stale = without_age(m.group(0)) != without_age(block)
+    if stale:
+        print(f"PR 큐 표가 낡았다 (열린 것 {len(rows)}건) — python3 tools/update-pr-queue.py")
+    elif not same:
+        print("PR 큐 표가 impact.json 과 일치한다 (경과 표기만 하루치 밀림)")
+    else:
+        print("PR 큐 표가 impact.json 과 일치한다")
+    sys.exit(1 if stale else 0)
 
 if not same:
     open(DOC, "w", encoding="utf-8").write(doc[: m.start()] + block + doc[m.end():])
