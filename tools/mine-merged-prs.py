@@ -27,15 +27,35 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.environ.get("CORPUS_ROOT", os.path.expanduser("~/.cache/fixearly-corpus"))
-OUT = f"{ROOT}/merged-prs"
-PATCHES = f"{ROOT}/patches"
+# 범주별 검색어와 제목 필터. gh search 는 전문검색이라 본문에 단어가 스친 것들이
+# 섞여 들어오므로 제목으로 한 번 더 거른다.
+#
+# 왜 범주를 나누나: perf 에서 기계화 가능한 형태는 5%뿐이었다. 그 5%가 되는 이유는
+# **고치기 전 코드에 시그니처가 있어서**다(루프 안 배열 스캔). 범주마다 그 비율이
+# 다를 수 있고, 그건 의견이 아니라 재면 나온다. 같은 파이프라인으로 재서 비교한다.
+CATEGORIES = {
+    "perf": ("perf",
+             r"^(perf|optimi[sz]e)\b|^perf[(:]|\bO\(n|speed ?up|faster|\bavoid .*(loop|scan)\b"),
+    # 누수는 해제를 안 한 자리라 정적 시그니처가 뚜렷할 가능성이 높다
+    # (addEventListener 짝 없음, setInterval 에 clear 없음, 구독에 unsubscribe 없음).
+    "leak": ("leak",
+             r"\bleak|\bunsubscrib|\bdispose\b|\bcleanup\b|removeEventListener|clearInterval|clearTimeout"),
+    # 교과서 버그 — ESLint 가 이미 많이 잡는 영역이라 경쟁을 같이 봐야 한다.
+    "bug": ("bug",
+            r"^fix[(:].*\b(race|await|async|promise|leak|null|undefined|mutat)|\brace condition\b|\bfloating promise\b"),
+}
+CATEGORY = os.environ.get("MINE_CATEGORY", "perf")
+if CATEGORY not in CATEGORIES:
+    raise SystemExit(f"모르는 범주: {CATEGORY} (가능: {', '.join(CATEGORIES)})")
+QUERY_TERM, _title_pat = CATEGORIES[CATEGORY]
+TITLE_OK = re.compile(_title_pat, re.I)
+
+OUT = f"{ROOT}/merged-prs" if CATEGORY == "perf" else f"{ROOT}/merged-prs-{CATEGORY}"
+PATCHES = f"{ROOT}/patches" if CATEGORY == "perf" else f"{ROOT}/patches-{CATEGORY}"
 LIMIT = int(os.environ.get("PR_LIMIT", "40"))
 # 큰 PR 은 형태가 하나로 안 읽힌다 — 리팩터·기능이 섞인다. 작은 것만 재료로 쓴다.
 MAX_CHANGED = int(os.environ.get("PR_MAX_CHANGED", "160"))
 
-# 제목이 성능 수정이라고 말하는 것만. gh search 는 전문검색이라 본문에 perf 가
-# 스친 것들이 섞여 들어온다.
-TITLE_OK = re.compile(r"^(perf|optimi[sz]e)\b|^perf[(:]|\bO\(n|speed ?up|faster|\bavoid .*(loop|scan)\b", re.I)
 
 
 def gh(args, timeout=120):
@@ -75,7 +95,7 @@ def collect():
             total += len(json.load(open(path, encoding="utf-8")))
             continue
         raw = gh(["search", "prs", "--repo", slug, "--merged", "--limit", str(LIMIT),
-                  "--json", "number,title,url,createdAt", "perf"])
+                  "--json", "number,title,url,createdAt", QUERY_TERM])
         try:
             items = json.loads(raw) if raw.strip() else []
         except json.JSONDecodeError:
@@ -126,6 +146,20 @@ def patches():
 
 # ── 형태 분류 ────────────────────────────────────────────────────────────────
 # 각 항목: (이름, 지운 줄 패턴, 넣은 줄 패턴, 이미 잡는 진단인가)
+# 누수 범주의 형태. 고침이 대개 "해제를 추가"라 지운 줄 패턴이 비어 있다 —
+# 대신 **고치기 전 코드에 시그니처가 있나**를 같이 본다(등록만 있고 해제가 없다).
+# 그게 이 마이닝의 진짜 질문이다: 형태가 자주 나오는가가 아니라, 고치기 전
+# 코드에서 정적으로 짚을 수 있는가.
+SHAPES_LEAK = [
+    ("리스너 해제 추가", r"", r"removeEventListener|\.off\(|\.removeListener\(", False),
+    ("타이머 해제 추가", r"", r"clearInterval\(|clearTimeout\(", False),
+    ("구독 해제 추가", r"", r"\.unsubscribe\(|\.dispose\(|takeUntil\(", False),
+    ("AbortController 도입", r"", r"AbortController|\bsignal\b.*abort|\.abort\(", False),
+    ("useEffect cleanup 반환", r"", r"^\+\s*return \(\) =>", False),
+    ("무한 증가 맵 → Weak", r"new Map\(", r"new WeakMap\(|new WeakSet\(", False),
+    ("캐시에 상한·만료 추가", r"", r"\b(maxSize|max_size|ttl|TTL|LRU|evict)\b", False),
+]
+
 SHAPES = [
     ("루프 안 find/some → Map·Set", r"\.(find|some|includes|indexOf)\s*\(", r"new (Map|Set)\(|\.(get|has)\(", True),
     ("직렬 await → Promise.all", r"^\s*(const .*=\s*)?await ", r"Promise\.(all|allSettled)\(", True),
@@ -146,6 +180,7 @@ SHAPES = [
 
 
 def classify():
+    shapes = SHAPES_LEAK if CATEGORY == "leak" else SHAPES
     files = [f for f in os.listdir(PATCHES)] if os.path.isdir(PATCHES) else []
     if not files:
         print("패치가 없다 — 먼저 --patches 를 돌려라")
@@ -156,7 +191,7 @@ def classify():
         minus = "\n".join(l for l in text.splitlines() if l.startswith("-") and not l.startswith("---"))
         plus = "\n".join(l for l in text.splitlines() if l.startswith("+") and not l.startswith("+++"))
         matched = False
-        for name, mpat, ppat, known in SHAPES:
+        for name, mpat, ppat, known in shapes:
             if (not mpat or re.search(mpat, minus)) and re.search(ppat, plus, re.M):
                 hits.setdefault(name, {"n": 0, "known": known, "ex": []})
                 hits[name]["n"] += 1
