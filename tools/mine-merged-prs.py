@@ -44,10 +44,26 @@ def gh(args, timeout=120):
 
 
 def repos():
+    """마이닝 대상. 기본은 채점 코퍼스지만 MINE_REPOS 로 더 넓힐 수 있다.
+
+    마이닝은 채점과 무관하다 — 등급·기준선에 아무 영향이 없으므로 대상을 넓히는
+    데 제약이 없다. 채점 코퍼스는 기준선이라 늘리면 전 저장소 점수가 움직이지만,
+    여기는 '형태를 어디서 보나'일 뿐이다. tools/mining-repos.json 이 있으면
+    그것도 같이 훑는다(slug 문자열 배열).
+    """
+    seen = set()
     for d in json.load(open(f"{HERE}/board-repos.json", encoding="utf-8")):
         m = re.match(r"https://github\.com/([^/]+/[^/]+)", d["url"])
-        if m:
+        if m and m.group(1) not in seen:
+            seen.add(m.group(1))
             yield d["name"], m.group(1)
+    extra = os.environ.get("MINE_REPOS", f"{HERE}/mining-repos.json")
+    if os.path.exists(extra):
+        for slug in json.load(open(extra, encoding="utf-8")):
+            if slug in seen:
+                continue
+            seen.add(slug)
+            yield slug.replace("/", "_"), slug
 
 
 def collect():
@@ -163,6 +179,10 @@ def classify():
     print(f"그중 {known}건은 이미 잡는 것이다. 나머지는 대부분 일회성 도메인 수정이라")
     print("규칙으로 옮길 수 없다 — 이 마이닝의 값은 '새 규칙 발굴'보다 **우선순위 확인**에 있다.")
     print("\n'★ 없음' 이 많은 형태부터 탐지기 후보다. 등재 전 tools/measure-diagnostic.sh 로 오탐 검증.")
+    print("\n다만 **머지된 diff 의 형태와 탐지기는 다른 문제다.** 탐지기는 고치기 *전*")
+    print("코드에서 시그니처를 찾아야 한다. find→Map 은 둘이 일치하는 드문 경우고(루프 안")
+    print("배열 스캔이 곧 시그니처), 메모이제이션은 diff 로는 보여도 '여기 캐시가 없다'를")
+    print("정적으로 짚을 수 없다. 형태가 자주 나온다고 탐지기가 되는 게 아니다.")
 
 
 if __name__ == "__main__":
