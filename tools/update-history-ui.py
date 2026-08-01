@@ -80,14 +80,34 @@ if ".hist{" not in html:
     edits += 1
 
 # ── ④ 보드 아래에 규칙 판별 변경 사유 ──────────────────────────────────────
-block_ko = "".join(
-    f'<div class="rs-row"><span class="rs-v">{r["version"]}</span>'
-    f'<span class="rs-d">{r["date"]} · {r["n"]}곳</span>'
-    f'<span class="rs-w">{r["changed"]}</span></div>'
-    for r in hist["rulesets"])
-section = (
-    '<div class="rulesets" id="rulesets">'
-    '<div class="rs-h"><span class="ko">보드에 발행된 채점 판</span>'
+# 처음엔 "없으면 넣는다"였는데, 그러면 판이 하나 늘어도 랜딩은 옛 목록 그대로다.
+# 매번 다시 만들고 --check 가 어긋남을 잡는다.
+RS_BEGIN = "<!-- auto:rulesets — tools/update-history-ui.py 가 생성한다. 손으로 고치지 마라. -->"
+RS_END = "<!-- /auto:rulesets -->"
+
+
+def rs_row(r, cls=""):
+    return (f'<div class="rs-row{cls}"><span class="rs-v">{r["version"]}</span>'
+            f'<span class="rs-d">{r["date"]} · {r["n"]}곳</span>'
+            f'<span class="rs-w">{r["changed"]}</span></div>')
+
+
+# 처음 온 사람이 읽어야 할 건 "지금 자가 뭔가" 하나다. 지난 판은 접어 둔다 —
+# 지우지는 않는다. 소급해서 안 고친다는 증거가 그 목록이다.
+_now = [r for r in hist["rulesets"] if r["version"] == cur]
+_old = list(reversed([r for r in hist["rulesets"] if r["version"] != cur]))
+if not _now:
+    problems.append(f"현재 판({cur})이 score-history.json 의 rulesets 에 없음")
+rows = "".join(rs_row(r, " rs-now") for r in _now)
+if _old:
+    _vs = " · ".join(r["version"] for r in _old)
+    rows += ('<details class="rs-old"><summary>'
+             f'<span class="ko">지난 판 {len(_old)}개 — {_vs}</span>'
+             f'<span class="en">{len(_old)} earlier rulesets — {_vs}</span></summary>'
+             + "".join(rs_row(r) for r in _old) + '</details>')
+inner = (
+    RS_BEGIN
+    + '<div class="rs-h"><span class="ko">보드에 발행된 채점 판</span>'
     '<span class="en">published rulesets</span></div>'
     '<div class="note"><p class="ko">규칙이 다르면 점수를 나란히 놓을 수 없다. '
     '아래는 <b>무엇이 바뀌어서 점수가 움직였는지</b>이지, 저장소가 좋아졌다·나빠졌다는 뜻이 아니다. '
@@ -97,16 +117,25 @@ section = (
     '<b>what changed in the ruler</b>, not whether a project improved. Only rulesets the '
     'board was republished under are listed — the board is on '
     f'<b>{cur}</b>.</p></div>'
-    + block_ko + '</div>')
-if 'id="rulesets"' not in html:
-    m3 = re.search(r'(</div>\s*</section>\s*<section class="step" id="axes">)', html)
+    + rows + RS_END)
+section = f'<div class="rulesets" id="rulesets">{inner}</div>'
+
+m3 = re.search(r'(</div>\s*</section>\s*<section class="step" id="axes">)', html)
+if 'id="rulesets"' in html:
+    a = html.index('<div class="rulesets" id="rulesets">')
     if not m3:
         problems.append("보드 섹션 끝을 못 찾음")
-    else:
-        # 섹션은 .w(폭 제한) 를 닫는 </div> **앞**에 넣는다. 뒤에 넣으면 폭 제한을
-        # 벗어나 본문이 오른쪽으로 흘러넘친다 — 실제로 그렇게 나갔다.
-        html = html[: m3.start(1)] + section + "</div>" + html[m3.start(1) + len("</div>"):]
+    elif html[a:m3.start(1)] != section:
         edits += 1
+        if not CHECK:
+            html = html[:a] + section + html[m3.start(1):]
+elif not m3:
+    problems.append("보드 섹션 끝을 못 찾음")
+else:
+    # 섹션은 .w(폭 제한) 를 닫는 </div> **앞**에 넣는다. 뒤에 넣으면 폭 제한을
+    # 벗어나 본문이 오른쪽으로 흘러넘친다 — 실제로 그렇게 나갔다.
+    html = html[: m3.start(1)] + section + "</div>" + html[m3.start(1) + len("</div>"):]
+    edits += 1
 if ".rulesets{" not in html:
     css = ("\n.rulesets{margin-top:var(--space-lg)}"
            "\n.rs-h{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;"
@@ -117,6 +146,20 @@ if ".rulesets{" not in html:
            "\n.rs-d{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-3)}"
            "\n.rs-w{color:var(--ink-2)}"
            "\n@media(max-width:640px){.rs-row{grid-template-columns:1fr;gap:2px}}")
+    i = html.rindex("</style>")
+    html = html[:i] + css + "\n" + html[i:]
+    edits += 1
+if ".rs-old" not in html:
+    css = ("\n.rs-now .rs-v{font-size:14px}"
+           "\n.rs-old{border-top:1px solid var(--line)}"
+           "\n.rs-old>summary{list-style:none;cursor:pointer;padding:10px 0;font-size:12.5px;"
+           "color:var(--ink-3);display:flex;align-items:center;gap:7px;min-height:34px}"
+           "\n.rs-old>summary::-webkit-details-marker{display:none}"
+           "\n.rs-old>summary::before{content:'▸';font-family:var(--font-mono);font-size:10px;"
+           "color:var(--ink-3);transition:transform var(--dur) var(--ease-out)}"
+           "\n.rs-old[open]>summary::before{transform:rotate(90deg);color:var(--accent)}"
+           "\n.rs-old>summary:hover{color:var(--accent)}"
+           "\n.rs-old .rs-row:first-of-type{border-top:0}")
     i = html.rindex("</style>")
     html = html[:i] + css + "\n" + html[i:]
     edits += 1

@@ -90,13 +90,12 @@ budibase 의 "denounce" 는 사유가 없다. 요청받지 않은 최적화는 �
 | [ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 순차 I/O | ⚪ 대기 | 오늘 |
 | [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 순차 I/O | ⚪ 대기 | 2일째 |
 | [cal.com#29828](https://github.com/calcom/cal.diy/pull/29828) | O(n²) | ⚪ 대기 | 8일째 |
-| [cal.com#29832](https://github.com/calcom/cal.diy/pull/29832) | 루프 불변 인덱스 재구축 | ⚪ 대기 | 7일째 |
 | [medusa#16233](https://github.com/medusajs/medusa/pull/16233) | O(n²) | ⚪ 대기 | 2일째 |
 | [payload#17469](https://github.com/payloadcms/payload/pull/17469) | O(n²) | ⚪ 대기 | 7일째 |
 | [strapi#27125](https://github.com/strapi/strapi/pull/27125) | O(n²) | ⚪ 대기 | 7일째 |
 | [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 오늘 |
 
-**열린 것 13건.** 판정 난 10건 중 머지 3 · 승인 3 · 닫힘 4.
+**열린 것 12건.** 판정 난 11건 중 머지 3 · 승인 3 · 닫힘 5.
 <!-- /auto:open -->
 
 큐에서 새로 꺼내기 전에 이쪽부터 정리한다. 속도 규칙상 열린 것이 5건을 넘으면 멈춘다.

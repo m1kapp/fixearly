@@ -35,7 +35,9 @@
    "pr": 23231,
    "createdAt": "2026-07-24T01:00:49Z",
    "closedAt": "2026-07-24T07:31:11Z",
-   "status": "closed"
+   "status": "closed",
+   "closedReason": "\"redundant with #23232\" — 같은 저장소에 겹치는 2건을 냈다",
+   "closedReasonEn": "\"redundant with #23232\" — two overlapping PRs in one repo"
   },
   {
    "title": "nested relations hydration O(n²)",
@@ -45,7 +47,9 @@
    "pr": 23232,
    "createdAt": "2026-07-24T01:48:53Z",
    "closedAt": "2026-07-24T16:25:37Z",
-   "status": "closed"
+   "status": "closed",
+   "closedReason": "겹친 2건 중 나머지. 사유는 남지 않았다",
+   "closedReasonEn": "the other of the overlapping pair; no reason given"
   },
   {
    "title": "lucky-user set rebuild in loop",
@@ -54,7 +58,10 @@
    "repoLabel": "cal.com · 47.1k★",
    "pr": 29832,
    "createdAt": "2026-07-24T08:00:48Z",
-   "status": "waiting"
+   "status": "closed",
+   "closedReason": "우리가 접었다 — 같은 저장소에 2건이 열려 있어 큰 쪽(#29828)에 리뷰를 몰아줬다",
+   "closedReasonEn": "we closed it — two PRs open on one repo; we kept the bigger one (#29828)",
+   "closedAt": "2026-08-01T03:27:10Z"
   },
   {
    "title": "dataloader doc placement O(n²)",
@@ -101,7 +108,9 @@
    "pr": 27978,
    "createdAt": "2026-07-24T13:03:10Z",
    "closedAt": "2026-07-29T19:34:55Z",
-   "status": "closed"
+   "status": "closed",
+   "closedReason": "\"이 엣지 케이스의 성능 이득은 churn 을 정당화하지 못한다 — 더 큰 최적화 기회가 있다\"",
+   "closedReasonEn": "\"performance gains for this edge case don't justify the churn … larger optimization opportunities\""
   },
   {
    "title": "resource-mapper schema validation O(n²)",
@@ -131,7 +140,9 @@
    "pr": 19320,
    "createdAt": "2026-07-24T15:50:52Z",
    "closedAt": "2026-07-27T16:18:58Z",
-   "status": "closed"
+   "status": "closed",
+   "closedReason": "사유 없이 닫힘. 요청받지 않은 최적화는 그냥 거절될 수 있다",
+   "closedReasonEn": "closed with no reason; unsolicited optimizations can simply be declined"
   },
   {
    "title": "cart variant lookup O(n²)",

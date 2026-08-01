@@ -157,6 +157,11 @@ def card(f, key):
     bk, be = BLURB.get(f["repo"], ("", ""))
     what = (f'<span class="iw"><span class="ko">{esc(bk)}</span>'
             f'<span class="en">{esc(be)}</span></span>') if bk else ""
+    # 닫힌 카드는 사유를 그대로 싣는다. "닫힌 것도 같이 둔다"고만 적고 이유를 감추면
+    # 남겨둔 의미가 없다 — 거절 사유가 이 목록에서 제일 정보량이 큰 줄이다.
+    rk, re_ = f.get("closedReason", ""), f.get("closedReasonEn", "")
+    why = (f'<span class="iwhy"><span class="ko">{esc(rk)}</span>'
+           f'<span class="en">{esc(re_)}</span></span>') if ended and rk else ""
     return (
         f'<a class="{cls}" href="{url}" target="_blank" rel="noopener">'
         f'{GH_MARK}'
@@ -166,7 +171,8 @@ def card(f, key):
         f'<span class="ist">{mark}'
         f'<span class="ko">{ko}</span><span class="en">{en}</span>'
         f'{on_html}{age_html}'
-        f'<span class="prn">#{f["pr"]}</span></span></a>'
+        f'<span class="prn">#{f["pr"]}</span></span>'
+        f'{why}</a>'
     )
 
 
@@ -193,6 +199,28 @@ h = re.sub(
     r'(<p class="en">)[^<]*?( — full log in <a href="https://github\.com/m1kapp/fixearly/blob/main/IMPACT\.md">)',
     rf"\g<1>{en_line}\g<2>", h, count=1)
 
+# 머지된 것들의 공통 형태와 걸린 기간 — 리드 문장도 손으로 쓰면 반드시 어긋난다.
+# "같은 형태"라는 주장은 type 문자열이 실제로 그럴 때만 낸다. 아니면 개수·기간만.
+_merged = [f for f in findings if state_by_pr.get(str(f["pr"])) == "merged" and f.get("mergedAt")]
+if _merged:
+    import datetime as _dt
+    _p = lambda t: _dt.datetime.fromisoformat(t.replace("Z", "+00:00"))
+    _d = sorted((_p(f["mergedAt"]) - _p(f["createdAt"])).days for f in _merged)
+    _span_ko = f"{_d[0]}일" if _d[0] == _d[-1] else f"{_d[0]}~{_d[-1]}일"
+    _span_en = f"{_d[0]} days" if _d[0] == _d[-1] else f"{_d[0]}–{_d[-1]} days"
+    _n = len(_merged)
+    if all(".find" in f["type"] and "Map" in f["type"] for f in _merged):
+        _ko = (f"머지된 {_n}건은 형태가 같다 — 루프 안에서 배열을 <code>find</code> 로 훑던 걸 "
+               f"Map 으로 바꾼 것. 셋 다 질문 없이 {_span_ko} 만에 들어갔다.")
+        _en = (f"The {_n} merged PRs share one shape — an <code>Array.find</code> inside a loop, "
+               f"replaced with a Map. All went in within {_span_en}, no questions asked.")
+    else:
+        _ko = f"머지된 {_n}건은 {_span_ko} 만에 들어갔다."
+        _en = f"The {_n} merged PRs went in within {_span_en}."
+    h = re.sub(r'(<span id="mshape-ko">).*?(</span>)', rf"\g<1>{_ko}\g<2>", h, count=1, flags=re.S)
+    h = re.sub(r'(<span id="mshape-en">).*?(</span>)', rf"\g<1>{_en}\g<2>", h, count=1, flags=re.S)
+    print("머지 형태 줄:", _ko)
+
 # 새 저장소에 한 줄 설명을 안 붙이면 카드에 이름만 남는다 — 조용히 비는 쪽이라 검사한다.
 notranslated = sorted(f["title"] for f in findings
                       if re.search(r"[가-힣]", f["title"]) and not f.get("titleEn"))
@@ -206,7 +234,13 @@ for r in missing:
     print(f"  ✗ BLURB 없음: {r}")
 for r in noicon:
     print(f"  ✗ 아이콘 없음(python3 tools/fetch-repo-avatars.py): {r}")
-missing = missing + noicon + notranslated
+# 닫힌 건 사유가 없으면 카드가 조용히 "닫힘"만 남는다 — 그게 제일 읽히는 줄인데.
+noreason = sorted(f"#{f['pr']}" for f in findings
+                  if state_by_pr.get(str(f["pr"])) == "closed"
+                  and not (f.get("closedReason") and f.get("closedReasonEn")))
+for r in noreason:
+    print(f"  ✗ 닫힌 사유 없음(impact.json 의 closedReason/closedReasonEn): {r}")
+missing = missing + noicon + notranslated + noreason
 
 if "--check" in sys.argv:
     print(f"{'설명 누락 ' + str(len(missing)) + '곳' if missing else '카드 설명이 저장소 전부를 덮는다'}"
