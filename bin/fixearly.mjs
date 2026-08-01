@@ -1518,6 +1518,7 @@ function analyzeTextbookIssues(ts, fileContents) {
   const emptyCatch = [];
   const statefulRegex = [];
   const forInArray = [];
+  const writeOnlyCollection = [];
 
   for (const { file, content } of fileContents) {
     const kind = /\.(tsx|jsx)$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS;
@@ -1810,6 +1811,17 @@ function analyzeTextbookIssues(ts, fileContents) {
       });
     };
     ts.forEachChild(sf, (n) => walk(n, false, false, false, new Set()));
+
+    // ── 쓰기만 하는 컬렉션: new Map()/new Set() 을 만들어 넣기만 하고 한 번도 안 읽는다.
+    // 채워 넣는 비용은 매번 내면서 그 값을 쓰는 곳이 없다 — 대개 소비하던 코드가
+    // 사라지고 생산만 남은 자리다. knip 이 못 잡는다: export 가 아니라 지역 변수고,
+    // 이름은 멀쩡히 '참조'되기 때문이다(.add 도 참조다). 읽기/쓰기를 구분해야 보인다.
+    //
+    // 판정: 선언 말고 이 이름의 모든 참조가 쓰기 메서드의 수신자이면 write-only.
+    // 한 군데라도 .get/.has/.size/전개/인자 전달/반환이면 읽는 것이므로 후보에서 뺀다.
+    // 그래서 오탐이 나오려면 '읽기가 정적으로 안 보이는 경로'여야 하는데, 그건
+    // eval 이나 with 뿐이다. 재할당되는 이름도 뺀다(다른 값이 들어올 수 있다).
+    collectWriteOnly(ts, sf, file, lineOf, writeOnlyCollection);
   }
 
   return {
@@ -1823,7 +1835,61 @@ function analyzeTextbookIssues(ts, fileContents) {
     emptyCatch: { count: emptyCatch.length, worst: emptyCatch.slice(0, 8) },
     statefulRegex: { count: statefulRegex.length, worst: statefulRegex.slice(0, 6) },
     forInArray: { count: forInArray.length, worst: forInArray.slice(0, 6) },
+    writeOnlyCollection: { count: writeOnlyCollection.length, worst: writeOnlyCollection.slice(0, 6) },
   };
+}
+
+/** 쓰기만 하는 Map/Set 을 한 파일에서 찾는다. analyzeTextbookIssues 가 파일마다 부른다. */
+function collectWriteOnly(ts, sf, file, lineOf, out) {
+  const WRITE = new Set(["set", "add", "delete", "clear"]);
+  // 후보: const/let x = new Map()/new Set(). 이름 → 선언 노드
+  const cand = new Map();
+  const findDecls = (n) => {
+    if (ts.isVariableDeclaration(n) && ts.isIdentifier(n.name) && n.initializer &&
+        ts.isNewExpression(n.initializer) && ts.isIdentifier(n.initializer.expression)) {
+      const ctor = n.initializer.expression.getText(sf);
+      if (ctor === "Map" || ctor === "Set") {
+        const name = n.name.getText(sf);
+        // 같은 이름이 두 번 선언되면(다른 스코프) 스코프 없이는 구분 못 한다 — 통째로 포기.
+        cand.set(name, cand.has(name) ? null : { node: n, ctor });
+      }
+    }
+    ts.forEachChild(n, findDecls);
+  };
+  ts.forEachChild(sf, findDecls);
+  if (cand.size === 0) return;
+
+  const reads = new Set();   // 한 번이라도 읽힌 이름
+  const writes = new Map();  // 이름 → 쓰기 횟수
+  const visit = (n) => {
+    if (ts.isIdentifier(n) && cand.has(n.getText(sf))) {
+      const name = n.getText(sf);
+      const d = cand.get(name);
+      // 선언의 이름 자리 자체는 참조가 아니다
+      if (!(d && d.node && d.node.name === n)) {
+        const p = n.parent;
+        const isWriteReceiver =
+          p && ts.isPropertyAccessExpression(p) && p.expression === n &&
+          p.parent && ts.isCallExpression(p.parent) && p.parent.expression === p &&
+          WRITE.has(p.name.getText(sf));
+        // 재할당(x = …)도 읽기로 친다 — 다른 값이 들어오면 이 분석의 전제가 깨진다.
+        const isReassign =
+          p && ts.isBinaryExpression(p) && p.left === n &&
+          p.operatorToken.kind === ts.SyntaxKind.EqualsToken;
+        if (isWriteReceiver && !isReassign) writes.set(name, (writes.get(name) ?? 0) + 1);
+        else reads.add(name);
+      }
+    }
+    ts.forEachChild(n, visit);
+  };
+  ts.forEachChild(sf, visit);
+
+  for (const [name, d] of cand) {
+    if (!d) continue;                       // 같은 이름 중복 선언 — 판단 포기
+    if (reads.has(name)) continue;          // 한 군데라도 읽으면 아니다
+    if (!writes.has(name)) continue;        // 만들기만 하고 안 건드리는 건 다른 문제(미사용 변수)
+    out.push({ file, line: lineOf(d.node), name, ctor: d.ctor, writes: writes.get(name) });
+  }
 }
 
 // 타입 위생 — 타입체커 없이 AST 문법만으로 잡히는 "타입을 포기한 자리"들.
@@ -2644,6 +2710,10 @@ if (textbook) {
   if (t.numericSortNoComparator.count > 0) {
     console.log(`  ⚠ 숫자 정렬 버그: ${t.numericSortNoComparator.count}곳 — 숫자 배열을 sort() 비교자 없이 = 사전순 ([10,2,1]→[1,10,2])`);
     for (const w of t.numericSortNoComparator.worst) console.log(`    .sort() — ${w.file}:${w.line}`);
+  }
+  if (t.writeOnlyCollection.count > 0) {
+    console.log(`  ⚠ 쓰기만 하는 컬렉션: ${t.writeOnlyCollection.count}곳 — 채우기만 하고 한 번도 읽지 않습니다 (소비하던 코드가 사라진 자리)`);
+    for (const w of t.writeOnlyCollection.worst) console.log(`    ${w.name} = new ${w.ctor}() — 쓰기 ${w.writes}회·읽기 0회 — ${w.file}:${w.line}`);
   }
   if (t.loopInvariantIndex.count > 0) {
     console.log(`  루프 안 인덱스 재구축: ${t.loopInvariantIndex.count}곳 — 루프 밖 값으로 new Set/Map을 매 회 다시 만듭니다 O(n·m) (루프 밖으로 호이스팅)`);
