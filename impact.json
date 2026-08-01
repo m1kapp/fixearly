@@ -97,7 +97,7 @@
    "title": "parse-fields dedup O(n²)",
    "type": "O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1))",
    "repo": "directus/directus",
-   "repoLabel": "directus · 36.9k★",
+   "repoLabel": "directus · 37k★",
    "pr": 27978,
    "createdAt": "2026-07-24T13:03:10Z",
    "closedAt": "2026-07-29T19:34:55Z",
@@ -107,10 +107,11 @@
    "title": "resource-mapper schema validation O(n²)",
    "type": "O(n²) (value별 schema.find — id Map으로 O(1))",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 198.8k★",
+   "repoLabel": "n8n · 198.9k★",
    "pr": 34899,
    "createdAt": "2026-07-24T13:05:42Z",
-   "status": "approved"
+   "status": "merged",
+   "mergedAt": "2026-07-31T17:05:28Z"
   },
   {
    "title": "user field validation O(n²)",
@@ -146,7 +147,7 @@
    "titleEn": "eval dataset item re-read",
    "type": "중복 쿼리 (변수마다 동일 WHERE 로 같은 행 재조회 → 컬럼 합쳐 1회)",
    "repo": "langfuse/langfuse",
-   "repoLabel": "langfuse · 32.2k★",
+   "repoLabel": "langfuse · 32.3k★",
    "pr": 15585,
    "createdAt": "2026-07-29T14:13:47Z",
    "status": "reviewing"
