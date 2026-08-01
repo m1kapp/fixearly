@@ -14,6 +14,24 @@ mkdir -p "$CLONES" "$OUT"
 # 목록은 저장소에 있다. 예전엔 /private/tmp 를 가리켜서, tmp 가 비워진 뒤로는
 # 첫 줄부터 아무것도 못 읽고 조용히 0건 처리로 끝났다.
 REPOS="${BOARD_REPOS:-$HERE/board-repos.json}"
+
+# 재발행할 때 밟고 지나가라 — 문서에만 적으면 안 읽힌다.
+# 코퍼스에 넣기로 하고 측정까지 끝낸 후보가 대기 중이면 여기서 알린다.
+# 넣을 거면 tools/corpus-candidates.json 의 repos 를 board-repos.json 에 합치고
+# (rank 는 그때 부여) 이 스크립트를 다시 돌려라. 안 넣을 거면 그냥 진행하면 된다.
+CANDS="$HERE/corpus-candidates.json"
+if [ -f "$CANDS" ]; then
+  ncand=$(python3 -c "import json;d=json.load(open('$CANDS'));print(len(d.get('repos',[])))" 2>/dev/null || echo 0)
+  if [ "${ncand:-0}" -gt 0 ]; then
+    echo
+    echo "  ⚠ 코퍼스 후보 ${ncand}곳이 대기 중이다 — $CANDS"
+    echo "    다음 판에 넣기로 미뤄둔 것들이다(앱 성격, 측정 완료)."
+    echo "    지금 넣을 거면 board-repos.json 에 합치고 다시 돌려라."
+    echo "    안 넣을 거면 5초 뒤 그대로 진행한다."
+    echo
+    sleep 5
+  fi
+fi
 [ -f "$REPOS" ] || { echo "FAIL 목록 없음: $REPOS"; exit 1; }
 
 python3 -c "import json;[print(d['name']+'|'+d['url']+'|'+d['branch']+'|'+d['sub']+'|'+str(d['rank'])+'|'+d['kcls']+'|'+d['klabel']+'|'+d['stars']) for d in json.load(open('$REPOS'))]" | while IFS='|' read -r name url branch sub rank kcls klabel stars; do
