@@ -51,19 +51,30 @@ async function prStatus(repo, pr) {
       reviews = await get(`https://api.github.com/repos/${repo}/pulls/${pr}/reviews?per_page=100`);
     } catch { /* 리뷰 조회 실패는 치명적이지 않다 — open 으로 떨어진다 */ }
 
+    // 봇 승인은 승인이 아니다. novu 의 greptile-apps[bot] 이 열자마자 APPROVED 를
+    // 찍는 바람에 8일 동안 "승인 · 머지 대기"로 표시됐는데, 실제로는 사람이 아직
+    // 본 적이 없었다. 그 저장소에서 실제로 머지된 것들은 사람 승인이 따로 있다.
+    // 우리 보드가 파는 게 "머지로 검증됐다"인데 승인 개수가 부풀면 그 주장이 샌다.
+    const isBot = (u) => u?.type === "Bot" || /\[bot\]$/.test(u?.login || "");
+
     // 리뷰어별 마지막 판정만 센다. APPROVED 후 COMMENTED 가 와도 승인은 유지된다.
     const last = new Map();
+    let botApproved = false;
     for (const r of reviews) {
       if (r.state === "COMMENTED") continue; // 단순 코멘트는 판정이 아니다
+      if (isBot(r.user)) { if (r.state === "APPROVED") botApproved = true; continue; }
       last.set(r.user?.login, r.state);
     }
     const verdicts = [...last.values()];
+    const approvers = [...last].filter(([, v]) => v === "APPROVED").map(([who]) => who);
     if (verdicts.includes("CHANGES_REQUESTED")) return { state: "changes", url: d.html_url, ...at };
-    if (verdicts.includes("APPROVED")) return { state: "approved", url: d.html_url, ...at };
+    if (verdicts.includes("APPROVED")) return { state: "approved", url: d.html_url, approvers, ...at };
 
-    // 판정은 없지만 사람이 붙은 흔적 — 리뷰어 지정 또는 리뷰 코멘트.
-    const engaged = (d.requested_reviewers || []).length > 0 || (d.review_comments || 0) > 0 || reviews.length > 0;
-    return { state: engaged ? "reviewing" : "waiting", url: d.html_url, ...at };
+    // 판정은 없지만 사람이 붙은 흔적 — 리뷰어 지정 또는 사람이 남긴 리뷰.
+    // 봇 리뷰는 흔적으로도 안 센다(안 그러면 봇 하나에 전부 '리뷰 진행'이 된다).
+    const humanReviews = reviews.filter((r) => !isBot(r.user));
+    const engaged = (d.requested_reviewers || []).length > 0 || humanReviews.length > 0;
+    return { state: engaged ? "reviewing" : "waiting", url: d.html_url, botApproved, ...at };
   } catch (e) {
     return { state: "unknown", err: e.message };
   }
@@ -121,6 +132,10 @@ for (const f of findings) {
   // 상태와 날짜를 registry 에 남긴다 — 랜딩 카드가 "며칠째"·"며칠 만에"를 보여주고,
   // PR-QUEUE.md 생성기가 네트워크 없이 --check 를 돌 수 있다.
   f.status = st.state;
+  // 누가 승인했는지도 남긴다. "승인 3건"이 사람 셋인지 봇 셋인지가 다르다.
+  if (st.approvers?.length) f.approvedBy = st.approvers; else delete f.approvedBy;
+  // 봇만 승인한 상태 — 사람 리뷰 전인데 GitHub 의 reviewDecision 은 APPROVED 로 나온다.
+  if (st.botApproved) f.botApproved = true; else delete f.botApproved;
   // 걸린 날짜를 registry 에 남긴다 — 랜딩 카드가 "며칠째"·"며칠 만에"를 보여준다.
   if (st.createdAt) f.createdAt = st.createdAt;
   if (st.mergedAt) f.mergedAt = st.mergedAt; else delete f.mergedAt;

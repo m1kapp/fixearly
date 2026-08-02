@@ -20,7 +20,6 @@
 | [outline#13117](https://github.com/outline/outline/pull/13117) | 머지 | 질문 없이 머지 |
 | [nocodb#14309](https://github.com/nocodb/nocodb/pull/14309) | 머지 | 질문 없이 머지 |
 | [n8n#34899](https://github.com/n8n-io/n8n/pull/34899) | 머지 | 봇이 요구한 changeset prefix 만 고치고 통과 |
-| [novu#12074](https://github.com/novuhq/novu/pull/12074) | 승인 | 승인 후 머지 대기 |
 | [medusa#16188](https://github.com/medusajs/medusa/pull/16188) | 승인 | 승인 후 머지 대기 |
 | [vite#23114](https://github.com/vitejs/vite/pull/23114) | 승인 | 당일 승인, 질문 없음 |
 | [budibase#19320](https://github.com/Budibase/budibase/pull/19320) | 닫힘 | 사유 없이 닫힘. 요청받지 않은 최적화는 그냥 거절될 수 있다 |
@@ -109,20 +108,20 @@ budibase 의 "denounce" 는 사유가 없다. 요청받지 않은 최적화는 �
 | PR | 축 | 상태 | 경과 |
 |---|---|---|---|
 | [medusa#16188](https://github.com/medusajs/medusa/pull/16188) | O(n²) | 🔵 승인 · 머지 대기 | 8일째 |
-| [novu#12074](https://github.com/novuhq/novu/pull/12074) | N+1 | 🔵 승인 · 머지 대기 | 8일째 |
 | [vite#23114](https://github.com/vitejs/vite/pull/23114) | O(n²) | 🔵 승인 · 머지 대기 | 1일째 |
-| [immich#30163](https://github.com/immich-app/immich/pull/30163) | N+1 | 🟢 리뷰 진행 | 8일째 |
-| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | 🟢 리뷰 진행 | 3일째 |
+| [immich#30163](https://github.com/immich-app/immich/pull/30163) | N+1 | 🟢 리뷰 진행 | 9일째 |
 | [ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 순차 I/O | ⚪ 대기 | 1일째 |
-| [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 순차 I/O | ⚪ 대기 | 2일째 |
-| [cal.com#29828](https://github.com/calcom/cal.diy/pull/29828) | O(n²) | ⚪ 대기 | 8일째 |
+| [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 순차 I/O | ⚪ 대기 | 3일째 |
+| [cal.com#29828](https://github.com/calcom/cal.diy/pull/29828) | O(n²) | ⚪ 대기 | 9일째 |
 | [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 |
+| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 3일째 |
 | [medusa#16233](https://github.com/medusajs/medusa/pull/16233) | O(n²) | ⚪ 대기 | 3일째 |
+| [novu#12074](https://github.com/novuhq/novu/pull/12074) | N+1 | ⚪ 대기 | 9일째 |
 | [payload#17469](https://github.com/payloadcms/payload/pull/17469) | O(n²) | ⚪ 대기 | 8일째 |
 | [strapi#27125](https://github.com/strapi/strapi/pull/27125) | O(n²) | ⚪ 대기 | 8일째 |
 | [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 1일째 |
 
-**열린 것 13건.** 판정 난 11건 중 머지 3 · 승인 3 · 닫힘 5.
+**열린 것 13건.** 판정 난 10건 중 머지 3 · 승인 2 · 닫힘 5.
 <!-- /auto:open -->
 
 큐에서 새로 꺼내기 전에 이쪽부터 정리한다. 속도 규칙상 열린 것이 5건을 넘으면 멈춘다.

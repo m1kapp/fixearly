@@ -4,7 +4,7 @@
    "title": "deleteBulkMetadata N+1",
    "type": "N+1 (루프 안 순차 DELETE, item당 왕복 1회)",
    "repo": "immich-app/immich",
-   "repoLabel": "immich · 109.4k★",
+   "repoLabel": "immich · 109.5k★",
    "pr": 30163,
    "createdAt": "2026-07-23T15:26:09Z",
    "status": "reviewing"
@@ -16,15 +16,16 @@
    "repoLabel": "novu · 39.4k★",
    "pr": 12074,
    "createdAt": "2026-07-23T23:16:52Z",
-   "status": "approved",
+   "status": "waiting",
    "outcomeNote": "승인 후 머지 대기",
-   "outcomeNoteEn": "approved, waiting on merge"
+   "outcomeNoteEn": "approved, waiting on merge",
+   "botApproved": true
   },
   {
    "title": "booking member diff O(n²)",
    "type": "O(n²) 배열 조회 (루프 안 .some() 선형스캔 4회 → Set)",
    "repo": "calcom/cal.diy",
-   "repoLabel": "cal.com · 47.1k★",
+   "repoLabel": "cal.com · 47.2k★",
    "pr": 29828,
    "createdAt": "2026-07-24T00:51:16Z",
    "status": "waiting"
@@ -57,7 +58,7 @@
    "title": "lucky-user set rebuild in loop",
    "type": "루프 불변 인덱스 재구축 (while마다 new Set 재구축 → 호이스팅)",
    "repo": "calcom/cal.diy",
-   "repoLabel": "cal.com · 47.1k★",
+   "repoLabel": "cal.com · 47.2k★",
    "pr": 29832,
    "createdAt": "2026-07-24T08:00:48Z",
    "status": "closed",
@@ -83,13 +84,16 @@
    "createdAt": "2026-07-24T12:46:08Z",
    "status": "approved",
    "outcomeNote": "승인 후 머지 대기",
-   "outcomeNoteEn": "approved, waiting on merge"
+   "outcomeNoteEn": "approved, waiting on merge",
+   "approvedBy": [
+    "shahednasser"
+   ]
   },
   {
    "title": "markdown import merge O(n²)",
    "type": "O(n²) (형제 out.find title 스캔 — Map으로 O(1))",
    "repo": "outline/outline",
-   "repoLabel": "outline · 39.9k★",
+   "repoLabel": "outline · 40k★",
    "pr": 13117,
    "createdAt": "2026-07-24T12:49:22Z",
    "mergedAt": "2026-07-30T03:04:09Z",
@@ -122,7 +126,7 @@
    "title": "resource-mapper schema validation O(n²)",
    "type": "O(n²) (value별 schema.find — id Map으로 O(1))",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 198.9k★",
+   "repoLabel": "n8n · 199k★",
    "pr": 34899,
    "createdAt": "2026-07-24T13:05:42Z",
    "status": "merged",
@@ -171,7 +175,7 @@
    "repoLabel": "langfuse · 32.3k★",
    "pr": 15585,
    "createdAt": "2026-07-29T14:13:47Z",
-   "status": "reviewing"
+   "status": "waiting"
   },
   {
    "title": "in-depth analytics 순차 await",
@@ -213,7 +217,10 @@
    "createdAt": "2026-07-31T06:36:11Z",
    "status": "approved",
    "outcomeNote": "당일 승인, 질문 없음",
-   "outcomeNoteEn": "approved same day, no questions"
+   "outcomeNoteEn": "approved same day, no questions",
+   "approvedBy": [
+    "sapphi-red"
+   ]
   },
   {
    "title": "resize 핸들러 안 미사용 Map",
