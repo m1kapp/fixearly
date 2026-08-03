@@ -29,7 +29,7 @@
   "homepage": "https://fixearly.m1k.app",
   "scripts": {
     "dev": "python3 -m http.server 4173",
-    "test": "node bin/selftest.mjs && python3 tools/update-corpus-labels.py --check && python3 tools/add-board-rows.py --check && python3 tools/update-history-ui.py --check && python3 tools/update-impact-cards.py --check && python3 tools/update-pr-queue.py --check",
+    "test": "node bin/selftest.mjs && python3 tools/test_internal_dashboard.py && python3 tools/update-corpus-labels.py --check && python3 tools/add-board-rows.py --check && python3 tools/update-history-ui.py --check && python3 tools/update-impact-cards.py --check && python3 tools/update-pr-queue.py --check",
     "impact": "node bin/impact.mjs",
     "merge-times": "python3 tools/update-repo-merge-times.py",
     "internal": "python3 tools/internal-dashboard.py --scan --serve",

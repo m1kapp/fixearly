@@ -33,6 +33,9 @@ RULESETS = {
            "훑는 가장 흔한 형태인데 빠져 있었다. 수신자가 배열이라는 증거가 있을 때만 "
            "센다. 재현율이 오르자 분포가 밀려 유예·기울기를 규칙대로(유예=중앙, "
            "캡은 p90에서) 되돌릴 수 있게 됐다.",
+    "v13": "점수식은 그대로 두고 측정 범위를 바로잡았다. 파일명·생성 배너가 있는 생성물과 "
+           "sample/tmp 부속 코드를 제외하고, admin-api·backend·*-back 모노레포 앱을 "
+           "백엔드로 분류한다. 범위가 달라진 점수는 이전 판과 비교할 수 없어 버전을 올렸다.",
 }
 
 
@@ -69,7 +72,7 @@ for line in revs.split("\n"):
     })
 
 # 오래된 것부터
-order = ["v6", "v7", "v8", "v9", "v10", "v11", "v12"]
+order = ["v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13"]
 versions.sort(key=lambda v: order.index(v["version"]) if v["version"] in order else 99)
 
 names = sorted({n for v in versions for n in v["scores"]})

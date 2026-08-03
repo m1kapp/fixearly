@@ -57,9 +57,9 @@ const wantHotspots = args.includes("--hotspots");
 // 기본 경로에서 찾고 있으면 "저자 라이브러리를 광고한다"는 인상을 준다.
 const wantKit = args.includes("--kit"); // cog × git churn = "먼저 고칠 파일" 랭킹(git 이력 필요)
 
-// 채점 규칙 버전. 유예값·기울기·캡을 바꾸면 이 값을 올려야 한다 —
-// 그러지 않으면 규칙이 바뀐 뒤의 점수를 예전 점수와 나란히 놓게 되고, 진행도가 거짓말을 한다.
-const SCORING_VERSION = "v12";
+// 채점 규칙 버전. 유예값·기울기·캡뿐 아니라 측정 범위가 바뀌어도 올려야 한다 —
+// 생성물을 걷어낸 새 점수를 예전 점수와 나란히 놓으면 진행도가 거짓말을 한다.
+const SCORING_VERSION = "v13";
 
 // 등급 색 (라이트 기준) — 배지·임베드 공용
 const GRADE_COLORS = { S: "#0f7a63", A: "#12915a", B: "#7d8a2c", C: "#c0862e", D: "#cb4436", E: "#8f2f24" };
@@ -880,7 +880,9 @@ const QUADRATIC_MEMBERSHIP_METHODS = new Set(["includes", "indexOf", "lastIndexO
 function quadZoneOf(file) {
   if (/\.(test|spec)\.|__tests__|\/tests?\/|\/e2e\/|\/fixtures?\/|\/migrations?\//.test(file)) return "test";
   // backend before frontend: e.g. medusa `api/admin/*.route.ts` is a REST route, not UI.
-  if (/\/(api|server|services?|routes?|controllers?|use-?cases?|repositor\w*|workflows?|queues?|handlers?|resolvers?|jobs?|tasks?)\//.test(file))
+  // 모노레포 앱 이름도 본다: apps/admin-api, apps/backend, apps/flowiki-back 같은 경로는
+  // 디렉터리 안에 다시 /api/가 없어서 예전에는 other로 빠졌다.
+  if (/(^|\/)(api|server|backend|back|[^/]+-api|[^/]+-back|services?|routes?|controllers?|use-?cases?|repositor\w*|workflows?|queues?|handlers?|resolvers?|jobs?|tasks?)(\/|$)/.test(file))
     return "backend";
   // frontend is signalled by the JSX extension or explicit component/client dirs — not a bare `/admin/`.
   if (/\.(tsx|jsx)$|\/components?\/|\/dashboard\/|\/client\/|\/ui\//.test(file)) return "frontend";
@@ -2085,7 +2087,7 @@ function classifyFile(filePath, content) {
   const rel = filePath.replace(/\\/g, "/");
   const head = content.slice(0, 300);
   if (
-    /\/(api|server)\//.test(rel) ||
+    /(^|\/)(api|server|backend|back|[^/]+-api|[^/]+-back)(\/|$)/.test(rel) ||
     /(^|\/)(route|middleware|instrumentation)\.(ts|js|mjs)$/.test(rel) ||
     /^\s*["']use server["']/.test(head)
   ) {
@@ -2147,10 +2149,22 @@ const NON_SOURCE_RE = /(\.(test|spec|test-d|bench|benchmark|stories|e2e)\.[tj]sx
 // 사람이 쓴 코드가 아니다. 실제 사례: next.js의 src/compiled/ 45MB(react-dom 개발빌드 여러 벌)가
 // 중복 82%·maxCog 997을 만들어 D 27을 찍게 했다 — 전부 벤더 코드였다.
 const VENDORED_RE = /\/(compiled|vendor|vendored|third[-_]party|generated|codegen|\.generated|node_modules)\//;
-// 배포물이 아닌 부속 디렉토리: 예제·데모·플레이그라운드·문서 사이트·빌드 스크립트.
+// 배포물이 아닌 부속 디렉토리: 예제·샘플·데모·플레이그라운드·문서 사이트·빌드 스크립트·tmp.
 // 저장소에는 있지만 사용자가 설치하는 물건이 아니라, 점수에 섞이면 "이 라이브러리 코드가
 // 어떤 상태인가"라는 질문의 답을 흐린다(angular/packages/examples 6.4k줄 = 문서용 샘플).
-const NON_SHIPPED_RE = /\/(examples?|demos?|playground|sandbox|website|scripts)\//;
+const NON_SHIPPED_RE = /\/(examples?|samples?|demos?|playground|sandbox|website|scripts|tmp)\//;
+
+// 디렉터리뿐 아니라 파일명·머리말로도 생성물을 판별한다. 실제 사내 저장소에서
+// `generated.ts`, `sample-rows.generated.ts`, 그리고 "자동 생성, 손수정 금지" migration이
+// 수만 줄의 데이터 리터럴을 제품 코드로 위장했다. 이름만 migration인 파일은 실행 코드일 수
+// 있으므로 제외하지 않고, 생성 사실을 명시한 강한 증거가 있을 때만 걷어낸다.
+function isGeneratedSource(filePath, content) {
+  const p = filePath.replace(/\\/g, "/");
+  if (/(^|\/)(generated|codegen)\.[cm]?[jt]sx?$/i.test(p)) return true;
+  if (/(^|\/)[^/]+\.(generated|codegen)\.[cm]?[jt]sx?$/i.test(p)) return true;
+  const head = content.slice(0, 2400);
+  return /@generated\b|code generated .*do not edit|auto(?:matically)?[- ]generated(?: file| by)?|this file (?:is )?generated|do not edit(?: this file)?|손수정\s*금지|자동\s*생성.{0,80}(?:수정\s*금지|손수정)/i.test(head);
+}
 // --exclude=pat1,pat2 — 모노레포에서 '측정 대상 산출물'이 아닌 하위 패키지 수동 제외.
 // 자동 판별 불가한 판단(별도 제품인 devtools 앱, 저장소에 포크해 넣은 남의 툴)에만 쓴다.
 // 각 사용처는 board-repos.json에 이유와 함께 기록된다 — 근거 없는 제외는 점수 세탁이다.
@@ -2181,12 +2195,17 @@ let testDensity = null;
   const before = files.length;
   files = files.filter((f) => {
     const p = f.replace(/\\/g, "/");
-    return !NON_SOURCE_RE.test(p) && !VENDORED_RE.test(p) && !NON_SHIPPED_RE.test(p)
-      && !EXCLUDE_RES.some((re) => re.test(p));
+    if (NON_SOURCE_RE.test(p) || VENDORED_RE.test(p) || NON_SHIPPED_RE.test(p)
+      || EXCLUDE_RES.some((re) => re.test(p))) return false;
+    try {
+      return !isGeneratedSource(p, fs.readFileSync(f, "utf-8"));
+    } catch {
+      return true;
+    }
   });
   const dropped = before - files.length;
   if (dropped > 0) {
-    console.log(`  비-프로덕션·벤더 파일(테스트·벤치·스토리·타입선언·compiled/vendor·예제/스크립트) ${dropped}개 제외 (${files.length}개 분석)\n`);
+    console.log(`  비-프로덕션·벤더·생성 파일(테스트·벤치·스토리·타입선언·compiled/vendor·generated·예제/스크립트) ${dropped}개 제외 (${files.length}개 분석)\n`);
   }
   if (excludePats.length) console.log(`  수동 제외(--exclude): ${excludePats.join(", ")}\n`);
 }
