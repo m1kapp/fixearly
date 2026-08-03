@@ -9,3 +9,6 @@ node_modules/
 # vercel.json 이 없어서 public/ 이 커밋되면 Vercel 이 그걸 출력 디렉터리로 잡고
 # 루트 index.html 이 404 가 된다. 실제로 한 번 그렇게 내려갔다.
 public/
+
+# 사내 비공개 저장소 대시보드 — 생성 결과·저장소명·등급을 절대 공개 배포에 싣지 않는다.
+.internal/
