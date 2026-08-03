@@ -18,6 +18,8 @@ findings = json.load(open(f"{ROOT}/impact.json", encoding="utf-8"))["findings"]
 # tools/fetch-repo-avatars.py 가 만든다.
 _av = f"{ROOT}/data/repo-avatars.json"
 AVATAR = json.load(open(_av, encoding="utf-8")) if os.path.exists(_av) else {}
+_mt = f"{ROOT}/data/repo-merge-times.json"
+MERGE_TIMES = json.load(open(_mt, encoding="utf-8")).get("repos", {}) if os.path.exists(_mt) else {}
 md = open(f"{ROOT}/IMPACT.md", encoding="utf-8").read()
 
 STAGE = [
@@ -153,8 +155,20 @@ def card(f, key):
     since = f.get("createdAt") or ""
     until = f.get("mergedAt") or f.get("closedAt") or ""
     attrs = f' data-since="{since}"' + (f' data-until="{until}"' if until else "")
+    timing = MERGE_TIMES.get(f["repo"], {})
+    average = timing.get("averageDays")
+    sample = timing.get("mergedExternal", 0)
+    # 진행 중인 PR만 저장소의 외부 기여 PR 평균과 나란히 둔다. 끝난 건 실제 소요시간이
+    # 이미 답이라 평균을 덧붙이면 신호가 두 개로 갈린다.
+    avg_html = ""
+    if key not in ("merged", "closed") and average is not None:
+        avg_days = int(average + .5)
+        tip_ko = f"최근 닫힌 PR {timing.get('sampledClosed', 0)}건 중 외부 머지 {sample}건 평균"
+        tip_en = f"average of {sample} external merges among recent closed PRs"
+        avg_html = (f'<span class="repoavg ko" title="{tip_ko}"> / 평균 {avg_days}일</span>'
+                    f'<span class="repoavg en" title="{tip_en}"> / avg {avg_days}d</span>')
     age_html = (f'<span class="age"{attrs}><span class="ko">{age_ko}</span>'
-                f'<span class="en">{age_en}</span></span>') if age_ko else ""
+                f'<span class="en">{age_en}</span>{avg_html}</span>') if age_ko else ""
     src = AVATAR.get(f["repo"])
     fav = f'<img class="ifav" src="{src}" alt="" width="15" height="15" loading="lazy">' if src else ""
     # 원래 영어인 제목은 그대로 둔다 — 한국어 화면에서도 코드 용어는 영어가 자연스럽다.
@@ -249,6 +263,12 @@ noreason = sorted(f"#{f['pr']}" for f in findings
 for r in noreason:
     print(f"  ✗ 닫힌 사유 없음(impact.json 의 closedReason/closedReasonEn): {r}")
 missing = missing + noicon + notranslated + noreason
+missing_times = sorted(f["repo"] for f in findings
+                       if f.get("status") not in ("merged", "closed")
+                       and f["repo"] not in MERGE_TIMES)
+for r in missing_times:
+    print(f"  ✗ 평균 머지시간 없음(python3 tools/update-repo-merge-times.py): {r}")
+missing += missing_times
 
 if "--check" in sys.argv:
     print(f"{'설명 누락 ' + str(len(missing)) + '곳' if missing else '카드 설명이 저장소 전부를 덮는다'}"

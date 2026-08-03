@@ -1,0 +1,96 @@
+{
+  "generatedAt": "2026-08-03T06:34:30Z",
+  "method": "latest 60 closed PRs; merged non-bot external contributors",
+  "repos": {
+    "Budibase/budibase": {
+      "averageDays": 4.1,
+      "mergedExternal": 15,
+      "sampledClosed": 60
+    },
+    "TryGhost/Ghost": {
+      "averageDays": 0.9,
+      "mergedExternal": 25,
+      "sampledClosed": 60
+    },
+    "baptisteArno/typebot.io": {
+      "averageDays": 9.7,
+      "mergedExternal": 1,
+      "sampledClosed": 60
+    },
+    "calcom/cal.diy": {
+      "averageDays": 5.7,
+      "mergedExternal": 5,
+      "sampledClosed": 60
+    },
+    "directus/directus": {
+      "averageDays": 6.2,
+      "mergedExternal": 17,
+      "sampledClosed": 60
+    },
+    "excalidraw/excalidraw": {
+      "averageDays": 73.2,
+      "mergedExternal": 7,
+      "sampledClosed": 60
+    },
+    "immich-app/immich": {
+      "averageDays": 8.4,
+      "mergedExternal": 3,
+      "sampledClosed": 60
+    },
+    "langfuse/langfuse": {
+      "averageDays": 1.2,
+      "mergedExternal": 32,
+      "sampledClosed": 60
+    },
+    "medusajs/medusa": {
+      "averageDays": 8.6,
+      "mergedExternal": 5,
+      "sampledClosed": 60
+    },
+    "n8n-io/n8n": {
+      "averageDays": 3.0,
+      "mergedExternal": 29,
+      "sampledClosed": 60
+    },
+    "nocodb/nocodb": {
+      "averageDays": 6.8,
+      "mergedExternal": 1,
+      "sampledClosed": 60
+    },
+    "novuhq/novu": {
+      "averageDays": 0.8,
+      "mergedExternal": 31,
+      "sampledClosed": 60
+    },
+    "outline/outline": {
+      "averageDays": 4.9,
+      "mergedExternal": 2,
+      "sampledClosed": 60
+    },
+    "payloadcms/payload": {
+      "averageDays": 4.5,
+      "mergedExternal": 21,
+      "sampledClosed": 60
+    },
+    "strapi/strapi": {
+      "averageDays": 17.7,
+      "mergedExternal": 26,
+      "sampledClosed": 60
+    },
+    "twentyhq/twenty": {
+      "averageDays": 0.5,
+      "mergedExternal": 14,
+      "sampledClosed": 60
+    },
+    "typeorm/typeorm": {
+      "averageDays": 10.1,
+      "mergedExternal": 4,
+      "sampledClosed": 60
+    },
+    "vitejs/vite": {
+      "averageDays": 4.0,
+      "mergedExternal": 11,
+      "sampledClosed": 60
+    }
+  }
+}

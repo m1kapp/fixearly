@@ -36,6 +36,9 @@ OPEN = ("approved", "changes", "reviewing", "waiting", "draft")
 ORDER = {k: i for i, k in enumerate(OPEN)}
 
 findings = json.load(open(f"{ROOT}/impact.json", encoding="utf-8"))["findings"]
+MERGE_TIMES_PATH = f"{ROOT}/data/repo-merge-times.json"
+MERGE_TIMES = (json.load(open(MERGE_TIMES_PATH, encoding="utf-8")).get("repos", {})
+               if os.path.exists(MERGE_TIMES_PATH) else {})
 
 
 def axis(t):
@@ -61,7 +64,9 @@ def days(f):
         return ""
     born = d.datetime.fromisoformat(f["createdAt"].replace("Z", "+00:00"))
     n = (d.datetime.now(d.timezone.utc) - born).days
-    return f"{n}일째" if n >= 1 else "오늘"
+    elapsed = f"{n}일째" if n >= 1 else "오늘"
+    average = MERGE_TIMES.get(f["repo"], {}).get("averageDays")
+    return f"{elapsed} / 평균 {int(average + .5)}일" if average is not None else elapsed
 
 
 rows = sorted((f for f in findings if f.get("status") in OPEN),
@@ -70,7 +75,7 @@ decided = [f for f in findings if f.get("status") in ("merged", "closed")]
 merged = [f for f in decided if f["status"] == "merged"]
 approved = [f for f in findings if f.get("status") == "approved"]
 
-body = ["| PR | 축 | 상태 | 경과 |", "|---|---|---|---|"]
+body = ["| PR | 축 | 상태 | 경과 / 외부 머지 평균 |", "|---|---|---|---|"]
 for f in rows:
     name = str(f["repoLabel"]).split("·")[0].strip()
     body.append(f"| [{name}#{f['pr']}](https://github.com/{f['repo']}/pull/{f['pr']}) "
