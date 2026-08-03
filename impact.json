@@ -4,7 +4,7 @@
    "title": "deleteBulkMetadata N+1",
    "type": "N+1 (루프 안 순차 DELETE, item당 왕복 1회)",
    "repo": "immich-app/immich",
-   "repoLabel": "immich · 109.5k★",
+   "repoLabel": "immich · 109.6k★",
    "pr": 30163,
    "createdAt": "2026-07-23T15:26:09Z",
    "status": "reviewing"
@@ -34,7 +34,7 @@
    "title": "view-widget-upsert O(n²)",
    "type": "O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map)",
    "repo": "twentyhq/twenty",
-   "repoLabel": "twenty · 54k★",
+   "repoLabel": "twenty · 54.1k★",
    "pr": 23231,
    "createdAt": "2026-07-24T01:00:49Z",
    "closedAt": "2026-07-24T07:31:11Z",
@@ -46,7 +46,7 @@
    "title": "nested relations hydration O(n²)",
    "type": "O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map)",
    "repo": "twentyhq/twenty",
-   "repoLabel": "twenty · 54k★",
+   "repoLabel": "twenty · 54.1k★",
    "pr": 23232,
    "createdAt": "2026-07-24T01:48:53Z",
    "closedAt": "2026-07-24T16:25:37Z",
@@ -126,7 +126,7 @@
    "title": "resource-mapper schema validation O(n²)",
    "type": "O(n²) (value별 schema.find — id Map으로 O(1))",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 199k★",
+   "repoLabel": "n8n · 199.1k★",
    "pr": 34899,
    "createdAt": "2026-07-24T13:05:42Z",
    "status": "merged",
@@ -172,7 +172,7 @@
    "titleEn": "eval dataset item re-read",
    "type": "중복 쿼리 (변수마다 동일 WHERE 로 같은 행 재조회 → 컬럼 합쳐 1회)",
    "repo": "langfuse/langfuse",
-   "repoLabel": "langfuse · 32.3k★",
+   "repoLabel": "langfuse · 32.4k★",
    "pr": 15585,
    "createdAt": "2026-07-29T14:13:47Z",
    "status": "waiting"
@@ -215,19 +215,17 @@
    "repoLabel": "vite · 82.2k★",
    "pr": 23114,
    "createdAt": "2026-07-31T06:36:11Z",
-   "status": "approved",
-   "outcomeNote": "당일 승인, 질문 없음",
-   "outcomeNoteEn": "approved same day, no questions",
-   "approvedBy": [
-    "sapphi-red"
-   ]
+   "status": "merged",
+   "outcomeNote": "당일 승인, 2일 만에 머지",
+   "outcomeNoteEn": "approved same day, merged in 2 days",
+   "mergedAt": "2026-08-03T03:03:30Z"
   },
   {
    "title": "resize 핸들러 안 미사용 Map",
    "titleEn": "unused Map in resize handler",
    "type": "쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제)",
    "repo": "excalidraw/excalidraw",
-   "repoLabel": "excalidraw · 128.8k★",
+   "repoLabel": "excalidraw · 128.9k★",
    "pr": 11805,
    "createdAt": "2026-08-01T14:22:45Z",
    "status": "waiting"
