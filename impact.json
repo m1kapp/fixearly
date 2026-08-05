@@ -4,7 +4,7 @@
    "title": "deleteBulkMetadata N+1",
    "type": "N+1 (루프 안 순차 DELETE, item당 왕복 1회)",
    "repo": "immich-app/immich",
-   "repoLabel": "immich · 109.6k★",
+   "repoLabel": "immich · 109.7k★",
    "pr": 30163,
    "createdAt": "2026-07-23T15:26:09Z",
    "status": "reviewing"
@@ -25,7 +25,7 @@
    "title": "booking member diff O(n²)",
    "type": "O(n²) 배열 조회 (루프 안 .some() 선형스캔 4회 → Set)",
    "repo": "calcom/cal.diy",
-   "repoLabel": "cal.com · 47.2k★",
+   "repoLabel": "cal.com · 47.3k★",
    "pr": 29828,
    "createdAt": "2026-07-24T00:51:16Z",
    "status": "waiting"
@@ -34,7 +34,7 @@
    "title": "view-widget-upsert O(n²)",
    "type": "O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map)",
    "repo": "twentyhq/twenty",
-   "repoLabel": "twenty · 54.1k★",
+   "repoLabel": "twenty · 54.3k★",
    "pr": 23231,
    "createdAt": "2026-07-24T01:00:49Z",
    "closedAt": "2026-07-24T07:31:11Z",
@@ -46,7 +46,7 @@
    "title": "nested relations hydration O(n²)",
    "type": "O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map)",
    "repo": "twentyhq/twenty",
-   "repoLabel": "twenty · 54.1k★",
+   "repoLabel": "twenty · 54.3k★",
    "pr": 23232,
    "createdAt": "2026-07-24T01:48:53Z",
    "closedAt": "2026-07-24T16:25:37Z",
@@ -58,7 +58,7 @@
    "title": "lucky-user set rebuild in loop",
    "type": "루프 불변 인덱스 재구축 (while마다 new Set 재구축 → 호이스팅)",
    "repo": "calcom/cal.diy",
-   "repoLabel": "cal.com · 47.2k★",
+   "repoLabel": "cal.com · 47.3k★",
    "pr": 29832,
    "createdAt": "2026-07-24T08:00:48Z",
    "status": "closed",
@@ -70,7 +70,7 @@
    "title": "dataloader doc placement O(n²)",
    "type": "O(n²) (배치당 keys.findIndex 전체 스캔 — Map으로 O(1))",
    "repo": "payloadcms/payload",
-   "repoLabel": "payload · 43.9k★",
+   "repoLabel": "payload · 44k★",
    "pr": 17469,
    "createdAt": "2026-07-24T12:40:04Z",
    "status": "waiting"
@@ -79,15 +79,13 @@
    "title": "translations batch match O(n²)",
    "type": "O(n²) (batch당 filter+some 전체 스캔 — Set으로 O(1))",
    "repo": "medusajs/medusa",
-   "repoLabel": "medusa · 35.5k★",
+   "repoLabel": "medusa · 35.6k★",
    "pr": 16188,
    "createdAt": "2026-07-24T12:46:08Z",
-   "status": "approved",
-   "outcomeNote": "승인 후 머지 대기",
-   "outcomeNoteEn": "approved, waiting on merge",
-   "approvedBy": [
-    "shahednasser"
-   ]
+   "status": "merged",
+   "outcomeNote": "메인테이너 승인 뒤 머지",
+   "outcomeNoteEn": "merged after maintainer approval",
+   "mergedAt": "2026-08-04T12:15:08Z"
   },
   {
    "title": "markdown import merge O(n²)",
@@ -114,7 +112,7 @@
    "title": "parse-fields dedup O(n²)",
    "type": "O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1))",
    "repo": "directus/directus",
-   "repoLabel": "directus · 37k★",
+   "repoLabel": "directus · 37.2k★",
    "pr": 27978,
    "createdAt": "2026-07-24T13:03:10Z",
    "closedAt": "2026-07-29T19:34:55Z",
@@ -126,7 +124,7 @@
    "title": "resource-mapper schema validation O(n²)",
    "type": "O(n²) (value별 schema.find — id Map으로 O(1))",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 199.1k★",
+   "repoLabel": "n8n · 199.4k★",
    "pr": 34899,
    "createdAt": "2026-07-24T13:05:42Z",
    "status": "merged",
@@ -162,17 +160,20 @@
    "title": "cart variant lookup O(n²)",
    "type": "O(n²) 배열 조회 (장바구니 아이템마다 variants 선형 스캔 → Map)",
    "repo": "medusajs/medusa",
-   "repoLabel": "medusa · 35.5k★",
+   "repoLabel": "medusa · 35.6k★",
    "pr": 16233,
    "createdAt": "2026-07-29T05:16:25Z",
-   "status": "waiting"
+   "status": "merged",
+   "mergedAt": "2026-08-04T15:18:39Z",
+   "outcomeNote": "메인테이너 승인 뒤 자동 머지",
+   "outcomeNoteEn": "auto-merged after maintainer approval"
   },
   {
    "title": "eval dataset item 반복 조회",
    "titleEn": "eval dataset item re-read",
    "type": "중복 쿼리 (변수마다 동일 WHERE 로 같은 행 재조회 → 컬럼 합쳐 1회)",
    "repo": "langfuse/langfuse",
-   "repoLabel": "langfuse · 32.4k★",
+   "repoLabel": "langfuse · 32.5k★",
    "pr": 15585,
    "createdAt": "2026-07-29T14:13:47Z",
    "status": "waiting"
@@ -202,10 +203,13 @@
    "titleEn": "growth stats 3 serial aggregates",
    "type": "독립 순차 await (postId 하나로만 매개되는 집계 3개 직렬 → Promise.all, 합→최댓값)",
    "repo": "TryGhost/Ghost",
-   "repoLabel": "ghost · 54.6k★",
+   "repoLabel": "ghost · 54.7k★",
    "pr": 29704,
    "createdAt": "2026-07-31T05:35:10Z",
-   "status": "waiting"
+   "status": "merged",
+   "mergedAt": "2026-08-03T16:54:15Z",
+   "outcomeNote": "메인테이너가 병렬화 변경을 승인한 뒤 머지",
+   "outcomeNoteEn": "maintainer approved the concurrency change and merged"
   },
   {
    "title": "pure CSS 청크 선형 조회",
@@ -225,7 +229,7 @@
    "titleEn": "unused Map in resize handler",
    "type": "쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제)",
    "repo": "excalidraw/excalidraw",
-   "repoLabel": "excalidraw · 128.9k★",
+   "repoLabel": "excalidraw · 129k★",
    "pr": 11805,
    "createdAt": "2026-08-01T14:22:45Z",
    "status": "waiting"

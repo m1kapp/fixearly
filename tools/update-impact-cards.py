@@ -10,6 +10,7 @@ update-impact-cards — IMPACT.md 의 PR 상태를 랜딩 08 섹션 카드로 �
 import json
 import re
 import sys
+from collections import Counter
 
 import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -54,7 +55,7 @@ STAR = ('<svg class="st" viewBox="0 0 16 16" width="11" height="11" aria-hidden=
 
 
 def elapsed(f, key):
-    """카드에 붙일 (한글, 영어, 머지월) 삼중.
+    """카드에 붙일 (한글, 영어, 머지월, 경과일) 사중.
 
     시간은 사람이 제일 먼저 읽는 신호다 — 6일 만에 머지된 것과 3주째 대기 중인
     것은 같은 '진행'이 아니다. 날짜는 impact.mjs 가 GitHub 에서 받아 registry 에
@@ -70,7 +71,7 @@ def elapsed(f, key):
     import datetime as _d
     born = f.get("createdAt")
     if not born:
-        return ("", "", "")
+        return ("", "", "", None)
     parse = lambda t: _d.datetime.fromisoformat(t.replace("Z", "+00:00"))
     start = parse(born)
     merged = f.get("mergedAt")
@@ -80,10 +81,10 @@ def elapsed(f, key):
     # 머지월만 적는다. 닫힌 건 굳이 날짜를 새기지 않는다.
     on = f"'{parse(merged):%y}.{parse(merged).month}" if merged else ""
     if done:
-        return ((f"{days}일 만에", f"in {days}d", on) if days >= 1
-                else ("당일", "same day", on))
-    return ((f"{days}일째", f"day {days}", "") if days >= 1
-            else ("오늘", "today", ""))
+        return ((f"{days}일 만에", f"in {days}d", on, days) if days >= 1
+                else ("당일", "same day", on, days))
+    return ((f"{days}일째", f"day {days}", "", days) if days >= 1
+            else ("오늘", "today", "", days))
 
 
 def esc(t):
@@ -146,7 +147,7 @@ def card(f, key):
     # 닫힌 건 트레일을 안 그린다 — 진행이 없으니 진행 표시도 없다.
     mark = "" if ended else trail(at)
     cls = "ic" + (" done" if key == "merged" else "") + (" off" if ended else "")
-    age_ko, age_en, on = elapsed(f, key)
+    age_ko, age_en, on, age_days = elapsed(f, key)
     on_html = f'<span class="on">{on}</span>' if on else ""
     # 경과는 생성 시점의 값이라 그대로 두면 시간이 지날수록 거짓말이 된다 —
     # "오늘"이라고 적힌 일주일 된 PR 이 걸려 있게 된다. 기준 시각을 같이 심어
@@ -161,13 +162,16 @@ def card(f, key):
     # 진행 중인 PR만 저장소의 외부 기여 PR 평균과 나란히 둔다. 끝난 건 실제 소요시간이
     # 이미 답이라 평균을 덧붙이면 신호가 두 개로 갈린다.
     avg_html = ""
+    pace_cls = ""
     if key not in ("merged", "closed") and average is not None:
         avg_days = int(average + .5)
+        attrs += f' data-average-days="{avg_days}"'
+        pace_cls = " pace-late" if age_days > avg_days else " pace-ok"
         tip_ko = f"최근 닫힌 PR {timing.get('sampledClosed', 0)}건 중 외부 머지 {sample}건 평균"
         tip_en = f"average of {sample} external merges among recent closed PRs"
         avg_html = (f'<span class="repoavg ko" title="{tip_ko}"> / 평균 {avg_days}일</span>'
                     f'<span class="repoavg en" title="{tip_en}"> / avg {avg_days}d</span>')
-    age_html = (f'<span class="age"{attrs}><span class="ko">{age_ko}</span>'
+    age_html = (f'<span class="age{pace_cls}"{attrs}><span class="ko">{age_ko}</span>'
                 f'<span class="en">{age_en}</span>{avg_html}</span>') if age_ko else ""
     src = AVATAR.get(f["repo"])
     fav = f'<img class="ifav" src="{src}" alt="" width="15" height="15" loading="lazy">' if src else ""
@@ -204,10 +208,39 @@ for f in findings:
 
 rows = "\n      ".join(card(f, k) for k in ORDER for f in grouped[k])
 
+# 머지된 저장소는 히어로에서 로고만 먼저 보여준다. 유명 로고를 장식처럼 빌려온 게
+# 아니라 실제 PR이 들어간 곳이라는 뜻이므로, 각 로고는 해당 머지 PR 자체로 연결한다.
+merged_contrib = [f for f in findings if state_by_pr.get(str(f["pr"])) == "merged"]
+contrib_counts = Counter(f["repo"] for f in merged_contrib)
+seen_contrib = set()
+contrib = []
+for f in merged_contrib:
+    if f["repo"] in seen_contrib:
+        continue
+    seen_contrib.add(f["repo"])
+    src = AVATAR.get(f["repo"])
+    if not src:
+        continue
+    name, _stars = split_label(f["repoLabel"])
+    url = f"https://github.com/{f['repo']}/pull/{f['pr']}"
+    count = contrib_counts[f["repo"]]
+    contribution = f"{count} merged contributions" if count > 1 else "merged contribution"
+    badge = (f'<span class="contribcount" aria-hidden="true">×{count}</span>'
+             if count > 1 else "")
+    contrib.append(
+        f'<a href="{url}" target="_blank" rel="noopener" '
+        f'aria-label="{esc(name)} · {contribution}" '
+        f'title="{esc(name)} · {contribution}">'
+        f'<img src="{src}" alt="" width="25" height="25" loading="eager">{badge}</a>'
+    )
+
 h = open(f"{ROOT}/index.html", encoding="utf-8").read()
 m = re.search(r'(<div class="iwrap">)(.*?)(\n    </div>)', h, re.S)
 assert m
 h = h[: m.start(2)] + "\n      " + rows + h[m.end(2):]
+h = re.sub(
+    r'(<span class="contriblogos" id="contrib-logos">).*?(</span>)',
+    rf"\g<1>{''.join(contrib)}\g<2>", h, count=1, flags=re.S)
 
 
 # 요약 줄(note)도 같은 출처에서 다시 만든다 — 카드만 갱신하면 이 줄이 조용히 낡는다(실제로 그랬다).
