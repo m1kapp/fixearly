@@ -34,8 +34,8 @@ STAGE = [
     ("closed",    "❌", "닫힘",           "closed",            0, True),
 ]
 # 보류는 GitHub 에 없는 상태다 — 우리가 시간으로 만든다. 닫히지도 머지되지도 않은 채
-# 그 저장소의 외부 머지 평균 + 유예일을 넘긴 것. "대기"로 묶어두면 어제 낸 것과 평균의
-# 세 배를 넘긴 것이 같은 줄에 앉는데, 그 둘은 다음에 할 일이 다르다.
+# 그 저장소의 외부 머지 중앙값 + 유예일을 넘긴 것. "대기"로 묶어두면 어제 낸 것과
+# 평소의 세 배를 넘긴 것이 같은 줄에 앉는데, 그 둘은 다음에 할 일이 다르다.
 STALL_GRACE_DAYS = 7
 # 시간으로만 결정되므로 IMPACT.md 의 아이콘 표에는 넣지 않는다(파싱은 GitHub 상태만).
 ICON2KEY = {icon: key for key, icon, *_ in STAGE if key != "stalled"}
@@ -55,9 +55,9 @@ for line in md.splitlines():
 
 
 def stall_after(f):
-    """이 PR 이 보류로 넘어가는 경과일. 평균을 모르면 None(보류로 안 넘긴다)."""
-    average = MERGE_TIMES.get(f["repo"], {}).get("averageDays")
-    return None if average is None else int(average + .5) + STALL_GRACE_DAYS
+    """이 PR 이 보류로 넘어가는 경과일. 중앙값을 모르면 None(보류로 안 넘긴다)."""
+    middle = MERGE_TIMES.get(f["repo"], {}).get("medianDays")
+    return None if middle is None else int(middle + .5) + STALL_GRACE_DAYS
 
 GH_MARK = ('<svg class="gh" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">'
            '<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>')
@@ -176,25 +176,29 @@ def card(f, key):
     until = f.get("mergedAt") or f.get("closedAt") or ""
     attrs = f' data-since="{since}"' + (f' data-until="{until}"' if until else "")
     timing = MERGE_TIMES.get(f["repo"], {})
-    average = timing.get("averageDays")
+    middle = timing.get("medianDays")
     sample = timing.get("mergedExternal", 0)
-    # 진행 중인 PR만 저장소의 외부 기여 PR 평균과 나란히 둔다. 끝난 건 실제 소요시간이
-    # 이미 답이라 평균을 덧붙이면 신호가 두 개로 갈린다.
+    # 진행 중인 PR만 저장소의 외부 기여 PR 중앙값과 나란히 둔다. 끝난 건 실제 소요시간이
+    # 이미 답이라 기준선을 덧붙이면 신호가 두 개로 갈린다.
     avg_html = ""
     pace_cls = ""
-    if key not in ("merged", "closed") and average is not None:
-        avg_days = int(average + .5)
-        attrs += f' data-average-days="{avg_days}"'
+    if key not in ("merged", "closed") and middle is not None:
+        mid_days = int(middle + .5)
+        attrs += f' data-median-days="{mid_days}"'
         # 보류로 넘어갈 날짜도 같이 심는다 — 카드를 다시 생성하지 않아도 읽는 시점에
         # JS 가 상태 글자를 바꾼다. 경과와 같은 이유다(index.html 아래 .age 루프).
         if key in STALLABLE or key == "stalled":
-            attrs += f' data-stall-days="{avg_days + STALL_GRACE_DAYS}"'
+            attrs += f' data-stall-days="{mid_days + STALL_GRACE_DAYS}"'
         pace_cls = (" pace-stall" if key == "stalled"
-                    else " pace-late" if age_days > avg_days else " pace-ok")
-        tip_ko = f"최근 닫힌 PR {timing.get('sampledClosed', 0)}건 중 외부 머지 {sample}건 평균"
-        tip_en = f"average of {sample} external merges among recent closed PRs"
-        avg_html = (f'<span class="repoavg ko" title="{tip_ko}"> / 평균 {avg_days}일</span>'
-                    f'<span class="repoavg en" title="{tip_en}"> / avg {avg_days}d</span>')
+                    else " pace-late" if age_days > mid_days else " pace-ok")
+        tip_ko = f"최근 닫힌 PR {timing.get('sampledClosed', 0)}건 중 외부 머지 {sample}건의 중앙값"
+        tip_en = f"median of {sample} external merges among recent closed PRs"
+        # 반나절 만에 머지되는 저장소가 여럿이다. 반올림해서 "보통 0일"이라고 적으면
+        # 숫자가 빠진 것처럼 읽힌다 — 하루 밑은 자릿수 대신 말로 적는다.
+        shown_ko = f"보통 {mid_days}일" if mid_days else "보통 하루 안"
+        shown_en = f"usually {mid_days}d" if mid_days else "usually under a day"
+        avg_html = (f'<span class="repoavg ko" title="{tip_ko}"> / {shown_ko}</span>'
+                    f'<span class="repoavg en" title="{tip_en}"> / {shown_en}</span>')
     age_html = (f'<span class="age{pace_cls}"{attrs}><span class="ko">{age_ko}</span>'
                 f'<span class="en">{age_en}</span>{avg_html}</span>') if age_ko else ""
     src = AVATAR.get(f["repo"])
@@ -334,7 +338,7 @@ missing_times = sorted(f["repo"] for f in findings
                        if f.get("status") not in ("merged", "closed")
                        and f["repo"] not in MERGE_TIMES)
 for r in missing_times:
-    print(f"  ✗ 평균 머지시간 없음(python3 tools/update-repo-merge-times.py): {r}")
+    print(f"  ✗ 중앙 머지시간 없음(python3 tools/update-repo-merge-times.py): {r}")
 missing += missing_times
 
 if "--check" in sys.argv:

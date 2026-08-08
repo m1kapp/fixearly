@@ -1,95 +1,113 @@
 {
-  "generatedAt": "2026-08-03T06:34:30Z",
-  "method": "latest 60 closed PRs; merged non-bot external contributors",
+  "generatedAt": "2026-08-08T03:21:35Z",
+  "method": "latest 60 closed PRs; merged non-bot external contributors; medianDays is the one we judge by",
   "repos": {
     "Budibase/budibase": {
-      "averageDays": 4.1,
-      "mergedExternal": 15,
+      "medianDays": 1.0,
+      "averageDays": 4.0,
+      "mergedExternal": 12,
       "sampledClosed": 60
     },
     "TryGhost/Ghost": {
-      "averageDays": 0.9,
-      "mergedExternal": 25,
+      "medianDays": 0.2,
+      "averageDays": 1.1,
+      "mergedExternal": 28,
       "sampledClosed": 60
     },
     "baptisteArno/typebot.io": {
+      "medianDays": 9.7,
       "averageDays": 9.7,
       "mergedExternal": 1,
       "sampledClosed": 60
     },
     "calcom/cal.diy": {
-      "averageDays": 5.7,
-      "mergedExternal": 5,
+      "medianDays": 3.9,
+      "averageDays": 8.1,
+      "mergedExternal": 6,
       "sampledClosed": 60
     },
     "directus/directus": {
-      "averageDays": 6.2,
-      "mergedExternal": 17,
+      "medianDays": 9.0,
+      "averageDays": 14.6,
+      "mergedExternal": 19,
       "sampledClosed": 60
     },
     "excalidraw/excalidraw": {
-      "averageDays": 73.2,
+      "medianDays": 1.1,
+      "averageDays": 70.1,
       "mergedExternal": 7,
       "sampledClosed": 60
     },
     "immich-app/immich": {
-      "averageDays": 8.4,
-      "mergedExternal": 3,
+      "medianDays": 3.3,
+      "averageDays": 7.1,
+      "mergedExternal": 8,
       "sampledClosed": 60
     },
     "langfuse/langfuse": {
-      "averageDays": 1.2,
-      "mergedExternal": 32,
+      "medianDays": 0.2,
+      "averageDays": 0.5,
+      "mergedExternal": 38,
       "sampledClosed": 60
     },
     "medusajs/medusa": {
-      "averageDays": 8.6,
-      "mergedExternal": 5,
+      "medianDays": 8.7,
+      "averageDays": 15.7,
+      "mergedExternal": 8,
       "sampledClosed": 60
     },
     "n8n-io/n8n": {
-      "averageDays": 3.0,
-      "mergedExternal": 29,
+      "medianDays": 1.2,
+      "averageDays": 7.6,
+      "mergedExternal": 30,
       "sampledClosed": 60
     },
     "nocodb/nocodb": {
-      "averageDays": 6.8,
-      "mergedExternal": 1,
-      "sampledClosed": 60
-    },
-    "novuhq/novu": {
-      "averageDays": 0.8,
-      "mergedExternal": 31,
-      "sampledClosed": 60
-    },
-    "outline/outline": {
-      "averageDays": 4.9,
+      "medianDays": 4.1,
+      "averageDays": 4.1,
       "mergedExternal": 2,
       "sampledClosed": 60
     },
+    "novuhq/novu": {
+      "medianDays": 0.1,
+      "averageDays": 3.9,
+      "mergedExternal": 27,
+      "sampledClosed": 60
+    },
+    "outline/outline": {
+      "medianDays": 1.3,
+      "averageDays": 6.6,
+      "mergedExternal": 3,
+      "sampledClosed": 60
+    },
     "payloadcms/payload": {
-      "averageDays": 4.5,
-      "mergedExternal": 21,
+      "medianDays": 3.5,
+      "averageDays": 6.8,
+      "mergedExternal": 9,
       "sampledClosed": 60
     },
     "strapi/strapi": {
-      "averageDays": 17.7,
-      "mergedExternal": 26,
+      "medianDays": 2.0,
+      "averageDays": 11.0,
+      "mergedExternal": 32,
       "sampledClosed": 60
     },
     "twentyhq/twenty": {
-      "averageDays": 0.5,
-      "mergedExternal": 14,
+      "medianDays": 0.9,
+      "averageDays": 2.4,
+      "mergedExternal": 15,
       "sampledClosed": 60
     },
     "typeorm/typeorm": {
+      "medianDays": 10.3,
       "averageDays": 10.1,
       "mergedExternal": 4,
       "sampledClosed": 60
     },
     "vitejs/vite": {
-      "averageDays": 4.0,
-      "mergedExternal": 11,
+      "medianDays": 1.0,
+      "averageDays": 1.4,
+      "mergedExternal": 10,
       "sampledClosed": 60
     }
   }

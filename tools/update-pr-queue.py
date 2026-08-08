@@ -58,7 +58,7 @@ def axis(t):
     return head
 
 
-# 보류 — 평균 + 유예일을 넘겼는데 아직 아무 판정이 없는 것. 랜딩 카드와 같은 규칙이다
+# 보류 — 그 저장소의 외부 머지 중앙값 + 유예일을 넘겼는데 아직 아무 판정이 없는 것. 랜딩 카드와 같은 규칙이다
 # (tools/update-impact-cards.py 의 STALL_GRACE_DAYS). 상태 열이 아니라 경과 열에 적는다:
 # 상태 열은 GitHub 가 준 것만 담고, --check 가 시계만으로 깨지지 않게 마지막 열을 뺀다.
 STALL_GRACE_DAYS = 7
@@ -73,8 +73,8 @@ def age_days(f):
 
 
 def stall_after(f):
-    average = MERGE_TIMES.get(f["repo"], {}).get("averageDays")
-    return None if average is None else int(average + .5) + STALL_GRACE_DAYS
+    middle = MERGE_TIMES.get(f["repo"], {}).get("medianDays")
+    return None if middle is None else int(middle + .5) + STALL_GRACE_DAYS
 
 
 def is_stalled(f):
@@ -87,11 +87,13 @@ def days(f):
     if n is None:
         return ""
     elapsed = f"{n}일째" if n >= 1 else "오늘"
-    average = MERGE_TIMES.get(f["repo"], {}).get("averageDays")
-    if average is None:
+    middle = MERGE_TIMES.get(f["repo"], {}).get("medianDays")
+    if middle is None:
         return elapsed
     stall = " · 보류" if is_stalled(f) else ""
-    return f"{elapsed} / 평균 {int(average + .5)}일{stall}"
+    mid = int(middle + .5)
+    # 하루 밑을 반올림하면 "보통 0일"이 된다 — 숫자가 빠진 것처럼 읽힌다.
+    return f"{elapsed} / {f'보통 {mid}일' if mid else '보통 하루 안'}{stall}"
 
 
 rows = sorted((f for f in findings if f.get("status") in OPEN),
@@ -100,7 +102,7 @@ decided = [f for f in findings if f.get("status") in ("merged", "closed")]
 merged = [f for f in decided if f["status"] == "merged"]
 approved = [f for f in findings if f.get("status") == "approved"]
 
-body = ["| PR | 축 | 상태 | 경과 / 외부 머지 평균 |", "|---|---|---|---|"]
+body = ["| PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |", "|---|---|---|---|"]
 for f in rows:
     name = str(f["repoLabel"]).split("·")[0].strip()
     body.append(f"| [{name}#{f['pr']}](https://github.com/{f['repo']}/pull/{f['pr']}) "
