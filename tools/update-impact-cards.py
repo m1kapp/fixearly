@@ -161,8 +161,10 @@ def card(f, key):
     mark = "" if ended else trail(at)
     # 보류는 열려는 있지만 우리 쪽에서 손을 뗀 것이다. 살아 있는 카드와 같은 밝기로
     # 두면 목록을 훑을 때 "아직 진행 중"으로 읽히고, 그게 정확히 틀린 인상이다.
+    # closed·stalled 는 필터가 잡는 손잡이이기도 하다(index.html 의 .ifilter).
     cls = ("ic" + (" done" if key == "merged" else "")
            + (" off" if ended or key == "stalled" else "")
+           + (" closed" if ended else "")
            + (" stalled" if key == "stalled" else ""))
     age_ko, age_en, on, age_days = elapsed(f, key)
     on_html = f'<span class="on">{on}</span>' if on else ""
@@ -272,6 +274,11 @@ h = re.sub(
 
 # 요약 줄(note)도 같은 출처에서 다시 만든다 — 카드만 갱신하면 이 줄이 조용히 낡는다(실제로 그랬다).
 counts = {k: len(v) for k, v in grouped.items() if v}
+# 필터 버튼의 개수 — JS 가 읽는 시점에 다시 세지만, 막힌 환경엔 이 숫자가 남는다.
+for _kind in ("stalled", "closed"):
+    for _id in (f"ifn-{_kind}", f"ifn-{_kind}-en"):
+        h = re.sub(rf'(<b id="{_id}">)[^<]*(</b>)',
+                   rf"\g<1>{len(grouped.get(_kind, []))}\g<2>", h, count=1)
 ko_line = " · ".join(f"{META[k][0]} {n}" for k, n in counts.items())
 en_line = " · ".join(f"{n} {META[k][1]}" for k, n in counts.items())
 h = re.sub(
