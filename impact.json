@@ -7,7 +7,10 @@
    "repoLabel": "immich · 109.9k★",
    "pr": 30163,
    "createdAt": "2026-07-23T15:26:09Z",
-   "status": "reviewing"
+   "status": "closed",
+   "closedReason": "우리가 접었다 — `changelog:*` 라벨은 메인테이너만 붙일 수 있어 우리 쪽에서 더 할 게 없었다 (게이트 0)",
+   "closedReasonEn": "we closed it — the required `changelog:*` label can only be added by a maintainer, so nothing was actionable from our side",
+   "closedAt": "2026-08-08T04:01:42Z"
   },
   {
    "title": "sync-agent findOne N+1",
@@ -28,7 +31,10 @@
    "repoLabel": "cal.com · 47.3k★",
    "pr": 29828,
    "createdAt": "2026-07-24T00:51:16Z",
-   "status": "waiting"
+   "status": "closed",
+   "closedReason": "우리가 접었다 — 외부 기여자는 `required` 잡이 항상 실패한다 (게이트 0). 이 저장소 수락률 10%",
+   "closedReasonEn": "we closed it — the `required` job always fails for external contributors; this repository merges 10% of outside PRs",
+   "closedAt": "2026-08-08T04:01:52Z"
   },
   {
    "title": "view-widget-upsert O(n²)",
