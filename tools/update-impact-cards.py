@@ -28,13 +28,23 @@ STAGE = [
     ("approved",  "🔵", "승인 · 머지 대기", "approved",          2, False),
     ("changes",   "🟠", "변경 요청",       "changes requested", 1, False),
     ("reviewing", "🟢", "리뷰 진행",       "in review",         1, False),
-    ("waiting",   "⚪", "리뷰어 배정 전",   "awaiting review",   0, False),
+    # "리뷰어 배정 전"이라고 적었었는데, 실측해보니 머지된 외부 PR 53건 중 리뷰어가
+    # 실제로 배정된 건 22건뿐이다(novu·langfuse 는 0건 — 메인테이너가 그냥 머지한다).
+    # 절반 넘는 저장소에서 일어나지도 않는 사건을 기다리는 것처럼 읽혔다.
+    ("waiting",   "⚪", "아무도 안 봄",     "nobody has looked", 0, False),
+    ("stalled",   "🟣", "보류",           "stalled",           0, False),
     ("draft",     "🟡", "초안",           "draft",             0, False),
     ("closed",    "❌", "닫힘",           "closed",            0, True),
 ]
-ICON2KEY = {icon: key for key, icon, *_ in STAGE}
+# 보류는 GitHub 에 없는 상태다 — 우리가 시간으로 만든다. 닫히지도 머지되지도 않은 채
+# 그 저장소의 외부 머지 중앙값 + 유예일을 넘긴 것. "대기"로 묶어두면 어제 낸 것과
+# 평소의 세 배를 넘긴 것이 같은 줄에 앉는데, 그 둘은 다음에 할 일이 다르다.
+STALL_GRACE_DAYS = 7
+# 시간으로만 결정되므로 IMPACT.md 의 아이콘 표에는 넣지 않는다(파싱은 GitHub 상태만).
+ICON2KEY = {icon: key for key, icon, *_ in STAGE if key != "stalled"}
 META = {key: (ko, en, at, ended) for key, _i, ko, en, at, ended in STAGE}
 ORDER = [k for k, *_ in STAGE]
+STALLABLE = ("waiting", "reviewing")
 
 state_by_pr = {}
 for line in md.splitlines():
@@ -45,6 +55,12 @@ for line in md.splitlines():
         if icon in m.group(2):
             state_by_pr[m.group(1)] = key
             break
+
+
+def stall_after(f):
+    """이 PR 이 보류로 넘어가는 경과일. 중앙값을 모르면 None(보류로 안 넘긴다)."""
+    middle = MERGE_TIMES.get(f["repo"], {}).get("medianDays")
+    return None if middle is None else max(1, int(middle + .5)) + STALL_GRACE_DAYS
 
 GH_MARK = ('<svg class="gh" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">'
            '<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>')
@@ -146,7 +162,13 @@ def card(f, key):
     star_html = f'<span class="stars">{STAR}{stars}</span>' if stars else ""
     # 닫힌 건 트레일을 안 그린다 — 진행이 없으니 진행 표시도 없다.
     mark = "" if ended else trail(at)
-    cls = "ic" + (" done" if key == "merged" else "") + (" off" if ended else "")
+    # 보류는 열려는 있지만 우리 쪽에서 손을 뗀 것이다. 살아 있는 카드와 같은 밝기로
+    # 두면 목록을 훑을 때 "아직 진행 중"으로 읽히고, 그게 정확히 틀린 인상이다.
+    # closed·stalled 는 필터가 잡는 손잡이이기도 하다(index.html 의 .ifilter).
+    cls = ("ic" + (" done" if key == "merged" else "")
+           + (" off" if ended or key == "stalled" else "")
+           + (" closed" if ended else "")
+           + (" stalled" if key == "stalled" else ""))
     age_ko, age_en, on, age_days = elapsed(f, key)
     on_html = f'<span class="on">{on}</span>' if on else ""
     # 경과는 생성 시점의 값이라 그대로 두면 시간이 지날수록 거짓말이 된다 —
@@ -157,20 +179,42 @@ def card(f, key):
     until = f.get("mergedAt") or f.get("closedAt") or ""
     attrs = f' data-since="{since}"' + (f' data-until="{until}"' if until else "")
     timing = MERGE_TIMES.get(f["repo"], {})
-    average = timing.get("averageDays")
+    middle = timing.get("medianDays")
     sample = timing.get("mergedExternal", 0)
-    # 진행 중인 PR만 저장소의 외부 기여 PR 평균과 나란히 둔다. 끝난 건 실제 소요시간이
-    # 이미 답이라 평균을 덧붙이면 신호가 두 개로 갈린다.
+    # 기준선은 끝난 카드에도 붙인다. 처음엔 진행 중인 것에만 뒀는데, 그러면 "2일 만에
+    # 머지"가 빠른 건지 평범한 건지 읽을 수가 없다 — vite 는 보통 하루에 머지하면서
+    # 외부 PR 은 32%만 받는 곳이라, 같은 2일도 뜻이 다르다. 다만 색(초록·빨강·보라)은
+    # 진행 중인 것에만 준다. 끝난 건 실제 결과가 이미 답이라 판정을 덧씌우지 않는다.
     avg_html = ""
     pace_cls = ""
-    if key not in ("merged", "closed") and average is not None:
-        avg_days = int(average + .5)
-        attrs += f' data-average-days="{avg_days}"'
-        pace_cls = " pace-late" if age_days > avg_days else " pace-ok"
-        tip_ko = f"최근 닫힌 PR {timing.get('sampledClosed', 0)}건 중 외부 머지 {sample}건 평균"
-        tip_en = f"average of {sample} external merges among recent closed PRs"
-        avg_html = (f'<span class="repoavg ko" title="{tip_ko}"> / 평균 {avg_days}일</span>'
-                    f'<span class="repoavg en" title="{tip_en}"> / avg {avg_days}d</span>')
+    if middle is not None:
+        # 반나절 만에 머지되는 저장소는 반올림하면 0일이 된다. 0 은 숫자가 빠진 것처럼
+        # 읽히니 하한을 1일로 둔다 — 표기도, 보류 기준일도 같은 값을 쓴다.
+        mid_days = max(1, int(middle + .5))
+        done_card = key in ("merged", "closed")
+        if not done_card:
+            attrs += f' data-median-days="{mid_days}"'
+            # 보류로 넘어갈 날짜도 같이 심는다 — 카드를 다시 생성하지 않아도 읽는 시점에
+            # JS 가 상태 글자를 바꾼다. 경과와 같은 이유다(index.html 아래 .age 루프).
+            if key in STALLABLE or key == "stalled":
+                attrs += f' data-stall-days="{mid_days + STALL_GRACE_DAYS}"'
+            pace_cls = (" pace-stall" if key == "stalled"
+                        else " pace-late" if age_days > mid_days else " pace-ok")
+        tip_ko = f"최근 닫힌 PR {timing.get('sampledClosed', 0)}건 중 외부 머지 {sample}건의 중앙값"
+        tip_en = f"median of {sample} external merges among recent closed PRs"
+        avg_html = (f'<span class="repoavg ko" title="{tip_ko}"> / 보통 {mid_days}일</span>'
+                    f'<span class="repoavg en" title="{tip_en}"> / usually {mid_days}d</span>')
+        # 늦는 데는 두 가지 이유가 있고 색만으로는 안 갈린다 — 우리 것만 밀린 건지,
+        # 저 저장소가 원래 외부 PR 을 거의 안 받는 건지. 수락률을 같이 둔다.
+        rate = timing.get("acceptancePct")
+        if rate is not None:
+            rate_tip_ko = (f"최근 닫힌 외부 PR {timing.get('closedExternal', 0)}건 중 "
+                           f"{sample}건이 머지됐다")
+            rate_tip_en = (f"{sample} of {timing.get('closedExternal', 0)} recently closed "
+                           f"external PRs were merged")
+            rate_cls = "rate low" if rate < 30 else "rate"
+            avg_html += (f'<span class="{rate_cls} ko" title="{rate_tip_ko}">수락 {rate}%</span>'
+                         f'<span class="{rate_cls} en" title="{rate_tip_en}">{rate}% merged</span>')
     age_html = (f'<span class="age{pace_cls}"{attrs}><span class="ko">{age_ko}</span>'
                 f'<span class="en">{age_en}</span>{avg_html}</span>') if age_ko else ""
     src = AVATAR.get(f["repo"])
@@ -195,7 +239,7 @@ def card(f, key):
         f'{what}'
         f'<span class="it">{title_html}</span>'
         f'<span class="ist">{mark}'
-        f'<span class="ko">{ko}</span><span class="en">{en}</span>'
+        f'<span class="istate ko">{ko}</span><span class="istate en">{en}</span>'
         f'{on_html}{age_html}'
         f'<span class="prn">#{f["pr"]}</span></span>'
         f'{why}</a>'
@@ -204,7 +248,12 @@ def card(f, key):
 
 grouped = {k: [] for k in ORDER}
 for f in findings:
-    grouped.get(state_by_pr.get(str(f["pr"]), "waiting"), grouped["waiting"]).append(f)
+    key = state_by_pr.get(str(f["pr"]), "waiting")
+    if key in STALLABLE:
+        limit, elapsed_days = stall_after(f), elapsed(f, key)[3]
+        if limit is not None and elapsed_days is not None and elapsed_days >= limit:
+            key = "stalled"
+    grouped[key].append(f)
 
 rows = "\n      ".join(card(f, k) for k in ORDER for f in grouped[k])
 
@@ -235,16 +284,27 @@ for f in merged_contrib:
     )
 
 h = open(f"{ROOT}/index.html", encoding="utf-8").read()
-m = re.search(r'(<div class="iwrap">)(.*?)(\n    </div>)', h, re.S)
+m = re.search(r'(<div class="iwrap[^"]*">)(.*?)(\n    </div>)', h, re.S)
 assert m
 h = h[: m.start(2)] + "\n      " + rows + h[m.end(2):]
-h = re.sub(
-    r'(<span class="contriblogos" id="contrib-logos">).*?(</span>)',
-    rf"\g<1>{''.join(contrib)}\g<2>", h, count=1, flags=re.S)
+# 끝을 `</span>` 로 잡으면 안 된다 — 안에 있는 `<span class="contribcount">×2</span>` 가
+# 먼저 걸려서 앞부분만 갈아끼우고 나머지가 남는다. 돌릴 때마다 로고가 불어나 히어로에
+# 41개가 깔렸다. 주석 마커로 범위를 못박는다.
+C_BEGIN, C_END = "<!--auto:contrib-->", "<!--/auto:contrib-->"
+if C_BEGIN not in h or C_END not in h:
+    print(f"  ✗ 히어로 로고 마커가 없다: {C_BEGIN}{C_END}")
+    sys.exit(1)
+h = re.sub(re.escape(C_BEGIN) + r".*?" + re.escape(C_END),
+           C_BEGIN + "".join(contrib) + C_END, h, count=1, flags=re.S)
 
 
 # 요약 줄(note)도 같은 출처에서 다시 만든다 — 카드만 갱신하면 이 줄이 조용히 낡는다(실제로 그랬다).
 counts = {k: len(v) for k, v in grouped.items() if v}
+# 필터 버튼의 개수 — JS 가 읽는 시점에 다시 세지만, 막힌 환경엔 이 숫자가 남는다.
+for _kind in ("stalled", "closed"):
+    for _id in (f"ifn-{_kind}", f"ifn-{_kind}-en"):
+        h = re.sub(rf'(<b id="{_id}">)[^<]*(</b>)',
+                   rf"\g<1>{len(grouped.get(_kind, []))}\g<2>", h, count=1)
 ko_line = " · ".join(f"{META[k][0]} {n}" for k, n in counts.items())
 en_line = " · ".join(f"{n} {META[k][1]}" for k, n in counts.items())
 h = re.sub(
@@ -300,7 +360,7 @@ missing_times = sorted(f["repo"] for f in findings
                        if f.get("status") not in ("merged", "closed")
                        and f["repo"] not in MERGE_TIMES)
 for r in missing_times:
-    print(f"  ✗ 평균 머지시간 없음(python3 tools/update-repo-merge-times.py): {r}")
+    print(f"  ✗ 중앙 머지시간 없음(python3 tools/update-repo-merge-times.py): {r}")
 missing += missing_times
 
 if "--check" in sys.argv:
