@@ -28,7 +28,10 @@ STAGE = [
     ("approved",  "🔵", "승인 · 머지 대기", "approved",          2, False),
     ("changes",   "🟠", "변경 요청",       "changes requested", 1, False),
     ("reviewing", "🟢", "리뷰 진행",       "in review",         1, False),
-    ("waiting",   "⚪", "리뷰어 배정 전",   "awaiting review",   0, False),
+    # "리뷰어 배정 전"이라고 적었었는데, 실측해보니 머지된 외부 PR 53건 중 리뷰어가
+    # 실제로 배정된 건 22건뿐이다(novu·langfuse 는 0건 — 메인테이너가 그냥 머지한다).
+    # 절반 넘는 저장소에서 일어나지도 않는 사건을 기다리는 것처럼 읽혔다.
+    ("waiting",   "⚪", "아무도 안 봤다",    "nobody has looked", 0, False),
     ("stalled",   "🟣", "보류",           "stalled",           0, False),
     ("draft",     "🟡", "초안",           "draft",             0, False),
     ("closed",    "❌", "닫힘",           "closed",            0, True),
@@ -199,6 +202,17 @@ def card(f, key):
         shown_en = f"usually {mid_days}d" if mid_days else "usually under a day"
         avg_html = (f'<span class="repoavg ko" title="{tip_ko}"> / {shown_ko}</span>'
                     f'<span class="repoavg en" title="{tip_en}"> / {shown_en}</span>')
+        # 늦는 데는 두 가지 이유가 있고 색만으로는 안 갈린다 — 우리 것만 밀린 건지,
+        # 저 저장소가 원래 외부 PR 을 거의 안 받는 건지. 수락률을 같이 둔다.
+        rate = timing.get("acceptancePct")
+        if rate is not None:
+            rate_tip_ko = (f"최근 닫힌 외부 PR {timing.get('closedExternal', 0)}건 중 "
+                           f"{sample}건이 머지됐다")
+            rate_tip_en = (f"{sample} of {timing.get('closedExternal', 0)} recently closed "
+                           f"external PRs were merged")
+            rate_cls = "rate low" if rate < 30 else "rate"
+            avg_html += (f'<span class="{rate_cls} ko" title="{rate_tip_ko}">수락 {rate}%</span>'
+                         f'<span class="{rate_cls} en" title="{rate_tip_en}">{rate}% merged</span>')
     age_html = (f'<span class="age{pace_cls}"{attrs}><span class="ko">{age_ko}</span>'
                 f'<span class="en">{age_en}</span>{avg_html}</span>') if age_ko else ""
     src = AVATAR.get(f["repo"])
@@ -271,9 +285,15 @@ h = open(f"{ROOT}/index.html", encoding="utf-8").read()
 m = re.search(r'(<div class="iwrap[^"]*">)(.*?)(\n    </div>)', h, re.S)
 assert m
 h = h[: m.start(2)] + "\n      " + rows + h[m.end(2):]
-h = re.sub(
-    r'(<span class="contriblogos" id="contrib-logos">).*?(</span>)',
-    rf"\g<1>{''.join(contrib)}\g<2>", h, count=1, flags=re.S)
+# 끝을 `</span>` 로 잡으면 안 된다 — 안에 있는 `<span class="contribcount">×2</span>` 가
+# 먼저 걸려서 앞부분만 갈아끼우고 나머지가 남는다. 돌릴 때마다 로고가 불어나 히어로에
+# 41개가 깔렸다. 주석 마커로 범위를 못박는다.
+C_BEGIN, C_END = "<!--auto:contrib-->", "<!--/auto:contrib-->"
+if C_BEGIN not in h or C_END not in h:
+    print(f"  ✗ 히어로 로고 마커가 없다: {C_BEGIN}{C_END}")
+    sys.exit(1)
+h = re.sub(re.escape(C_BEGIN) + r".*?" + re.escape(C_END),
+           C_BEGIN + "".join(contrib) + C_END, h, count=1, flags=re.S)
 
 
 # 요약 줄(note)도 같은 출처에서 다시 만든다 — 카드만 갱신하면 이 줄이 조용히 낡는다(실제로 그랬다).

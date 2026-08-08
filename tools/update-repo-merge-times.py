@@ -65,14 +65,15 @@ def main():
 
     for repo in repos:
         pulls = fetch(repo, token)
-        merged = []
+        merged, external = [], []
         for pr in pulls:
             user = pr.get("user") or {}
-            if not pr.get("merged_at"):
-                continue
             if pr.get("author_association") in INTERNAL:
                 continue
             if user.get("type") == "Bot" or str(user.get("login", "")).endswith("[bot]"):
+                continue
+            external.append(pr)
+            if not pr.get("merged_at"):
                 continue
             merged.append((parse_time(pr["merged_at"]) - parse_time(pr["created_at"])).total_seconds() / 86400)
 
@@ -80,11 +81,17 @@ def main():
             "medianDays": median(merged),
             "averageDays": round(sum(merged) / len(merged), 1) if merged else None,
             "mergedExternal": len(merged),
+            # 수락률 — 이 저장소가 외부 PR 을 원래 받는 곳인가. 늦는 이유가 두 가지라
+            # 이게 없으면 구분이 안 된다: 우리 것만 밀린 건지(langfuse 83%),
+            # 원래 대부분 거절인지(typeorm 8%). 다음에 어디를 고를지가 여기서 갈린다.
+            "acceptancePct": round(100 * len(merged) / len(external)) if external else None,
+            "closedExternal": len(external),
             "sampledClosed": len(pulls),
         }
-        mid, average = result[repo]["medianDays"], result[repo]["averageDays"]
-        shown = f"중앙 {mid:.1f}일 (평균 {average:.1f}일)" if mid is not None else "표본 없음"
-        print(f"  {repo}: {shown} (외부 머지 {len(merged)}/{len(pulls)})")
+        mid = result[repo]["medianDays"]
+        rate = result[repo]["acceptancePct"]
+        shown = f"중앙 {mid:.1f}일" if mid is not None else "표본 없음"
+        print(f"  {repo}: {shown} · 수락률 {rate}% (외부 {len(merged)}/{len(external)})")
 
     payload = {
         "generatedAt": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
