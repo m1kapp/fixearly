@@ -159,7 +159,10 @@ def card(f, key):
     star_html = f'<span class="stars">{STAR}{stars}</span>' if stars else ""
     # 닫힌 건 트레일을 안 그린다 — 진행이 없으니 진행 표시도 없다.
     mark = "" if ended else trail(at)
-    cls = ("ic" + (" done" if key == "merged" else "") + (" off" if ended else "")
+    # 보류는 열려는 있지만 우리 쪽에서 손을 뗀 것이다. 살아 있는 카드와 같은 밝기로
+    # 두면 목록을 훑을 때 "아직 진행 중"으로 읽히고, 그게 정확히 틀린 인상이다.
+    cls = ("ic" + (" done" if key == "merged" else "")
+           + (" off" if ended or key == "stalled" else "")
            + (" stalled" if key == "stalled" else ""))
     age_ko, age_en, on, age_days = elapsed(f, key)
     on_html = f'<span class="on">{on}</span>' if on else ""

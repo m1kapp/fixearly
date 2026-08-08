@@ -64,19 +64,34 @@ def axis(t):
 STALL_GRACE_DAYS = 7
 
 
-def days(f):
+def age_days(f):
     import datetime as d
     if not f.get("createdAt"):
-        return ""
+        return None
     born = d.datetime.fromisoformat(f["createdAt"].replace("Z", "+00:00"))
-    n = (d.datetime.now(d.timezone.utc) - born).days
+    return (d.datetime.now(d.timezone.utc) - born).days
+
+
+def stall_after(f):
+    average = MERGE_TIMES.get(f["repo"], {}).get("averageDays")
+    return None if average is None else int(average + .5) + STALL_GRACE_DAYS
+
+
+def is_stalled(f):
+    n, limit = age_days(f), stall_after(f)
+    return n is not None and limit is not None and n >= limit
+
+
+def days(f):
+    n = age_days(f)
+    if n is None:
+        return ""
     elapsed = f"{n}일째" if n >= 1 else "오늘"
     average = MERGE_TIMES.get(f["repo"], {}).get("averageDays")
     if average is None:
         return elapsed
-    avg = int(average + .5)
-    stall = " · 보류" if n >= avg + STALL_GRACE_DAYS else ""
-    return f"{elapsed} / 평균 {avg}일{stall}"
+    stall = " · 보류" if is_stalled(f) else ""
+    return f"{elapsed} / 평균 {int(average + .5)}일{stall}"
 
 
 rows = sorted((f for f in findings if f.get("status") in OPEN),
@@ -91,7 +106,10 @@ for f in rows:
     body.append(f"| [{name}#{f['pr']}](https://github.com/{f['repo']}/pull/{f['pr']}) "
                 f"| {axis(f['type'])} | {LABEL[f['status']]} | {days(f)} |")
 body.append("")
-body.append(f"**열린 것 {len(rows)}건.** 판정 난 {len(decided) + len(approved)}건 중 "
+stalled = [f for f in rows if is_stalled(f)]
+# 상한은 대응 여력을 재는 숫자다. 보류는 아무도 안 물어보는 것이라 여력을 안 먹는다.
+paren = f"(보류 {len(stalled)}건 빼면 {len(rows) - len(stalled)}건)" if stalled else ""
+body.append(f"**열린 것 {len(rows)}건{paren}.** 판정 난 {len(decided) + len(approved)}건 중 "
             f"머지 {len(merged)} · 승인 {len(approved)} · "
             f"닫힘 {len(decided) - len(merged)}.")
 block = BEGIN + "\n" + "\n".join(body) + "\n" + END
@@ -127,8 +145,12 @@ def without_age(block_text):
     경과는 생성 시점 기준으로 계산해 박히는데 검사는 실행 시점에 다시 계산한다 —
     그래서 아무것도 안 바뀌어도 날짜가 넘어가면 '오늘'이 '1일째'가 되면서 테스트가
     깨졌다. 커밋 직후엔 통과하고 다음 날 CI 는 빨간불이라는 뜻이다. 상태·개수가
-    어긋나는 건 여전히 잡되, 시계만으로는 안 깨지게 마지막 열을 빼고 본다."""
-    return re.sub(r"\|[^|\n]*\|\s*$", "|", block_text, flags=re.M)
+    어긋나는 건 여전히 잡되, 시계만으로는 안 깨지게 마지막 열을 빼고 본다.
+
+    보류 개수도 같은 이유로 뺀다 — 아무도 아무것도 안 해도 날짜가 넘어가면 대기 하나가
+    보류로 넘어가면서 요약 줄이 바뀐다."""
+    text = re.sub(r"\|[^|\n]*\|\s*$", "|", block_text, flags=re.M)
+    return re.sub(r"\(보류 \d+건 빼면 \d+건\)", "", text)
 
 
 dm = re.search(re.escape(D_BEGIN) + r".*?" + re.escape(D_END), doc, re.S)
