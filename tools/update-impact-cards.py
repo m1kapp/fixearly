@@ -29,12 +29,19 @@ STAGE = [
     ("changes",   "🟠", "변경 요청",       "changes requested", 1, False),
     ("reviewing", "🟢", "리뷰 진행",       "in review",         1, False),
     ("waiting",   "⚪", "리뷰어 배정 전",   "awaiting review",   0, False),
+    ("stalled",   "🟣", "보류",           "stalled",           0, False),
     ("draft",     "🟡", "초안",           "draft",             0, False),
     ("closed",    "❌", "닫힘",           "closed",            0, True),
 ]
-ICON2KEY = {icon: key for key, icon, *_ in STAGE}
+# 보류는 GitHub 에 없는 상태다 — 우리가 시간으로 만든다. 닫히지도 머지되지도 않은 채
+# 그 저장소의 외부 머지 평균 + 유예일을 넘긴 것. "대기"로 묶어두면 어제 낸 것과 평균의
+# 세 배를 넘긴 것이 같은 줄에 앉는데, 그 둘은 다음에 할 일이 다르다.
+STALL_GRACE_DAYS = 7
+# 시간으로만 결정되므로 IMPACT.md 의 아이콘 표에는 넣지 않는다(파싱은 GitHub 상태만).
+ICON2KEY = {icon: key for key, icon, *_ in STAGE if key != "stalled"}
 META = {key: (ko, en, at, ended) for key, _i, ko, en, at, ended in STAGE}
 ORDER = [k for k, *_ in STAGE]
+STALLABLE = ("waiting", "reviewing")
 
 state_by_pr = {}
 for line in md.splitlines():
@@ -45,6 +52,12 @@ for line in md.splitlines():
         if icon in m.group(2):
             state_by_pr[m.group(1)] = key
             break
+
+
+def stall_after(f):
+    """이 PR 이 보류로 넘어가는 경과일. 평균을 모르면 None(보류로 안 넘긴다)."""
+    average = MERGE_TIMES.get(f["repo"], {}).get("averageDays")
+    return None if average is None else int(average + .5) + STALL_GRACE_DAYS
 
 GH_MARK = ('<svg class="gh" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">'
            '<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>')
@@ -146,7 +159,8 @@ def card(f, key):
     star_html = f'<span class="stars">{STAR}{stars}</span>' if stars else ""
     # 닫힌 건 트레일을 안 그린다 — 진행이 없으니 진행 표시도 없다.
     mark = "" if ended else trail(at)
-    cls = "ic" + (" done" if key == "merged" else "") + (" off" if ended else "")
+    cls = ("ic" + (" done" if key == "merged" else "") + (" off" if ended else "")
+           + (" stalled" if key == "stalled" else ""))
     age_ko, age_en, on, age_days = elapsed(f, key)
     on_html = f'<span class="on">{on}</span>' if on else ""
     # 경과는 생성 시점의 값이라 그대로 두면 시간이 지날수록 거짓말이 된다 —
@@ -166,7 +180,12 @@ def card(f, key):
     if key not in ("merged", "closed") and average is not None:
         avg_days = int(average + .5)
         attrs += f' data-average-days="{avg_days}"'
-        pace_cls = " pace-late" if age_days > avg_days else " pace-ok"
+        # 보류로 넘어갈 날짜도 같이 심는다 — 카드를 다시 생성하지 않아도 읽는 시점에
+        # JS 가 상태 글자를 바꾼다. 경과와 같은 이유다(index.html 아래 .age 루프).
+        if key in STALLABLE or key == "stalled":
+            attrs += f' data-stall-days="{avg_days + STALL_GRACE_DAYS}"'
+        pace_cls = (" pace-stall" if key == "stalled"
+                    else " pace-late" if age_days > avg_days else " pace-ok")
         tip_ko = f"최근 닫힌 PR {timing.get('sampledClosed', 0)}건 중 외부 머지 {sample}건 평균"
         tip_en = f"average of {sample} external merges among recent closed PRs"
         avg_html = (f'<span class="repoavg ko" title="{tip_ko}"> / 평균 {avg_days}일</span>'
@@ -195,7 +214,7 @@ def card(f, key):
         f'{what}'
         f'<span class="it">{title_html}</span>'
         f'<span class="ist">{mark}'
-        f'<span class="ko">{ko}</span><span class="en">{en}</span>'
+        f'<span class="istate ko">{ko}</span><span class="istate en">{en}</span>'
         f'{on_html}{age_html}'
         f'<span class="prn">#{f["pr"]}</span></span>'
         f'{why}</a>'
@@ -204,7 +223,12 @@ def card(f, key):
 
 grouped = {k: [] for k in ORDER}
 for f in findings:
-    grouped.get(state_by_pr.get(str(f["pr"]), "waiting"), grouped["waiting"]).append(f)
+    key = state_by_pr.get(str(f["pr"]), "waiting")
+    if key in STALLABLE:
+        limit, elapsed_days = stall_after(f), elapsed(f, key)[3]
+        if limit is not None and elapsed_days is not None and elapsed_days >= limit:
+            key = "stalled"
+    grouped[key].append(f)
 
 rows = "\n      ".join(card(f, k) for k in ORDER for f in grouped[k])
 

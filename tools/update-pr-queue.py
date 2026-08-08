@@ -58,6 +58,12 @@ def axis(t):
     return head
 
 
+# 보류 — 평균 + 유예일을 넘겼는데 아직 아무 판정이 없는 것. 랜딩 카드와 같은 규칙이다
+# (tools/update-impact-cards.py 의 STALL_GRACE_DAYS). 상태 열이 아니라 경과 열에 적는다:
+# 상태 열은 GitHub 가 준 것만 담고, --check 가 시계만으로 깨지지 않게 마지막 열을 뺀다.
+STALL_GRACE_DAYS = 7
+
+
 def days(f):
     import datetime as d
     if not f.get("createdAt"):
@@ -66,7 +72,11 @@ def days(f):
     n = (d.datetime.now(d.timezone.utc) - born).days
     elapsed = f"{n}일째" if n >= 1 else "오늘"
     average = MERGE_TIMES.get(f["repo"], {}).get("averageDays")
-    return f"{elapsed} / 평균 {int(average + .5)}일" if average is not None else elapsed
+    if average is None:
+        return elapsed
+    avg = int(average + .5)
+    stall = " · 보류" if n >= avg + STALL_GRACE_DAYS else ""
+    return f"{elapsed} / 평균 {avg}일{stall}"
 
 
 rows = sorted((f for f in findings if f.get("status") in OPEN),
