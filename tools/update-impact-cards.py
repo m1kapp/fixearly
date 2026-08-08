@@ -264,7 +264,7 @@ for f in merged_contrib:
     )
 
 h = open(f"{ROOT}/index.html", encoding="utf-8").read()
-m = re.search(r'(<div class="iwrap">)(.*?)(\n    </div>)', h, re.S)
+m = re.search(r'(<div class="iwrap[^"]*">)(.*?)(\n    </div>)', h, re.S)
 assert m
 h = h[: m.start(2)] + "\n      " + rows + h[m.end(2):]
 h = re.sub(
