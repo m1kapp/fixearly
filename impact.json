@@ -124,7 +124,7 @@
    "title": "resource-mapper schema validation O(n²)",
    "type": "O(n²) (value별 schema.find — id Map으로 O(1))",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 199.7k★",
+   "repoLabel": "n8n · 199.8k★",
    "pr": 34899,
    "createdAt": "2026-07-24T13:05:42Z",
    "status": "merged",
@@ -233,6 +233,16 @@
    "pr": 11805,
    "createdAt": "2026-08-01T14:22:45Z",
    "status": "waiting"
+  },
+  {
+   "title": "member 통계 안 미사용 Map",
+   "titleEn": "unused Map in member count history",
+   "type": "쓰기만 하는 컬렉션 (날짜별 Map 을 채우고 아무도 안 읽음 — 삭제)",
+   "repo": "TryGhost/Ghost",
+   "repoLabel": "ghost · 54.7k★",
+   "pr": 29831,
+   "status": "waiting",
+   "createdAt": "2026-08-08T03:16:06Z"
   }
  ]
 }
