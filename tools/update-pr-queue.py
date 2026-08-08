@@ -74,7 +74,12 @@ def age_days(f):
 
 def stall_after(f):
     middle = MERGE_TIMES.get(f["repo"], {}).get("medianDays")
-    return None if middle is None else int(middle + .5) + STALL_GRACE_DAYS
+    return None if middle is None else mid_label(middle) + STALL_GRACE_DAYS
+
+
+def mid_label(middle):
+    """반나절짜리 저장소가 반올림으로 0일이 되지 않게 하한을 1일로 둔다."""
+    return max(1, int(middle + .5))
 
 
 def is_stalled(f):
@@ -91,9 +96,7 @@ def days(f):
     if middle is None:
         return elapsed
     stall = " · 보류" if is_stalled(f) else ""
-    mid = int(middle + .5)
-    # 하루 밑을 반올림하면 "보통 0일"이 된다 — 숫자가 빠진 것처럼 읽힌다.
-    return f"{elapsed} / {f'보통 {mid}일' if mid else '보통 하루 안'}{stall}"
+    return f"{elapsed} / 보통 {mid_label(middle)}일{stall}"
 
 
 rows = sorted((f for f in findings if f.get("status") in OPEN),

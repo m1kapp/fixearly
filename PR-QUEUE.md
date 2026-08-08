@@ -118,12 +118,12 @@ budibase 의 "denounce" 는 사유가 없다. 요청받지 않은 최적화는 �
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
 | [immich#30163](https://github.com/immich-app/immich/pull/30163) | N+1 | 🟢 리뷰 진행 | 15일째 / 보통 3일 · 보류 |
-| [ghost#29831](https://github.com/TryGhost/Ghost/pull/29831) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 하루 안 |
+| [ghost#29831](https://github.com/TryGhost/Ghost/pull/29831) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 순차 I/O | ⚪ 대기 | 9일째 / 보통 10일 |
 | [cal.com#29828](https://github.com/calcom/cal.diy/pull/29828) | O(n²) | ⚪ 대기 | 15일째 / 보통 4일 · 보류 |
 | [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 6일째 / 보통 1일 |
-| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 9일째 / 보통 하루 안 · 보류 |
-| [novu#12074](https://github.com/novuhq/novu/pull/12074) | N+1 | ⚪ 대기 | 15일째 / 보통 하루 안 · 보류 |
+| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
+| [novu#12074](https://github.com/novuhq/novu/pull/12074) | N+1 | ⚪ 대기 | 15일째 / 보통 1일 · 보류 |
 | [payload#17469](https://github.com/payloadcms/payload/pull/17469) | O(n²) | ⚪ 대기 | 14일째 / 보통 4일 · 보류 |
 | [strapi#27125](https://github.com/strapi/strapi/pull/27125) | O(n²) | ⚪ 대기 | 14일째 / 보통 2일 · 보류 |
 | [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 7일째 / 보통 10일 |

@@ -31,7 +31,7 @@ STAGE = [
     # "리뷰어 배정 전"이라고 적었었는데, 실측해보니 머지된 외부 PR 53건 중 리뷰어가
     # 실제로 배정된 건 22건뿐이다(novu·langfuse 는 0건 — 메인테이너가 그냥 머지한다).
     # 절반 넘는 저장소에서 일어나지도 않는 사건을 기다리는 것처럼 읽혔다.
-    ("waiting",   "⚪", "아무도 안 봤다",    "nobody has looked", 0, False),
+    ("waiting",   "⚪", "아무도 안 봄",     "nobody has looked", 0, False),
     ("stalled",   "🟣", "보류",           "stalled",           0, False),
     ("draft",     "🟡", "초안",           "draft",             0, False),
     ("closed",    "❌", "닫힘",           "closed",            0, True),
@@ -60,7 +60,7 @@ for line in md.splitlines():
 def stall_after(f):
     """이 PR 이 보류로 넘어가는 경과일. 중앙값을 모르면 None(보류로 안 넘긴다)."""
     middle = MERGE_TIMES.get(f["repo"], {}).get("medianDays")
-    return None if middle is None else int(middle + .5) + STALL_GRACE_DAYS
+    return None if middle is None else max(1, int(middle + .5)) + STALL_GRACE_DAYS
 
 GH_MARK = ('<svg class="gh" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">'
            '<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>')
@@ -181,27 +181,29 @@ def card(f, key):
     timing = MERGE_TIMES.get(f["repo"], {})
     middle = timing.get("medianDays")
     sample = timing.get("mergedExternal", 0)
-    # 진행 중인 PR만 저장소의 외부 기여 PR 중앙값과 나란히 둔다. 끝난 건 실제 소요시간이
-    # 이미 답이라 기준선을 덧붙이면 신호가 두 개로 갈린다.
+    # 기준선은 끝난 카드에도 붙인다. 처음엔 진행 중인 것에만 뒀는데, 그러면 "2일 만에
+    # 머지"가 빠른 건지 평범한 건지 읽을 수가 없다 — vite 는 보통 하루에 머지하면서
+    # 외부 PR 은 32%만 받는 곳이라, 같은 2일도 뜻이 다르다. 다만 색(초록·빨강·보라)은
+    # 진행 중인 것에만 준다. 끝난 건 실제 결과가 이미 답이라 판정을 덧씌우지 않는다.
     avg_html = ""
     pace_cls = ""
-    if key not in ("merged", "closed") and middle is not None:
-        mid_days = int(middle + .5)
-        attrs += f' data-median-days="{mid_days}"'
-        # 보류로 넘어갈 날짜도 같이 심는다 — 카드를 다시 생성하지 않아도 읽는 시점에
-        # JS 가 상태 글자를 바꾼다. 경과와 같은 이유다(index.html 아래 .age 루프).
-        if key in STALLABLE or key == "stalled":
-            attrs += f' data-stall-days="{mid_days + STALL_GRACE_DAYS}"'
-        pace_cls = (" pace-stall" if key == "stalled"
-                    else " pace-late" if age_days > mid_days else " pace-ok")
+    if middle is not None:
+        # 반나절 만에 머지되는 저장소는 반올림하면 0일이 된다. 0 은 숫자가 빠진 것처럼
+        # 읽히니 하한을 1일로 둔다 — 표기도, 보류 기준일도 같은 값을 쓴다.
+        mid_days = max(1, int(middle + .5))
+        done_card = key in ("merged", "closed")
+        if not done_card:
+            attrs += f' data-median-days="{mid_days}"'
+            # 보류로 넘어갈 날짜도 같이 심는다 — 카드를 다시 생성하지 않아도 읽는 시점에
+            # JS 가 상태 글자를 바꾼다. 경과와 같은 이유다(index.html 아래 .age 루프).
+            if key in STALLABLE or key == "stalled":
+                attrs += f' data-stall-days="{mid_days + STALL_GRACE_DAYS}"'
+            pace_cls = (" pace-stall" if key == "stalled"
+                        else " pace-late" if age_days > mid_days else " pace-ok")
         tip_ko = f"최근 닫힌 PR {timing.get('sampledClosed', 0)}건 중 외부 머지 {sample}건의 중앙값"
         tip_en = f"median of {sample} external merges among recent closed PRs"
-        # 반나절 만에 머지되는 저장소가 여럿이다. 반올림해서 "보통 0일"이라고 적으면
-        # 숫자가 빠진 것처럼 읽힌다 — 하루 밑은 자릿수 대신 말로 적는다.
-        shown_ko = f"보통 {mid_days}일" if mid_days else "보통 하루 안"
-        shown_en = f"usually {mid_days}d" if mid_days else "usually under a day"
-        avg_html = (f'<span class="repoavg ko" title="{tip_ko}"> / {shown_ko}</span>'
-                    f'<span class="repoavg en" title="{tip_en}"> / {shown_en}</span>')
+        avg_html = (f'<span class="repoavg ko" title="{tip_ko}"> / 보통 {mid_days}일</span>'
+                    f'<span class="repoavg en" title="{tip_en}"> / usually {mid_days}d</span>')
         # 늦는 데는 두 가지 이유가 있고 색만으로는 안 갈린다 — 우리 것만 밀린 건지,
         # 저 저장소가 원래 외부 PR 을 거의 안 받는 건지. 수락률을 같이 둔다.
         rate = timing.get("acceptancePct")
