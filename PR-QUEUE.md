@@ -255,10 +255,37 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 | react | `CollectHoistablePropertyLoads.ts:499` · `AlignReactiveScopesToBlockScopesHIR.ts:78` | 컴파일러 패스 2건 |
 | vscode | `chatToolPicker.ts:261` | `mcpServerByTool.set(...)` 뒤 조회 없음 |
 | next.js | `export/index.ts:285` | `excludedPrerenderRoutes.add(page)` — 이름과 달리 제외에 안 쓰인다 |
-| astro | `core/build/static-build.ts:91` | **손검증 완료 · 다음 순번** — `pageInput` 을 채우고 아무도 안 읽는다 |
+| astro | `core/build/static-build.ts:91` | 손검증 완료 · **보류** — 같은 저장소의 T1 버그(아래)를 먼저 낸다 |
 | pnpm · nx | 각 1건 | 같은 형태 · 미검증 |
 | ~~ghost~~ | `members-stats-service.js:115` | **제출됨 → #29831** |
 | ~~excalidraw~~ | `App.tsx:13467` | **제출됨 → #11805** (축 커버리지 예외) |
+
+### T1 버그 축 — 2026-08-10 부터 여기서 꺼낸다
+
+`쓰기만 하는 컬렉션` 은 대기 3건(storybook · ghost · excalidraw)에 머지 0 이다. 같은 축을
+넷째로 쌓는 건 검증이 아니라 방치를 늘리는 것이라, 다음 제출부터 **T1(버그) 축**으로
+옮긴다. 성격이 다르다 — 요청받지 않은 최적화가 아니라 **동작이 틀린 자리**라서,
+directus 를 닫은 사유("이득이 churn 을 정당화 못 한다")가 성립하지 않는다.
+
+| 저장소 | 자리 | 축 | 상태 |
+|---|---|---|---|
+| astro | `core/messages/runtime.ts:250` | 전역 정규식 상태 | **손검증·테스트 완료 · 다음 순번** |
+| astro | `runtime/client/dev-toolbar/toolbar.ts:334` | await in forEach | 미검증 |
+| astro | `dev-toolbar/apps/audit/index.ts:84` · `server/astro-island.ts:100` | floating promise | 미검증(fire-and-forget 의도일 수 있음) |
+
+**astro `runtime.ts:250` 이 다음 순번인 이유.** `STACK_LINE_REGEXP = /^\s+at /g` 를
+`.filter()` 안에서 `.test()` 로 쓴다. `/g` 는 매칭마다 `lastIndex` 를 전진시키므로 다음 줄은
+문자열 중간부터 검사되고, `^` 가 거기서 못 맞아 `false` 가 난다 — **스택 프레임이 하나
+걸러 하나씩 사라진다**(실측 5줄 → 3줄). 터미널에 찍히는 에러 스택이 절반 날아가는
+사용자 가시 버그다. `IRRELEVANT_STACK_REGEXP` 도 같은 형태이고, 둘 다 "이 한 줄이
+맞나"만 묻는 자리라 `/g` 가 필요 없다.
+
+검증은 **일부러 깨뜨려서** 했다. 빌드한 `dist` 에서 `/g` 를 되돌리니 새로 쓴 테스트가
+`missing stack frame: at second (...)` 로 깨지고, 고치면 통과한다. PR 에는 그 테스트와
+changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-regex-lastindex`.
+
+`빈 catch` 50곳은 여기 안 넣는다 — 개수는 제일 많지만 "삼켜도 되는 자리"인지는 코드
+주인만 안다(OWNER). `루프 안 파일읽기` 13곳도 캐시 유무 판단이 붙어 보류한다.
 
 ### 다음 것을 고를 때 쓰는 회전 속도 — 2026-08-08 측정
 
