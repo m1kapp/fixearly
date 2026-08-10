@@ -165,7 +165,7 @@ medusa · outline · nocodb · n8n)에서 `help wanted` + `good first issue` 를
 - **하루 1건도 그대로.** 급해도 몰아서 안 낸다.
 - 예외로 낸 건 여기 표에 축 이름과 함께 남긴다 — 왜 상한을 넘겼는지 나중에 설명할 수 있게.
 
-지금 머지 0인 축: `N+1`(낸 것 없음) · `중복 쿼리`(보류 1) · `쓰기만 하는 컬렉션`(대기 2).
+지금 머지 0인 축: `N+1`(낸 것 없음) · `중복 쿼리`(보류 1) · `쓰기만 하는 컬렉션`(대기 3).
 `순차 I/O` 는 ghost#29704 가 머지되면서 검증됐다 — 이 축의 예외는 닫혔다.
 
 **N+1 축은 2026-08-10 부터 다시 미제출 상태다.** 낸 것이 novu#12074 하나였는데 우리가
@@ -183,10 +183,19 @@ medusa · outline · nocodb · n8n)에서 `help wanted` + `good first issue` 를
 | [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 순차 I/O | ⚪ 대기 | 11일째 / 보통 10일 |
 | [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 8일째 / 보통 1일 · 보류 |
 | [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
-| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 10일째 / 보통 10일 |
+| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
+| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 10일째 / 보통 11일 |
 
-**열린 것 5건(보류 2건 빼면 3건).** 판정 난 17건 중 머지 7 · 승인 0 · 닫힘 10.
+**열린 것 6건(보류 2건 빼면 4건).** 판정 난 17건 중 머지 7 · 승인 0 · 닫힘 10.
 <!-- /auto:open -->
+
+**2026-08-10 제출** — storybook#35829 을 냈다. 슬롯을 회수한 그날 하루 1건이다.
+고른 이유는 근거의 성격이다: 이 `Set` 의 소비자를 **메인테이너가 2022-11 에 이미 지웠고**
+(`78a7fd5f4c` "Remove unused code and test") `Set` 만 남겨뒀다. "살릴까 지울까"를 물을
+자리가 아니라 그 정리의 나머지라, directus 를 닫은 것 같은 영역 판단이 낄 여지가 없다.
+게이트 0 도 봤다 — CLA 없음 · `fork-checks.yml` 이 포크용 검사를 따로 돌림 · danger 가
+요구하는 `ci:*`·`qa:*` 라벨은 메인테이너가 붙인다(외부 기여자 PR 3건이 8/7 에 그렇게
+머지됐다). 타깃 브랜치는 `main` 이 아니라 `next` 다.
 
 **2026-08-10 정리** — 보류 4건 중 3건(novu#12074 · payload#17469 · strapi#27125)을 우리가
 닫았다. 사유는 하나다: **중앙 머지일의 3.5~15배를 서 있는데 사람이 한 명도 안 왔다.**
@@ -229,7 +238,7 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 
 | 저장소 | 자리 | 형태 |
 |---|---|---|
-| storybook | `StoryIndexGenerator.ts:826` | 이중 forEach 안에서 `invalidated.add(dep)` — 읽는 곳 없음 |
+| ~~storybook~~ | `StoryIndexGenerator.ts:826` | **제출됨 → #35829** |
 | rollup | `Chunk.ts:1343` | `renderedModuleSources.set(module, source)` 뒤 소비 없음 |
 | angular | `slot_allocation.ts:25` | 주석은 "다음 순회에서 slotMap 을 쓴다"는데 안 쓴다 |
 | angular | `temporary_variables.ts:57` · `migration.ts:261` | 같은 형태 2건 |
@@ -254,7 +263,7 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 | angular | **80%** | 1.7일 | 37/46 | 통과 — CLA 서명 필요 · 주석이 "쓴다"고 적힌 자리라 설명이 길어진다 |
 | rollup | **75%** | 8.5일 | 12/16 | 통과 — 중앙 8.5일이라 후순위 |
 | astro | **72%** | 2.0일 | 39/54 | **통과** |
-| storybook | **68%** | 1.1일 | 37/54 | **다음 순번** — 수락률·속도 둘 다 통과 |
+| storybook | **75%** | 1.1일 | 39/52 | **#35829 로 나갔다** (8/10 재측정: 68% → 75%) |
 | next.js | 18% | 0.8일 | 6/32 | 컷 |
 | react | 17% | 0.7일 | 8/47 | 컷 — 후보도 `/* DISABLED */` 주석 건이라 PR 보다 이슈 |
 | ghost | 97% | 0.2일 | 28/29 | **#29831 로 나갔다** |

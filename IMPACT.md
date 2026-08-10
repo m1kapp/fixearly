@@ -33,6 +33,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `pure CSS 청크 선형 조회` | [vite · 82.3k★](https://github.com/vitejs/vite) | O(n²) (청크 x import 마다 pureCssChunkNames 전량 스캔 — Set으로 O(1)) | [#23114](https://github.com/vitejs/vite/pull/23114) | ✅ merged | +1 |
 | `resize 핸들러 안 미사용 Map` | [excalidraw · 129.3k★](https://github.com/excalidraw/excalidraw) | 쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제) | [#11805](https://github.com/excalidraw/excalidraw/pull/11805) | ⚪ awaiting review | — |
 | `member 통계 안 미사용 Map` | [ghost · 54.7k★](https://github.com/TryGhost/Ghost) | 쓰기만 하는 컬렉션 (날짜별 Map 을 채우고 아무도 안 읽음 — 삭제) | [#29831](https://github.com/TryGhost/Ghost/pull/29831) | ⚪ awaiting review | — |
+| `invalidate() 안 미사용 Set` | [storybook · 90.8k★](https://github.com/storybookjs/storybook) | 쓰기만 하는 컬렉션 (파일 변경마다 채우고 아무도 안 읽음 — 소비자는 2022-11 에 이미 삭제됨) | [#35829](https://github.com/storybookjs/storybook/pull/35829) | ⚪ awaiting review | — |
 
 ## 규칙
 

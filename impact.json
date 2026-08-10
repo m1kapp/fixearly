@@ -255,6 +255,16 @@
    "pr": 29831,
    "status": "waiting",
    "createdAt": "2026-08-08T03:16:06Z"
+  },
+  {
+   "title": "invalidate() 안 미사용 Set",
+   "type": "쓰기만 하는 컬렉션 (파일 변경마다 채우고 아무도 안 읽음 — 소비자는 2022-11 에 이미 삭제됨)",
+   "repo": "storybookjs/storybook",
+   "repoLabel": "storybook · 90.8k★",
+   "pr": 35829,
+   "createdAt": "2026-08-10T12:10:18Z",
+   "status": "waiting",
+   "titleEn": "unread invalidated Set in the story index"
   }
  ]
 }

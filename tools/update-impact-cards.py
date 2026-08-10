@@ -152,6 +152,7 @@ BLURB = {
     "directus/directus": ("데이터 백엔드", "data backend"),
     "Budibase/budibase": ("사내 도구 빌더", "internal tools builder"),
     "excalidraw/excalidraw": ("화이트보드 · 손그림 다이어그램", "virtual whiteboard"),
+    "storybookjs/storybook": ("UI 컴포넌트 개발·문서화", "UI component workshop"),
 }
 
 
