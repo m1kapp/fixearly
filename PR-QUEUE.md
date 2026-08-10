@@ -24,9 +24,12 @@
 | [vite#23114](https://github.com/vitejs/vite/pull/23114) | 머지 | 당일 승인, 2일 만에 머지 |
 | [ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 머지 | 메인테이너가 병렬화 변경을 승인한 뒤 머지 |
 | [n8n#34899](https://github.com/n8n-io/n8n/pull/34899) | 머지 | 봇이 요구한 changeset prefix 만 고치고 통과 |
+| [novu#12074](https://github.com/novuhq/novu/pull/12074) | 닫힘 | 우리가 접었다 — 중앙 1일인 곳에서 15일째 사람 리뷰 0(승인은 봇). 슬롯을 회수했다 |
+| [payload#17469](https://github.com/payloadcms/payload/pull/17469) | 닫힘 | 우리가 접었다 — 중앙 4일인 곳에서 14일째 아무 반응이 없었다 |
 | [budibase#19320](https://github.com/Budibase/budibase/pull/19320) | 닫힘 | 사유 없이 닫힘. 요청받지 않은 최적화는 그냥 거절될 수 있다 |
 | [twenty#23231](https://github.com/twentyhq/twenty/pull/23231) | 닫힘 | "redundant with #23232" — 같은 저장소에 겹치는 2건을 냈다 |
 | [twenty#23232](https://github.com/twentyhq/twenty/pull/23232) | 닫힘 | 겹친 2건 중 나머지. 사유는 남지 않았다 |
+| [strapi#27125](https://github.com/strapi/strapi/pull/27125) | 닫힘 | 우리가 접었다 — 중앙 2일인 곳에서 14일째 아무 반응이 없었다 |
 | [directus#27978](https://github.com/directus/directus/pull/27978) | 닫힘 | "이 엣지 케이스의 성능 이득은 churn 을 정당화하지 못한다 — 더 큰 최적화 기회가 있다" |
 | [cal.com#29828](https://github.com/calcom/cal.diy/pull/29828) | 닫힘 | 우리가 접었다 — 외부 기여자는 `required` 잡이 항상 실패한다 (게이트 0). 이 저장소 수락률 10% |
 | [cal.com#29832](https://github.com/calcom/cal.diy/pull/29832) | 닫힘 | 우리가 접었다 — 같은 저장소에 2건이 열려 있어 큰 쪽(#29828)에 리뷰를 몰아줬다 |
@@ -162,29 +165,37 @@ medusa · outline · nocodb · n8n)에서 `help wanted` + `good first issue` 를
 - **하루 1건도 그대로.** 급해도 몰아서 안 낸다.
 - 예외로 낸 건 여기 표에 축 이름과 함께 남긴다 — 왜 상한을 넘겼는지 나중에 설명할 수 있게.
 
-지금 머지 0인 축: `N+1`(보류 1) · `중복 쿼리`(보류 1) · `쓰기만 하는 컬렉션`(대기 2).
+지금 머지 0인 축: `N+1`(낸 것 없음) · `중복 쿼리`(보류 1) · `쓰기만 하는 컬렉션`(대기 2).
 `순차 I/O` 는 ghost#29704 가 머지되면서 검증됐다 — 이 축의 예외는 닫혔다.
 
-**N+1 축은 낸 것이 보류 1건(novu)뿐이다.** immich#30163 은 게이트 0 이라 닫았다. 축
-커버리지 예외의 목적은 규칙을 머지로 검증하는 건데 낸 것이 안 움직이면 검증은 여전히
-0이다 — 예외를 다시 쓸 수 있는 축으로 보되, 위 게이트를 통과한 곳에서만 쓴다.
+**N+1 축은 2026-08-10 부터 다시 미제출 상태다.** 낸 것이 novu#12074 하나였는데 우리가
+닫았고, immich#30163 은 게이트 0 이라 접었다. 축 커버리지 예외의 목적은 규칙을 머지로
+검증하는 것이므로 이 축에는 예외가 **다시 열려 있다** — 단, 위 게이트를 통과한 곳에서만
+쓴다. novu 는 수락률 87% 인데도 15일 동안 사람이 안 왔다. 게이트를 통과했다고 회전이
+보장되지는 않는다는 뜻이라, 다음 N+1 은 중앙 1~2일인 곳으로 고른다.
 
 ## 지금 열려 있는 것
 
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [ghost#29831](https://github.com/TryGhost/Ghost/pull/29831) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
-| [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 순차 I/O | ⚪ 대기 | 9일째 / 보통 10일 |
-| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 6일째 / 보통 1일 |
-| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
-| [novu#12074](https://github.com/novuhq/novu/pull/12074) | N+1 | ⚪ 대기 | 15일째 / 보통 1일 · 보류 |
-| [payload#17469](https://github.com/payloadcms/payload/pull/17469) | O(n²) | ⚪ 대기 | 14일째 / 보통 4일 · 보류 |
-| [strapi#27125](https://github.com/strapi/strapi/pull/27125) | O(n²) | ⚪ 대기 | 14일째 / 보통 2일 · 보류 |
-| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 7일째 / 보통 10일 |
+| [ghost#29831](https://github.com/TryGhost/Ghost/pull/29831) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 2일째 / 보통 1일 |
+| [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 순차 I/O | ⚪ 대기 | 11일째 / 보통 10일 |
+| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 8일째 / 보통 1일 · 보류 |
+| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
+| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 10일째 / 보통 10일 |
 
-**열린 것 8건(보류 4건 빼면 4건).** 판정 난 14건 중 머지 7 · 승인 0 · 닫힘 7.
+**열린 것 5건(보류 2건 빼면 3건).** 판정 난 17건 중 머지 7 · 승인 0 · 닫힘 10.
 <!-- /auto:open -->
+
+**2026-08-10 정리** — 보류 4건 중 3건(novu#12074 · payload#17469 · strapi#27125)을 우리가
+닫았다. 사유는 하나다: **중앙 머지일의 3.5~15배를 서 있는데 사람이 한 명도 안 왔다.**
+8/8 에 리베이스로 목록 위로 올려봤고 주말 내내 반응이 0이었으니, 기다림은 이미 한 번
+시험했고 실패했다. 닫을 때 한 줄씩 남겼다 — 자진 철회이고 필요하면 다시 열겠다는 것.
+
+langfuse#15585 만 남겼다. 수락률 84% 에 `중복 쿼리` 축의 유일한 제출이라, 이걸 닫으면
+그 축이 미검증으로 돌아간다. 열린 5건 중 보류는 이제 2건이고 실보유는 3건 — 하루 1건 ·
+저장소당 1건은 그대로 두고, 다음 건은 회전이 빠른 곳으로 하나만 낸다.
 
 **2026-08-08 정리** — immich#30163 과 cal.com#29828 을 우리가 닫았다. 둘 다 느려서가
 아니라 게이트 0 이라서다(필수 라벨이 메인테이너 전용 · 외부 기여자는 필수 잡이 항상
