@@ -659,7 +659,7 @@ const DATA_CALLS = new Set([
   "fetch", "request",
 ]);
 const ITERATING_METHODS = new Set(["map", "forEach", "flatMap", "filter", "reduce", "some", "every", "find"]);
-// 빌트인 컬렉션/프로토타입 메서드 — 타입정보 없이 이름만으로는 유저함수와 구분 불가.
+// [FP:io-name-collision] 빌트인 컬렉션/프로토타입 메서드 — 타입정보 없이 이름만으로는 유저함수와 구분 불가.
 // x.push()/map.get()/set.has() 같은 메서드 호출을 동명의 최상위 함수(리더)로 오인하면
 // 코드베이스 전역에서 거대한 오탐이 난다(예: Array.push → push 리더 → 루프 IO 834개).
 const BUILTIN_METHODS = new Set([
@@ -821,7 +821,7 @@ function analyzeIoDensity(ts, fileContents) {
           const cached = inCachingFn || (reader ? reader.cached : false);
           sites.push({ file, line: lineOf(sf, node), callee: called, cached });
         }
-        // DB/HTTP N+1: 루프 안에서 '직접 await' 하는 데이터 호출. Promise.all(map) 배칭은
+        // [FP:promise-all-batching] DB/HTTP N+1: 루프 안에서 '직접 await' 하는 데이터 호출. Promise.all(map) 배칭은
         // 개별 호출이 직접 await 되지 않으므로(부모가 await 아님) 자동 제외 = 올바른 패턴은 안 깎임.
         if (inLoop && DATA_CALLS.has(called) && node.parent && ts.isAwaitExpression(node.parent)) {
           sites.push({ file, line: lineOf(sf, node), callee: called, cached: false });
@@ -1535,7 +1535,7 @@ function analyzeTextbookIssues(ts, fileContents) {
 
     // ── 전역 플래그 정규식 변수 수집: const RE = /x/g  (루프 밖 선언 = lastIndex 상태 공유)
     const globalRegexVars = new Set();
-    // ── lastIndex 를 직접 0 으로 되돌리는 정규식 이름 수집 → 이 축에서 제외한다.
+    // ── [FP:regex-lastindex-reset] lastIndex 를 직접 0 으로 되돌리는 정규식 이름 수집 → 이 축에서 제외한다.
     // 저자가 상태 누수를 이미 알고 손으로 막아둔 자리다. 실측 2026-08-10: nx 의
     // update-jest-preset-angular-setup.ts 두 곳이 `RE.lastIndex = 0` 을 test() 앞뒤로
     // 넣어두고 있었는데 그걸 버그로 잡았다 — 오탐 2/2, 즉 그 저장소에서는 전부 오탐이었다.
@@ -1666,7 +1666,7 @@ function analyzeTextbookIssues(ts, fileContents) {
       // 고침은 생성자를 루프 밖으로 호이스팅. 기계적이고 검증 가능(T2).
       if (inRealLoop && ts.isNewExpression(node) && ts.isIdentifier(node.expression) &&
           (node.expression.getText(sf) === "Set" || node.expression.getText(sf) === "Map") &&
-          // 가드: new Set(x).add(y) / new Map(x).set(k,v) 는 '수정한 파생 복사본'이다.
+          // 가드 [FP:derived-copy]: new Set(x).add(y) / new Map(x).set(k,v) 는 '수정한 파생 복사본'이다.
           // 매 회 다른 값을 만드는 것이므로 호이스팅하면 동작이 깨진다(재귀에 넘기는 불변 스냅샷 등).
           !(ts.isPropertyAccessExpression(node.parent) &&
             ["add", "set", "delete"].includes(node.parent.name.getText(sf)))) {
@@ -1689,7 +1689,7 @@ function analyzeTextbookIssues(ts, fileContents) {
           ts.forEachChild(n, collect);
         };
         if (arg) collect(arg);
-        // 가드: (a) 인자가 루프 변수를 참조하면 루프마다 값이 달라 호이스팅 불가 → 제외
+        // 가드 [FP:loop-var-argument]: (a) 인자가 루프 변수를 참조하면 루프마다 값이 달라 호이스팅 불가 → 제외
         //       (b) 소스 루트가 하나라도 루프 밖(loopVars 아님)이어야 '불변'이다
         const hasOuterSource = [...roots].length > 0;
         if (!usesLoopVar && hasOuterSource) {
@@ -1707,7 +1707,7 @@ function analyzeTextbookIssues(ts, fileContents) {
       // arr[0].push(x) 하면 모든 칸이 바뀐다 — 조용히 틀린 답. 고침은 Array.from({length:n}, () => []).
       if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression) &&
           node.expression.name.getText(sf) === "fill" && node.arguments.length >= 1 &&
-          // 수신자가 '배열을 만드는 표현'일 때만 — Array.prototype.fill 이 아닌 도메인 API의 .fill()
+          // [FP:fill-domain-api] 수신자가 '배열을 만드는 표현'일 때만 — Array.prototype.fill 이 아닌 도메인 API의 .fill()
           // (Playwright의 page.fill(selector, {..}) 처럼)을 오탐하지 않는다.
           (() => {
             const r = node.expression.expression;
@@ -1740,12 +1740,12 @@ function analyzeTextbookIssues(ts, fileContents) {
       // ── 전역 플래그 정규식을 루프 안에서 .test(): lastIndex가 문자열 사이로 새어
       // 같은 입력도 호출마다 결과가 뒤바뀐다. 성능이 아니라 "조용히 틀린 답"을 내는 버그.
       // 고침은 /g 제거 또는 매 회 새 정규식.
-      // 가드: .exec()는 제외한다 — `while ((m = re.exec(s)) !== null)` 은 /g 정규식의
+      // 가드 [FP:regex-exec-walk]: .exec()는 제외한다 — `while ((m = re.exec(s)) !== null)` 은 /g 정규식의
       // *정석 순회 관용구*이지 버그가 아니다(실제로 twenty에서 lastIndex=0 리셋까지 하고 있었다).
       if (inLoop && ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) {
         const m = node.expression.name.getText(sf);
         const recv = node.expression.expression;
-        // 가드: 루프 안에서 만든 정규식은 매 회 새 객체라 lastIndex가 샐 수 없다 → 제외
+        // 가드 [FP:regex-created-in-loop]: 루프 안에서 만든 정규식은 매 회 새 객체라 lastIndex가 샐 수 없다 → 제외
         if (m === "test" && ts.isIdentifier(recv) && globalRegexVars.has(recv.getText(sf)) &&
             !loopVars.has(recv.getText(sf)) && !lastIndexResetVars.has(recv.getText(sf))) {
           statefulRegex.push({ file, line: lineOf(node), name: recv.getText(sf), method: m });
@@ -1753,7 +1753,7 @@ function analyzeTextbookIssues(ts, fileContents) {
       }
 
       // ── 배열에 for...in: 인덱스가 문자열이고 상속 속성까지 돌며 순서 보장이 없다.
-      // 가드: 배열이라는 증거(리터럴·map·filter·split 등)가 있는 변수만.
+      // 가드 [FP:for-in-needs-array-evidence]: 배열이라는 증거(리터럴·map·filter·split 등)가 있는 변수만.
       if (ts.isForInStatement(node) && ts.isIdentifier(node.expression) &&
           arrayVars.has(node.expression.getText(sf))) {
         forInArray.push({ file, line: lineOf(node), name: node.expression.getText(sf) });
@@ -1761,7 +1761,7 @@ function analyzeTextbookIssues(ts, fileContents) {
 
       // ── A) floating promise: async 함수 안에서, 결과를 버리는 문(ExpressionStatement)으로
       // 로컬 async 함수를 await 없이 호출. 고침은 await 한 단어라 완전히 기계적.
-      // 가드: async 컨텍스트 안에서만(밖이면 await를 못 붙여 기계적 수정이 아님),
+      // 가드 [FP:floating-needs-async-context]: async 컨텍스트 안에서만(밖이면 await를 못 붙여 기계적 수정이 아님),
       //       void/then/catch로 감싼 의도적 fire-and-forget은 구조상 여기 안 걸린다.
       if (inAsyncFn && ts.isExpressionStatement(node) && ts.isCallExpression(node.expression)) {
         const callee = node.expression.expression;
@@ -1811,7 +1811,7 @@ function analyzeTextbookIssues(ts, fileContents) {
         spreadAccumulator.push({ file, line: lineOf(node), where: "loop" });
       }
 
-      // 진짜 반복문(for/while) 안에서만 — .map()으로 1회 만드는 캐시는 재컴파일이 아니다.
+      // [FP:map-is-not-a-loop] 진짜 반복문(for/while) 안에서만 — .map()으로 1회 만드는 캐시는 재컴파일이 아니다.
       if (inRealLoop && ts.isNewExpression(node) && ts.isIdentifier(node.expression) && node.expression.getText(sf) === "RegExp") {
         regexInLoop.push({ file, line: lineOf(node) });
       }
@@ -1856,7 +1856,7 @@ function analyzeTextbookIssues(ts, fileContents) {
 function collectWriteOnly(ts, sf, file, lineOf, out) {
   const WRITE = new Set(["set", "add", "delete", "clear"]);
 
-  // 내보낸 이름은 이 파일만 봐서는 판단할 수 없다 — 읽는 쪽이 다른 모듈에 있다.
+  // [FP:exported-name-escapes-file] 내보낸 이름은 이 파일만 봐서는 판단할 수 없다 — 읽는 쪽이 다른 모듈에 있다.
   // react 의 `export const allNativeEvents = new Set()` 가 그랬다: 이 파일엔 .add 뿐이고
   // DOMPluginEventSystem 이 .forEach, ReactDOMEventHandle 이 .has 로 읽는다.
   // 코퍼스 검증에서 이 계열이 오탐의 전부였다. export 는 통째로 뺀다.
@@ -1885,7 +1885,7 @@ function collectWriteOnly(ts, sf, file, lineOf, out) {
       if (ctor === "Map" || ctor === "Set") {
         const name = n.name.getText(sf);
         if (exported.has(name)) return; // 모듈 밖에서 읽힐 수 있다
-        // 같은 이름이 두 번 선언되면(다른 스코프) 스코프 없이는 구분 못 한다 — 통째로 포기.
+        // [FP:same-name-twice] 같은 이름이 두 번 선언되면(다른 스코프) 스코프 없이는 구분 못 한다 — 통째로 포기.
         cand.set(name, cand.has(name) ? null : { node: n, ctor });
       }
     }
@@ -1903,7 +1903,7 @@ function collectWriteOnly(ts, sf, file, lineOf, out) {
       // 선언의 이름 자리 자체는 참조가 아니다
       if (!(d && d.node && d.node.name === n)) {
         const p = n.parent;
-        // 쓰기 메서드라도 **반환값을 쓰면 읽기다.** tailwind 의
+        // [FP:write-return-value-is-read] 쓰기 메서드라도 **반환값을 쓰면 읽기다.** tailwind 의
         // `if (skipExit.delete(node)) return` 이 그랬다 — delete 는 있었는지 여부를
         // 돌려주고, 그 불리언이 곧 조회다. add/set 도 자기 자신을 돌려주므로
         // 체이닝하거나 인자로 넘기면 컬렉션이 밖으로 새어 나간다.
@@ -2152,7 +2152,7 @@ if (trackedSet) {
   console.log(`  git repo 아님 — 파일시스템 전체 분석 (빌드산출물 포함될 수 있음)\n`);
 }
 
-// 비-프로덕션 파일 일관 제외: 테스트·타입테스트(.test-d)·벤치·스토리·__tests__.
+// [FP:non-production-file] 비-프로덕션 파일 일관 제외: 테스트·타입테스트(.test-d)·벤치·스토리·__tests__.
 // (중복 축에서만 걸러 다른 축엔 포함되던 불일치 제거 — 테스트 콜로케이션이 점수를 깎던 문제.)
 // 점수는 "배포되는 프로덕션 코드"의 건강만 잰다. 테스트 존재 여부는 별도 신호.
 const NON_SOURCE_RE = /(\.(test|spec|test-d|bench|benchmark|stories|e2e)\.[tj]sx?$)|(\/(__(tests?|mocks?|fixtures?|snapshots?)__|tests?|benchmarks?|__bench__|e2e|fixtures?|mocks?)\/)|(\.d\.ts$)/;
@@ -2164,7 +2164,7 @@ const VENDORED_RE = /\/(compiled|vendor|vendored|third[-_]party|generated|codege
 // 저장소에는 있지만 사용자가 설치하는 물건이 아니라, 점수에 섞이면 "이 라이브러리 코드가
 // 어떤 상태인가"라는 질문의 답을 흐린다(angular/packages/examples 6.4k줄 = 문서용 샘플).
 const NON_SHIPPED_RE = /\/(examples?|samples?|demos?|playground|sandbox|website|scripts|tmp)\//;
-// 위 세 정규식은 전부 "저장소 안에서의 자리"를 묻는다. 그런데 절대경로에 그대로 물리면
+// [FP:path-scope-outside-root] 위 세 정규식은 전부 "저장소 안에서의 자리"를 묻는다. 그런데 절대경로에 그대로 물리면
 // 측정 대상 바깥의 디렉터리 이름이 판정을 뒤집는다 — /private/tmp 에 클론해서 재면
 // NON_SHIPPED_RE 의 `tmp` 가 걸려 전 파일이 비-프로덕션으로 빠지고, 남은 게 0개라
 // "파일 0개 · SSS 100점"이 나온다. 조용히 만점을 주는 오답이라 제일 나쁜 실패다.
@@ -2232,7 +2232,7 @@ let testDensity = null;
   if (excludePats.length) console.log(`  수동 제외(--exclude): ${excludePats.join(", ")}\n`);
 }
 
-// 미니파이·번들 파일 제외: 저장소에 커밋된 벤더 번들·시드 에셋은 git 추적 대상이라
+// [FP:minified-bundle] 미니파이·번들 파일 제외: 저장소에 커밋된 벤더 번들·시드 에셋은 git 추적 대상이라
 // 지금까지의 필터를 전부 통과하지만, 사람이 쓴 코드가 아니라 모든 축을 오염시킨다.
 // (실제 사례: 시드 프로젝트의 번들 index.mjs 하나가 for...in 오탐 100곳 이상을 만들었다)
 // 판정: 파일명 관례 또는 "한 줄이 비정상적으로 길다"(미니파이의 결정적 특징).
