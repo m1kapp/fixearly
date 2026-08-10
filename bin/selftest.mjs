@@ -253,6 +253,20 @@ if (generatedSrc) {
       label: "쓰기만 하는 컬렉션",
       hit: ["seen", "audit"],
       miss: ["known", "bag", "passed", "built", "registry", "later", "skip", "chained"],
+      // 출력 줄: `    seen = new Set() — ...`
+      namePattern: /^\s{4}([A-Za-z_$][\w$]*) = new (?:Map|Set)\(\)/gm,
+    },
+    {
+      file: "stateful-regex.ts",
+      key: "statefulRegex",
+      label: "전역 정규식 상태",
+      hit: ["leaks", "sticky"],
+      // guarded 는 lastIndex 를 직접 되돌린다 — 저자가 상태를 알고 관리하는 자리라
+      // 버그가 아니다(nx 에서 오탐 2/2 를 낸 계열). plain 은 /g 가 없고, inner 는
+      // 루프 안에서 만들어 매 회 새 객체이며, walked 는 exec 순회 관용구다.
+      miss: ["guarded", "plain", "inner", "walked"],
+      // 출력 줄: `    leaks.test() — src/...:11`
+      namePattern: /^\s{4}([A-Za-z_$][\w$]*)\.test\(\)/gm,
     },
   ];
   for (const fx of FIXTURES) {
@@ -275,7 +289,7 @@ if (generatedSrc) {
     if (/regex 근사 모드/.test(text0)) check(`${fx.key} AST 모드로 측정됨`, false);
     const text = text0;
     const head = text.match(new RegExp(`${fx.label}: (\\d+)곳`));
-    const names = new Set([...text.matchAll(/^\s{4}([A-Za-z_$][\w$]*) = new (?:Map|Set)\(\)/gm)].map((m) => m[1]));
+    const names = new Set([...text.matchAll(fx.namePattern)].map((m) => m[1]));
     for (const n of fx.hit) check(`${fx.key} 잡음 "${n}"`, names.has(n));
     for (const n of fx.miss) check(`${fx.key} 안 잡음 "${n}"`, !names.has(n));
     // 출력은 상위 몇 건만 찍히므로 총량도 따로 본다 — 오탐이 늘면 여기가 먼저 깨진다.

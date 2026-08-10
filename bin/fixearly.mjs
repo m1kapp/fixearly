@@ -1535,6 +1535,11 @@ function analyzeTextbookIssues(ts, fileContents) {
 
     // ── 전역 플래그 정규식 변수 수집: const RE = /x/g  (루프 밖 선언 = lastIndex 상태 공유)
     const globalRegexVars = new Set();
+    // ── lastIndex 를 직접 0 으로 되돌리는 정규식 이름 수집 → 이 축에서 제외한다.
+    // 저자가 상태 누수를 이미 알고 손으로 막아둔 자리다. 실측 2026-08-10: nx 의
+    // update-jest-preset-angular-setup.ts 두 곳이 `RE.lastIndex = 0` 을 test() 앞뒤로
+    // 넣어두고 있었는데 그걸 버그로 잡았다 — 오탐 2/2, 즉 그 저장소에서는 전부 오탐이었다.
+    const lastIndexResetVars = new Set();
     // ── 배열로 "보이는" 변수 수집: 리터럴/map/filter/Array.from/split 로 만들어진 것만.
     // for...in 은 객체에 쓰는 게 정상이므로, 배열이라는 증거가 있을 때만 잡는다.
     const arrayVars = new Set();
@@ -1551,6 +1556,12 @@ function analyzeTextbookIssues(ts, fileContents) {
           if (ts.isArrayLiteralExpression(init)) arrayVars.add(n.name.getText(sf));
           if (ts.isCallExpression(init) && ts.isPropertyAccessExpression(init.expression) &&
               ARRAY_MAKERS.has(init.expression.name.getText(sf))) arrayVars.add(n.name.getText(sf));
+        }
+        // RE.lastIndex = <무엇이든> — 손으로 상태를 관리하는 자리라는 신호로 충분하다.
+        if (ts.isBinaryExpression(n) && n.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
+            ts.isPropertyAccessExpression(n.left) && n.left.name.getText(sf) === "lastIndex" &&
+            ts.isIdentifier(n.left.expression)) {
+          lastIndexResetVars.add(n.left.expression.getText(sf));
         }
         ts.forEachChild(n, collect);
       };
@@ -1736,7 +1747,7 @@ function analyzeTextbookIssues(ts, fileContents) {
         const recv = node.expression.expression;
         // 가드: 루프 안에서 만든 정규식은 매 회 새 객체라 lastIndex가 샐 수 없다 → 제외
         if (m === "test" && ts.isIdentifier(recv) && globalRegexVars.has(recv.getText(sf)) &&
-            !loopVars.has(recv.getText(sf))) {
+            !loopVars.has(recv.getText(sf)) && !lastIndexResetVars.has(recv.getText(sf))) {
           statefulRegex.push({ file, line: lineOf(node), name: recv.getText(sf), method: m });
         }
       }

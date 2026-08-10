@@ -270,8 +270,41 @@ directus 를 닫은 사유("이득이 churn 을 정당화 못 한다")가 성립
 | 저장소 | 자리 | 축 | 상태 |
 |---|---|---|---|
 | astro | `core/messages/runtime.ts:250` | 전역 정규식 상태 | **손검증·테스트 완료 · 다음 순번** |
-| astro | `runtime/client/dev-toolbar/toolbar.ts:334` | await in forEach | 미검증 |
-| astro | `dev-toolbar/apps/audit/index.ts:84` · `server/astro-island.ts:100` | floating promise | 미검증(fire-and-forget 의도일 수 있음) |
+| nx | `command-line/graph/graph.ts:1194` | 쓰기만 하는 컬렉션 | **손검증 완료** · 중앙 1.0일로 제일 빠름 |
+| rollup | `src/Chunk.ts:1343` | 쓰기만 하는 컬렉션 | **손검증 완료** · 중앙 8.5일이라 후순위 |
+| pnpm | `pnpm11/installing/deps-resolver/src/toResolveImporter.ts:110` | 쓰기만 하는 컬렉션 | **손검증 완료** · 중앙 6.0일 |
+| astro | `core/build/static-build.ts:91` | 쓰기만 하는 컬렉션 | 손검증 완료 · 보류(같은 저장소에 위 버그 건이 먼저) |
+
+**2026-08-10 에 위 다섯 건을 전부 손검증했다.** 각각 왜 진짜인지:
+
+- **nx `taskGraphCache`** — 선언과 `.clear()` 만 남았다. 읽기·쓰기가 전부
+  `a2770741`("feat(graph): task graph support multiple targets" #32418, 2025-08-21)에서
+  지워졌다. 바로 옆줄의 쌍둥이 `expandedTaskInputsCache` 는 지금도 `get`/`set` 을 다
+  쓰고 있어서, 하나만 남겨진 게 눈으로 보인다.
+- **rollup `renderedModuleSources`** — 원래 `this.renderedModuleSources` 클래스 필드였고
+  읽는 곳이 4군데였다. `9216f5235`("[v3.0] New hashing algorithm" #4543, 2022-07-05)가
+  그 4곳을 전부 지우면서 지역 `const` 로 바꿔놨고 `.set()` 만 남았다. 4년째다.
+  여기는 "메모리"라는 근거가 붙는다 — 청크를 렌더하는 동안 모듈마다 `MagicString`
+  을 붙잡고 있는데 아무도 안 읽는다.
+- **pnpm `linkedAliases`** — 태어날 때부터 죽어 있었다. `ae32d313e`(#4085, 2021-12-08)가
+  `.add()` 만 넣었고 읽는 코드는 그 커밋에도 없다. 4년 반.
+- **astro `pageInput`** — 소비자 `ssrBuild(opts, internals, pageInput, container)` 가
+  2025-12-04 "Environment API"(#14306)에서 사라졌다.
+
+### 재보고 떨어뜨린 것 — 사유를 남긴다
+
+| 후보 | 사유 |
+|---|---|
+| nx `update-jest-preset-angular-setup.ts:43·61` (전역 정규식) | **오탐.** 코드가 `test()` 앞에서 `RE.lastIndex = 0` 을 직접 되돌린다 — 저자가 상태를 알고 관리하는 자리다. 엔진에 가드를 넣었다(아래) |
+| astro `toolbar.ts:334` (await in forEach) | `connectedCallback()` 이 동기라 애초에 기다릴 수 없다. "저자는 기다린다고 믿었다"는 근거가 없어 T1 이 아니다 |
+| astro `audit/index.ts:84` · `astro-island.ts:100` (floating promise) | 호출 체인 자체가 fire-and-forget 이다 — `childrenConnectedCallback()` 도 await 없이 불린다. await 를 붙여도 관측 가능한 변화가 없다 |
+| rollup `watch.ts:98` (floating promise) | `this.run()` 을 await 하면 바깥 `catch` 의 의미가 바뀐다. 동작 변경이라 기계적 수정이 아니다 |
+
+**오탐 하나가 가드를 낳았다.** nx 건을 계기로 `전역 정규식 상태` 축에
+`<이름>.lastIndex = <값>` 이 파일 어딘가에 있으면 그 이름은 제외하는 가드를 넣었다.
+픽스처(`tools/fixtures/stateful-regex.ts`)로 양쪽을 고정했다 — `leaks`·`sticky` 는 잡고
+`guarded`(lastIndex 리셋)·`plain`(/g 없음)·`inner`(루프 안 생성)·`walked`(exec 순회)는
+안 잡는다.
 
 **astro `runtime.ts:250` 이 다음 순번인 이유.** `STACK_LINE_REGEXP = /^\s+at /g` 를
 `.filter()` 안에서 `.test()` 로 쓴다. `/g` 는 매칭마다 `lastIndex` 를 전진시키므로 다음 줄은
