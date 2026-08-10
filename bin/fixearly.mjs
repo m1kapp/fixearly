@@ -2153,6 +2153,17 @@ const VENDORED_RE = /\/(compiled|vendor|vendored|third[-_]party|generated|codege
 // 저장소에는 있지만 사용자가 설치하는 물건이 아니라, 점수에 섞이면 "이 라이브러리 코드가
 // 어떤 상태인가"라는 질문의 답을 흐린다(angular/packages/examples 6.4k줄 = 문서용 샘플).
 const NON_SHIPPED_RE = /\/(examples?|samples?|demos?|playground|sandbox|website|scripts|tmp)\//;
+// 위 세 정규식은 전부 "저장소 안에서의 자리"를 묻는다. 그런데 절대경로에 그대로 물리면
+// 측정 대상 바깥의 디렉터리 이름이 판정을 뒤집는다 — /private/tmp 에 클론해서 재면
+// NON_SHIPPED_RE 의 `tmp` 가 걸려 전 파일이 비-프로덕션으로 빠지고, 남은 게 0개라
+// "파일 0개 · SSS 100점"이 나온다. 조용히 만점을 주는 오답이라 제일 나쁜 실패다.
+// (실측 2026-08-10: storybook 을 /private/tmp 아래에서 재니 1559개가 전부 제외됐다.)
+// 그래서 판정은 srcDir 기준 상대경로로만 한다. 앞의 "/" 는 최상위 디렉터리도
+// `/(tests?)\//` 형태로 걸리게 하려고 붙인다.
+function scanPath(absFile) {
+  const rel = path.relative(srcDir, absFile).replace(/\\/g, "/");
+  return rel.startsWith("..") ? absFile.replace(/\\/g, "/") : "/" + rel;
+}
 
 // 디렉터리뿐 아니라 파일명·머리말로도 생성물을 판별한다. 실제 사내 저장소에서
 // `generated.ts`, `sample-rows.generated.ts`, 그리고 "자동 생성, 손수정 금지" migration이
@@ -2180,7 +2191,7 @@ const EXCLUDE_RES = excludePats.map((p) =>
 const TEST_FILE_RE = /(\.(test|spec|test-d)\.[tj]sx?$)|(\/(__tests__|tests?|e2e)\/)/;
 let testDensity = null;
 {
-  const testFiles = files.filter((f) => TEST_FILE_RE.test(f.replace(/\\/g, "/")));
+  const testFiles = files.filter((f) => TEST_FILE_RE.test(scanPath(f)));
   let testLines = 0;
   for (const f of testFiles) {
     try { testLines += fs.readFileSync(f, "utf-8").split("\n").length; } catch { /* 읽기 실패는 무시 */ }
@@ -2194,7 +2205,7 @@ let testDensity = null;
 {
   const before = files.length;
   files = files.filter((f) => {
-    const p = f.replace(/\\/g, "/");
+    const p = scanPath(f);
     if (NON_SOURCE_RE.test(p) || VENDORED_RE.test(p) || NON_SHIPPED_RE.test(p)
       || EXCLUDE_RES.some((re) => re.test(p))) return false;
     try {
@@ -2252,6 +2263,17 @@ const TRIVIAL_MIN_CODE = 5;
   if (dropped > 0) {
     console.log(`  자잘 파일(코드 <${TRIVIAL_MIN_CODE}줄) ${dropped}개 제외 — 패딩 게이밍 방지 (${files.length}개 분석)\n`);
   }
+}
+
+// 여기까지 오는 동안 파일이 전부 걸러졌으면 채점하지 않는다. 0개를 채점하면 모든 축이
+// 0 이라 "SSS 100점"이 나오는데, 그건 "깨끗하다"가 아니라 "아무것도 안 쟀다"이다.
+// 사용자가 알아챌 방법이 없는 오답이므로 침묵하는 만점보다 실패가 낫다.
+// 필터가 여러 겹이라(제외 규칙 · 미니파이 · 자잘 파일) 마지막 한 곳에서만 본다.
+if (files.length === 0) {
+  console.error(`  분석할 프로덕션 파일이 없습니다 — 후보가 전부 제외되었습니다.`);
+  console.error(`  --dir 이 테스트·예제·벤더 디렉터리를 가리키는지, --exclude 가 너무 넓은지,`);
+  console.error(`  대상이 코드 ${TRIVIAL_MIN_CODE}줄 미만 파일뿐인지 확인하세요.\n`);
+  process.exit(1);
 }
 
 let totalLines = 0;

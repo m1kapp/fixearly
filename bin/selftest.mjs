@@ -283,5 +283,53 @@ if (generatedSrc) {
   }
 }
 
+// ── 제외 규칙은 측정 대상 바깥 경로를 보면 안 된다 ────────────────────────
+// 실측 2026-08-10: storybook 을 /private/tmp 아래에 클론해서 재니 NON_SHIPPED_RE 의
+// `tmp` 가 절대경로에 걸려 1559개가 전부 제외됐고, 남은 0개를 채점해 "SSS 100점"이
+// 나왔다. 조용히 만점을 주는 오답이라 사용자가 알아챌 방법이 없다. 두 가지를 못박는다.
+{
+  console.log("\n제외 규칙 경로 범위:");
+  const check = (name, ok) => {
+    if (!ok) fail++;
+    console.log(`  ${ok ? "✓" : "✗"} ${name}`);
+  };
+  const run = (dir, extra = []) => {
+    const r = spawnSync(process.execPath,
+      [path.join(ROOT, "bin", "fixearly.mjs"), `--dir=${dir}`, ...extra],
+      { cwd: path.dirname(dir), encoding: "utf8" });
+    return { text: (r.stdout || "") + (r.stderr || ""), code: r.status };
+  };
+  // 자잘 파일(코드 5줄 미만) 필터에 걸리지 않도록 본문이 있는 파일을 쓴다.
+  const body = (name) => `export function ${name}(items: number[]) {\n`
+    + `  let total = 0;\n`
+    + `  for (const item of items) {\n`
+    + `    total += item;\n`
+    + `  }\n`
+    + `  return total;\n`
+    + `}\n`;
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "fixearly-scope-"));
+  // 측정 대상보다 위에 있는 `tmp`·`scripts` 디렉터리는 판정에 영향을 주면 안 된다.
+  const src = path.join(root, "tmp", "scripts", "src");
+  fs.mkdirSync(src, { recursive: true });
+  fs.writeFileSync(path.join(src, "a.ts"), body("sum"));
+  const outside = run(src);
+  check("바깥 경로의 tmp/scripts 는 제외 사유가 아니다", /파일: 1개/.test(outside.text));
+
+  // 반대쪽: 측정 대상 *안*의 scripts/ 는 예전대로 제외돼야 한다(규칙을 죽이지 않았다).
+  const src2 = path.join(root, "keep", "src");
+  fs.mkdirSync(path.join(src2, "scripts"), { recursive: true });
+  fs.writeFileSync(path.join(src2, "b.ts"), body("total"));
+  fs.writeFileSync(path.join(src2, "scripts", "gen.ts"), body("generated"));
+  const inside = run(src2);
+  check("대상 안의 scripts/ 는 여전히 제외된다", /파일: 1개/.test(inside.text));
+
+  // 전부 걸러지면 채점하지 않고 실패한다 — 0개를 채점하면 모든 축이 0 이라 만점이 된다.
+  const empty = run(src2, ["--exclude=*"]);
+  check("전부 제외되면 만점 대신 실패", empty.code === 1 && /분석할 프로덕션 파일이 없습니다/.test(empty.text));
+  check("전부 제외되면 등급을 찍지 않는다", !/등급: /.test(empty.text));
+
+  fs.rmSync(root, { recursive: true, force: true });
+}
+
 console.log(fail ? `\n  ${fail} FAIL` : `\n  all passed`);
 process.exit(fail ? 1 : 0);
