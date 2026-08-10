@@ -189,6 +189,15 @@ medusa · outline · nocodb · n8n)에서 `help wanted` + `good first issue` 를
 **열린 것 6건(보류 2건 빼면 4건).** 판정 난 17건 중 머지 7 · 승인 0 · 닫힘 10.
 <!-- /auto:open -->
 
+**2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
+오늘은 안 낸다). `viteBuild` 가 `pageInput` 을 루프에서 채우는데 읽는 곳이 없다. 소비자는
+`ssrBuild(opts, internals, pageInput, container)` 였고 2025-12-04 "Environment API"(#14306)
+에서 그 호출이 통째로 갈리면서 Set 만 남았다 — storybook 과 같은 모양이다. 원본에
+`// (comment above may be outdated ?)` 라는 주석까지 붙어 있어 저자도 의심하던 자리다.
+지우면 `routeIsRedirect(pageData.route)` 분기도 같이 빠지는데, 그 함수는
+`route?.type === 'redirect'` 뿐이라 부작용이 없다. 안 쓰게 된 import 도 같이 지웠다.
+게이트 0: CLA 없음 · 외부 PR 을 닫는 봇 없음 · 수락률 72% · 중앙 2.0일.
+
 **2026-08-10 제출** — storybook#35829 을 냈다. 슬롯을 회수한 그날 하루 1건이다.
 고른 이유는 근거의 성격이다: 이 `Set` 의 소비자를 **메인테이너가 2022-11 에 이미 지웠고**
 (`78a7fd5f4c` "Remove unused code and test") `Set` 만 남겨뒀다. "살릴까 지울까"를 물을
@@ -246,7 +255,8 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 | react | `CollectHoistablePropertyLoads.ts:499` · `AlignReactiveScopesToBlockScopesHIR.ts:78` | 컴파일러 패스 2건 |
 | vscode | `chatToolPicker.ts:261` | `mcpServerByTool.set(...)` 뒤 조회 없음 |
 | next.js | `export/index.ts:285` | `excludedPrerenderRoutes.add(page)` — 이름과 달리 제외에 안 쓰인다 |
-| astro · pnpm · nx | 각 1건 | 같은 형태 |
+| astro | `core/build/static-build.ts:91` | **손검증 완료 · 다음 순번** — `pageInput` 을 채우고 아무도 안 읽는다 |
+| pnpm · nx | 각 1건 | 같은 형태 · 미검증 |
 | ~~ghost~~ | `members-stats-service.js:115` | **제출됨 → #29831** |
 | ~~excalidraw~~ | `App.tsx:13467` | **제출됨 → #11805** (축 커버리지 예외) |
 
