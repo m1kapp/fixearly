@@ -23,6 +23,7 @@
 | [medusa#16233](https://github.com/medusajs/medusa/pull/16233) | 머지 | 메인테이너 승인 뒤 자동 머지 |
 | [vite#23114](https://github.com/vitejs/vite/pull/23114) | 머지 | 당일 승인, 2일 만에 머지 |
 | [ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 머지 | 메인테이너가 병렬화 변경을 승인한 뒤 머지 |
+| [ghost#29831](https://github.com/TryGhost/Ghost/pull/29831) | 머지 | — |
 | [n8n#34899](https://github.com/n8n-io/n8n/pull/34899) | 머지 | 봇이 요구한 changeset prefix 만 고치고 통과 |
 | [novu#12074](https://github.com/novuhq/novu/pull/12074) | 닫힘 | 우리가 접었다 — 중앙 1일인 곳에서 15일째 사람 리뷰 0(승인은 봇). 슬롯을 회수했다 |
 | [payload#17469](https://github.com/payloadcms/payload/pull/17469) | 닫힘 | 우리가 접었다 — 중앙 4일인 곳에서 14일째 아무 반응이 없었다 |
@@ -165,8 +166,9 @@ medusa · outline · nocodb · n8n)에서 `help wanted` + `good first issue` 를
 - **하루 1건도 그대로.** 급해도 몰아서 안 낸다.
 - 예외로 낸 건 여기 표에 축 이름과 함께 남긴다 — 왜 상한을 넘겼는지 나중에 설명할 수 있게.
 
-지금 머지 0인 축: `N+1`(낸 것 없음) · `중복 쿼리`(보류 1) · `쓰기만 하는 컬렉션`(대기 3).
-`순차 I/O` 는 ghost#29704 가 머지되면서 검증됐다 — 이 축의 예외는 닫혔다.
+지금 머지 0인 축: `N+1`(낸 것 없음) · `중복 쿼리`(보류 1).
+`순차 I/O` 는 ghost#29704 가, `쓰기만 하는 컬렉션` 은 **ghost#29831 이 2026-08-11 에
+머지되면서** 검증됐다 — 두 축의 예외는 닫혔다.
 
 **N+1 축은 2026-08-10 부터 다시 미제출 상태다.** 낸 것이 novu#12074 하나였는데 우리가
 닫았고, immich#30163 은 게이트 0 이라 접었다. 축 커버리지 예외의 목적은 규칙을 머지로
@@ -179,14 +181,14 @@ medusa · outline · nocodb · n8n)에서 `help wanted` + `good first issue` 를
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [ghost#29831](https://github.com/TryGhost/Ghost/pull/29831) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 2일째 / 보통 1일 |
-| [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 순차 I/O | ⚪ 대기 | 11일째 / 보통 10일 |
-| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 8일째 / 보통 1일 · 보류 |
-| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
-| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
-| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 10일째 / 보통 11일 |
+| [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 순차 I/O | ⚪ 대기 | 12일째 / 보통 10일 |
+| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
+| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 12일째 / 보통 1일 · 보류 |
+| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 1일째 / 보통 1일 |
+| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 11일째 / 보통 11일 |
+| [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 오늘 / 보통 2일 |
 
-**열린 것 6건(보류 2건 빼면 4건).** 판정 난 17건 중 머지 7 · 승인 0 · 닫힘 10.
+**열린 것 6건(보류 2건 빼면 4건).** 판정 난 18건 중 머지 8 · 승인 0 · 닫힘 10.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -262,15 +264,21 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 
 ### T1 버그 축 — 2026-08-10 부터 여기서 꺼낸다
 
-`쓰기만 하는 컬렉션` 은 대기 3건(storybook · ghost · excalidraw)에 머지 0 이다. 같은 축을
-넷째로 쌓는 건 검증이 아니라 방치를 늘리는 것이라, 다음 제출부터 **T1(버그) 축**으로
-옮긴다. 성격이 다르다 — 요청받지 않은 최적화가 아니라 **동작이 틀린 자리**라서,
-directus 를 닫은 사유("이득이 churn 을 정당화 못 한다")가 성립하지 않는다.
+옮긴 이유는 그날 `쓰기만 하는 컬렉션` 이 대기 3건에 머지 0 이었기 때문이다. 같은 축을
+넷째로 쌓는 건 검증이 아니라 방치를 늘리는 것이라 **T1(버그) 축**으로 갈아탔다. 성격이
+다르다 — 요청받지 않은 최적화가 아니라 **동작이 틀린 자리**라서, directus 를 닫은
+사유("이득이 churn 을 정당화 못 한다")가 성립하지 않는다.
+
+**2026-08-11 정정 — 그 축은 그날 밤에 검증됐다.** ghost#29831 을 메인테이너(9larsons)가
+승인하고 머지했다. 리뷰 질문 없이 그대로다. 그러니 이 레인은 "쓰기만 하는 컬렉션을
+버렸다"는 뜻이 아니다 — 그 축은 이제 **선례가 있는 축**이고(같은 근거로 낸 것이 남의
+저장소에서 머지됐다), nx·rollup·pnpm 후보는 그 선례를 본문에 걸 수 있다. 두 레인을
+번갈아 낸다.
 
 | 저장소 | 자리 | 축 | 상태 |
 |---|---|---|---|
-| astro | `core/messages/runtime.ts:250` | 전역 정규식 상태 | **손검증·테스트 완료 · 다음 순번** |
-| nx | `command-line/graph/graph.ts:1194` | 쓰기만 하는 컬렉션 | **손검증 완료** · 중앙 1.0일로 제일 빠름 |
+| ~~astro~~ | `core/messages/runtime.ts:250` | 전역 정규식 상태 | **제출됨 → #17665** |
+| nx | `command-line/graph/graph.ts:1194` | 쓰기만 하는 컬렉션 | **손검증 완료 · 다음 순번** · 중앙 1.0일로 제일 빠름 |
 | rollup | `src/Chunk.ts:1343` | 쓰기만 하는 컬렉션 | **손검증 완료** · 중앙 8.5일이라 후순위 |
 | pnpm | `pnpm11/installing/deps-resolver/src/toResolveImporter.ts:110` | 쓰기만 하는 컬렉션 | **손검증 완료** · 중앙 6.0일 |
 | astro | `core/build/static-build.ts:91` | 쓰기만 하는 컬렉션 | 손검증 완료 · 보류(같은 저장소에 위 버그 건이 먼저) |

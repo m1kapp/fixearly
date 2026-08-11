@@ -4,7 +4,7 @@
    "title": "deleteBulkMetadata N+1",
    "type": "N+1 (루프 안 순차 DELETE, item당 왕복 1회)",
    "repo": "immich-app/immich",
-   "repoLabel": "immich · 110.1k★",
+   "repoLabel": "immich · 110.2k★",
    "pr": 30163,
    "createdAt": "2026-07-23T15:26:09Z",
    "status": "closed",
@@ -136,7 +136,7 @@
    "title": "resource-mapper schema validation O(n²)",
    "type": "O(n²) (value별 schema.find — id Map으로 O(1))",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 200.1k★",
+   "repoLabel": "n8n · 200.2k★",
    "pr": 34899,
    "createdAt": "2026-07-24T13:05:42Z",
    "status": "merged",
@@ -185,7 +185,7 @@
    "titleEn": "eval dataset item re-read",
    "type": "중복 쿼리 (변수마다 동일 WHERE 로 같은 행 재조회 → 컬럼 합쳐 1회)",
    "repo": "langfuse/langfuse",
-   "repoLabel": "langfuse · 32.8k★",
+   "repoLabel": "langfuse · 32.9k★",
    "pr": 15585,
    "createdAt": "2026-07-29T14:13:47Z",
    "status": "waiting"
@@ -253,8 +253,9 @@
    "repo": "TryGhost/Ghost",
    "repoLabel": "ghost · 54.7k★",
    "pr": 29831,
-   "status": "waiting",
-   "createdAt": "2026-08-08T03:16:06Z"
+   "status": "merged",
+   "createdAt": "2026-08-08T03:16:06Z",
+   "mergedAt": "2026-08-10T18:30:32Z"
   },
   {
    "title": "invalidate() 안 미사용 Set",
@@ -265,6 +266,16 @@
    "createdAt": "2026-08-10T12:10:18Z",
    "status": "waiting",
    "titleEn": "unread invalidated Set in the story index"
+  },
+  {
+   "title": "스택 트레이스 절반 유실",
+   "titleEn": "printed error stacks lose every other frame",
+   "type": "전역 정규식 상태 (/g 정규식을 filter 안에서 .test() — lastIndex 가 새어 프레임이 하나 걸러 사라진다)",
+   "repo": "withastro/astro",
+   "repoLabel": "astro · 61.7k★",
+   "pr": 17665,
+   "createdAt": "2026-08-11T12:35:43Z",
+   "status": "waiting"
   }
  ]
 }
