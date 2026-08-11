@@ -58,6 +58,8 @@
 | 트랜잭션 내부 | 같은 트랜잭션에서 순서가 보장돼야 하는 순차 await | 코퍼스 스캔 |
 | 단일 커넥션 | `Promise.all` 로 감싸도 드라이버가 큐잉해 왕복이 안 준다 | typeorm `query()` — QueryRunner 가 커넥션 하나로 보낸다 |
 | 유한 n | 패턴은 맞지만 n 이 설정·필드 목록(보통 5개) | 스프레드 누적 축 전체가 T3 로 내려간 이유 |
+| 위에서 길이를 막아둔 루프 | 루프 자체는 N+1 모양인데, **몇 줄 위에 길이 가드가 있다** | ghost `member-repository.js:453` — `products.length > 1` 이면 던지므로 n≤1 (2026-08-11) |
+| iteration 별 오류 격리 | 루프 안 try/catch 로 한 건 실패를 나머지와 분리한다. 배치로 묶으면 그 의미가 사라진다 | ghost `member-repository.js:1479·1518` (2026-08-11) |
 | 의도된 fire-and-forget | 호출 체인 자체가 await 없이 설계됐다 | astro `childrenConnectedCallback()` 도 await 없이 불린다 (2026-08-10) |
 | 동작이 바뀌는 await | await 를 붙이면 바깥 `catch` 의 의미가 달라진다 | rollup `watch.ts:98` (2026-08-10) |
 

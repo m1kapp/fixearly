@@ -410,6 +410,8 @@ react 건은 소비자가 주석 처리돼 있어 **PR 로 내면 "왜 지우냐
 | typeorm | 순차 14 | `query()` 가 QueryRunner 의 커넥션 하나로 보낸다 — 단일 pg Client 는 큐잉해 순차 실행하므로 `Promise.all` 로 왕복이 안 준다 |
 | vite | O(n²) optimizer | `crawlDeps`/`scanDeps` 대칭 차집합은 진짜 O(n²)지만 n 이 의존성 수(수십~수백)라 마이크로초 |
 | ghost | 순차 43 중 2 | 이메일 알림은 SMTP 가 DB 왕복을 압도 · stripe-migrations 는 순차가 의도 |
+| ghost | N+1 23 | **전부 탈락**(2026-08-11). 12곳이 마이그레이션·CLI(1회 실행) · `member-repository` 4곳은 루프 대상이 tier 목록인데 **세 줄 위에서 `products.length > 1` 이면 던진다**(n≤1) · 구독 루프 2곳은 iteration 마다 try/catch 로 오류를 격리해서 배치하면 의미가 바뀐다 · 나머지는 청크 삽입(의도된 배칭) |
+| medusa | N+1 2 | `link.ts:556` 은 루프가 *서비스* 단위이고 쿼리는 이미 `$or` 로 배치돼 있다 · 나머지 1곳은 재시도 루프 |
 
 ## 게이트 0 에서 막힌 곳
 
