@@ -203,10 +203,10 @@ medusa · outline · nocodb · n8n)에서 `help wanted` + `good first issue` 를
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 오늘 / 보통 1일 |
 | [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 순차 I/O | ⚪ 대기 | 12일째 / 보통 10일 |
-| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
+| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 10일째 / 보통 1일 · 보류 |
 | [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 13일째 / 보통 1일 · 보류 |
+| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 1일째 / 보통 1일 |
 | [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 11일째 / 보통 11일 |
 | [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 오늘 / 보통 2일 |

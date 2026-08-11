@@ -367,9 +367,17 @@ for r in missing_times:
 missing += missing_times
 
 if "--check" in sys.argv:
+    # 설명 커버리지만 보던 검사다. 그래서 **랜딩이 낡아도 통과했다** — 2026-08-11 에
+    # astro#17665 과 nx#36633 을 낸 뒤에도 index.html 은 이틀 전 상태 그대로였고
+    # npm test 는 초록이었다. 파는 페이지가 조용히 뒤처지는 게 제일 나쁘다.
+    # 이제 생성 결과와 실제 파일을 그대로 비교한다.
+    current = open(f"{ROOT}/index.html", encoding="utf-8").read()
+    outdated = current != h
+    if outdated:
+        print("  ✗ index.html 이 impact.json 과 다르다 — npm run cards")
     print(f"{'설명 누락 ' + str(len(missing)) + '곳' if missing else '카드 설명이 저장소 전부를 덮는다'}"
           f" ({len(findings)}건 / {len({f['repo'] for f in findings})}곳)")
-    sys.exit(1 if missing else 0)
+    sys.exit(1 if (missing or outdated) else 0)
 
 open(f"{ROOT}/index.html", "w", encoding="utf-8").write(h)
 print("카드 개편:", counts)

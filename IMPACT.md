@@ -35,7 +35,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `member 통계 안 미사용 Map` | [ghost · 54.7k★](https://github.com/TryGhost/Ghost) | 쓰기만 하는 컬렉션 (날짜별 Map 을 채우고 아무도 안 읽음 — 삭제) | [#29831](https://github.com/TryGhost/Ghost/pull/29831) | ✅ merged | +1 |
 | `invalidate() 안 미사용 Set` | [storybook · 90.8k★](https://github.com/storybookjs/storybook) | 쓰기만 하는 컬렉션 (파일 변경마다 채우고 아무도 안 읽음 — 소비자는 2022-11 에 이미 삭제됨) | [#35829](https://github.com/storybookjs/storybook/pull/35829) | ⚪ awaiting review | — |
 | `스택 트레이스 절반 유실` | [astro · 61.7k★](https://github.com/withastro/astro) | 전역 정규식 상태 (/g 정규식을 filter 안에서 .test() — lastIndex 가 새어 프레임이 하나 걸러 사라진다) | [#17665](https://github.com/withastro/astro/pull/17665) | ⚪ awaiting review | — |
-| `graph 명령 안 미사용 Map` | [nx · 29.2k★](https://github.com/nrwl/nx) | 쓰기만 하는 컬렉션 (선언과 .clear() 만 남았다 — 읽기·쓰기는 #32418 에서 사라졌다) | [#36633](https://github.com/nrwl/nx/pull/36633) | 🟢 reviewing | — |
+| `graph 명령 안 미사용 Map` | [nx · 29.2k★](https://github.com/nrwl/nx) | 쓰기만 하는 컬렉션 (선언과 .clear() 만 남았다 — 읽기·쓰기는 #32418 에서 사라졌다) | [#36633](https://github.com/nrwl/nx/pull/36633) | ⚪ awaiting review | — |
 
 ## 규칙
 

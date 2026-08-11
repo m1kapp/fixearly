@@ -70,10 +70,25 @@ async function prStatus(repo, pr) {
     if (verdicts.includes("CHANGES_REQUESTED")) return { state: "changes", url: d.html_url, ...at };
     if (verdicts.includes("APPROVED")) return { state: "approved", url: d.html_url, approvers, ...at };
 
-    // 판정은 없지만 사람이 붙은 흔적 — 리뷰어 지정 또는 사람이 남긴 리뷰.
-    // 봇 리뷰는 흔적으로도 안 센다(안 그러면 봇 하나에 전부 '리뷰 진행'이 된다).
+    // 판정은 없지만 사람이 붙은 흔적 — 사람이 남긴 리뷰, 또는 **우리가 아닌 누군가가**
+    // 리뷰어를 지정한 것. 봇 리뷰는 흔적으로도 안 센다(안 그러면 봇 하나에 전부
+    // '리뷰 진행'이 된다).
+    //
+    // `requested_reviewers` 가 비어있지 않다는 것만으로는 부족하다. CODEOWNERS 자동
+    // 지정은 **PR 작성자가 요청한 것으로 기록된다** — nx#36633 은 열자마자 nx-cli-reviewers
+    // 와 lourw 가 붙었는데 타임라인의 actor 가 irontaek(우리)이었다. 그대로 세면
+    // 아무도 안 본 PR 이 보드에서 "리뷰 진행"으로 표시된다. 봇 승인을 안 세는 것과 같은
+    // 이유다 — 이 보드가 파는 건 "사람이 봤다"이지 "자동화가 붙었다"가 아니다.
     const humanReviews = reviews.filter((r) => !isBot(r.user));
-    const engaged = (d.requested_reviewers || []).length > 0 || humanReviews.length > 0;
+    let invitedByOther = false;
+    if (!humanReviews.length && (d.requested_reviewers || []).length + (d.requested_teams || []).length > 0) {
+      try {
+        const timeline = await get(`https://api.github.com/repos/${repo}/issues/${pr}/timeline?per_page=100`);
+        invitedByOther = timeline.some((e) => e.event === "review_requested" &&
+          e.actor?.login && e.actor.login !== d.user?.login && !isBot(e.actor));
+      } catch { /* 타임라인 조회 실패 시엔 흔적 없음으로 둔다 — 부풀리는 쪽으로 틀리지 않는다 */ }
+    }
+    const engaged = humanReviews.length > 0 || invitedByOther;
     return { state: engaged ? "reviewing" : "waiting", url: d.html_url, botApproved, ...at };
   } catch (e) {
     return { state: "unknown", err: e.message };
