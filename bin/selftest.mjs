@@ -345,5 +345,59 @@ if (generatedSrc) {
   fs.rmSync(root, { recursive: true, force: true });
 }
 
+// ── pre-pr 검사기: 남의 저장소 관례를 실제로 잡는가 ────────────────────────
+// 2026-08-11 astro#17665 의 Lint 가 테스트 파일 확장자 하나 때문에 깨졌다(.js 인데
+// 그 디렉터리는 전부 .ts, tsconfig include 도 *.ts 뿐). 손으로 "관례를 봐라"는 다음에도
+// 놓친다. 합성 저장소로 양방향을 고정한다 — 어긋난 확장자는 잡고, 맞는 건 통과.
+{
+  console.log("\npre-pr 검사기:");
+  const check = (name, ok) => {
+    if (!ok) fail++;
+    console.log(`  ${ok ? "✓" : "✗"} ${name}`);
+  };
+  const repo = fs.mkdtempSync(path.join(os.tmpdir(), "fixearly-prepr-"));
+  const git = (cmd) => spawnSync("git", cmd, { cwd: repo, encoding: "utf8" });
+  const write = (rel, body) => {
+    fs.mkdirSync(path.join(repo, path.dirname(rel)), { recursive: true });
+    fs.writeFileSync(path.join(repo, rel), body);
+  };
+  git(["init", "-q", "-b", "main"]);
+  git(["config", "user.email", "t@example.com"]);
+  git(["config", "user.name", "t"]);
+  // tsconfig 의 include 글롭에 `/*` 가 들어 있다 — 주석 제거를 정규식으로 하면 여기서
+  // 글롭이 깨진다(검사기가 처음에 자기 자신을 오탐한 자리다).
+  write("tsconfig.test.json", '{\n  // 테스트만\n  "include": ["test/units/**/*.ts"]\n}\n');
+  write("test/units/errors/a.test.ts", "export const a = 1;\n");
+  write("test/units/errors/b.test.ts", "export const b = 2;\n");
+  git(["add", "-A"]);
+  git(["commit", "-qm", "base"]);
+  git(["branch", "-q", "-M", "main"]);
+  git(["remote", "add", "origin", repo]);
+  git(["update-ref", "refs/remotes/origin/main", "HEAD"]);
+
+  const run = () => {
+    const r = spawnSync(process.execPath,
+      [path.join(ROOT, "tools", "pre-pr-check.mjs"), `--dir=${repo}`],
+      { encoding: "utf8" });
+    return { text: (r.stdout || "") + (r.stderr || ""), code: r.status };
+  };
+
+  write("test/units/errors/c.test.js", "export const c = 3;\n");
+  git(["add", "-A"]);
+  git(["commit", "-qm", "add js test"]);
+  const wrong = run();
+  check("형제가 안 쓰는 확장자를 잡는다", wrong.code === 1 && /안 쓰는 확장자/.test(wrong.text));
+
+  git(["rm", "-q", "test/units/errors/c.test.js"]);
+  write("test/units/errors/c.test.ts", "export const c = 3;\n");
+  git(["add", "-A"]);
+  git(["commit", "-qm", "switch to ts"]);
+  const right = run();
+  check("관례에 맞으면 통과시킨다", right.code === 0);
+  check("include 글롭을 주석 제거로 망가뜨리지 않는다", !/include 에도 안 걸린다/.test(right.text));
+
+  fs.rmSync(repo, { recursive: true, force: true });
+}
+
 console.log(fail ? `\n  ${fail} FAIL` : `\n  all passed`);
 process.exit(fail ? 1 : 0);
