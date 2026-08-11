@@ -35,6 +35,7 @@
 | `promise-all-batching` | 루프 안 DB/HTTP (N+1) | `Promise.all(items.map(async …))` 는 병렬 배칭인데 순차 N+1 로 봤다 | 코퍼스 스캔 | 루프 안에서 **직접 await** 하는 호출만 센다 | 없음 |
 | `minified-bundle` | 전 축 | 저장소에 커밋된 벤더 번들·시드 에셋이 git 추적 대상이라 모든 필터를 통과했다 | `for...in` **129곳** 오탐 + 점수 왜곡(twenty 78 B → 86 A, maxCog 356 → 97, 중복 15.7% → 9.5%) | 파일명 관례 + "한 줄이 비정상적으로 길다"로 전역 제외 | 없음 |
 | `non-production-file` | 전 축 · 데드코드 | knip 이 `.test-d.ts`·`benchmarks/` 를 "미사용"으로 보고했다 | 데드 **181곳**(파일 수보다 많았다) | 비-프로덕션 파일을 모든 축에서 일관 제외 + 분석 대상과 교집합만 집계 | 없음 |
+| `retroactive-author-association` | (측정 자체) | "그 저장소에 처음 내는 사람의 수락률"을 GitHub `author_association` 으로 재려 했다 | PR 이 머지되면 저자가 **소급해서** CONTRIBUTOR 가 된다 — 우리 머지 4건(outline#13117 · nocodb#14309 · vite#23114 · ghost#29831)도 낼 때는 NONE 이었는데 지금은 전부 CONTRIBUTOR 로 조회된다 (2026-08-11) | 그 계산을 걷어냈다. "NONE 이면서 머지됨"은 구조적으로 0 이라 cal.com 0/43 같은 가짜 0% 가 나온다 | 없음 |
 | `path-scope-outside-root` | (측정 자체) | 제외 규칙이 절대경로에 물려, 측정 대상 **바깥** 디렉터리 이름이 판정을 뒤집었다 | `/private/tmp` 아래 클론한 storybook — 1559개가 전부 제외되고 **"SSS 100점"** 이 나왔다 (2026-08-10) | 판정을 `--dir` 기준 상대경로로. 0개면 채점 대신 실패 | selftest `제외 규칙 경로 범위` |
 
 ## 가드로 못 막아서 **축을 폐기한 것**

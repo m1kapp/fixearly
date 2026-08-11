@@ -17,6 +17,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "FALSE-POSITIVES.md"
 ENGINE = ROOT / "bin" / "fixearly.mjs"
+# 오탐은 엔진에만 사는 게 아니다. 측정 도구(수락률·중앙값)도 같은 규율로 묶는다.
+EXTRA_TAGGED = [ROOT / "tools" / "update-repo-merge-times.py"]
 FIXTURES = ROOT / "tools" / "fixtures"
 
 fail = 0
@@ -31,6 +33,9 @@ def bad(msg):
 def main():
     catalog = CATALOG.read_text(encoding="utf-8")
     engine = ENGINE.read_text(encoding="utf-8")
+    for extra in EXTRA_TAGGED:
+        if extra.exists():
+            engine += extra.read_text(encoding="utf-8")
 
     # 표의 첫 칸이 `id` 인 행만 본다. 아래쪽 "가드가 아직 없는 것" 표는 id 칸이 없다.
     rows = re.findall(r"^\|\s*`([a-z0-9-]+)`\s*\|(.+)$", catalog, re.MULTILINE)

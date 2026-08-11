@@ -66,6 +66,15 @@ def main():
     for repo in repos:
         pulls = fetch(repo, token)
         merged, external = [], []
+        # [FP:retroactive-author-association] "처음 내는 사람(NONE)의 수락률"은
+        # 이 API 로 잴 수 없다. author_association 은 **조회 시점의 관계**라서, PR 이
+        # 머지되는 순간 그 저자는 CONTRIBUTOR 가 되고 과거 PR 까지 그렇게 보인다.
+        # 실측 2026-08-11: 우리 머지 4건(outline#13117 · nocodb#14309 · vite#23114 ·
+        # ghost#29831)은 낼 때 전부 NONE 이었는데 지금 조회하면 전부 CONTRIBUTOR 다.
+        # 그래서 "NONE 이면서 머지됨"은 구조적으로 거의 0 이 되고, 코호트 수락률을
+        # 그렇게 계산하면 cal.com 0/43 · typeorm 0/35 같은 그럴듯한 0% 가 쏟아진다.
+        # 한 번 이 숫자를 믿고 "처음 내는 사람은 어디서도 안 받아준다"로 갈 뻔했다.
+        # 재려면 저자별로 이 PR 이전의 머지 이력을 따로 조회해야 한다 — 지금은 안 잰다.
         for pr in pulls:
             user = pr.get("user") or {}
             if pr.get("author_association") in INTERNAL:
