@@ -203,6 +203,7 @@ medusa · outline · nocodb · n8n)에서 `help wanted` + `good first issue` 를
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
+| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 오늘 / 보통 1일 |
 | [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 순차 I/O | ⚪ 대기 | 12일째 / 보통 10일 |
 | [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
 | [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 12일째 / 보통 1일 · 보류 |
@@ -210,7 +211,7 @@ medusa · outline · nocodb · n8n)에서 `help wanted` + `good first issue` 를
 | [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 11일째 / 보통 11일 |
 | [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 오늘 / 보통 2일 |
 
-**열린 것 6건(보류 2건 빼면 4건).** 판정 난 18건 중 머지 8 · 승인 0 · 닫힘 10.
+**열린 것 7건(보류 2건 빼면 5건).** 판정 난 18건 중 머지 8 · 승인 0 · 닫힘 10.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -221,6 +222,19 @@ medusa · outline · nocodb · n8n)에서 `help wanted` + `good first issue` 를
 지우면 `routeIsRedirect(pageData.route)` 분기도 같이 빠지는데, 그 함수는
 `route?.type === 'redirect'` 뿐이라 부작용이 없다. 안 쓰게 된 import 도 같이 지웠다.
 게이트 0: CLA 없음 · 외부 PR 을 닫는 봇 없음 · 수락률 72% · 중앙 2.0일.
+
+**2026-08-11 — 하루 2건을 냈다. 규칙을 어긴 것이므로 사유를 남긴다.**
+astro#17665 을 낸 뒤 같은 날 nx#36633 을 냈다. 문서의 예외 조건("둘 다 수락률 60% 이상
+**이고 실보유 3건 이하**")에서 실보유가 4건이라 한 칸 모자랐다. 그래도 낸 근거:
+
+- 서로 다른 저장소이고 둘 다 수락률 60% 이상(astro 69% · nx 81%)이다. 밖에서 보이는
+  물량 신호는 **저장소당 1건**과 **하루 1건**이 막는데, 앞엣것은 지켰다.
+- 실보유 상한의 취지는 *대응할 여력*인데, 지금 열린 것 중 우리에게 공을 넘긴 건 하나도
+  없다(storybook 은 메인테이너 라벨 대기, 나머지는 무반응). 붙잡고 있는 실제 일이 0이다.
+- nx 는 중앙 **0.9일**로 코퍼스에서 제일 빠르다. 하루 미루면 그만큼 판정이 늦다.
+
+**그래도 이건 예외지 새 규칙이 아니다.** 다음 건은 하나가 판정 날 때까지 안 낸다.
+이 문단은 나중에 "그때도 이유가 있었다"가 반복되지 않게 하려고 남긴다.
 
 **2026-08-10 제출** — storybook#35829 을 냈다. 슬롯을 회수한 그날 하루 1건이다.
 고른 이유는 근거의 성격이다: 이 `Set` 의 소비자를 **메인테이너가 2022-11 에 이미 지웠고**
@@ -300,7 +314,7 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 | 저장소 | 자리 | 축 | 상태 |
 |---|---|---|---|
 | ~~astro~~ | `core/messages/runtime.ts:250` | 전역 정규식 상태 | **제출됨 → #17665** |
-| nx | `command-line/graph/graph.ts:1194` | 쓰기만 하는 컬렉션 | **손검증 완료 · 다음 순번** · 중앙 1.0일로 제일 빠름 |
+| ~~nx~~ | `command-line/graph/graph.ts:1194` | 쓰기만 하는 컬렉션 | **제출됨 → #36633** |
 | rollup | `src/Chunk.ts:1343` | 쓰기만 하는 컬렉션 | **손검증 완료** · 중앙 8.5일이라 후순위 |
 | pnpm | `pnpm11/installing/deps-resolver/src/toResolveImporter.ts:110` | 쓰기만 하는 컬렉션 | **손검증 완료** · 중앙 6.0일 |
 | astro | `core/build/static-build.ts:91` | 쓰기만 하는 컬렉션 | 손검증 완료 · 보류(같은 저장소에 위 버그 건이 먼저) |

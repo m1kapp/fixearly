@@ -276,6 +276,16 @@
    "pr": 17665,
    "createdAt": "2026-08-11T12:35:43Z",
    "status": "waiting"
+  },
+  {
+   "title": "graph 명령 안 미사용 Map",
+   "titleEn": "unread task graph cache in the graph command",
+   "type": "쓰기만 하는 컬렉션 (선언과 .clear() 만 남았다 — 읽기·쓰기는 #32418 에서 사라졌다)",
+   "repo": "nrwl/nx",
+   "repoLabel": "nx · 29.2k★",
+   "pr": 36633,
+   "createdAt": "2026-08-11T13:21:48Z",
+   "status": "reviewing"
   }
  ]
 }

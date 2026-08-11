@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-11T12:36:24Z",
+  "generatedAt": "2026-08-11T13:22:31Z",
   "method": "latest 60 closed PRs; merged non-bot external contributors; medianDays is the one we judge by",
   "repos": {
     "Budibase/budibase": {
@@ -54,16 +54,16 @@
       "medianDays": 10.1,
       "averageDays": 11.4,
       "mergedExternal": 3,
-      "acceptancePct": 17,
-      "closedExternal": 18,
+      "acceptancePct": 16,
+      "closedExternal": 19,
       "sampledClosed": 60
     },
     "langfuse/langfuse": {
       "medianDays": 0.2,
-      "averageDays": 2.4,
-      "mergedExternal": 32,
-      "acceptancePct": 80,
-      "closedExternal": 40,
+      "averageDays": 2.5,
+      "mergedExternal": 31,
+      "acceptancePct": 79,
+      "closedExternal": 39,
       "sampledClosed": 60
     },
     "medusajs/medusa": {
@@ -76,10 +76,10 @@
     },
     "n8n-io/n8n": {
       "medianDays": 3.0,
-      "averageDays": 9.7,
-      "mergedExternal": 28,
-      "acceptancePct": 93,
-      "closedExternal": 30,
+      "averageDays": 10.4,
+      "mergedExternal": 26,
+      "acceptancePct": 90,
+      "closedExternal": 29,
       "sampledClosed": 60
     },
     "nocodb/nocodb": {
@@ -91,11 +91,19 @@
       "sampledClosed": 60
     },
     "novuhq/novu": {
-      "medianDays": 0.1,
+      "medianDays": 0.0,
       "averageDays": 0.9,
       "mergedExternal": 23,
       "acceptancePct": 82,
       "closedExternal": 28,
+      "sampledClosed": 60
+    },
+    "nrwl/nx": {
+      "medianDays": 0.9,
+      "averageDays": 9.6,
+      "mergedExternal": 21,
+      "acceptancePct": 81,
+      "closedExternal": 26,
       "sampledClosed": 60
     },
     "outline/outline": {
@@ -117,8 +125,8 @@
     "storybookjs/storybook": {
       "medianDays": 1.1,
       "averageDays": 5.5,
-      "mergedExternal": 39,
-      "acceptancePct": 83,
+      "mergedExternal": 40,
+      "acceptancePct": 85,
       "closedExternal": 47,
       "sampledClosed": 60
     },
@@ -131,11 +139,11 @@
       "sampledClosed": 60
     },
     "twentyhq/twenty": {
-      "medianDays": 3.1,
+      "medianDays": 3.3,
       "averageDays": 3.4,
-      "mergedExternal": 13,
-      "acceptancePct": 48,
-      "closedExternal": 27,
+      "mergedExternal": 14,
+      "acceptancePct": 50,
+      "closedExternal": 28,
       "sampledClosed": 60
     },
     "typeorm/typeorm": {
