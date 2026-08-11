@@ -1,0 +1,14 @@
+{
+  "_schema": "저장소별 게이트 0 · 주의사항. 수락률·중앙값과 달리 이건 재는 게 아니라 확인한 사실이라 손으로 쓴다. 표는 tools/update-pr-queue.py 가 이 값을 붙여 만든다.",
+  "gates": {
+    "microsoft/vscode": "게이트 0 — 링크된 이슈 없는 외부 PR 을 봇이 닫는다",
+    "immich-app/immich": "게이트 0 — `changelog:*` 라벨이 메인테이너 전용",
+    "calcom/cal.diy": "게이트 0 — 외부 PR 에서 `required` 잡이 항상 실패",
+    "angular/angular": "CLA 서명 필요",
+    "vitest-dev/vitest": "CLA 서명 필요",
+    "storybookjs/storybook": "danger 가 `ci:*`·`qa:*` 라벨을 요구한다 — 메인테이너만 붙일 수 있어 그때까진 빨간불",
+    "facebook/react": "후보가 `/* DISABLED */` 주석 건이라 PR 보다 이슈가 맞다",
+    "nrwl/nx": "PR 제목을 `scripts/validate-pr-title.js` 가 검증한다",
+    "withastro/astro": "사용자에게 보이는 변화면 changeset 필요"
+  }
+}

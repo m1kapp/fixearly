@@ -59,7 +59,15 @@ def fetch(repo, token):
 
 def main():
     findings = json.load(open(f"{ROOT}/impact.json", encoding="utf-8"))["findings"]
-    repos = sorted({finding["repo"] for finding in findings})
+    repos = {finding["repo"] for finding in findings}
+    # 큐에만 있고 아직 PR 을 안 낸 저장소도 같이 잰다. 안 그러면 "어디에 낼지" 표를
+    # 손으로 적게 되고, 그 값은 재보는 순간 어긋나 있다(2026-08-11: ghost 중앙
+    # 0.2일 → 3.9일, storybook 수락률 75% → 85%).
+    queue_path = f"{ROOT}/data/queue-repos.json"
+    if os.path.exists(queue_path):
+        queue = json.load(open(queue_path, encoding="utf-8")).get("repos", [])
+        repos |= {q["repo"] for q in queue}
+    repos = sorted(repos)
     token = os.environ.get("GITHUB_TOKEN", "")
     result = {}
 

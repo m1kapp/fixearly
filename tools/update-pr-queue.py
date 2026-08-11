@@ -26,6 +26,8 @@ BEGIN = "<!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로
 END = "<!-- /auto:open -->"
 D_BEGIN = "<!-- auto:decided — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->"
 D_END = "<!-- /auto:decided -->"
+R_BEGIN = "<!-- auto:rotation — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->"
+R_END = "<!-- /auto:rotation -->"
 
 LABEL = {
     "merged": "✅ 머지", "approved": "🔵 승인 · 머지 대기", "changes": "🟠 변경 요청",
@@ -134,6 +136,47 @@ for f in decided_rows:
                  f"| {D_LABEL[f['status']]} | {why} |")
 dblock = D_BEGIN + "\n" + "\n".join(dbody) + "\n" + D_END
 
+# ── 회전 속도 표 — data/repo-merge-times.json 이 정본이다.
+# 손으로 적어두면 반드시 낡는다: 8/8 에 적은 값을 8/11 에 다시 재니 ghost 중앙이
+# 0.2일 → 3.9일, storybook 수락률이 75% → 87% 였다. 판정(컷·후순위)도 여기서 계산한다.
+# 게이트 0 같은 "확인한 사실"만 data/repo-gates.json 에서 손으로 붙인다.
+GATES = {}
+_gates_path = f"{ROOT}/data/repo-gates.json"
+if os.path.exists(_gates_path):
+    GATES = json.load(open(_gates_path, encoding="utf-8")).get("gates", {})
+
+ACCEPT_CUT = 60      # 이 아래는 안 낸다 — 판별력이 검증된 유일한 기준
+SLOW_MEDIAN = 3      # 중앙 머지일이 이보다 크면 후순위
+
+def verdict(rate, middle):
+    if rate is None:
+        return "표본 없음"
+    if rate < ACCEPT_CUT:
+        return "컷"
+    if middle is None:
+        return "통과"
+    return "통과 · 후순위(느림)" if middle > SLOW_MEDIAN else "**통과**"
+
+open_repos = {f["repo"] for f in findings if f.get("status") in OPEN}
+done_repos = {f["repo"] for f in findings if f.get("status") in ("merged", "closed")}
+rot = []
+for repo, m in MERGE_TIMES.items():
+    rate, middle = m.get("acceptancePct"), m.get("medianDays")
+    note = GATES.get(repo, "")
+    if repo in open_repos:
+        note = ("열린 PR 있음 — 저장소당 1건" + (" · " + note if note else ""))
+    elif repo in done_repos:
+        note = ("판정 경험 있음" + (" · " + note if note else ""))
+    rot.append((rate is None, -(rate or 0), middle if middle is not None else 1e9,
+                repo, rate, middle, m.get("mergedExternal"), m.get("closedExternal"), note))
+rot.sort()
+rbody = ["| 저장소 | 수락률 | 중앙 | 외부 머지 | 판정 | 메모 |", "|---|---|---|---|---|---|"]
+for _, _, _, repo, rate, middle, mg, cl, note in rot:
+    short = repo.split("/")[-1]
+    rbody.append(f"| {short} | {rate if rate is not None else '—'}% | "
+                 f"{middle:.1f}일 | {mg}/{cl} | {verdict(rate, middle)} | {note or '—'} |")
+rblock = R_BEGIN + "\n" + "\n".join(rbody) + "\n" + R_END
+
 doc = open(DOC, encoding="utf-8").read()
 m = re.search(re.escape(BEGIN) + r".*?" + re.escape(END), doc, re.S)
 if not m:
@@ -158,6 +201,13 @@ def without_age(block_text):
     return re.sub(r"\(보류 \d+건 빼면 \d+건\)", "", text)
 
 
+rm = re.search(re.escape(R_BEGIN) + r".*?" + re.escape(R_END), doc, re.S)
+if not rm:
+    print(f"  ✗ 마커가 없다. PR-QUEUE.md 의 '회전 속도' 표 자리에 넣어라:\n"
+          f"    {R_BEGIN}\n    {R_END}")
+    sys.exit(1)
+r_same = rm.group(0) == rblock
+
 dm = re.search(re.escape(D_BEGIN) + r".*?" + re.escape(D_END), doc, re.S)
 if not dm:
     print(f"  ✗ 마커가 없다. PR-QUEUE.md 의 '제출 기준' 표 자리에 넣어라:\n"
@@ -168,22 +218,23 @@ d_same = dm.group(0) == dblock
 if CHECK:
     # 표가 낡은 게 아니라 날짜만 넘어간 경우를 구분해서 알려준다.
     stale = without_age(m.group(0)) != without_age(block)
-    if stale or not d_same:
-        what = "열린 것" if stale else "판정 난 것"
+    if stale or not d_same or not r_same:
+        what = "열린 것" if stale else ("판정 난 것" if not d_same else "회전 속도")
         print(f"PR 큐 {what} 표가 낡았다 (열린 것 {len(rows)}건) — python3 tools/update-pr-queue.py")
     elif not same:
         print("PR 큐 표가 impact.json 과 일치한다 (경과 표기만 하루치 밀림)")
     else:
         print("PR 큐 표가 impact.json 과 일치한다")
-    sys.exit(1 if (stale or not d_same) else 0)
+    sys.exit(1 if (stale or not d_same or not r_same) else 0)
 
 # 뒤에서부터 쓴다 — 앞을 먼저 바꾸면 뒤 매치의 오프셋이 밀린다.
-first, second = sorted([(m, block, same), (dm, dblock, d_same)], key=lambda x: x[0].start())
-if not (same and d_same):
-    for mm, bb, ok in (second, first):
+blocks = sorted([(m, block, same), (dm, dblock, d_same), (rm, rblock, r_same)],
+                key=lambda x: x[0].start(), reverse=True)
+if not (same and d_same and r_same):
+    for mm, bb, ok in blocks:
         if not ok:
             doc = doc[: mm.start()] + bb + doc[mm.end():]
     open(DOC, "w", encoding="utf-8").write(doc)
-print(f"PR-QUEUE.md {'갱신' if not (same and d_same) else '변경 없음'} · 열린 것 {len(rows)}건 · "
+print(f"PR-QUEUE.md {'갱신' if not (same and d_same and r_same) else '변경 없음'} · 열린 것 {len(rows)}건 · "
       f"머지 {len(merged)} 승인 {len(approved)} 닫힘 {len(decided) - len(merged)} · "
       f"판정 표 {len(decided_rows)}행")

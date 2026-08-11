@@ -1,7 +1,15 @@
 {
-  "generatedAt": "2026-08-11T13:59:07Z",
+  "generatedAt": "2026-08-11T14:13:13Z",
   "method": "latest 60 closed PRs; merged non-bot external contributors; medianDays is the one we judge by",
   "repos": {
+    "Automattic/mongoose": {
+      "medianDays": 2.2,
+      "averageDays": 3.6,
+      "mergedExternal": 20,
+      "acceptancePct": 74,
+      "closedExternal": 27,
+      "sampledClosed": 60
+    },
     "Budibase/budibase": {
       "medianDays": 0.9,
       "averageDays": 3.2,
@@ -16,6 +24,14 @@
       "mergedExternal": 25,
       "acceptancePct": 74,
       "closedExternal": 34,
+      "sampledClosed": 60
+    },
+    "angular/angular": {
+      "medianDays": 0.4,
+      "averageDays": 1.6,
+      "mergedExternal": 33,
+      "acceptancePct": 66,
+      "closedExternal": 50,
       "sampledClosed": 60
     },
     "baptisteArno/typebot.io": {
@@ -50,6 +66,14 @@
       "closedExternal": 37,
       "sampledClosed": 60
     },
+    "facebook/react": {
+      "medianDays": 1.0,
+      "averageDays": 53.5,
+      "mergedExternal": 6,
+      "acceptancePct": 13,
+      "closedExternal": 45,
+      "sampledClosed": 60
+    },
     "immich-app/immich": {
       "medianDays": 10.1,
       "averageDays": 11.4,
@@ -59,11 +83,11 @@
       "sampledClosed": 60
     },
     "langfuse/langfuse": {
-      "medianDays": 0.3,
-      "averageDays": 2.5,
-      "mergedExternal": 31,
-      "acceptancePct": 82,
-      "closedExternal": 38,
+      "medianDays": 0.6,
+      "averageDays": 2.6,
+      "mergedExternal": 29,
+      "acceptancePct": 78,
+      "closedExternal": 37,
       "sampledClosed": 60
     },
     "medusajs/medusa": {
@@ -74,11 +98,19 @@
       "closedExternal": 18,
       "sampledClosed": 60
     },
+    "microsoft/vscode": {
+      "medianDays": 0.1,
+      "averageDays": 2.2,
+      "mergedExternal": 26,
+      "acceptancePct": 76,
+      "closedExternal": 34,
+      "sampledClosed": 60
+    },
     "n8n-io/n8n": {
-      "medianDays": 3.2,
-      "averageDays": 10.2,
-      "mergedExternal": 27,
-      "acceptancePct": 82,
+      "medianDays": 4.0,
+      "averageDays": 12.1,
+      "mergedExternal": 26,
+      "acceptancePct": 79,
       "closedExternal": 33,
       "sampledClosed": 60
     },
@@ -115,19 +147,35 @@
       "sampledClosed": 60
     },
     "payloadcms/payload": {
-      "medianDays": 4.2,
-      "averageDays": 16.0,
-      "mergedExternal": 8,
-      "acceptancePct": 73,
-      "closedExternal": 11,
+      "medianDays": 5.0,
+      "averageDays": 18.7,
+      "mergedExternal": 9,
+      "acceptancePct": 75,
+      "closedExternal": 12,
+      "sampledClosed": 60
+    },
+    "pnpm/pnpm": {
+      "medianDays": 3.6,
+      "averageDays": 3.6,
+      "mergedExternal": 12,
+      "acceptancePct": 75,
+      "closedExternal": 16,
+      "sampledClosed": 60
+    },
+    "rollup/rollup": {
+      "medianDays": 5.9,
+      "averageDays": 9.0,
+      "mergedExternal": 12,
+      "acceptancePct": 75,
+      "closedExternal": 16,
       "sampledClosed": 60
     },
     "storybookjs/storybook": {
       "medianDays": 1.1,
       "averageDays": 5.5,
       "mergedExternal": 40,
-      "acceptancePct": 85,
-      "closedExternal": 47,
+      "acceptancePct": 87,
+      "closedExternal": 46,
       "sampledClosed": 60
     },
     "strapi/strapi": {
@@ -142,8 +190,8 @@
       "medianDays": 3.1,
       "averageDays": 3.3,
       "mergedExternal": 15,
-      "acceptancePct": 56,
-      "closedExternal": 27,
+      "acceptancePct": 58,
+      "closedExternal": 26,
       "sampledClosed": 60
     },
     "typeorm/typeorm": {
@@ -154,12 +202,28 @@
       "closedExternal": 40,
       "sampledClosed": 60
     },
+    "vercel/next.js": {
+      "medianDays": 1.6,
+      "averageDays": 47.9,
+      "mergedExternal": 26,
+      "acceptancePct": 57,
+      "closedExternal": 46,
+      "sampledClosed": 60
+    },
     "vitejs/vite": {
       "medianDays": 1.3,
       "averageDays": 1.3,
       "mergedExternal": 18,
       "acceptancePct": 45,
       "closedExternal": 40,
+      "sampledClosed": 60
+    },
+    "vitest-dev/vitest": {
+      "medianDays": 4.5,
+      "averageDays": 10.1,
+      "mergedExternal": 11,
+      "acceptancePct": 44,
+      "closedExternal": 25,
       "sampledClosed": 60
     },
     "withastro/astro": {
