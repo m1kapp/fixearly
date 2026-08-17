@@ -155,6 +155,7 @@ BLURB = {
     "storybookjs/storybook": ("UI 컴포넌트 개발·문서화", "UI component workshop"),
     "withastro/astro": ("웹 프레임워크 · 콘텐츠 사이트", "web framework"),
     "nrwl/nx": ("모노레포 빌드 시스템", "monorepo build system"),
+    "openstatusHQ/openstatus": ("상태 페이지·업타임 모니터링", "status pages & uptime monitoring"),
 }
 
 

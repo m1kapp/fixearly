@@ -9,7 +9,6 @@
     { "repo": "vercel/next.js", "note": "후보 보유" },
     { "repo": "facebook/react", "note": "후보는 DISABLED 주석 건 — PR 보다 이슈" },
     { "repo": "Automattic/mongoose", "note": "미훑음" },
-    { "repo": "vitest-dev/vitest", "note": "미훑음 · CLA 있음" },
-    { "repo": "openstatusHQ/openstatus", "note": "페이지 생성·수정의 중복 N+1 후보 손검증 완료" }
+    { "repo": "vitest-dev/vitest", "note": "미훑음 · CLA 있음" }
   ]
 }
