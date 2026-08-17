@@ -79,7 +79,11 @@ async function prStatus(repo, pr) {
     // 와 lourw 가 붙었는데 타임라인의 actor 가 irontaek(우리)이었다. 그대로 세면
     // 아무도 안 본 PR 이 보드에서 "리뷰 진행"으로 표시된다. 봇 승인을 안 세는 것과 같은
     // 이유다 — 이 보드가 파는 건 "사람이 봤다"이지 "자동화가 붙었다"가 아니다.
-    const humanReviews = reviews.filter((r) => !isBot(r.user));
+    // 작성자 자신의 review reply도 COMMENTED review로 잡힌다. 봇 지적에 답한 것을
+    // maintainer가 본 흔적으로 세면 "리뷰 진행"이 거짓이 된다.
+    const humanReviews = reviews.filter(
+      (r) => !isBot(r.user) && r.user?.login !== d.user?.login,
+    );
     let invitedByOther = false;
     if (!humanReviews.length && (d.requested_reviewers || []).length + (d.requested_teams || []).length > 0) {
       try {

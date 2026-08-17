@@ -36,7 +36,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `invalidate() 안 미사용 Set` | [storybook · 90.9k★](https://github.com/storybookjs/storybook) | 쓰기만 하는 컬렉션 (파일 변경마다 채우고 아무도 안 읽음 — 소비자는 2022-11 에 이미 삭제됨) | [#35829](https://github.com/storybookjs/storybook/pull/35829) | ⚪ awaiting review | — |
 | `스택 트레이스 절반 유실` | [astro · 61.8k★](https://github.com/withastro/astro) | 전역 정규식 상태 (/g 정규식을 filter 안에서 .test() — lastIndex 가 새어 프레임이 하나 걸러 사라진다) | [#17665](https://github.com/withastro/astro/pull/17665) | ⚪ awaiting review | — |
 | `graph 명령 안 미사용 Map` | [nx · 29.2k★](https://github.com/nrwl/nx) | 쓰기만 하는 컬렉션 (선언과 .clear() 만 남았다 — 읽기·쓰기는 #32418 에서 사라졌다) | [#36633](https://github.com/nrwl/nx/pull/36633) | ⚪ awaiting review | — |
-| `페이지 monitor 검증 뒤 중복 조회` | [openstatus · 9k★](https://github.com/openstatusHQ/openstatus) | N+1 (페이지 생성·수정에서 일괄 검증한 monitor를 루프마다 재조회 — Map 재사용) | [#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | 🟢 reviewing | — |
+| `페이지 monitor 검증 뒤 중복 조회` | [openstatus · 9k★](https://github.com/openstatusHQ/openstatus) | N+1 (페이지 생성·수정에서 일괄 검증한 monitor를 루프마다 재조회 — Map 재사용) | [#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | ⚪ awaiting review | — |
 
 ## 규칙
 
