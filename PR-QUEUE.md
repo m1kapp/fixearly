@@ -17,6 +17,7 @@
 <!-- auto:decided — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 결과 | 사유·메모 |
 |---|---|---|
+| [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 머지 | 사람 리뷰 없이 20.7일 만에 메인테이너가 직접 머지 |
 | [outline#13117](https://github.com/outline/outline/pull/13117) | 머지 | 질문 없이 머지 |
 | [nocodb#14309](https://github.com/nocodb/nocodb/pull/14309) | 머지 | 질문 없이 머지 |
 | [medusa#16188](https://github.com/medusajs/medusa/pull/16188) | 머지 | 메인테이너 승인 뒤 머지 |
@@ -216,16 +217,15 @@ CLA·외부 PR 자동 닫기 없음. 열린 #2338 이 같은 두 파일을 건�
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 순차 I/O | ⚪ 대기 | 18일째 / 보통 10일 · 보류 |
-| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 15일째 / 보통 1일 · 보류 |
-| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 18일째 / 보통 1일 · 보류 |
-| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 5일째 / 보통 1일 |
-| [openstatus#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | N+1 | ⚪ 대기 | 오늘 / 보통 1일 |
-| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 6일째 / 보통 2일 |
-| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 16일째 / 보통 11일 |
-| [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 5일째 / 보통 2일 |
+| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 18일째 / 보통 1일 · 보류 |
+| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 21일째 / 보통 1일 · 보류 |
+| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 8일째 / 보통 1일 · 보류 |
+| [openstatus#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | N+1 | ⚪ 대기 | 3일째 / 보통 1일 |
+| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 9일째 / 보통 2일 · 보류 |
+| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 20일째 / 보통 11일 · 보류 |
+| [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 8일째 / 보통 2일 |
 
-**열린 것 8건(보류 3건 빼면 5건).** 판정 난 18건 중 머지 8 · 승인 0 · 닫힘 10.
+**열린 것 7건(보류 5건 빼면 2건).** 판정 난 19건 중 머지 9 · 승인 0 · 닫힘 10.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -420,7 +420,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | typeorm | 12% | 10.9일 | 5/40 | 컷 | 열린 PR 있음 — 저장소당 1건 |
 | immich | 12% | 24.7일 | 2/16 | 컷 | 판정 경험 있음 · 게이트 0 — `changelog:*` 라벨이 메인테이너 전용 |
 | react | 10% | 0.6일 | 4/42 | 컷 | 후보가 `/* DISABLED */` 주석 건이라 PR 보다 이슈가 맞다 |
-| typebot.io | 10% | 9.7일 | 1/10 | 컷 | 열린 PR 있음 — 저장소당 1건 |
+| typebot.io | 10% | 9.7일 | 1/10 | 컷 | 판정 경험 있음 |
 <!-- /auto:rotation -->
 
 수락률은 최근 닫힌 외부 PR(봇·멤버 제외) 중 머지 비율이고, 중앙은 그중 머지된 것들의
