@@ -221,12 +221,13 @@ CLA·외부 PR 자동 닫기 없음. 열린 #2338 이 같은 두 파일을 건�
 | [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 21일째 / 보통 1일 · 보류 |
 | [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 8일째 / 보통 1일 · 보류 |
 | [openstatus#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | N+1 | ⚪ 대기 | 3일째 / 보통 1일 |
+| [pnpm#14032](https://github.com/pnpm/pnpm/pull/14032) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 6일 |
 | [rollup#6482](https://github.com/rollup/rollup/pull/6482) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 9일 |
 | [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 9일째 / 보통 2일 · 보류 |
 | [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 20일째 / 보통 11일 · 보류 |
 | [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 8일째 / 보통 2일 |
 
-**열린 것 8건(보류 5건 빼면 3건).** 판정 난 19건 중 머지 9 · 승인 0 · 닫힘 10.
+**열린 것 9건(보류 5건 빼면 4건).** 판정 난 19건 중 머지 9 · 승인 0 · 닫힘 10.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -331,7 +332,7 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 | ~~astro~~ | `core/messages/runtime.ts:250` | 전역 정규식 상태 | **제출됨 → #17665** |
 | ~~nx~~ | `command-line/graph/graph.ts:1194` | 쓰기만 하는 컬렉션 | **제출됨 → #36633** |
 | ~~rollup~~ | `src/Chunk.ts:1343` | 쓰기만 하는 컬렉션 | **제출됨 → #6482** · 5,442건 통과 |
-| pnpm | `pnpm11/installing/deps-resolver/src/toResolveImporter.ts:110` | 쓰기만 하는 컬렉션 | **로컬 제출 준비 완료** · 185건 통과 · 중앙 6.2일 |
+| ~~pnpm~~ | `pnpm11/installing/deps-resolver/src/toResolveImporter.ts:110` | 쓰기만 하는 컬렉션 | **제출됨 → #14032** · 185건 통과 |
 | astro | `core/build/static-build.ts:91` | 쓰기만 하는 컬렉션 | 손검증 완료 · 보류(같은 저장소에 위 버그 건이 먼저) |
 
 **2026-08-10 에 위 다섯 건을 전부 손검증했다.** 각각 왜 진짜인지:
@@ -356,9 +357,10 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
   실제 이득은 `partitionLinkedPackages()` 호출마다 만드는 Set 하나와 링크 의존성마다 하는
   `.add()` 제거이며 문자열 수명 개선으로 과장하지 않는다. 두 줄만 지운 로컬 브랜치
   `refactor/remove-unused-linked-aliases`에서 deps-resolver 178건과 링크 의존성 통합 테스트
-  7건이 통과했고, pnpm CLI와 deps-installer 컴파일 및 사전 PR 게이트도 통과했다. 사용자
-  동작·공개 API가 바뀌지 않는 내부 정리라 최근 같은 성격의 병합 PR 관행대로 changeset은
-  만들지 않았다. 외부 PR은 아직 제출하지 않았다.
+  7건이 통과했고, pnpm CLI와 deps-installer 컴파일 및 사전 PR 게이트도 통과했다. 루트
+  `AGENTS.md`의 게시 패키지 규칙에 따라 `@pnpm/installing.deps-resolver`와 `pnpm` patch
+  changeset을 포함했다. 전체 pre-push 타입·빌드·메타·Rust 게이트를 통과한 뒤
+  2026-08-20 #14032로 제출했고, 초기 원격 CI 5개가 큐에 들어갔다.
 - **astro `pageInput`** — 소비자 `ssrBuild(opts, internals, pageInput, container)` 가
   2025-12-04 "Environment API"(#14306)에서 사라졌다.
 
@@ -418,7 +420,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | budibase | 72% | 1.0일 | 13/18 | **통과** | 판정 경험 있음 |
 | mongoose | 71% | 3.0일 | 20/28 | **통과** | — |
 | next.js | 66% | 0.9일 | 29/44 | **통과** | 커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시 |
-| pnpm | 64% | 6.2일 | 9/14 | 통과 · 후순위(느림) | AI 작성 PR 본문에 agent disclosure 필수 · 전체 저장소 대신 영향 패키지 테스트 실행 |
+| pnpm | 64% | 6.2일 | 9/14 | 통과 · 후순위(느림) | 열린 PR 있음 — 저장소당 1건 · AI 작성 PR 본문에 agent disclosure 필수 · 전체 저장소 대신 영향 패키지 테스트 실행 |
 | payload | 62% | 3.4일 | 18/29 | 통과 · 후순위(느림) | 판정 경험 있음 |
 | strapi | 59% | 3.0일 | 30/51 | 컷 | 판정 경험 있음 |
 | outline | 50% | 0.3일 | 3/6 | 컷 | 판정 경험 있음 |

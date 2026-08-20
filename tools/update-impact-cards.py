@@ -157,6 +157,7 @@ BLURB = {
     "nrwl/nx": ("모노레포 빌드 시스템", "monorepo build system"),
     "openstatusHQ/openstatus": ("상태 페이지·업타임 모니터링", "status pages & uptime monitoring"),
     "rollup/rollup": ("JavaScript 모듈 번들러", "JavaScript module bundler"),
+    "pnpm/pnpm": ("JavaScript 패키지 매니저", "JavaScript package manager"),
 }
 
 

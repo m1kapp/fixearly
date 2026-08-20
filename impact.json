@@ -185,7 +185,7 @@
    "titleEn": "eval dataset item re-read",
    "type": "중복 쿼리 (변수마다 동일 WHERE 로 같은 행 재조회 → 컬럼 합쳐 1회)",
    "repo": "langfuse/langfuse",
-   "repoLabel": "langfuse · 33.4k★",
+   "repoLabel": "langfuse · 33.5k★",
    "pr": 15585,
    "createdAt": "2026-07-29T14:13:47Z",
    "status": "waiting"
@@ -308,6 +308,16 @@
    "pr": 6482,
    "status": "waiting",
    "createdAt": "2026-08-20T08:33:07Z"
+  },
+  {
+   "title": "의존성 분할 안 미사용 Set",
+   "titleEn": "unused linked dependency aliases Set",
+   "type": "쓰기만 하는 컬렉션 (함수 호출마다 Set 생성, 링크 의존성마다 .add(), 읽기 없음 — 삭제)",
+   "repo": "pnpm/pnpm",
+   "repoLabel": "pnpm · 36.1k★",
+   "pr": 14032,
+   "status": "waiting",
+   "createdAt": "2026-08-20T11:10:08Z"
   }
  ]
 }
