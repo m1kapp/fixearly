@@ -4,7 +4,7 @@
    "title": "deleteBulkMetadata N+1",
    "type": "N+1 (루프 안 순차 DELETE, item당 왕복 1회)",
    "repo": "immich-app/immich",
-   "repoLabel": "immich · 112k★",
+   "repoLabel": "immich · 112.1k★",
    "pr": 30163,
    "createdAt": "2026-07-23T15:26:09Z",
    "status": "closed",
@@ -136,7 +136,7 @@
    "title": "resource-mapper schema validation O(n²)",
    "type": "O(n²) (value별 schema.find — id Map으로 O(1))",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 201.2k★",
+   "repoLabel": "n8n · 201.3k★",
    "pr": 34899,
    "createdAt": "2026-07-24T13:05:42Z",
    "status": "merged",
@@ -298,6 +298,16 @@
    "pr": 2583,
    "status": "waiting",
    "createdAt": "2026-08-17T03:15:31Z"
+  },
+  {
+   "title": "청크 렌더 안 미사용 Map",
+   "titleEn": "unused rendered module sources map",
+   "type": "쓰기만 하는 컬렉션 (비어 있지 않은 렌더 모듈마다 .set(), 읽기 없음 — 삭제)",
+   "repo": "rollup/rollup",
+   "repoLabel": "rollup · 26.3k★",
+   "pr": 6482,
+   "status": "waiting",
+   "createdAt": "2026-08-20T08:33:07Z"
   }
  ]
 }

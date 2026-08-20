@@ -156,6 +156,7 @@ BLURB = {
     "withastro/astro": ("웹 프레임워크 · 콘텐츠 사이트", "web framework"),
     "nrwl/nx": ("모노레포 빌드 시스템", "monorepo build system"),
     "openstatusHQ/openstatus": ("상태 페이지·업타임 모니터링", "status pages & uptime monitoring"),
+    "rollup/rollup": ("JavaScript 모듈 번들러", "JavaScript module bundler"),
 }
 
 

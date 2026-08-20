@@ -11,6 +11,6 @@
     "nrwl/nx": "PR 제목을 `scripts/validate-pr-title.js` 가 검증한다",
     "withastro/astro": "사용자에게 보이는 변화면 changeset 필요",
     "vercel/next.js": "커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시",
-    "rollup/rollup": "코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증"
+    "rollup/rollup": "코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 은 외부 작성자 배포 권한 필요"
   }
 }
