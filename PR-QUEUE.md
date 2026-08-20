@@ -306,7 +306,7 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 | react | `renderer.js:817` | 읽는 코드가 `/* DISABLED: …/pull/28417 */` 주석 안에 있다 |
 | react | `CollectHoistablePropertyLoads.ts:499` · `AlignReactiveScopesToBlockScopesHIR.ts:78` | 컴파일러 패스 2건 |
 | vscode | `chatToolPicker.ts:261` | `mcpServerByTool.set(...)` 뒤 조회 없음 |
-| next.js | `export/index.ts:285` | `excludedPrerenderRoutes.add(page)` — 이름과 달리 제외에 안 쓰인다 |
+| ~~next.js~~ | `export/index.ts:292` · `:316` | **탈락** — 진짜 dead state지만 현재 기여 가이드가 사소한 정리 PR을 명시적으로 거른다 |
 | astro | `core/build/static-build.ts:91` | 손검증 완료 · **보류** — 같은 저장소의 T1 버그(아래)를 먼저 낸다 |
 | pnpm · nx | 각 1건 | 같은 형태 · 미검증 |
 | ~~ghost~~ | `members-stats-service.js:115` | **제출됨 → #29831** |
@@ -353,6 +353,7 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 
 | 후보 | 사유 |
 |---|---|
+| next.js `export/index.ts:292·316` (쓰기만 하는 Set) | **진짜지만 제출 탈락.** 최신 `canary` `e2fb664`에서 선언·`.add()` 외 소비가 없다. 원래 `excludedPrerenderRoutes.has()`가 fallback 검증에 쓰였으나, 2022-01-17 #33323이 검증 대상을 `exportPathMap` 순회로 바꾸며 소비자만 지우고 생산자 두 줄을 남겼다. 하지만 2026-08-12 #97188로 바뀐 현재 기여 가이드는 사소한 정리 PR은 닫힐 가능성이 높다고 명시한다. 사용자 버그·연결 이슈·유의미한 비용이 없어 리뷰어 시간을 정당화하지 못한다. |
 | nx `update-jest-preset-angular-setup.ts:43·61` (전역 정규식) | **오탐.** 코드가 `test()` 앞에서 `RE.lastIndex = 0` 을 직접 되돌린다 — 저자가 상태를 알고 관리하는 자리다. 엔진에 가드를 넣었다(아래) |
 | astro `toolbar.ts:334` (await in forEach) | `connectedCallback()` 이 동기라 애초에 기다릴 수 없다. "저자는 기다린다고 믿었다"는 근거가 없어 T1 이 아니다 |
 | astro `audit/index.ts:84` · `astro-island.ts:100` (floating promise) | 호출 체인 자체가 fire-and-forget 이다 — `childrenConnectedCallback()` 도 await 없이 불린다. await 를 붙여도 관측 가능한 변화가 없다 |
@@ -403,7 +404,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | rollup | 73% | 8.5일 | 11/15 | 통과 · 후순위(느림) | — |
 | budibase | 72% | 1.0일 | 13/18 | **통과** | 판정 경험 있음 |
 | mongoose | 71% | 3.0일 | 20/28 | **통과** | — |
-| next.js | 66% | 0.9일 | 29/44 | **통과** | — |
+| next.js | 66% | 0.9일 | 29/44 | **통과** | 커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시 |
 | pnpm | 64% | 6.2일 | 9/14 | 통과 · 후순위(느림) | — |
 | payload | 62% | 3.4일 | 18/29 | 통과 · 후순위(느림) | 판정 경험 있음 |
 | strapi | 59% | 3.0일 | 30/51 | 컷 | 판정 경험 있음 |

@@ -9,6 +9,7 @@
     "storybookjs/storybook": "danger 가 `ci:*`·`qa:*` 라벨을 요구한다 — 메인테이너만 붙일 수 있어 그때까진 빨간불",
     "facebook/react": "후보가 `/* DISABLED */` 주석 건이라 PR 보다 이슈가 맞다",
     "nrwl/nx": "PR 제목을 `scripts/validate-pr-title.js` 가 검증한다",
-    "withastro/astro": "사용자에게 보이는 변화면 changeset 필요"
+    "withastro/astro": "사용자에게 보이는 변화면 changeset 필요",
+    "vercel/next.js": "커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시"
   }
 }
