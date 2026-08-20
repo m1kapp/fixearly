@@ -331,7 +331,7 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 | ~~astro~~ | `core/messages/runtime.ts:250` | 전역 정규식 상태 | **제출됨 → #17665** |
 | ~~nx~~ | `command-line/graph/graph.ts:1194` | 쓰기만 하는 컬렉션 | **제출됨 → #36633** |
 | ~~rollup~~ | `src/Chunk.ts:1343` | 쓰기만 하는 컬렉션 | **제출됨 → #6482** · 5,442건 통과 |
-| pnpm | `pnpm11/installing/deps-resolver/src/toResolveImporter.ts:110` | 쓰기만 하는 컬렉션 | **손검증 완료** · 중앙 6.0일 |
+| pnpm | `pnpm11/installing/deps-resolver/src/toResolveImporter.ts:110` | 쓰기만 하는 컬렉션 | **로컬 제출 준비 완료** · 185건 통과 · 중앙 6.2일 |
 | astro | `core/build/static-build.ts:91` | 쓰기만 하는 컬렉션 | 손검증 완료 · 보류(같은 저장소에 위 버그 건이 먼저) |
 
 **2026-08-10 에 위 다섯 건을 전부 손검증했다.** 각각 왜 진짜인지:
@@ -351,7 +351,14 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
   첫 외부 기여자라 코드 CI는 메인테이너의 워크플로 승인을 기다리고, Vercel 배포도
   Rollup 팀원의 승인을 기다린다. 둘 다 코드 실패와는 구분한다.
 - **pnpm `linkedAliases`** — 태어날 때부터 죽어 있었다. `ae32d313e`(#4085, 2021-12-08)가
-  `.add()` 만 넣었고 읽는 코드는 그 커밋에도 없다. 4년 반.
+  Set 선언과 `.add()`를 함께 넣었지만 읽는 코드는 그 커밋에도 없다. 2026-08-20 최신
+  `main` `a165afa5`에서도 저장소 전체 참조는 그 두 곳뿐이고 열린 중복 PR·이슈가 없다.
+  실제 이득은 `partitionLinkedPackages()` 호출마다 만드는 Set 하나와 링크 의존성마다 하는
+  `.add()` 제거이며 문자열 수명 개선으로 과장하지 않는다. 두 줄만 지운 로컬 브랜치
+  `refactor/remove-unused-linked-aliases`에서 deps-resolver 178건과 링크 의존성 통합 테스트
+  7건이 통과했고, pnpm CLI와 deps-installer 컴파일 및 사전 PR 게이트도 통과했다. 사용자
+  동작·공개 API가 바뀌지 않는 내부 정리라 최근 같은 성격의 병합 PR 관행대로 changeset은
+  만들지 않았다. 외부 PR은 아직 제출하지 않았다.
 - **astro `pageInput`** — 소비자 `ssrBuild(opts, internals, pageInput, container)` 가
   2025-12-04 "Environment API"(#14306)에서 사라졌다.
 
@@ -411,7 +418,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | budibase | 72% | 1.0일 | 13/18 | **통과** | 판정 경험 있음 |
 | mongoose | 71% | 3.0일 | 20/28 | **통과** | — |
 | next.js | 66% | 0.9일 | 29/44 | **통과** | 커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시 |
-| pnpm | 64% | 6.2일 | 9/14 | 통과 · 후순위(느림) | — |
+| pnpm | 64% | 6.2일 | 9/14 | 통과 · 후순위(느림) | AI 작성 PR 본문에 agent disclosure 필수 · 전체 저장소 대신 영향 패키지 테스트 실행 |
 | payload | 62% | 3.4일 | 18/29 | 통과 · 후순위(느림) | 판정 경험 있음 |
 | strapi | 59% | 3.0일 | 30/51 | 컷 | 판정 경험 있음 |
 | outline | 50% | 0.3일 | 3/6 | 컷 | 판정 경험 있음 |

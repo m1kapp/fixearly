@@ -3,7 +3,7 @@
   "_why": "게이트 표(수락률·중앙 머지일)를 손으로 적어두고 2026-08-08 값을 그대로 쓰고 있었다. 8/11 에 다시 재니 ghost 중앙이 0.2일→3.9일, storybook 수락률이 75%→85% 로 움직였다. 손으로 적은 값은 반드시 어긋난다.",
   "repos": [
     { "repo": "rollup/rollup", "note": "Chunk.ts:1343 후보 보유" },
-    { "repo": "pnpm/pnpm", "note": "toResolveImporter.ts:110 후보 보유" },
+    { "repo": "pnpm/pnpm", "note": "toResolveImporter.ts:110 로컬 제출 준비 완료" },
     { "repo": "angular/angular", "note": "후보 3건 · CLA 필요" },
     { "repo": "microsoft/vscode", "note": "후보 보유 · 링크된 이슈 없는 외부 PR 을 봇이 닫는다(게이트 0)" },
     { "repo": "vercel/next.js", "note": "후보 보유" },
