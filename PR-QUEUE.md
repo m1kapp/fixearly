@@ -300,7 +300,7 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 | 저장소 | 자리 | 형태 |
 |---|---|---|
 | ~~storybook~~ | `StoryIndexGenerator.ts:826` | **제출됨 → #35829** |
-| rollup | `Chunk.ts:1343` | `renderedModuleSources.set(module, source)` 뒤 소비 없음 |
+| rollup | `Chunk.ts:1343` | **제출 준비됨** — 최신 `master`에서 두 줄 삭제·전체 테스트 통과 |
 | angular | `slot_allocation.ts:25` | 주석은 "다음 순회에서 slotMap 을 쓴다"는데 안 쓴다 |
 | angular | `temporary_variables.ts:57` · `migration.ts:261` | 같은 형태 2건 |
 | react | `renderer.js:817` | 읽는 코드가 `/* DISABLED: …/pull/28417 */` 주석 안에 있다 |
@@ -329,7 +329,7 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 |---|---|---|---|
 | ~~astro~~ | `core/messages/runtime.ts:250` | 전역 정규식 상태 | **제출됨 → #17665** |
 | ~~nx~~ | `command-line/graph/graph.ts:1194` | 쓰기만 하는 컬렉션 | **제출됨 → #36633** |
-| rollup | `src/Chunk.ts:1343` | 쓰기만 하는 컬렉션 | **손검증 완료** · 중앙 8.5일이라 후순위 |
+| rollup | `src/Chunk.ts:1343` | 쓰기만 하는 컬렉션 | **제출 준비 완료** · 최신 `master` · 5,442건 통과 |
 | pnpm | `pnpm11/installing/deps-resolver/src/toResolveImporter.ts:110` | 쓰기만 하는 컬렉션 | **손검증 완료** · 중앙 6.0일 |
 | astro | `core/build/static-build.ts:91` | 쓰기만 하는 컬렉션 | 손검증 완료 · 보류(같은 저장소에 위 버그 건이 먼저) |
 
@@ -340,10 +340,13 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
   지워졌다. 바로 옆줄의 쌍둥이 `expandedTaskInputsCache` 는 지금도 `get`/`set` 을 다
   쓰고 있어서, 하나만 남겨진 게 눈으로 보인다.
 - **rollup `renderedModuleSources`** — 원래 `this.renderedModuleSources` 클래스 필드였고
-  읽는 곳이 4군데였다. `9216f5235`("[v3.0] New hashing algorithm" #4543, 2022-07-05)가
-  그 4곳을 전부 지우면서 지역 `const` 로 바꿔놨고 `.set()` 만 남았다. 4년째다.
-  여기는 "메모리"라는 근거가 붙는다 — 청크를 렌더하는 동안 모듈마다 `MagicString`
-  을 붙잡고 있는데 아무도 안 읽는다.
+  읽는 곳이 4군데였다. `9216f5235`("[v3.0] New hashing algorithm" #4543,
+  2022-10-11 커밋)가 그 소비자를 전부 지우면서 지역 `const` 와 `.set()` 만 남겼다.
+  2026-08-20 최신 `master` `e24957a6`에서도 저장소 전체 참조는 그 두 곳뿐이고 열린
+  중복 PR·이슈가 없다. `MagicString` 자체는 이미 `MagicStringBundle`도 보유하므로
+  메모리 유지라고 과장하지 않는다 — 실제 이득은 비어 있지 않은 렌더 모듈마다 만드는
+  Map 엔트리와 `.set()` 호출 제거다. 두 줄을 지운 로컬 브랜치에서 `update:js`, ESLint,
+  전체 5,442건이 통과했고 사전 PR 게이트도 통과했다.
 - **pnpm `linkedAliases`** — 태어날 때부터 죽어 있었다. `ae32d313e`(#4085, 2021-12-08)가
   `.add()` 만 넣었고 읽는 코드는 그 커밋에도 없다. 4년 반.
 - **astro `pageInput`** — 소비자 `ssrBuild(opts, internals, pageInput, container)` 가
@@ -401,7 +404,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | openstatus | 80% | 0.5일 | 28/35 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | storybook | 79% | 1.6일 | 33/42 | **통과** | 열린 PR 있음 — 저장소당 1건 · danger 가 `ci:*`·`qa:*` 라벨을 요구한다 — 메인테이너만 붙일 수 있어 그때까진 빨간불 |
 | astro | 74% | 2.0일 | 39/53 | **통과** | 열린 PR 있음 — 저장소당 1건 · 사용자에게 보이는 변화면 changeset 필요 |
-| rollup | 73% | 8.5일 | 11/15 | 통과 · 후순위(느림) | — |
+| rollup | 73% | 8.5일 | 11/15 | 통과 · 후순위(느림) | 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 |
 | budibase | 72% | 1.0일 | 13/18 | **통과** | 판정 경험 있음 |
 | mongoose | 71% | 3.0일 | 20/28 | **통과** | — |
 | next.js | 66% | 0.9일 | 29/44 | **통과** | 커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시 |
