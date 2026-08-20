@@ -155,6 +155,9 @@ BLURB = {
     "storybookjs/storybook": ("UI 컴포넌트 개발·문서화", "UI component workshop"),
     "withastro/astro": ("웹 프레임워크 · 콘텐츠 사이트", "web framework"),
     "nrwl/nx": ("모노레포 빌드 시스템", "monorepo build system"),
+    "openstatusHQ/openstatus": ("상태 페이지·업타임 모니터링", "status pages & uptime monitoring"),
+    "rollup/rollup": ("JavaScript 모듈 번들러", "JavaScript module bundler"),
+    "pnpm/pnpm": ("JavaScript 패키지 매니저", "JavaScript package manager"),
 }
 
 
@@ -316,6 +319,16 @@ h = re.sub(
 h = re.sub(
     r'(<p class="en">)[^<]*?( — full log in <a href="https://github\.com/m1kapp/fixearly/blob/main/IMPACT\.md">)',
     rf"\g<1>{en_line}\g<2>", h, count=1)
+
+# 중앙값을 쓰는 이유를 보여주는 next.js 예시도 같은 측정값에서 만든다. 요약 개수만
+# 자동화했더니 이 숫자는 8/11 값(평균 91.9일 · 중앙 0.8일)에 그대로 멈춰 있었다.
+_next = MERGE_TIMES.get("vercel/next.js", {})
+_next_avg, _next_mid = _next.get("averageDays"), _next.get("medianDays")
+if _next_avg is not None and _next_mid is not None:
+    h = re.sub(r'next\.js 는 평균 [0-9.]+일인데 중앙값 [0-9.]+일',
+               f'next.js 는 평균 {_next_avg:.1f}일인데 중앙값 {_next_mid:.1f}일', h, count=1)
+    h = re.sub(r'next\.js averages [0-9.]+ days but its median is [0-9.]+',
+               f'next.js averages {_next_avg:.1f} days but its median is {_next_mid:.1f}', h, count=1)
 
 # 머지된 것들의 공통 형태와 걸린 기간 — 리드 문장도 손으로 쓰면 반드시 어긋난다.
 # "같은 형태"라는 주장은 type 문자열이 실제로 그럴 때만 낸다. 아니면 개수·기간만.
