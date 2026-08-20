@@ -223,7 +223,7 @@ CLA·외부 PR 자동 닫기 없음. 열린 #2338 이 같은 두 파일을 건�
 | [openstatus#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | N+1 | ⚪ 대기 | 3일째 / 보통 1일 |
 | [pnpm#14032](https://github.com/pnpm/pnpm/pull/14032) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 6일 |
 | [rollup#6482](https://github.com/rollup/rollup/pull/6482) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 9일 |
-| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 9일째 / 보통 2일 · 보류 |
+| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 10일째 / 보통 2일 · 보류 |
 | [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 20일째 / 보통 11일 · 보류 |
 | [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 8일째 / 보통 2일 |
 
@@ -360,7 +360,9 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
   7건이 통과했고, pnpm CLI와 deps-installer 컴파일 및 사전 PR 게이트도 통과했다. 루트
   `AGENTS.md`의 게시 패키지 규칙에 따라 `@pnpm/installing.deps-resolver`와 `pnpm` patch
   changeset을 포함했다. 전체 pre-push 타입·빌드·메타·Rust 게이트를 통과한 뒤
-  2026-08-20 #14032로 제출했고, 초기 원격 CI 5개가 큐에 들어갔다.
+  2026-08-20 #14032로 제출했다. 최초 Windows 1/3은 npm tarball 502로 실패했지만 같은
+  경계를 재실행해 8분 52초에 통과했고, TS·보안 CI와 CodeRabbit·Greptile 자동 리뷰가
+  모두 통과했다.
 - **astro `pageInput`** — 소비자 `ssrBuild(opts, internals, pageInput, container)` 가
   2025-12-04 "Environment API"(#14306)에서 사라졌다.
 
