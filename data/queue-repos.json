@@ -8,7 +8,7 @@
     { "repo": "microsoft/vscode", "note": "후보 보유 · 링크된 이슈 없는 외부 PR 을 봇이 닫는다(게이트 0)" },
     { "repo": "vercel/next.js", "note": "후보 보유" },
     { "repo": "facebook/react", "note": "후보는 DISABLED 주석 건 — PR 보다 이슈" },
-    { "repo": "Automattic/mongoose", "note": "미훑음" },
+    { "repo": "Automattic/mongoose", "note": "bulkSave 오류 매칭 제출됨 #16474" },
     { "repo": "vitest-dev/vitest", "note": "미훑음 · CLA 있음" }
   ]
 }

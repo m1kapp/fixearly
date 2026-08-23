@@ -320,6 +320,16 @@
    "status": "merged",
    "createdAt": "2026-08-20T11:10:08Z",
    "mergedAt": "2026-08-22T15:35:55Z"
+  },
+  {
+   "title": "bulkSave 오류 문서 반복 매칭",
+   "titleEn": "bulkSave repeated write-error matching",
+   "type": "O(n²) 배열 조회 (문서마다 writeErrors.find 전체 스캔 → 실패 id Set으로 O(1))",
+   "repo": "Automattic/mongoose",
+   "repoLabel": "mongoose · 27.5k★",
+   "pr": 16474,
+   "status": "waiting",
+   "createdAt": "2026-08-23T09:00:03Z"
   }
  ]
 }

@@ -39,6 +39,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `페이지 monitor 검증 뒤 중복 조회` | [openstatus · 9k★](https://github.com/openstatusHQ/openstatus) | N+1 (페이지 생성·수정에서 일괄 검증한 monitor를 루프마다 재조회 — Map 재사용) | [#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | ⚪ awaiting review | — |
 | `청크 렌더 안 미사용 Map` | [rollup · 26.3k★](https://github.com/rollup/rollup) | 쓰기만 하는 컬렉션 (비어 있지 않은 렌더 모듈마다 .set(), 읽기 없음 — 삭제) | [#6482](https://github.com/rollup/rollup/pull/6482) | ✅ merged | +1 |
 | `의존성 분할 안 미사용 Set` | [pnpm · 36.2k★](https://github.com/pnpm/pnpm) | 쓰기만 하는 컬렉션 (함수 호출마다 Set 생성, 링크 의존성마다 .add(), 읽기 없음 — 삭제) | [#14032](https://github.com/pnpm/pnpm/pull/14032) | ✅ merged | +1 |
+| `bulkSave 오류 문서 반복 매칭` | [mongoose · 27.5k★](https://github.com/Automattic/mongoose) | O(n²) 배열 조회 (문서마다 writeErrors.find 전체 스캔 → 실패 id Set으로 O(1)) | [#16474](https://github.com/Automattic/mongoose/pull/16474) | ⚪ awaiting review | — |
 
 ## 규칙
 
