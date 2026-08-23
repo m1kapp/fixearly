@@ -509,6 +509,7 @@ export function renderReport({ projectName, quality, source, corpus, hotspots, p
   const repoActivityInfo = act;
   // 동결 판정: git 이력이 있는데 최근 6개월 변경이 0건이면 '지금 고칠 이유 없음'.
   const frozen = act.tracked === true && act.commits6mo === 0;
+  const sweep = q.sweep || null;
   const fixes = buildFixList(q, (churnByFile && churnByFile.length ? churnByFile : hotspots));
   const pens = penaltyBreakdown(si);
   const totalPen = pens.reduce((s, p) => s + p.got, 0);
@@ -623,6 +624,17 @@ h2{font-size:var(--t-h2);font-weight:750;letter-spacing:-.015em;line-height:1.3;
 .step .sg b{color:var(--good);font-size:15px}
 .step .sn{margin-top:var(--s2);font-size:var(--t-xs);color:var(--ink-3)}
 
+/* ── 빠른 훑기 게이트 ── */
+.sw-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s3);flex-wrap:wrap;
+  padding:var(--s4);border:1px solid var(--line-2);border-radius:var(--r);background:var(--paper-2)}
+.sw-head b{font-size:15px}.sw-delta{font-family:var(--mono);font-size:var(--t-xs);color:var(--ink-3)}
+.sw-list{margin-top:var(--s4);border-top:1px solid var(--line)}
+.sw-row{display:grid;grid-template-columns:54px minmax(160px,220px) 1fr;gap:var(--s4);
+  padding:var(--s3) 0;border-bottom:1px solid var(--line);align-items:start}
+.sw-score{font-family:var(--mono);font-weight:750;color:var(--accent)}
+.sw-name{font-weight:650;font-size:13.5px}.sw-loc{font-family:var(--mono);font-size:var(--t-xs);color:var(--ink-3);word-break:break-all}
+.sw-next{font-size:13px;color:var(--ink-2)}
+
 /* ── 감점 행 ── */
 .pen{display:grid;grid-template-columns:minmax(210px,272px) minmax(90px,1fr) 116px 78px;gap:var(--s4);align-items:center;
   padding:var(--s3) 0;border-bottom:1px solid var(--line)}
@@ -705,8 +717,9 @@ dialog::backdrop{background:rgba(18,20,26,.42)}
 /* 모바일 = 바텀시트 */
 @media(max-width:560px){
   dialog{position:fixed;left:0;right:0;bottom:0;top:auto;margin:0;width:100%;max-width:100%;
-    max-height:90vh;border-radius:18px 18px 0 0;border-bottom:0;display:flex;flex-direction:column;
+    max-height:90vh;border-radius:18px 18px 0 0;border-bottom:0;flex-direction:column;
     animation:sheetUp .22s ease-out}
+  dialog[open]{display:flex}
   dialog::before{content:"";flex:none;width:40px;height:4px;border-radius:99px;background:var(--line-2);margin:9px auto 2px}
   .pd-h{padding:var(--s3) var(--s4)}
   #pd-b{flex:1 1 auto;min-height:0;max-height:none;overflow-y:auto;-webkit-overflow-scrolling:touch;
@@ -759,6 +772,8 @@ footer{padding:var(--s6) 0 var(--s7);color:var(--ink-3);font-size:var(--t-sm);
   .fx td.act{text-align:left;padding-top:var(--s3)}
   .rt th:nth-child(4),.rt td:nth-child(4),.rt .rk{display:none}
   .rt td{padding:var(--s2) var(--s2) var(--s2) 0}
+  .sw-row{grid-template-columns:46px 1fr;gap:var(--s2)}
+  .sw-next{grid-column:2}
 }
 </style></head><body>
 <header><div class="w">
@@ -787,6 +802,18 @@ footer{padding:var(--s6) 0 var(--s7);color:var(--ink-3);font-size:var(--t-sm);
   </details>
 
 </div></section>
+
+${sweep ? `<section><div class="w">
+  <h2>빠른 훑기 다음 게이트</h2>
+  <p class="sub">같은 분석 결과를 다시 세지 않고, 비싼 맥락·실행 검증을 어디에 쓸지만 고른다. 숫자는 <b>실제 영향</b>이 아니라 확신도·잠재 심각도·수정 가능성으로 만든 정적 우선순위다.</p>
+  <div class="sw-head"><b>${esc(sweep.summary)}</b>
+    <span class="sw-delta">신규 ${sweep.counts.new} · 유지 ${sweep.counts.persistent} · 해소 ${sweep.counts.resolved}</span></div>
+  ${sweep.candidates.length ? `<div class="sw-list">${sweep.candidates.slice(0, 8).map((item) => `<div class="sw-row">
+    <div class="sw-score">${item.priority}</div>
+    <div><div class="sw-name">${esc(item.label)}</div><div class="sw-loc">${esc(item.file)}:${item.line}</div></div>
+    <div class="sw-next">${esc(item.next)}</div>
+  </div>`).join("")}</div>` : `<div class="note">현재는 깊게 검증할 정적 후보가 없다. 이 SHA를 기준선으로 두고 다음 실행에서 신규·해소만 확인하면 된다.</div>`}
+</div></section>` : ""}
 
 <section><div class="w">
   <h2>축별 위치</h2>

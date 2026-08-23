@@ -5,6 +5,7 @@
  * Usage:
  *   npx fixearly --dir=src                # 점수·등급 (git 추적 파일만, 빌드산출물 제외)
  *   npx fixearly --dir=src --report       # 한 장짜리 HTML 리포트 (위치·고칠 목록·AI 지시문)
+ *   npx fixearly --dir=src --sweep        # 빠른 훑기 → 깊게 검증/맥락 확인/변경 감시
  *   npx fixearly --dir=src --hotspots     # 복잡도 × 변경빈도 = 먼저 고칠 파일
  *   npx fixearly --dir=src --dead         # (선택) knip 데드코드축 — 느림. // @keep 파일 제외
  *   npx fixearly --dir=src --badge        # README 배지 SVG
@@ -18,6 +19,7 @@ import fs from "fs";
 import path from "path";
 import { createRequire } from "module";
 import { execFileSync } from "child_process";
+import { buildSweepDecision, sweepConsoleLines } from "./sweep.mjs";
 
 const args = process.argv.slice(2);
 const getFlag = (name) => {
@@ -53,6 +55,7 @@ const wantBadge = args.includes("--badge"); // README·사이트 임베드용 SV
 const wantMine = args.includes("--mine");   // O(n²) PR 후보 전체 덤프(손검증 파이프라인 입력)
 const wantReport = args.includes("--report") || !!getFlag("report"); // 한 장짜리 HTML 리포트
 const wantHotspots = args.includes("--hotspots");
+const wantSweep = args.includes("--sweep"); // 기존 진단을 비싼 검증 전의 후보 게이트로 재사용
 // @m1kapp/kit 사용 현황은 부가 정보라 옵트인이다. 범용 도구가 특정 패키지 이름을
 // 기본 경로에서 찾고 있으면 "저자 라이브러리를 광고한다"는 인상을 준다.
 const wantKit = args.includes("--kit"); // cog × git churn = "먼저 고칠 파일" 랭킹(git 이력 필요)
@@ -2705,6 +2708,40 @@ const stats = {
   },
 };
 
+// --sweep: 분석기를 한 번 더 돌리지 않는다. 위에서 이미 만든 정적 진단을 우선순위로
+// 접고, 직전 기준선과의 신규·유지·해소만 계산한다. priority 는 실제 영향 점수가 아니라
+// "다음 검증 비용을 어디에 쓸지"를 정하는 정적 우선순위다.
+if (wantSweep) {
+  const statePath = path.resolve(process.cwd(), ".fixearly-sweep.json");
+  const stateKey = path.relative(process.cwd(), srcDir) || ".";
+  let state = { version: 1, scans: {} };
+  try {
+    const loaded = JSON.parse(fs.readFileSync(statePath, "utf-8"));
+    if (loaded && loaded.version === 1 && loaded.scans && typeof loaded.scans === "object") state = loaded;
+  } catch { /* 첫 실행 또는 손상된 로컬 기준선 */ }
+  let sha = null;
+  try {
+    sha = execFileSync("git", ["-C", DISPLAY_BASE, "rev-parse", "--short=12", "HEAD"], {
+      encoding: "utf-8", stdio: ["ignore", "pipe", "ignore"],
+    }).trim() || null;
+  } catch { /* git 밖의 소스도 훑을 수 있다 */ }
+  const readLine = (file, line) => {
+    if (!line || file === "(unknown)") return "";
+    try { return fs.readFileSync(path.resolve(DISPLAY_BASE, file), "utf-8").split("\n")[line - 1] || ""; }
+    catch { return ""; }
+  };
+  const previousCandidates = state.scans[stateKey]?.candidates || [];
+  stats.quality.sweep = buildSweepDecision(stats.quality, { previous: previousCandidates, readLine, sha });
+  state.scans[stateKey] = {
+    at: stats.quality.sweep.at,
+    rules: SCORING_VERSION,
+    sha,
+    candidates: stats.quality.sweep.candidates,
+  };
+  try { fs.writeFileSync(statePath, JSON.stringify(state, null, 2)); }
+  catch { /* 읽기 전용 환경에서도 분석 결과는 계속 만든다 */ }
+}
+
 // 출력
 if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 // 산출물 파일명. --kit 모드에선 기존 소비자(m1kkit)를 위해 옛 이름을 유지한다.
@@ -2946,6 +2983,10 @@ if ((wantHotspots || wantReport) && ts && allFns.length > 0) {
 if (dead) {
   console.log(`  데드코드: 죽은 파일 ${dead.deadFiles}개(${dead.filePct}%)·미사용 export ${dead.unusedExports}개(${dead.exportPct}%) → 감점 −${dead.penalty}${dead.keptFiles > 0 ? ` · @keep 제외 ${dead.keptFiles}개` : ""}`);
   for (const f of dead.worst) console.log(`    죽음: ${f}`);
+}
+if (stats.quality.sweep) {
+  console.log("\n  ── 빠른 정적 훑기 (실제 영향 점수 아님) ──");
+  for (const line of sweepConsoleLines(stats.quality.sweep)) console.log(line);
 }
 // ── (선택) LLM 자문 — 정적 지표가 못 보는 네이밍·응집도. 점수엔 미반영, 자문만 ──
 if (args.includes("--llm") && cognitive) {
