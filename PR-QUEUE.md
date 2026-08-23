@@ -18,7 +18,9 @@
 | PR | 결과 | 사유·메모 |
 |---|---|---|
 | [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 머지 | 사람 리뷰 없이 20.7일 만에 메인테이너가 직접 머지 |
+| [rollup#6482](https://github.com/rollup/rollup/pull/6482) | 머지 | — |
 | [outline#13117](https://github.com/outline/outline/pull/13117) | 머지 | 질문 없이 머지 |
+| [pnpm#14032](https://github.com/pnpm/pnpm/pull/14032) | 머지 | — |
 | [nocodb#14309](https://github.com/nocodb/nocodb/pull/14309) | 머지 | 질문 없이 머지 |
 | [medusa#16188](https://github.com/medusajs/medusa/pull/16188) | 머지 | 메인테이너 승인 뒤 머지 |
 | [medusa#16233](https://github.com/medusajs/medusa/pull/16233) | 머지 | 메인테이너 승인 뒤 자동 머지 |
@@ -217,17 +219,15 @@ CLA·외부 PR 자동 닫기 없음. 열린 #2338 이 같은 두 파일을 건�
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 18일째 / 보통 1일 · 보류 |
-| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 21일째 / 보통 1일 · 보류 |
-| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 8일째 / 보통 1일 · 보류 |
-| [openstatus#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | N+1 | ⚪ 대기 | 3일째 / 보통 1일 |
-| [pnpm#14032](https://github.com/pnpm/pnpm/pull/14032) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 6일 |
-| [rollup#6482](https://github.com/rollup/rollup/pull/6482) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 9일 |
-| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 10일째 / 보통 2일 · 보류 |
-| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 20일째 / 보통 11일 · 보류 |
-| [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 8일째 / 보통 2일 |
+| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 21일째 / 보통 1일 · 보류 |
+| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 24일째 / 보통 1일 · 보류 |
+| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
+| [openstatus#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | N+1 | ⚪ 대기 | 6일째 / 보통 1일 |
+| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 12일째 / 보통 2일 · 보류 |
+| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 23일째 / 보통 11일 · 보류 |
+| [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 11일째 / 보통 2일 · 보류 |
 
-**열린 것 9건(보류 5건 빼면 4건).** 판정 난 19건 중 머지 9 · 승인 0 · 닫힘 10.
+**열린 것 7건(보류 6건 빼면 1건).** 판정 난 21건 중 머지 11 · 승인 0 · 닫힘 10.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -418,11 +418,11 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | openstatus | 80% | 0.5일 | 28/35 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | storybook | 79% | 1.6일 | 33/42 | **통과** | 열린 PR 있음 — 저장소당 1건 · danger 가 `ci:*`·`qa:*` 라벨을 요구한다 — 메인테이너만 붙일 수 있어 그때까진 빨간불 |
 | astro | 74% | 2.0일 | 39/53 | **통과** | 열린 PR 있음 — 저장소당 1건 · 사용자에게 보이는 변화면 changeset 필요 |
-| rollup | 73% | 8.5일 | 11/15 | 통과 · 후순위(느림) | 열린 PR 있음 — 저장소당 1건 · 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요 |
+| rollup | 73% | 8.5일 | 11/15 | 통과 · 후순위(느림) | 판정 경험 있음 · 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요 |
 | budibase | 72% | 1.0일 | 13/18 | **통과** | 판정 경험 있음 |
 | mongoose | 71% | 3.0일 | 20/28 | **통과** | — |
 | next.js | 66% | 0.9일 | 29/44 | **통과** | 커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시 |
-| pnpm | 64% | 6.2일 | 9/14 | 통과 · 후순위(느림) | 열린 PR 있음 — 저장소당 1건 · AI 작성 PR 본문에 agent disclosure 필수 · 전체 저장소 대신 영향 패키지 테스트 실행 |
+| pnpm | 64% | 6.2일 | 9/14 | 통과 · 후순위(느림) | 판정 경험 있음 · AI 작성 PR 본문에 agent disclosure 필수 · 전체 저장소 대신 영향 패키지 테스트 실행 |
 | payload | 62% | 3.4일 | 18/29 | 통과 · 후순위(느림) | 판정 경험 있음 |
 | strapi | 59% | 3.0일 | 30/51 | 컷 | 판정 경험 있음 |
 | outline | 50% | 0.3일 | 3/6 | 컷 | 판정 경험 있음 |

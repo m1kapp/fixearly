@@ -15,6 +15,7 @@ import json
 import os
 from pathlib import Path
 import re
+import statistics
 import subprocess
 import sys
 
@@ -32,6 +33,11 @@ RESULTS = CACHE / "results"
 SCORING_VERSION = "v14"
 JS_LANGS = {"JavaScript", "TypeScript"}
 MIN_REPRESENTATIVE_COVERAGE_PCT = 10.0
+ROW_DIFF_FIELDS = (
+    "score", "coveragePct", "jsTsPhysicalLines", "analyzedPhysicalLines",
+    "codeLines", "totalPhysicalLines", "files", "cognitiveAvg", "cognitiveMax",
+    "duplication", "avgFileLines", "quadratic", "seqIo",
+)
 
 # 물리 LOC와 분석 커버리지를 셀 때 코드로 보는 확장자. JSON/YAML/XML/문서는 빼고,
 # 실행 코드·템플릿·스타일·SQL처럼 제품 동작을 만드는 추적 소스만 센다.
@@ -376,51 +382,344 @@ def dashboard_html(payload):
 .sub{{color:var(--muted);margin:5px 0 0}}.back{{border:1px solid var(--line);background:var(--card);padding:8px 12px;border-radius:9px;color:var(--muted)}}
 .summary{{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:10px;margin:24px 0}}
 .stat{{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}}.stat small{{display:block;color:var(--muted)}}.stat b{{font-size:22px}}
+.trend{{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin:0 0 16px}}.trendhead{{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}}.trendhead h2{{font-size:17px;margin:0}}.trendhead p{{margin:3px 0 0;color:var(--muted);font-size:12px}}.trendgrid{{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:8px;margin-top:14px}}.tmetric{{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:11px 12px}}.tmetric small{{display:block;color:var(--muted);font-size:10.5px}}.tmetric b{{font-size:17px}}.tmetric em{{display:block;font-style:normal;font-size:11px;color:var(--muted)}}.good{{color:#0f7a63!important}}.bad{{color:#bf4a38!important}}.moves{{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;font-size:11px;color:var(--muted)}}.moves div{{background:#f8fafc;border-radius:8px;padding:8px 10px}}.moves b{{color:var(--ink)}}.trendnote{{margin:10px 0 0;color:var(--muted);font-size:11px}}
+.snapshot-picker{{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin:0 0 12px;padding:12px;background:#fff;border:1px solid var(--line);border-radius:12px}}.snapshot-picker label{{display:grid;gap:4px;min-width:260px;flex:1;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.04em}}select{{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 10px;background:#fff;color:var(--ink);font:inherit}}.snapshot-picker button{{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:750}}.snapshot-picker button:disabled{{opacity:.45;cursor:not-allowed}}.snapshot-status{{align-self:center;color:var(--muted);font-size:11px}}
 .controls{{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}}input{{flex:1;min-width:220px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}}.filterset{{display:flex;align-items:center;gap:6px}}.filterset>small{{color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.06em}}
 .filters{{display:flex;gap:5px;flex-wrap:wrap}}button{{border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:8px;padding:8px 10px;cursor:pointer}}button.on{{background:var(--ink);color:#fff;border-color:var(--ink)}}
-.table{{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:12px}}table{{width:100%;border-collapse:collapse;min-width:1560px}}th,td{{padding:10px 12px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}}th{{position:sticky;top:0;background:#f8fafc;color:var(--muted);font-size:11px;letter-spacing:.04em;cursor:pointer;z-index:1}}th:first-child,td:first-child{{text-align:left;position:sticky;left:0;background:inherit}}tbody tr{{background:#fff}}tbody tr:hover{{background:#f8fbff}}td:first-child{{font-weight:650}}.meta{{display:block;color:var(--muted);font-size:10.5px;font-weight:400}}
+.table{{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:12px}}table{{width:100%;border-collapse:collapse;min-width:1560px}}th,td{{padding:10px 12px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;vertical-align:top}}th{{position:sticky;top:0;background:#f8fafc;color:var(--muted);font-size:11px;letter-spacing:.04em;cursor:pointer;z-index:2}}th:first-child,td:first-child{{text-align:left;position:sticky;left:0;background:inherit;width:280px;min-width:280px;max-width:280px}}th:first-child{{z-index:3}}td:first-child{{font-weight:650;z-index:1}}tbody tr{{background:#fff}}tbody tr:hover{{background:#f8fbff}}.repo-cell{{position:relative;min-width:0;padding-right:26px}}.repo-link,.meta{{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}.repo-link{{min-width:0}}.meta{{color:var(--muted);font-size:10.5px;font-weight:400}}.repo-detail summary{{position:absolute;right:0;top:0;display:grid;place-items:center;width:19px;height:19px;border-radius:50%;background:#fff1f2;border:1px solid #fecdd3;color:#be123c;font-size:11px;font-weight:900;cursor:pointer;list-style:none}}.repo-detail summary::-webkit-details-marker{{display:none}}.repo-detail[open] summary{{background:#be123c;color:#fff}}.repo-detail-body{{margin-top:8px;padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:#f8fafc;color:var(--muted);font-size:10.5px;font-weight:400;line-height:1.5;white-space:normal;overflow-wrap:anywhere}}.repo-detail-body b{{display:block;color:var(--ink);font-size:11px}}.delta{{display:block;margin-top:2px;color:var(--muted);font-size:10px;font-weight:650;line-height:1.2}}.delta.neutral{{color:#2563eb}}.delta.flat{{color:#94a3b8}}
 .grade{{display:inline-grid;place-items:center;min-width:38px;padding:3px 7px;border-radius:6px;color:white;font-weight:800}}.gS{{background:var(--S)}}.gA{{background:var(--A)}}.gB{{background:var(--B)}}.gC{{background:var(--C)}}.gD{{background:var(--D)}}.gE{{background:var(--E)}}.gNA{{background:#94a3b8}}
 .weight{{display:inline-grid;place-items:center;min-width:48px;padding:3px 7px;border-radius:999px;font-size:11px;font-weight:750}}.wheavy{{background:#f3e8ff;color:#6b21a8}}.wmiddle{{background:#e0e7ff;color:#3730a3}}.wwelter{{background:#dbeafe;color:#1d4ed8}}.wlight{{background:#dcfce7;color:#166534}}.wfly{{background:#fef3c7;color:#92400e}}.wstraw{{background:#f1f5f9;color:#475569}}
 .score{{font-size:16px;font-weight:800}}.na{{color:var(--muted);text-align:left!important}}.foot{{color:var(--muted);font-size:12px;margin-top:12px}}
 .cov{{display:flex;align-items:center;justify-content:flex-end;gap:7px;min-width:105px}}.cov span{{font-variant-numeric:tabular-nums;font-weight:700;min-width:42px}}.cov i{{width:48px;height:5px;background:#e2e8f0;border-radius:9px;overflow:hidden}}.cov b{{display:block;height:100%;background:var(--accent);border-radius:inherit}}
 .langmix{{width:190px}}.langbar{{display:flex;width:100%;height:7px;border-radius:8px;overflow:hidden;background:#e2e8f0}}.langbar i{{display:block;height:100%;min-width:1px}}.langlabels{{display:flex;gap:7px;margin-top:4px;color:var(--muted);font-size:10.5px}}.langlabels span{{display:inline-flex;align-items:center;gap:3px}}.langlabels b{{width:6px;height:6px;border-radius:2px}}
-@media(max-width:900px){{.summary{{grid-template-columns:repeat(2,1fr)}}h1{{font-size:22px}}}}
+@media(max-width:900px){{.summary,.trendgrid{{grid-template-columns:repeat(2,1fr)}}.moves{{grid-template-columns:1fr}}h1{{font-size:22px}}}}
 </style></head><body><main class="wrap">
 <div class="top"><div><h1>madrascheck-dev · 전체 등급</h1><p class="sub">비공개 로컬 뷰 · 모든 언어의 소스 규모 + JS/TS 품질 분석 · fixearly {html.escape(SCORING_VERSION)}</p></div><a class="back" href="../">← 공개 랜딩</a></div>
 <section class="summary" id="summary"></section>
+<section class="trend" id="trend" hidden></section>
+<section class="snapshot-picker" aria-label="스냅샷 파일 비교"><label>기준 파일<select id="beforeSnapshot"></select></label><label>비교 파일<select id="afterSnapshot"></select></label><button id="applySnapshots" type="button">두 파일 비교</button><span class="snapshot-status" id="snapshotStatus"></span></section>
 <div class="controls"><input id="q" type="search" placeholder="저장소 검색" aria-label="저장소 검색"><div class="filterset"><small>체급</small><div class="filters" id="weights"></div></div><div class="filterset"><small>등급</small><div class="filters" id="filters"></div></div></div>
 <div class="table"><table><thead><tr>
-<th data-key="name">저장소</th><th data-key="totalPhysicalLines">체급</th><th data-key="grade">JS/TS 등급</th><th data-key="score">점수</th><th data-key="coveragePct">JS/TS 분석률</th><th data-key="codeLines">JS/TS 코드 줄</th><th data-key="totalPhysicalLines">전체 소스 줄</th><th>언어 비율</th><th data-key="files">분석 파일</th><th data-key="cognitiveAvg">인지 평균</th><th data-key="cognitiveMax">인지 최대</th><th data-key="duplication">중복 %</th><th data-key="avgFileLines">파일 평균</th><th data-key="quadratic">O(n²)</th><th data-key="seqIo">순차 I/O</th><th data-key="updatedAt">저장소 갱신</th>
+<th data-key="name">저장소</th><th data-key="totalPhysicalLines">체급</th><th data-key="grade">JS/TS 등급</th><th data-key="score">점수</th><th data-key="coveragePct">JS/TS 분석률</th><th data-key="jsTsPhysicalLines">JS/TS 소스 줄</th><th data-key="totalPhysicalLines">전체 소스 줄</th><th>언어 비율</th><th data-key="files">분석 파일</th><th data-key="cognitiveAvg">인지 평균</th><th data-key="cognitiveMax">인지 최대</th><th data-key="duplication">중복 %</th><th data-key="avgFileLines">파일 평균</th><th data-key="quadratic">O(n²)</th><th data-key="seqIo">순차 I/O</th><th data-key="updatedAt">저장소 갱신</th>
 </tr></thead><tbody id="rows"></tbody></table></div>
-<p class="foot"><b>JS/TS 분석률</b>은 전체 소스 줄 가운데 fixearly가 품질을 읽은 JS/TS 줄의 비율이다. 100%에 가까울수록 등급이 저장소 전체를 더 잘 대표하며, <b>{MIN_REPRESENTATIVE_COVERAGE_PCT:g}% 미만은 대표성 부족으로 N/A</b> 처리한다. 체급은 전체 소스 줄 기준: 스트로 &lt;5k · 플라이 5–15k · 라이트 15–30k · 웰터 30–60k · 미들 60–120k · 헤비 120k+. 생성 {html.escape(payload['generatedAt'])}</p>
+<p class="foot"><b>각 수치 아래 +/-</b>는 직전 스냅샷 대비 변화다. 초록은 개선, 빨강은 악화, 파랑은 방향을 단정하지 않는 규모 변화다. <b>JS/TS 소스 줄과 언어 비율은 모두 물리 줄 기준</b>이며, 점수·복잡도·밀도 계산은 빈 줄과 주석 전용 줄을 뺀 유효 코드 줄을 내부적으로 사용한다. <b>{MIN_REPRESENTATIVE_COVERAGE_PCT:g}% 미만은 대표성 부족으로 N/A</b> 처리한다. 체급은 전체 소스 줄 기준: 스트로 &lt;5k · 플라이 5–15k · 라이트 15–30k · 웰터 30–60k · 미들 60–120k · 헤비 120k+. 생성 {html.escape(payload['generatedAt'])}</p>
 </main><script>
-const DATA={safe_json};let filter='ALL',weightFilter='ALL',sortKey='score',dir=1;
-const rows=DATA.rows, ok=rows.filter(x=>x.status==='ok'), na=rows.length-ok.length;
-const avg=ok.length?Math.round(ok.reduce((a,x)=>a+x.score,0)/ok.length):0;
-const totalPhysical=rows.reduce((a,x)=>a+(x.totalPhysicalLines||0),0), analyzedPhysical=rows.reduce((a,x)=>a+(x.analyzedPhysicalLines||0),0);
-const totalCoverage=totalPhysical?Math.round(analyzedPhysical/totalPhysical*1000)/10:0;
-const dist={{}};for(const x of ok)dist[x.gradeBase]=(dist[x.gradeBase]||0)+1;
+const DATA={safe_json};let filter='ALL',weightFilter='ALL',sortKey='score',dir=1,rows=DATA.rows,cmp=DATA.comparison;
 const compact=n=>new Intl.NumberFormat('ko-KR',{{notation:'compact',maximumFractionDigits:1}}).format(n||0);
 const WEIGHTS=[{{k:'heavy',ko:'헤비',range:'120k+',lo:120000,hi:Infinity}},{{k:'middle',ko:'미들',range:'60–120k',lo:60000,hi:120000}},{{k:'welter',ko:'웰터',range:'30–60k',lo:30000,hi:60000}},{{k:'light',ko:'라이트',range:'15–30k',lo:15000,hi:30000}},{{k:'fly',ko:'플라이',range:'5–15k',lo:5000,hi:15000}},{{k:'straw',ko:'스트로',range:'<5k',lo:1,hi:5000}}];
 const weightOf=n=>WEIGHTS.find(w=>(Number(n)||0)>=w.lo&&(Number(n)||0)<w.hi)||null;
-const weightCount={{}};for(const x of rows){{const w=weightOf(x.totalPhysicalLines);if(w)weightCount[w.k]=(weightCount[w.k]||0)+1}}
-document.getElementById('summary').innerHTML=[['저장소',rows.length],['헤비급',weightCount.heavy||0],['JS/TS 측정',ok.length],['전체 소스',compact(totalPhysical)+'줄'],['JS/TS 분석률',totalCoverage+'%'],['평균 점수',avg]].map(x=>`<div class="stat"><small>${{x[0]}}</small><b>${{x[1]}}</b></div>`).join('');
-const grades=['ALL','S','A','B','C','D','E','N/A'];
-document.getElementById('filters').innerHTML=grades.map(g=>`<button data-g="${{g}}" class="${{g==='ALL'?'on':''}}">${{g}}${{dist[g]?` ${{dist[g]}}`:g==='N/A'?` ${{na}}`:''}}</button>`).join('');
-document.getElementById('weights').innerHTML=[{{k:'ALL',ko:'전체'}},...WEIGHTS].map(w=>`<button data-w="${{w.k}}" class="${{w.k==='ALL'?'on':''}}" title="${{w.range||'모든 체급'}}">${{w.ko}}${{weightCount[w.k]?` ${{weightCount[w.k]}}`:''}}</button>`).join('');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}}[c]));
+const grades=['ALL','S','A','B','C','D','E','N/A'];
+function renderSummaryFilters(){{const ok=rows.filter(x=>x.status==='ok'),na=rows.length-ok.length,avg=ok.length?Math.round(ok.reduce((a,x)=>a+x.score,0)/ok.length):0;const totalPhysical=rows.reduce((a,x)=>a+(x.totalPhysicalLines||0),0),analyzedPhysical=rows.reduce((a,x)=>a+(x.analyzedPhysicalLines||0),0),totalCoverage=totalPhysical?Math.round(analyzedPhysical/totalPhysical*1000)/10:0;const dist={{}},weightCount={{}};for(const x of ok)dist[x.gradeBase]=(dist[x.gradeBase]||0)+1;for(const x of rows){{const w=weightOf(x.totalPhysicalLines);if(w)weightCount[w.k]=(weightCount[w.k]||0)+1}}document.getElementById('summary').innerHTML=[['저장소',rows.length],['헤비급',weightCount.heavy||0],['JS/TS 측정',ok.length],['전체 소스',compact(totalPhysical)+'줄'],['JS/TS 분석률',totalCoverage+'%'],['평균 점수',avg]].map(x=>`<div class="stat"><small>${{x[0]}}</small><b>${{x[1]}}</b></div>`).join('');document.getElementById('filters').innerHTML=grades.map(g=>`<button data-g="${{g}}" class="${{g===filter?'on':''}}">${{g}}${{dist[g]?` ${{dist[g]}}`:g==='N/A'?` ${{na}}`:''}}</button>`).join('');document.getElementById('weights').innerHTML=[{{k:'ALL',ko:'전체'}},...WEIGHTS].map(w=>`<button data-w="${{w.k}}" class="${{w.k===weightFilter?'on':''}}" title="${{w.range||'모든 체급'}}">${{w.ko}}${{weightCount[w.k]?` ${{weightCount[w.k]}}`:''}}</button>`).join('')}}
+function renderTrend(){{const trend=document.getElementById('trend');if(!cmp){{trend.hidden=true;trend.innerHTML='';return}};
+  const signed=(n,d=1)=>`${{n>0?'+':''}}${{Number(n).toFixed(d)}}`;
+  const tone=(n,lowerBetter=false)=>n===0?'':((lowerBetter?n<0:n>0)?'good':'bad');
+  const metric=(label,value,delta,sub,cls='')=>`<div class="tmetric"><small>${{label}}</small><b class="${{cls}}">${{value}}</b><em>${{delta}} · ${{sub}}</em></div>`;
+  const m=cmp.metrics,s=cmp.scores,r=cmp.repositories;
+  const declined=cmp.movements.filter(x=>x.delta<0).slice(0,3).map(x=>`<b>${{esc(x.repo.split('/').pop())}} ${{signed(x.delta,0)}}</b>`).join(' · ')||'없음';
+  const improved=cmp.movements.filter(x=>x.delta>0).slice(-3).reverse().map(x=>`<b>${{esc(x.repo.split('/').pop())}} ${{signed(x.delta,0)}}</b>`).join(' · ')||'없음';
+  const started=new Date(cmp.beforeGeneratedAt).toLocaleString('ko-KR',{{dateStyle:'medium',timeStyle:'short'}}),ended=new Date(cmp.afterGeneratedAt).toLocaleString('ko-KR',{{dateStyle:'medium',timeStyle:'short'}});
+  trend.hidden=false;
+  trend.innerHTML=`<div class="trendhead"><div><h2>${{cmp.elapsedDays}}일 변화 · 공통 저장소 ${{r.common}}개</h2><p>${{started}} → ${{ended}} · 전체 ${{r.before}}→${{r.after}} · 신규 ${{r.added}} · 제외 ${{r.removed}}</p></div><p>${{cmp.scoringVersion}} · 동일 SHA 대조군 ${{r.stableControls}}/${{r.unchangedSha}} 일치</p></div><div class="trendgrid">${{
+    metric('JS/TS 소스',compact(m.jsTsPhysicalLines.after)+'줄',signed(m.jsTsPhysicalLines.percent)+'%',compact(m.jsTsPhysicalLines.before)+' → '+compact(m.jsTsPhysicalLines.after))+
+    metric('평균 점수',s.mean.after,signed(s.mean.delta,2),s.mean.before+' → '+s.mean.after,tone(s.mean.delta))+
+    metric('중복률',m.weightedDuplication.after+'%',signed(m.weightedDuplication.delta,2)+'%p',m.weightedDuplication.before+' → '+m.weightedDuplication.after,tone(m.weightedDuplication.delta,true))+
+    metric('O(n²) / 10만 줄',m.quadraticPer100k.after,signed(m.quadraticPer100k.percent)+'%',m.quadraticPer100k.before+' → '+m.quadraticPer100k.after,tone(m.quadraticPer100k.delta,true))+
+    metric('순차 I/O / 10만 줄',m.seqIoPer100k.after,signed(m.seqIoPer100k.percent)+'%',m.seqIoPer100k.before+' → '+m.seqIoPer100k.after,tone(m.seqIoPer100k.delta,true))+
+    metric('저장소 점수',s.improved+'↑ '+s.unchanged+'＝ '+s.declined+'↓','공통 등급 '+r.gradedAtBoth+'개','SHA 변경 '+r.changedSha+'개')
+  }}</div><div class="moves"><div>가장 하락 · ${{declined}}</div><div>가장 상승 · ${{improved}}</div></div><p class="trendnote">구성 변화는 제외하고 양쪽에 존재한 저장소만 비교한다. 이 화면은 변화의 기술이지 원인의 증명이 아니다.</p>`;
+}}
 const fmt=n=>n==null?'—':Number(n).toLocaleString();
 const cov=x=>{{const p=Math.max(0,Math.min(100,Number(x.coveragePct)||0));return `<div class="cov"><span>${{p.toFixed(1)}}%</span><i><b style="width:${{p}}%"></b></i></div>`}};
+const deltaLine=(x,key,unit='',lowerBetter=null,digits=0)=>{{const diffs=x._deltas||{{}};if(!Object.prototype.hasOwnProperty.call(diffs,key))return'';const n=Number(diffs[key]);const shown=Math.abs(n).toLocaleString('ko-KR',{{minimumFractionDigits:digits,maximumFractionDigits:digits}});const sign=n>0?'+':n<0?'−':'';const cls=n===0?'flat':lowerBetter==null?'neutral':((lowerBetter?n<0:n>0)?'good':'bad');return `<small class="delta ${{cls}}">${{sign}}${{shown}}${{unit}}</small>`}};
+const metricCell=(x,key,value,unit='',lowerBetter=null,digits=0)=>`${{value}}${{deltaLine(x,key,unit,lowerBetter,digits)}}`;
 const LANG={{TypeScript:['TS','#3178c6'],JavaScript:['JS','#e0b400'],Java:['Java','#b07219'],JSP:['JSP','#e76f51'],Swift:['Swift','#f05138'],'Objective-C':['Obj-C','#438eff'],'C/C++':['C++','#659ad2'],C:['C','#555'],Python:['Py','#3572a5'],Kotlin:['Kt','#a97bff'],Dart:['Dart','#00b4ab'],CSS:['CSS','#8b5cf6'],HTML:['HTML','#e34c26'],SQL:['SQL','#2a9d8f'],Vue:['Vue','#41b883'],Svelte:['Svelte','#ff3e00'],Shell:['Sh','#64748b'],Other:['기타','#94a3b8']}};
 const langData=x=>{{const all=Object.entries(x.languageLines||{{}}),total=x.totalPhysicalLines||0;if(!total||!all.length)return[];const top=all.slice(0,5).map(([name,lines])=>({{name,lines}})),rest=all.slice(5).reduce((a,[,lines])=>a+lines,0);if(rest)top.push({{name:'Other',lines:rest}});return top.map(v=>{{const style=LANG[v.name]||[v.name,'#94a3b8'];return{{...v,abbr:style[0],color:style[1],pct:v.lines/total*100}}}})}};
 const langCell=x=>{{const data=langData(x);if(!data.length)return'—';const label=data.map(v=>`${{v.abbr}} ${{v.pct.toFixed(1)}}%`).join(' · ');const bars=data.map(v=>`<i style="width:${{v.pct}}%;background:${{v.color}}"></i>`).join('');const labels=data.slice(0,3).map(v=>`<span><b style="background:${{v.color}}"></b>${{esc(v.abbr)}} ${{Math.round(v.pct)}}%</span>`).join('');return`<div class="langmix" title="${{esc(label)}}"><div class="langbar" role="img" aria-label="${{esc(label)}}">${{bars}}</div><div class="langlabels">${{labels}}</div></div>`}};
 const weightBadge=x=>{{const w=weightOf(x.totalPhysicalLines);return w?`<span class="weight w${{w.k}}" title="${{w.range}}">${{w.ko}}</span>`:'—'}};
+const repoCell=x=>{{const scope=x.scopeAdjusted&&x.scopeNote?` · scope: ${{x.scopeNote}}`:'';const reason=x.reason?` · ${{x.reason}}`:'';const meta=`${{x.primaryLanguage||'—'}} · ${{x.branch||'—'}}${{x.sha?` · ${{x.sha.slice(0,7)}}`:''}}${{scope}}${{reason}}`;const detail=x._showDetails?`<details class="repo-detail"><summary aria-label="전체 저장소 정보 보기" title="전체 정보 보기">!</summary><div class="repo-detail-body"><b>${{esc(x.repo)}}</b>언어 · ${{esc(x.primaryLanguage||'—')}}<br>브랜치 · ${{esc(x.branch||'—')}}${{x.sha?`<br>커밋 · ${{esc(x.sha)}}`:''}}${{x.scopeNote?`<br>범위 · ${{esc(x.scopeNote)}}`:''}}${{x.reason?`<br>상태 · ${{esc(x.reason)}}`:''}}</div></details>`:'';return `<div class="repo-cell"><a class="repo-link" href="${{esc(x.url)}}" target="_blank" title="${{esc(x.repo)}}">${{esc(x.name)}}</a><span class="meta" title="${{esc(meta)}}">${{esc(meta)}}</span>${{detail}}</div>`}};
+const DIFF_FIELDS=['score','coveragePct','jsTsPhysicalLines','analyzedPhysicalLines','codeLines','totalPhysicalLines','files','cognitiveAvg','cognitiveMax','duplication','avgFileLines','quadratic','seqIo'];
+const rowNeedsDetail=x=>{{const name=String(x.name||''),branch=String(x.branch||''),scope=String(x.scopeNote||''),reason=String(x.reason||''),metadata=[x.primaryLanguage,branch,scope,reason].filter(Boolean).join(' · ');return name.length>28||branch.length>28||scope.length>24||reason.length>24||metadata.length>48}};
+const jsTsPhysical=x=>Number(x.languageLines?.JavaScript||0)+Number(x.languageLines?.TypeScript||0);
+const prepareSelectedRows=(before,after)=>{{const previous=new Map((before.rows||[]).map(x=>[x.repo,{{...x,jsTsPhysicalLines:jsTsPhysical(x)}}]));return(after.rows||[]).map(x=>{{const current={{...x,jsTsPhysicalLines:jsTsPhysical(x)}},old=previous.get(x.repo),diffs={{}};if(old)for(const key of DIFF_FIELDS)if(typeof old[key]==='number'&&typeof current[key]==='number')diffs[key]=Math.round((current[key]-old[key])*100)/100;return{{...current,_showDetails:rowNeedsDetail(current),_deltas:diffs}}}})}};
+const roundTo=(n,d=2)=>Math.round((Number(n)||0)*10**d)/10**d;
+const pairValue=(before,after,d=2)=>{{before=roundTo(before,d);after=roundTo(after,d);const delta=roundTo(after-before,d);return{{before,after,delta,percent:before?roundTo(delta/before*100,1):null}}}};
+const compareSelectedSnapshots=(before,after)=>{{const bm=new Map((before.rows||[]).map(x=>[x.repo,x])),am=new Map((after.rows||[]).map(x=>[x.repo,x])),common=[...bm.keys()].filter(k=>am.has(k)).sort(),graded=common.filter(k=>bm.get(k).status==='ok'&&am.get(k).status==='ok');const total=(map,keys,key)=>keys.reduce((sum,k)=>sum+(Number(map.get(k)[key])||0),0),totalJs=(map,keys)=>keys.reduce((sum,k)=>sum+jsTsPhysical(map.get(k)),0),mean=values=>values.length?values.reduce((a,b)=>a+b,0)/values.length:0,weighted=map=>{{const code=total(map,graded,'codeLines');return code?graded.reduce((sum,k)=>sum+(Number(map.get(k).duplication)||0)*(Number(map.get(k).codeLines)||0),0)/code:0}};const beforeCode=total(bm,graded,'codeLines'),afterCode=total(am,graded,'codeLines'),scoreDeltas=new Map(graded.map(k=>[k,am.get(k).score-bm.get(k).score])),movements=[...scoreDeltas].filter(([,delta])=>delta).map(([repo,delta])=>({{repo,before:bm.get(repo).score,after:am.get(repo).score,delta,sourceLinesDelta:(am.get(repo).totalPhysicalLines||0)-(bm.get(repo).totalPhysicalLines||0),shaChanged:bm.get(repo).sha!==am.get(repo).sha}})).sort((a,b)=>a.delta-b.delta||a.repo.localeCompare(b.repo));const unchangedSha=common.filter(k=>bm.get(k).sha===am.get(k).sha),controlFields=['status','score','totalPhysicalLines','analyzedPhysicalLines','codeLines','cognitiveAvg','cognitiveMax','duplication','quadratic','seqIo'],stableControls=unchangedSha.filter(k=>controlFields.every(key=>bm.get(k)[key]===am.get(k)[key])).length,beforeQuad=total(bm,graded,'quadratic'),afterQuad=total(am,graded,'quadratic'),beforeSeq=total(bm,graded,'seqIo'),afterSeq=total(am,graded,'seqIo'),elapsed=(new Date(after.generatedAt)-new Date(before.generatedAt))/86400000;return{{beforeGeneratedAt:before.generatedAt,afterGeneratedAt:after.generatedAt,elapsedDays:roundTo(elapsed,1),scoringVersion:after.scoringVersion,repositories:{{before:bm.size,after:am.size,common:common.length,added:[...am.keys()].filter(k=>!bm.has(k)).length,removed:[...bm.keys()].filter(k=>!am.has(k)).length,changedSha:common.filter(k=>bm.get(k).sha!==am.get(k).sha).length,unchangedSha:unchangedSha.length,stableControls,gradedAtBoth:graded.length}},scores:{{mean:pairValue(mean(graded.map(k=>bm.get(k).score)),mean(graded.map(k=>am.get(k).score))),improved:[...scoreDeltas.values()].filter(x=>x>0).length,unchanged:[...scoreDeltas.values()].filter(x=>x===0).length,declined:[...scoreDeltas.values()].filter(x=>x<0).length}},metrics:{{jsTsPhysicalLines:pairValue(totalJs(bm,common),totalJs(am,common)),totalPhysicalLines:pairValue(total(bm,common,'totalPhysicalLines'),total(am,common,'totalPhysicalLines')),analyzedPhysicalLines:pairValue(total(bm,common,'analyzedPhysicalLines'),total(am,common,'analyzedPhysicalLines')),codeLines:pairValue(beforeCode,afterCode),weightedDuplication:pairValue(weighted(bm),weighted(am)),quadratic:pairValue(beforeQuad,afterQuad),quadraticPer100k:pairValue(beforeCode?beforeQuad/beforeCode*100000:0,afterCode?afterQuad/afterCode*100000:0),seqIo:pairValue(beforeSeq,afterSeq),seqIoPer100k:pairValue(beforeCode?beforeSeq/beforeCode*100000:0,afterCode?afterSeq/afterCode*100000:0)}},movements}}}};
 function render(){{const q=document.getElementById('q').value.toLowerCase();let list=rows.filter(x=>(!q||x.repo.toLowerCase().includes(q))&&(filter==='ALL'||(filter==='N/A'?x.status!=='ok':x.gradeBase===filter))&&(weightFilter==='ALL'||weightOf(x.totalPhysicalLines)?.k===weightFilter));
 list.sort((a,b)=>{{let x=a[sortKey],y=b[sortKey];if(x==null)x=sortKey==='score'?999999:'';if(y==null)y=sortKey==='score'?999999:'';return (typeof x==='number'?x-y:String(x).localeCompare(String(y)))*dir}});
-document.getElementById('rows').innerHTML=list.map(x=>{{const scope=x.scopeAdjusted?` · scope: ${{esc(x.scopeNote)}}`:'';const meta=`${{esc(x.primaryLanguage||'—')}} · ${{esc(x.branch||'—')}}${{x.sha?` · ${{esc(x.sha.slice(0,7))}}`:''}}${{scope}}`;if(x.status!=='ok')return `<tr><td><a href="${{esc(x.url)}}" target="_blank">${{esc(x.name)}}</a><span class="meta">${{meta}} · ${{esc(x.reason)}}</span></td><td>${{weightBadge(x)}}</td><td><span class="grade gNA">N/A</span></td><td>—</td><td>${{cov(x)}}</td><td>${{fmt(x.codeLines||0)}}</td><td>${{fmt(x.totalPhysicalLines)}}</td><td>${{langCell(x)}}</td><td>${{x.files==null?'—':fmt(x.files)}}</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>${{(x.updatedAt||'').slice(0,10)}}</td></tr>`;return `<tr><td><a href="${{esc(x.url)}}" target="_blank">${{esc(x.name)}}</a><span class="meta">${{meta}}</span></td><td>${{weightBadge(x)}}</td><td><span class="grade g${{esc(x.gradeBase)}}">${{esc(x.grade)}}</span></td><td class="score">${{x.score}}</td><td>${{cov(x)}}</td><td>${{fmt(x.codeLines)}}</td><td>${{fmt(x.totalPhysicalLines)}}</td><td>${{langCell(x)}}</td><td>${{fmt(x.files)}}</td><td>${{fmt(x.cognitiveAvg)}}</td><td>${{fmt(x.cognitiveMax)}}</td><td>${{fmt(x.duplication)}}</td><td>${{fmt(x.avgFileLines)}}</td><td>${{fmt(x.quadratic)}}</td><td>${{fmt(x.seqIo)}}</td><td>${{(x.updatedAt||'').slice(0,10)}}</td></tr>`}}).join('')}}
+document.getElementById('rows').innerHTML=list.map(x=>{{if(x.status!=='ok')return `<tr><td>${{repoCell(x)}}</td><td>${{weightBadge(x)}}</td><td><span class="grade gNA">N/A</span></td><td>—</td><td>${{metricCell(x,'coveragePct',cov(x),'%p',null,1)}}</td><td>${{metricCell(x,'jsTsPhysicalLines',fmt(x.jsTsPhysicalLines||0))}}</td><td>${{metricCell(x,'totalPhysicalLines',fmt(x.totalPhysicalLines))}}</td><td>${{langCell(x)}}</td><td>${{metricCell(x,'files',x.files==null?'—':fmt(x.files))}}</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>${{(x.updatedAt||'').slice(0,10)}}</td></tr>`;return `<tr><td>${{repoCell(x)}}</td><td>${{weightBadge(x)}}</td><td><span class="grade g${{esc(x.gradeBase)}}">${{esc(x.grade)}}</span></td><td class="score">${{metricCell(x,'score',x.score,'점',false)}}</td><td>${{metricCell(x,'coveragePct',cov(x),'%p',null,1)}}</td><td>${{metricCell(x,'jsTsPhysicalLines',fmt(x.jsTsPhysicalLines))}}</td><td>${{metricCell(x,'totalPhysicalLines',fmt(x.totalPhysicalLines))}}</td><td>${{langCell(x)}}</td><td>${{metricCell(x,'files',fmt(x.files))}}</td><td>${{metricCell(x,'cognitiveAvg',fmt(x.cognitiveAvg),'',true,1)}}</td><td>${{metricCell(x,'cognitiveMax',fmt(x.cognitiveMax),'',true)}}</td><td>${{metricCell(x,'duplication',fmt(x.duplication),'%p',true,1)}}</td><td>${{metricCell(x,'avgFileLines',fmt(x.avgFileLines),'',true,1)}}</td><td>${{metricCell(x,'quadratic',fmt(x.quadratic),'',true)}}</td><td>${{metricCell(x,'seqIo',fmt(x.seqIo),'',true)}}</td><td>${{(x.updatedAt||'').slice(0,10)}}</td></tr>`}}).join('')}}
 document.getElementById('q').addEventListener('input',render);document.getElementById('filters').addEventListener('click',e=>{{const b=e.target.closest('button');if(!b)return;filter=b.dataset.g;document.querySelectorAll('#filters button').forEach(x=>x.classList.toggle('on',x===b));render()}});document.getElementById('weights').addEventListener('click',e=>{{const b=e.target.closest('button');if(!b)return;weightFilter=b.dataset.w;document.querySelectorAll('#weights button').forEach(x=>x.classList.toggle('on',x===b));render()}});
-document.querySelector('thead').addEventListener('click',e=>{{const k=e.target.dataset.key;if(!k)return;if(sortKey===k)dir*=-1;else{{sortKey=k;dir=k==='name'?1:-1}}render()}});render();
+document.querySelector('thead').addEventListener('click',e=>{{const k=e.target.dataset.key;if(!k)return;if(sortKey===k)dir*=-1;else{{sortKey=k;dir=k==='name'?1:-1}}render()}});
+const snapshotList=DATA.snapshots||[],beforeSelect=document.getElementById('beforeSnapshot'),afterSelect=document.getElementById('afterSnapshot'),applySnapshots=document.getElementById('applySnapshots'),snapshotStatus=document.getElementById('snapshotStatus');
+const snapshotOptions=snapshotList.map(x=>`<option value="${{esc(x.file)}}">${{esc(x.file)}} · ${{new Date(x.generatedAt).toLocaleString('ko-KR',{{dateStyle:'short',timeStyle:'short'}})}}</option>`).join('');beforeSelect.innerHTML=snapshotOptions;afterSelect.innerHTML=snapshotOptions;
+if(snapshotList.length>=2){{beforeSelect.value=snapshotList.at(-2).file;afterSelect.value=snapshotList.at(-1).file;snapshotStatus.textContent=`저장 파일 ${{snapshotList.length}}개`}}else{{applySnapshots.disabled=true;beforeSelect.disabled=true;afterSelect.disabled=true;snapshotStatus.textContent='비교할 스냅샷이 2개 이상 필요'}}
+const validateSnapshotChoice=()=>{{if(snapshotList.length<2)return;applySnapshots.disabled=beforeSelect.value===afterSelect.value;snapshotStatus.textContent=applySnapshots.disabled?'서로 다른 파일을 고르세요':`저장 파일 ${{snapshotList.length}}개`}};beforeSelect.addEventListener('change',validateSnapshotChoice);afterSelect.addEventListener('change',validateSnapshotChoice);
+applySnapshots.addEventListener('click',()=>{{const before=snapshotList.find(x=>x.file===beforeSelect.value),after=snapshotList.find(x=>x.file===afterSelect.value);if(!before||!after||before===after)return;rows=prepareSelectedRows(before,after);cmp=compareSelectedSnapshots(before,after);filter='ALL';weightFilter='ALL';renderSummaryFilters();renderTrend();render();snapshotStatus.textContent=`${{before.file}} → ${{after.file}}`}});
+renderSummaryFilters();renderTrend();render();
 </script></body></html>'''
+
+
+def _pair(before, after, digits=2):
+    before = round(before, digits) if isinstance(before, float) else before
+    after = round(after, digits) if isinstance(after, float) else after
+    delta = after - before
+    delta = round(delta, digits) if isinstance(delta, float) else delta
+    percent = round(delta / before * 100, 1) if before else None
+    return {"before": before, "after": after, "delta": delta, "percent": percent}
+
+
+def repo_needs_detail(row):
+    """고정 폭 저장소 셀에서 잘릴 가능성이 큰 설명에만 상세 토글을 붙인다."""
+    name = str(row.get("name") or "")
+    branch = str(row.get("branch") or "")
+    scope = str(row.get("scopeNote") or "")
+    reason = str(row.get("reason") or "")
+    metadata = " · ".join(part for part in (
+        str(row.get("primaryLanguage") or ""), branch, scope, reason,
+    ) if part)
+    return (
+        len(name) > 28 or len(branch) > 28 or len(scope) > 24
+        or len(reason) > 24 or len(metadata) > 48
+    )
+
+
+def js_ts_physical_lines(row):
+    languages = row.get("languageLines") or {}
+    return sum(languages.get(language, 0) or 0 for language in JS_LANGS)
+
+
+def prepare_view_rows(payload, before=None):
+    """원본 스냅샷을 바꾸지 않고 화면 전용 상세 표시와 행별 diff를 만든다."""
+    before_rows = {
+        row["repo"]: row for row in (before or {}).get("rows", [])
+    }
+    view_rows = []
+    for row in payload.get("rows", []):
+        previous = before_rows.get(row["repo"])
+        current_view = {**row, "jsTsPhysicalLines": js_ts_physical_lines(row)}
+        deltas = {}
+        if previous:
+            previous_view = {
+                **previous,
+                "jsTsPhysicalLines": js_ts_physical_lines(previous),
+            }
+            for field in ROW_DIFF_FIELDS:
+                old, new = previous_view.get(field), current_view.get(field)
+                if (isinstance(old, (int, float)) and not isinstance(old, bool)
+                        and isinstance(new, (int, float)) and not isinstance(new, bool)):
+                    delta = new - old
+                    deltas[field] = round(delta, 2) if isinstance(delta, float) else delta
+        view_rows.append({
+            **current_view,
+            "_showDetails": repo_needs_detail(row),
+            "_deltas": deltas,
+        })
+    return view_rows
+
+
+def compare_snapshots(before, after):
+    """구성 변화가 품질 변화로 보이지 않도록 공통 저장소끼리만 비교한다."""
+    before_rows = {row["repo"]: row for row in before.get("rows", [])}
+    after_rows = {row["repo"]: row for row in after.get("rows", [])}
+    common = sorted(before_rows.keys() & after_rows.keys())
+    graded = [
+        repo for repo in common
+        if before_rows[repo].get("status") == "ok"
+        and after_rows[repo].get("status") == "ok"
+    ]
+
+    def total(rows, repos, key):
+        return sum(rows[repo].get(key, 0) or 0 for repo in repos)
+
+    def total_js_ts_physical(rows, repos):
+        return sum(js_ts_physical_lines(rows[repo]) for repo in repos)
+
+    def scores(rows):
+        return [rows[repo]["score"] for repo in graded]
+
+    def weighted_duplication(rows):
+        code = total(rows, graded, "codeLines")
+        if not code:
+            return 0
+        return sum(
+            (rows[repo].get("duplication", 0) or 0)
+            * (rows[repo].get("codeLines", 0) or 0)
+            for repo in graded
+        ) / code
+
+    before_code = total(before_rows, graded, "codeLines")
+    after_code = total(after_rows, graded, "codeLines")
+    before_scores, after_scores = scores(before_rows), scores(after_rows)
+    before_mean = statistics.mean(before_scores) if before_scores else 0
+    after_mean = statistics.mean(after_scores) if after_scores else 0
+    before_median = statistics.median(before_scores) if before_scores else 0
+    after_median = statistics.median(after_scores) if after_scores else 0
+    score_deltas = {
+        repo: after_rows[repo]["score"] - before_rows[repo]["score"]
+        for repo in graded
+    }
+    movements = [{
+        "repo": repo,
+        "before": before_rows[repo]["score"],
+        "after": after_rows[repo]["score"],
+        "delta": delta,
+        "sourceLinesDelta": (
+            (after_rows[repo].get("totalPhysicalLines", 0) or 0)
+            - (before_rows[repo].get("totalPhysicalLines", 0) or 0)
+        ),
+        "shaChanged": before_rows[repo].get("sha") != after_rows[repo].get("sha"),
+    } for repo, delta in score_deltas.items() if delta]
+    movements.sort(key=lambda row: (row["delta"], row["repo"]))
+
+    control_fields = (
+        "status", "score", "totalPhysicalLines", "analyzedPhysicalLines",
+        "codeLines", "cognitiveAvg", "cognitiveMax", "duplication",
+        "quadratic", "seqIo",
+    )
+    unchanged_sha = [
+        repo for repo in common
+        if before_rows[repo].get("sha") == after_rows[repo].get("sha")
+    ]
+    stable_controls = sum(
+        all(before_rows[repo].get(key) == after_rows[repo].get(key)
+            for key in control_fields)
+        for repo in unchanged_sha
+    )
+
+    parse = lambda value: dt.datetime.fromisoformat(value.replace("Z", "+00:00"))
+    elapsed = parse(after["generatedAt"]) - parse(before["generatedAt"])
+    before_quad = total(before_rows, graded, "quadratic")
+    after_quad = total(after_rows, graded, "quadratic")
+    before_seq = total(before_rows, graded, "seqIo")
+    after_seq = total(after_rows, graded, "seqIo")
+    return {
+        "beforeGeneratedAt": before["generatedAt"],
+        "afterGeneratedAt": after["generatedAt"],
+        "elapsedSeconds": int(elapsed.total_seconds()),
+        "elapsedDays": round(elapsed.total_seconds() / 86400, 1),
+        "sameScoringVersion": before.get("scoringVersion") == after.get("scoringVersion"),
+        "scoringVersion": after.get("scoringVersion"),
+        "repositories": {
+            "before": len(before_rows),
+            "after": len(after_rows),
+            "common": len(common),
+            "added": len(after_rows.keys() - before_rows.keys()),
+            "removed": len(before_rows.keys() - after_rows.keys()),
+            "changedSha": sum(
+                before_rows[repo].get("sha") != after_rows[repo].get("sha")
+                for repo in common
+            ),
+            "unchangedSha": len(unchanged_sha),
+            "stableControls": stable_controls,
+            "gradedAtBoth": len(graded),
+        },
+        "scores": {
+            "mean": _pair(before_mean, after_mean),
+            "median": _pair(before_median, after_median),
+            "improved": sum(delta > 0 for delta in score_deltas.values()),
+            "unchanged": sum(delta == 0 for delta in score_deltas.values()),
+            "declined": sum(delta < 0 for delta in score_deltas.values()),
+        },
+        "metrics": {
+            "jsTsPhysicalLines": _pair(
+                total_js_ts_physical(before_rows, common),
+                total_js_ts_physical(after_rows, common),
+            ),
+            "totalPhysicalLines": _pair(
+                total(before_rows, common, "totalPhysicalLines"),
+                total(after_rows, common, "totalPhysicalLines"),
+            ),
+            "analyzedPhysicalLines": _pair(
+                total(before_rows, common, "analyzedPhysicalLines"),
+                total(after_rows, common, "analyzedPhysicalLines"),
+            ),
+            "codeLines": _pair(before_code, after_code),
+            "weightedDuplication": _pair(
+                weighted_duplication(before_rows), weighted_duplication(after_rows),
+            ),
+            "quadratic": _pair(before_quad, after_quad),
+            "quadraticPer100k": _pair(
+                before_quad / before_code * 100000 if before_code else 0,
+                after_quad / after_code * 100000 if after_code else 0,
+            ),
+            "seqIo": _pair(before_seq, after_seq),
+            "seqIoPer100k": _pair(
+                before_seq / before_code * 100000 if before_code else 0,
+                after_seq / after_code * 100000 if after_code else 0,
+            ),
+        },
+        "movements": movements,
+    }
+
+
+def archive_snapshot(payload):
+    """스캔 결과를 생성 시각별 불변 스냅샷으로 로컬에 보관한다."""
+    generated_at = payload.get("generatedAt")
+    if not generated_at:
+        raise ValueError("generatedAt 없는 내부 스냅샷")
+    stamp = re.sub(r"[^0-9A-Za-z]", "", generated_at)
+    history = LOCAL_OUT / "history"
+    history.mkdir(parents=True, exist_ok=True)
+    target = history / f"madrascheck-{stamp}.json"
+    if not target.exists():
+        target.write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+    return target
+
+
+def latest_snapshot_pair():
+    history = LOCAL_OUT / "history"
+    snapshots = sorted(history.glob("madrascheck-*.json")) if history.exists() else []
+    if len(snapshots) < 2:
+        return None
+    before = json.loads(snapshots[-2].read_text(encoding="utf-8"))
+    after = json.loads(snapshots[-1].read_text(encoding="utf-8"))
+    return before, after
+
+
+def history_snapshot_choices():
+    """브라우저에서 임의의 두 파일을 고를 수 있도록 로컬 이력을 싣는다."""
+    history = LOCAL_OUT / "history"
+    paths = sorted(history.glob("madrascheck-*.json")) if history.exists() else []
+    choices = []
+    for path in paths:
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        choices.append({
+            "file": path.name,
+            "generatedAt": payload.get("generatedAt"),
+            "scoringVersion": payload.get("scoringVersion"),
+            "rows": payload.get("rows", []),
+        })
+    return choices
+
+
+def latest_comparison():
+    pair = latest_snapshot_pair()
+    return compare_snapshots(*pair) if pair else None
+
+
+def render_dashboard(payload):
+    pair = latest_snapshot_pair()
+    comparison = compare_snapshots(*pair) if pair else None
+    if comparison:
+        (LOCAL_OUT / "history" / "latest-comparison.json").write_text(
+            json.dumps(comparison, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+    view_payload = {
+        **payload,
+        "rows": prepare_view_rows(payload, pair[0] if pair else None),
+        "comparison": comparison,
+        "snapshots": history_snapshot_choices(),
+    }
+    (LOCAL_OUT / "madrascheck.html").write_text(
+        dashboard_html(view_payload), encoding="utf-8")
+    return comparison
 
 
 def write_dashboard(rows):
@@ -431,9 +730,26 @@ def write_dashboard(rows):
         "rows": sorted(rows, key=lambda row: row["name"].lower()),
     }
     LOCAL_OUT.mkdir(parents=True, exist_ok=True)
-    (LOCAL_OUT / "madrascheck.json").write_text(
+    current = LOCAL_OUT / "madrascheck.json"
+    if current.exists():
+        try:
+            archive_snapshot(json.loads(current.read_text(encoding="utf-8")))
+        except (OSError, ValueError, json.JSONDecodeError):
+            pass
+    current.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    (LOCAL_OUT / "madrascheck.html").write_text(dashboard_html(payload), encoding="utf-8")
+    archive_snapshot(payload)
+    render_dashboard(payload)
+    return payload
+
+
+def render_existing_dashboard():
+    current = LOCAL_OUT / "madrascheck.json"
+    if not current.exists():
+        raise FileNotFoundError("현재 내부 스캔이 없습니다 — npm run internal:scan")
+    payload = json.loads(current.read_text(encoding="utf-8"))
+    archive_snapshot(payload)
+    render_dashboard(payload)
     return payload
 
 
@@ -485,11 +801,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--scan", action="store_true", help="GitHub 저장소를 갱신하고 다시 측정")
     parser.add_argument("--serve", action="store_true", help="생성 뒤 localhost:4173 서버 실행")
+    parser.add_argument("--render-history", action="store_true", help="저장된 최신 두 스냅샷 비교 화면 재생성")
     parser.add_argument("--jobs", type=int, default=2, help="동시 측정 수 (기본 2)")
     args = parser.parse_args()
 
     if args.scan or not (LOCAL_OUT / "madrascheck.html").exists():
         scan(max(1, min(args.jobs, 4)))
+    elif args.render_history:
+        render_existing_dashboard()
     if args.serve:
         os.chdir(ROOT)
         os.execvp(sys.executable, [sys.executable, "-m", "http.server", "4173"])

@@ -2,6 +2,7 @@
 """내부 대시보드의 다언어 LOC 범위 회귀 테스트."""
 
 import importlib.util
+import json
 from pathlib import Path
 import subprocess
 import tempfile
@@ -55,6 +56,126 @@ class SourceInventoryTest(unittest.TestCase):
 
     def test_small_js_repo_can_still_be_representative(self):
         self.assertTrue(dashboard.grade_is_representative(75, 75))
+
+    def test_view_rows_mark_long_metadata_and_include_metric_deltas(self):
+        before = {
+            "rows": [{
+                "repo": "org/a", "name": "a", "score": 80,
+                "coveragePct": 50.0, "codeLines": 100,
+                "analyzedPhysicalLines": 140, "duplication": 12.5,
+                "languageLines": {"TypeScript": 120, "Python": 20},
+            }],
+        }
+        current_row = {
+            "repo": "org/a", "name": "a", "score": 85,
+            "coveragePct": 52.5, "codeLines": 130,
+            "analyzedPhysicalLines": 175, "duplication": 10.0,
+            "languageLines": {"TypeScript": 150, "Python": 25},
+            "reason": "상세 토글이 필요한 충분히 긴 상태 설명입니다. 화면에서는 잘려야 합니다.",
+        }
+
+        got = dashboard.prepare_view_rows({"rows": [current_row]}, before)[0]
+
+        self.assertTrue(got["_showDetails"])
+        self.assertEqual(got["_deltas"]["score"], 5)
+        self.assertEqual(got["_deltas"]["coveragePct"], 2.5)
+        self.assertEqual(got["_deltas"]["codeLines"], 30)
+        self.assertEqual(got["_deltas"]["analyzedPhysicalLines"], 35)
+        self.assertEqual(got["_deltas"]["jsTsPhysicalLines"], 30)
+        self.assertEqual(got["_deltas"]["duplication"], -2.5)
+        self.assertNotIn("_deltas", current_row)
+
+    def test_short_repository_metadata_does_not_add_detail_toggle(self):
+        rows = dashboard.prepare_view_rows({
+            "rows": [{
+                "repo": "org/tiny", "name": "tiny", "branch": "main",
+                "primaryLanguage": "TypeScript",
+            }],
+        })
+
+        self.assertFalse(rows[0]["_showDetails"])
+        self.assertEqual(rows[0]["_deltas"], {})
+
+    def test_write_dashboard_archives_previous_and_current_snapshots(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            original_out = dashboard.LOCAL_OUT
+            dashboard.LOCAL_OUT = Path(tmp)
+            try:
+                previous = {
+                    "generatedAt": "2026-08-03T13:07:38Z",
+                    "organization": "fixture",
+                    "scoringVersion": "v14",
+                    "rows": [],
+                }
+                (dashboard.LOCAL_OUT / "madrascheck.json").write_text(
+                    json.dumps(previous), encoding="utf-8",
+                )
+
+                current = dashboard.write_dashboard([])
+                snapshots = sorted(
+                    (dashboard.LOCAL_OUT / "history").glob("madrascheck-*.json")
+                )
+
+                self.assertEqual(len(snapshots), 2)
+                archived = [json.loads(path.read_text()) for path in snapshots]
+                self.assertEqual(
+                    {item["generatedAt"] for item in archived},
+                    {previous["generatedAt"], current["generatedAt"]},
+                )
+                html = (dashboard.LOCAL_OUT / "madrascheck.html").read_text()
+                self.assertIn('"common": 0', html)
+                self.assertIn('<section class="trend"', html)
+                self.assertIn('width:280px;min-width:280px;max-width:280px', html)
+                self.assertIn('const deltaLine=', html)
+                self.assertIn('class="repo-detail"', html)
+                self.assertIn('id="beforeSnapshot"', html)
+                self.assertIn('id="afterSnapshot"', html)
+                self.assertIn('const compareSelectedSnapshots=', html)
+                self.assertIn('>JS/TS 소스 줄</th>', html)
+                self.assertIn("metricCell(x,'jsTsPhysicalLines'", html)
+                self.assertEqual(len(dashboard.history_snapshot_choices()), 2)
+            finally:
+                dashboard.LOCAL_OUT = original_out
+
+    def test_compare_snapshots_uses_common_repositories_and_normalized_density(self):
+        def row(repo, score, code, quadratic, seq_io, duplication, sha):
+            return {
+                "repo": repo, "name": repo, "status": "ok", "score": score,
+                "codeLines": code, "totalPhysicalLines": code * 2,
+                "analyzedPhysicalLines": code, "quadratic": quadratic,
+                "seqIo": seq_io, "duplication": duplication, "sha": sha,
+                "languageLines": {"TypeScript": code},
+            }
+
+        before = {
+            "generatedAt": "2026-08-03T00:00:00Z", "scoringVersion": "v14",
+            "rows": [
+                row("org/a", 80, 100_000, 10, 5, 12, "old-a"),
+                row("org/b", 90, 100_000, 10, 5, 8, "same-b"),
+                row("org/gone", 70, 50_000, 5, 2, 10, "gone"),
+            ],
+        }
+        after = {
+            "generatedAt": "2026-08-17T00:00:00Z", "scoringVersion": "v14",
+            "rows": [
+                row("org/a", 85, 200_000, 30, 10, 6, "new-a"),
+                row("org/b", 90, 100_000, 10, 5, 8, "same-b"),
+                row("org/new", 100, 20_000, 0, 0, 0, "new"),
+            ],
+        }
+
+        got = dashboard.compare_snapshots(before, after)
+
+        self.assertEqual(got["repositories"]["common"], 2)
+        self.assertEqual(got["repositories"]["added"], 1)
+        self.assertEqual(got["repositories"]["removed"], 1)
+        self.assertEqual(got["repositories"]["stableControls"], 1)
+        self.assertEqual(got["scores"]["improved"], 1)
+        self.assertEqual(got["scores"]["unchanged"], 1)
+        self.assertEqual(got["metrics"]["codeLines"]["percent"], 50.0)
+        self.assertEqual(got["metrics"]["jsTsPhysicalLines"]["percent"], 50.0)
+        self.assertEqual(got["metrics"]["quadraticPer100k"]["before"], 10.0)
+        self.assertEqual(got["metrics"]["quadraticPer100k"]["after"], 13.33)
 
 
 if __name__ == "__main__":
