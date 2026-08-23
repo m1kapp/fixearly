@@ -35,6 +35,7 @@
     "merge-times": "python3 tools/update-repo-merge-times.py",
     "internal": "python3 tools/internal-dashboard.py --scan --serve",
     "internal:scan": "python3 tools/internal-dashboard.py --scan",
+    "internal:history": "python3 tools/internal-dashboard.py --render-history",
     "board": "node tools/update-board.mjs",
     "og": "python3 tools/make-og.py",
     "cards": "python3 tools/fetch-repo-avatars.py && python3 tools/update-impact-cards.py",

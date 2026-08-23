@@ -17,7 +17,10 @@
 <!-- auto:decided — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 결과 | 사유·메모 |
 |---|---|---|
+| [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 머지 | 사람 리뷰 없이 20.7일 만에 메인테이너가 직접 머지 |
+| [rollup#6482](https://github.com/rollup/rollup/pull/6482) | 머지 | — |
 | [outline#13117](https://github.com/outline/outline/pull/13117) | 머지 | 질문 없이 머지 |
+| [pnpm#14032](https://github.com/pnpm/pnpm/pull/14032) | 머지 | — |
 | [nocodb#14309](https://github.com/nocodb/nocodb/pull/14309) | 머지 | 질문 없이 머지 |
 | [medusa#16188](https://github.com/medusajs/medusa/pull/16188) | 머지 | 메인테이너 승인 뒤 머지 |
 | [medusa#16233](https://github.com/medusajs/medusa/pull/16233) | 머지 | 메인테이너 승인 뒤 자동 머지 |
@@ -198,20 +201,33 @@ medusa · outline · nocodb · n8n)에서 `help wanted` + `good first issue` 를
 쓴다. novu 는 수락률 87% 인데도 15일 동안 사람이 안 왔다. 게이트를 통과했다고 회전이
 보장되지는 않는다는 뜻이라, 다음 N+1 은 중앙 1~2일인 곳으로 고른다.
 
+**2026-08-17 준비 — openstatus 후보를 최신 main(`b0fe974`)에서 손검증했다.** 페이지 생성·
+수정 API(`apps/server/src/routes/v1/pages/post.ts:137`, `put.ts:146`)는 먼저 요청의 모니터를
+`inArray` 한 번으로 전부 읽어 유효성을 검사한다. 그런데 그 결과를 블록 밖으로 넘기지 않고,
+바로 아래 루프에서 같은 workspace·id·deletedAt 조건으로 `findFirst` 를 모니터마다 다시
+실행한다. 이미 읽은 행을 id Map 으로 넘기면 모니터 읽기가 요청당 **1+N회 → 1회**가 되고,
+이름(`externalName || name`)·입력 순서·잘못된 id 거절 동작은 그대로다. POST·PUT 테스트에
+숫자 배열·객체 배열·잘못된 id·externalName 경계가 이미 있다.
+
+게이트도 통과한다. 최근 외부 PR 수락률 **80%(28/35)** · 중앙 **0.5일**, 우리 열린 PR 0,
+CLA·외부 PR 자동 닫기 없음. 열린 #2338 이 같은 두 파일을 건드리지만 Drizzle v1 문법만
+바꾸고 루프의 재조회는 그대로 남긴다. 그래서 중복 후보는 아니고, 먼저 머지되면 rebase 때
+조회 문법만 맞추면 된다. 제출 전 `pnpm verify` 와 두 route 테스트를 돌린다.
+
 ## 지금 열려 있는 것
 
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 순차 I/O | ⚪ 대기 | 12일째 / 보통 10일 |
-| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 10일째 / 보통 1일 · 보류 |
-| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 13일째 / 보통 1일 · 보류 |
-| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
-| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 1일째 / 보통 1일 |
-| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 11일째 / 보통 11일 |
-| [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 오늘 / 보통 2일 |
+| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 21일째 / 보통 1일 · 보류 |
+| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 24일째 / 보통 1일 · 보류 |
+| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
+| [openstatus#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | N+1 | ⚪ 대기 | 6일째 / 보통 1일 |
+| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 12일째 / 보통 2일 · 보류 |
+| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 23일째 / 보통 11일 · 보류 |
+| [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 11일째 / 보통 2일 · 보류 |
 
-**열린 것 7건(보류 2건 빼면 5건).** 판정 난 18건 중 머지 8 · 승인 0 · 닫힘 10.
+**열린 것 7건(보류 6건 빼면 1건).** 판정 난 21건 중 머지 11 · 승인 0 · 닫힘 10.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -286,13 +302,13 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 | 저장소 | 자리 | 형태 |
 |---|---|---|
 | ~~storybook~~ | `StoryIndexGenerator.ts:826` | **제출됨 → #35829** |
-| rollup | `Chunk.ts:1343` | `renderedModuleSources.set(module, source)` 뒤 소비 없음 |
+| ~~rollup~~ | `Chunk.ts:1343` | **제출됨 → #6482** |
 | angular | `slot_allocation.ts:25` | 주석은 "다음 순회에서 slotMap 을 쓴다"는데 안 쓴다 |
 | angular | `temporary_variables.ts:57` · `migration.ts:261` | 같은 형태 2건 |
 | react | `renderer.js:817` | 읽는 코드가 `/* DISABLED: …/pull/28417 */` 주석 안에 있다 |
 | react | `CollectHoistablePropertyLoads.ts:499` · `AlignReactiveScopesToBlockScopesHIR.ts:78` | 컴파일러 패스 2건 |
 | vscode | `chatToolPicker.ts:261` | `mcpServerByTool.set(...)` 뒤 조회 없음 |
-| next.js | `export/index.ts:285` | `excludedPrerenderRoutes.add(page)` — 이름과 달리 제외에 안 쓰인다 |
+| ~~next.js~~ | `export/index.ts:292` · `:316` | **탈락** — 진짜 dead state지만 현재 기여 가이드가 사소한 정리 PR을 명시적으로 거른다 |
 | astro | `core/build/static-build.ts:91` | 손검증 완료 · **보류** — 같은 저장소의 T1 버그(아래)를 먼저 낸다 |
 | pnpm · nx | 각 1건 | 같은 형태 · 미검증 |
 | ~~ghost~~ | `members-stats-service.js:115` | **제출됨 → #29831** |
@@ -315,8 +331,8 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 |---|---|---|---|
 | ~~astro~~ | `core/messages/runtime.ts:250` | 전역 정규식 상태 | **제출됨 → #17665** |
 | ~~nx~~ | `command-line/graph/graph.ts:1194` | 쓰기만 하는 컬렉션 | **제출됨 → #36633** |
-| rollup | `src/Chunk.ts:1343` | 쓰기만 하는 컬렉션 | **손검증 완료** · 중앙 8.5일이라 후순위 |
-| pnpm | `pnpm11/installing/deps-resolver/src/toResolveImporter.ts:110` | 쓰기만 하는 컬렉션 | **손검증 완료** · 중앙 6.0일 |
+| ~~rollup~~ | `src/Chunk.ts:1343` | 쓰기만 하는 컬렉션 | **제출됨 → #6482** · 5,442건 통과 |
+| ~~pnpm~~ | `pnpm11/installing/deps-resolver/src/toResolveImporter.ts:110` | 쓰기만 하는 컬렉션 | **제출됨 → #14032** · 185건 통과 |
 | astro | `core/build/static-build.ts:91` | 쓰기만 하는 컬렉션 | 손검증 완료 · 보류(같은 저장소에 위 버그 건이 먼저) |
 
 **2026-08-10 에 위 다섯 건을 전부 손검증했다.** 각각 왜 진짜인지:
@@ -326,12 +342,27 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
   지워졌다. 바로 옆줄의 쌍둥이 `expandedTaskInputsCache` 는 지금도 `get`/`set` 을 다
   쓰고 있어서, 하나만 남겨진 게 눈으로 보인다.
 - **rollup `renderedModuleSources`** — 원래 `this.renderedModuleSources` 클래스 필드였고
-  읽는 곳이 4군데였다. `9216f5235`("[v3.0] New hashing algorithm" #4543, 2022-07-05)가
-  그 4곳을 전부 지우면서 지역 `const` 로 바꿔놨고 `.set()` 만 남았다. 4년째다.
-  여기는 "메모리"라는 근거가 붙는다 — 청크를 렌더하는 동안 모듈마다 `MagicString`
-  을 붙잡고 있는데 아무도 안 읽는다.
+  읽는 곳이 4군데였다. `9216f5235`("[v3.0] New hashing algorithm" #4543,
+  2022-10-11 커밋)가 그 소비자를 전부 지우면서 지역 `const` 와 `.set()` 만 남겼다.
+  2026-08-20 최신 `master` `e24957a6`에서도 저장소 전체 참조는 그 두 곳뿐이고 열린
+  중복 PR·이슈가 없다. `MagicString` 자체는 이미 `MagicStringBundle`도 보유하므로
+  메모리 유지라고 과장하지 않는다 — 실제 이득은 비어 있지 않은 렌더 모듈마다 만드는
+  Map 엔트리와 `.set()` 호출 제거다. 두 줄을 지운 로컬 브랜치에서 `update:js`, ESLint,
+  전체 5,442건이 통과했고 사전 PR 게이트도 통과했다. 2026-08-20 #6482로 제출했다.
+  첫 외부 기여자라 코드 CI는 메인테이너의 워크플로 승인을 기다리고, Vercel 배포도
+  Rollup 팀원의 승인을 기다린다. 둘 다 코드 실패와는 구분한다.
 - **pnpm `linkedAliases`** — 태어날 때부터 죽어 있었다. `ae32d313e`(#4085, 2021-12-08)가
-  `.add()` 만 넣었고 읽는 코드는 그 커밋에도 없다. 4년 반.
+  Set 선언과 `.add()`를 함께 넣었지만 읽는 코드는 그 커밋에도 없다. 2026-08-20 최신
+  `main` `a165afa5`에서도 저장소 전체 참조는 그 두 곳뿐이고 열린 중복 PR·이슈가 없다.
+  실제 이득은 `partitionLinkedPackages()` 호출마다 만드는 Set 하나와 링크 의존성마다 하는
+  `.add()` 제거이며 문자열 수명 개선으로 과장하지 않는다. 두 줄만 지운 로컬 브랜치
+  `refactor/remove-unused-linked-aliases`에서 deps-resolver 178건과 링크 의존성 통합 테스트
+  7건이 통과했고, pnpm CLI와 deps-installer 컴파일 및 사전 PR 게이트도 통과했다. 루트
+  `AGENTS.md`의 게시 패키지 규칙에 따라 `@pnpm/installing.deps-resolver`와 `pnpm` patch
+  changeset을 포함했다. 전체 pre-push 타입·빌드·메타·Rust 게이트를 통과한 뒤
+  2026-08-20 #14032로 제출했다. 최초 Windows 1/3은 npm tarball 502로 실패했지만 같은
+  경계를 재실행해 8분 52초에 통과했고, TS·보안 CI와 CodeRabbit·Greptile 자동 리뷰가
+  모두 통과했다.
 - **astro `pageInput`** — 소비자 `ssrBuild(opts, internals, pageInput, container)` 가
   2025-12-04 "Environment API"(#14306)에서 사라졌다.
 
@@ -339,6 +370,7 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 
 | 후보 | 사유 |
 |---|---|
+| next.js `export/index.ts:292·316` (쓰기만 하는 Set) | **진짜지만 제출 탈락.** 최신 `canary` `e2fb664`에서 선언·`.add()` 외 소비가 없다. 원래 `excludedPrerenderRoutes.has()`가 fallback 검증에 쓰였으나, 2022-01-17 #33323이 검증 대상을 `exportPathMap` 순회로 바꾸며 소비자만 지우고 생산자 두 줄을 남겼다. 하지만 2026-08-12 #97188로 바뀐 현재 기여 가이드는 사소한 정리 PR은 닫힐 가능성이 높다고 명시한다. 사용자 버그·연결 이슈·유의미한 비용이 없어 리뷰어 시간을 정당화하지 못한다. |
 | nx `update-jest-preset-angular-setup.ts:43·61` (전역 정규식) | **오탐.** 코드가 `test()` 앞에서 `RE.lastIndex = 0` 을 직접 되돌린다 — 저자가 상태를 알고 관리하는 자리다. 엔진에 가드를 넣었다(아래) |
 | astro `toolbar.ts:334` (await in forEach) | `connectedCallback()` 이 동기라 애초에 기다릴 수 없다. "저자는 기다린다고 믿었다"는 근거가 없어 T1 이 아니다 |
 | astro `audit/index.ts:84` · `astro-island.ts:100` (floating promise) | 호출 체인 자체가 fire-and-forget 이다 — `childrenConnectedCallback()` 도 await 없이 불린다. await 를 붙여도 관측 가능한 변화가 없다 |
@@ -377,35 +409,36 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 <!-- auto:rotation — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | 저장소 | 수락률 | 중앙 | 외부 머지 | 판정 | 메모 |
 |---|---|---|---|---|---|
-| storybook | 87% | 1.1일 | 40/46 | **통과** | 열린 PR 있음 — 저장소당 1건 · danger 가 `ci:*`·`qa:*` 라벨을 요구한다 — 메인테이너만 붙일 수 있어 그때까진 빨간불 |
-| novu | 82% | 0.0일 | 23/28 | **통과** | 판정 경험 있음 |
-| nx | 81% | 0.9일 | 21/26 | **통과** | 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 |
-| n8n | 79% | 4.0일 | 26/33 | 통과 · 후순위(느림) | 판정 경험 있음 |
-| langfuse | 78% | 0.6일 | 29/37 | **통과** | 열린 PR 있음 — 저장소당 1건 |
-| vscode | 76% | 0.1일 | 26/34 | **통과** | 게이트 0 — 링크된 이슈 없는 외부 PR 을 봇이 닫는다 |
-| budibase | 76% | 0.9일 | 13/17 | **통과** | 판정 경험 있음 |
-| pnpm | 75% | 3.6일 | 12/16 | 통과 · 후순위(느림) | — |
-| payload | 75% | 5.0일 | 9/12 | 통과 · 후순위(느림) | 판정 경험 있음 |
-| rollup | 75% | 5.9일 | 12/16 | 통과 · 후순위(느림) | — |
-| mongoose | 74% | 2.2일 | 20/27 | **통과** | — |
-| Ghost | 74% | 3.9일 | 25/34 | 통과 · 후순위(느림) | 판정 경험 있음 |
-| astro | 69% | 2.4일 | 38/55 | **통과** | 열린 PR 있음 — 저장소당 1건 · 사용자에게 보이는 변화면 changeset 필요 |
-| angular | 66% | 0.4일 | 33/50 | **통과** | CLA 서명 필요 |
-| twenty | 58% | 3.1일 | 15/26 | 컷 | 판정 경험 있음 |
-| next.js | 57% | 1.6일 | 26/46 | 컷 | — |
-| strapi | 57% | 3.0일 | 29/51 | 컷 | 판정 경험 있음 |
-| medusa | 50% | 6.4일 | 9/18 | 컷 | 판정 경험 있음 |
-| outline | 50% | 18.1일 | 1/2 | 컷 | 판정 경험 있음 |
-| directus | 48% | 7.5일 | 20/42 | 컷 | 판정 경험 있음 |
-| vite | 45% | 1.3일 | 18/40 | 컷 | 판정 경험 있음 |
-| vitest | 44% | 4.5일 | 11/25 | 컷 | CLA 서명 필요 |
-| nocodb | 29% | 4.1일 | 2/7 | 컷 | 판정 경험 있음 |
-| excalidraw | 16% | 1.0일 | 6/37 | 컷 | 열린 PR 있음 — 저장소당 1건 |
-| immich | 16% | 10.1일 | 3/19 | 컷 | 판정 경험 있음 · 게이트 0 — `changelog:*` 라벨이 메인테이너 전용 |
-| react | 13% | 1.0일 | 6/45 | 컷 | 후보가 `/* DISABLED */` 주석 건이라 PR 보다 이슈가 맞다 |
+| vscode | 91% | 0.1일 | 20/22 | **통과** | 게이트 0 — 링크된 이슈 없는 외부 PR 을 봇이 닫는다 |
+| langfuse | 89% | 0.6일 | 31/35 | **통과** | 열린 PR 있음 — 저장소당 1건 |
+| n8n | 89% | 1.2일 | 25/28 | **통과** | 판정 경험 있음 |
+| novu | 87% | 0.0일 | 27/31 | **통과** | 판정 경험 있음 |
+| nx | 83% | 1.1일 | 19/23 | **통과** | 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 |
+| Ghost | 81% | 1.8일 | 13/16 | **통과** | 판정 경험 있음 |
+| openstatus | 80% | 0.5일 | 28/35 | **통과** | 열린 PR 있음 — 저장소당 1건 |
+| storybook | 79% | 1.6일 | 33/42 | **통과** | 열린 PR 있음 — 저장소당 1건 · danger 가 `ci:*`·`qa:*` 라벨을 요구한다 — 메인테이너만 붙일 수 있어 그때까진 빨간불 |
+| astro | 74% | 2.0일 | 39/53 | **통과** | 열린 PR 있음 — 저장소당 1건 · 사용자에게 보이는 변화면 changeset 필요 |
+| rollup | 73% | 8.5일 | 11/15 | 통과 · 후순위(느림) | 판정 경험 있음 · 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요 |
+| budibase | 72% | 1.0일 | 13/18 | **통과** | 판정 경험 있음 |
+| mongoose | 71% | 3.0일 | 20/28 | **통과** | — |
+| next.js | 66% | 0.9일 | 29/44 | **통과** | 커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시 |
+| pnpm | 64% | 6.2일 | 9/14 | 통과 · 후순위(느림) | 판정 경험 있음 · AI 작성 PR 본문에 agent disclosure 필수 · 전체 저장소 대신 영향 패키지 테스트 실행 |
+| payload | 62% | 3.4일 | 18/29 | 통과 · 후순위(느림) | 판정 경험 있음 |
+| strapi | 59% | 3.0일 | 30/51 | 컷 | 판정 경험 있음 |
+| outline | 50% | 0.3일 | 3/6 | 컷 | 판정 경험 있음 |
+| medusa | 50% | 12.1일 | 8/16 | 컷 | 판정 경험 있음 |
+| vitest | 48% | 21.4일 | 12/25 | 컷 | CLA 서명 필요 |
+| directus | 44% | 2.1일 | 17/39 | 컷 | 판정 경험 있음 |
+| angular | 43% | 1.0일 | 21/49 | 컷 | CLA 서명 필요 |
+| twenty | 43% | 1.0일 | 10/23 | 컷 | 판정 경험 있음 |
+| vite | 40% | 0.9일 | 19/47 | 컷 | 판정 경험 있음 |
+| nocodb | 40% | 4.1일 | 2/5 | 컷 | 판정 경험 있음 |
+| cal.diy | 20% | 6.4일 | 11/56 | 컷 | 판정 경험 있음 · 게이트 0 — 외부 PR 에서 `required` 잡이 항상 실패 |
+| excalidraw | 18% | 1.0일 | 7/38 | 컷 | 열린 PR 있음 — 저장소당 1건 |
 | typeorm | 12% | 10.9일 | 5/40 | 컷 | 열린 PR 있음 — 저장소당 1건 |
-| cal.diy | 10% | 3.9일 | 6/59 | 컷 | 판정 경험 있음 · 게이트 0 — 외부 PR 에서 `required` 잡이 항상 실패 |
-| typebot.io | 10% | 9.7일 | 1/10 | 컷 | 열린 PR 있음 — 저장소당 1건 |
+| immich | 12% | 24.7일 | 2/16 | 컷 | 판정 경험 있음 · 게이트 0 — `changelog:*` 라벨이 메인테이너 전용 |
+| react | 10% | 0.6일 | 4/42 | 컷 | 후보가 `/* DISABLED */` 주석 건이라 PR 보다 이슈가 맞다 |
+| typebot.io | 10% | 9.7일 | 1/10 | 컷 | 판정 경험 있음 |
 <!-- /auto:rotation -->
 
 수락률은 최근 닫힌 외부 PR(봇·멤버 제외) 중 머지 비율이고, 중앙은 그중 머지된 것들의
