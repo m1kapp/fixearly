@@ -3,6 +3,7 @@ node_modules/
 
 # 엔진이 남기는 로컬 측정 이력 — 기계마다 값이 달라 공유하면 진행도가 거짓말을 한다.
 .fixearly-history.json
+.fixearly-sweep.json
 .vercel
 
 # fixearly 자기 실행 산출물 — 사이트와 무관하다.

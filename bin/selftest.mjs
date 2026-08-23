@@ -14,6 +14,7 @@ import os from "os";
 import path from "path";
 import { spawnSync } from "child_process";
 import { fileURLToPath } from "url";
+import { buildSweepDecision, collectSweepCandidates } from "./sweep.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const src = fs.readFileSync(path.join(ROOT, "bin", "fixearly.mjs"), "utf8");
@@ -397,6 +398,48 @@ if (generatedSrc) {
   check("include 글롭을 주석 제거로 망가뜨리지 않는다", !/include 에도 안 걸린다/.test(right.text));
 
   fs.rmSync(repo, { recursive: true, force: true });
+}
+
+// ── 빠른 정적 훑기: 후보 우선순위와 기준선 diff ─────────────────────────
+{
+  console.log("\n빠른 정적 훑기:");
+  const check = (name, ok) => {
+    if (!ok) fail++;
+    console.log(`  ${ok ? "✓" : "✗"} ${name}`);
+  };
+  const emptyTextbook = Object.fromEntries([
+    "awaitInForEach", "spreadAccumulator", "regexInLoop", "floatingPromise",
+    "loopInvariantIndex", "sharedRefFill", "numericSortNoComparator", "emptyCatch",
+    "statefulRegex", "forInArray", "writeOnlyCollection",
+  ].map((key) => [key, { count: 0, worst: [] }]));
+  const quality = {
+    quadratic: { candidateList: [{ file: "src/perf.ts", line: 3, recv: "rows", method: "find" }] },
+    serialAwait: { worst: [] }, nplusOne: { worst: [] }, io: { worst: [] },
+    renderGates: { worst: [] }, coupling: { worst: [] },
+    textbook: {
+      ...emptyTextbook,
+      statefulRegex: { count: 1, worst: [{ file: "src/re.ts", line: 2, name: "TOKEN_RE" }] },
+      emptyCatch: { count: 1, worst: [{ file: "src/errors.ts", line: 8 }] },
+    },
+  };
+  const source = {
+    "src/perf.ts:3": "const hit = rows.find((row) => row.id === id);",
+    "src/re.ts:2": "return TOKEN_RE.test(value);",
+    "src/errors.ts:8": "} catch {}",
+  };
+  const readLine = (file, line) => source[`${file}:${line}`] || "";
+  const candidates = collectSweepCandidates(quality, { readLine });
+  check("실제 영향과 구분된 정적 우선순위를 내림차순 정렬", candidates[0]?.axis === "statefulRegex" && candidates[0]?.priority === 100);
+  check("입력 n을 모르는 O(n²)는 맥락 확인부터", candidates.find((item) => item.axis === "quadratic")?.gate === "context");
+  check("확신이 낮은 빈 catch는 깊은 검증에서 보류", candidates.find((item) => item.axis === "emptyCatch")?.gate === "deferred");
+  const first = buildSweepDecision(quality, { readLine, previous: [] });
+  check("큰 후보가 있으면 deep-dive 판정", first.decision === "deep-dive" && first.counts.new === 3);
+  const second = buildSweepDecision(quality, { readLine, previous: first.candidates });
+  check("같은 기준선 재실행은 신규가 아닌 유지", second.counts.new === 0 && second.counts.persistent === 3 && second.counts.resolved === 0);
+  const clean = buildSweepDecision({ ...quality, quadratic: { candidateList: [] }, textbook: emptyTextbook }, {
+    readLine, previous: first.candidates,
+  });
+  check("깨끗한 훑기는 monitor이며 해소를 보존", clean.decision === "monitor" && clean.counts.resolved === 3);
 }
 
 console.log(fail ? `\n  ${fail} FAIL` : `\n  all passed`);
