@@ -220,6 +220,7 @@ CLA·외부 PR 자동 닫기 없음. 열린 #2338 이 같은 두 파일을 건�
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
 | [mongoose#16474](https://github.com/Automattic/mongoose/pull/16474) | O(n²) | 🟠 변경 요청 | 2일째 / 보통 3일 |
+| [ghost#30284](https://github.com/TryGhost/Ghost/pull/30284) | O(n²) | ⚪ 대기 | 오늘 / 보통 2일 |
 | [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 24일째 / 보통 1일 · 보류 |
 | [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 27일째 / 보통 1일 · 보류 |
 | [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 14일째 / 보통 1일 · 보류 |
@@ -227,8 +228,9 @@ CLA·외부 PR 자동 닫기 없음. 열린 #2338 이 같은 두 파일을 건�
 | [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 15일째 / 보통 2일 · 보류 |
 | [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | ⚪ 대기 | 25일째 / 보통 11일 · 보류 |
 | [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 14일째 / 보통 2일 · 보류 |
+| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🟡 초안 | 오늘 / 보통 1일 |
 
-**열린 것 8건(보류 7건 빼면 1건).** 판정 난 21건 중 머지 11 · 승인 0 · 닫힘 10.
+**열린 것 10건(보류 7건 빼면 3건).** 판정 난 21건 중 머지 11 · 승인 0 · 닫힘 10.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -412,10 +414,10 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 |---|---|---|---|---|---|
 | vscode | 91% | 0.1일 | 20/22 | **통과** | 게이트 0 — 링크된 이슈 없는 외부 PR 을 봇이 닫는다 |
 | langfuse | 89% | 0.6일 | 31/35 | **통과** | 열린 PR 있음 — 저장소당 1건 |
-| n8n | 89% | 1.2일 | 25/28 | **통과** | 판정 경험 있음 |
+| n8n | 89% | 1.2일 | 25/28 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | novu | 87% | 0.0일 | 27/31 | **통과** | 판정 경험 있음 |
 | nx | 83% | 1.1일 | 19/23 | **통과** | 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 |
-| Ghost | 81% | 1.8일 | 13/16 | **통과** | 판정 경험 있음 |
+| Ghost | 81% | 1.8일 | 13/16 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | openstatus | 80% | 0.5일 | 28/35 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | storybook | 79% | 1.6일 | 33/42 | **통과** | 열린 PR 있음 — 저장소당 1건 · danger 가 `ci:*`·`qa:*` 라벨을 요구한다 — 메인테이너만 붙일 수 있어 그때까진 빨간불 |
 | astro | 74% | 2.0일 | 39/53 | **통과** | 열린 PR 있음 — 저장소당 1건 · 사용자에게 보이는 변화면 changeset 필요 |
