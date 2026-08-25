@@ -128,6 +128,82 @@ def trail(at):
     return f'<span class="trail" aria-hidden="true">{"".join(out)}</span>'
 
 
+def delivery_timeline(f, key, pr_url, age_html):
+    """PR 생성 → 머지 → 릴리즈를 링크 가능한 세로 계보로 만든다.
+
+    카드 전체를 PR 링크로 두면 릴리즈 링크를 중첩할 수 없다. 머지 카드의 본문과
+    계보를 분리하고, 앞의 두 사건은 PR로, 마지막 사건은 실제 배포 경계로 잇는다.
+    아직 머지되지 않은 카드도 같은 세 칸을 유지하되 남은 경계를 사실대로 적는다.
+    nightly 는 안정판으로 과장하지 않는다.
+    """
+    if key == "closed":
+        return ""
+    created = f.get("createdAt")
+    if not created:
+        return ""
+    import datetime as _d
+    month = lambda value: (lambda dt: f"'{dt:%y}.{dt.month}")(
+        _d.datetime.fromisoformat(value.replace("Z", "+00:00")))
+    created_month = month(created)
+    pr_link = f'href="{pr_url}" target="_blank" rel="noopener"'
+    if key != "merged":
+        pending_ko = {
+            "approved": "승인 · 머지 대기",
+            "changes": "변경 요청 대응 중",
+            "reviewing": "리뷰 진행 중",
+            "waiting": "아직 아무도 안 봄",
+            "stalled": "보류",
+            "draft": "초안",
+        }.get(key, "아직")
+        pending_en = {
+            "approved": "approved · awaiting merge",
+            "changes": "changes requested",
+            "reviewing": "in review",
+            "waiting": "not reviewed yet",
+            "stalled": "stalled",
+            "draft": "draft",
+        }.get(key, "pending")
+        return (
+            f'<span class="iship pending">'
+            f'<span class="iship-step now"><a {pr_link}><time>{created_month}</time>'
+            f'<span class="ko">PR 생성</span><span class="en">PR opened</span></a>{age_html}</span>'
+            f'<span class="iship-step todo"><a {pr_link}>'
+            f'<span class="ko">PR 머지 · {pending_ko}</span>'
+            f'<span class="en">PR merge · {pending_en}</span></a></span>'
+            f'<span class="iship-step todo"><span class="ko">릴리즈 · 머지 후</span>'
+            f'<span class="en">release · after merge</span></span>'
+            f'</span>'
+        )
+    release = f.get("release") or {}
+    merged = f.get("mergedAt")
+    version, released, release_url = (release.get("version"),
+                                      release.get("releasedAt"),
+                                      release.get("url"))
+    if not (created and merged and version and released and release_url):
+        return ""
+    merged_month, release_month = map(month, (merged, released))
+    release_link = f'href="{release_url}" target="_blank" rel="noopener"'
+    if release.get("channel") == "nightly":
+        cls = "iship nightly"
+        release_ko = 'nightly 배포 · 안정판 대기'
+        release_en = 'nightly shipped · stable pending'
+    else:
+        cls = "iship"
+        release_ko = f'릴리즈 <b>{esc(version)}</b>'
+        release_en = f'released <b>{esc(version)}</b>'
+    return (
+        f'<span class="{cls}">'
+        f'<span class="iship-step"><a {pr_link}><time>{created_month}</time>'
+        f'<span class="ko">PR 생성</span><span class="en">PR opened</span></a>{age_html}</span>'
+        f'<span class="iship-step"><a {pr_link}><time>{merged_month}</time>'
+        f'<span class="ko">PR 머지 <b>#{f["pr"]}</b></span>'
+        f'<span class="en">PR merged <b>#{f["pr"]}</b></span></a></span>'
+        f'<span class="iship-step"><a {release_link}><time>{release_month}</time>'
+        f'<span class="ko">{release_ko}</span><span class="en">{release_en}</span></a></span>'
+        f'</span>'
+    )
+
+
 # 카드에 저장소 이름만 있으면 "novu 가 뭔데" 에서 읽기가 멈춘다. 한 줄 설명을 붙인다.
 # GitHub description 을 그대로 쓰지 않는 이유: 마케팅 문구라 길고 자기소개다
 # ("The world's most flexible commerce platform for agents and developers").
@@ -222,6 +298,9 @@ def card(f, key):
             rate_cls = "rate low" if rate < 30 else "rate"
             avg_html += (f'<span class="{rate_cls} ko" title="{rate_tip_ko}">수락 {rate}%</span>'
                          f'<span class="{rate_cls} en" title="{rate_tip_en}">{rate}% merged</span>')
+    if key == "merged":
+        age_ko = f"머지까지 {age_days}일" if age_days >= 1 else "당일 머지"
+        age_en = f"{age_days}d to merge" if age_days >= 1 else "merged same day"
     age_html = (f'<span class="age{pace_cls}"{attrs}><span class="ko">{age_ko}</span>'
                 f'<span class="en">{age_en}</span>{avg_html}</span>') if age_ko else ""
     src = AVATAR.get(f["repo"])
@@ -239,18 +318,26 @@ def card(f, key):
     rk, re_ = f.get("closedReason", ""), f.get("closedReasonEn", "")
     why = (f'<span class="iwhy"><span class="ko">{esc(rk)}</span>'
            f'<span class="en">{esc(re_)}</span></span>') if ended and rk else ""
-    return (
-        f'<a class="{cls}" href="{url}" target="_blank" rel="noopener">'
+    shipped = delivery_timeline(f, key, url, age_html)
+    # 머지된 PR 번호는 이제 아래 계보의 시작점이다. 상태 줄에도 남기면 같은 숫자가
+    # 두 번 보여 위계가 흐려진다. 진행·닫힘 카드는 기존 위치를 유지한다.
+    pr_number = "" if key == "merged" else f'<span class="prn">#{f["pr"]}</span>'
+    status = (f'<span class="ist">{mark}'
+              f'<span class="istate ko">{ko}</span><span class="istate en">{en}</span>'
+              f'{on_html}{age_html}{pr_number}</span>') if not shipped else ""
+    core = (
         f'{GH_MARK}'
         f'<b>{fav}{esc(name)}{star_html}</b>'
         f'{what}'
         f'<span class="it">{title_html}</span>'
-        f'<span class="ist">{mark}'
-        f'<span class="istate ko">{ko}</span><span class="istate en">{en}</span>'
-        f'{on_html}{age_html}'
-        f'<span class="prn">#{f["pr"]}</span></span>'
-        f'{why}</a>'
+        f'{status}'
     )
+    if shipped:
+        return (f'<article class="{cls}">'
+                f'<a class="icmain" href="{url}" target="_blank" rel="noopener">{core}</a>'
+                f'{shipped}</article>')
+    return (f'<a class="{cls}" href="{url}" target="_blank" rel="noopener">'
+            f'{core}{why}</a>')
 
 
 grouped = {k: [] for k in ORDER}
@@ -373,6 +460,15 @@ noreason = sorted(f"#{f['pr']}" for f in findings
 for r in noreason:
     print(f"  ✗ 닫힌 사유 없음(impact.json 의 closedReason/closedReasonEn): {r}")
 missing = missing + noicon + notranslated + noreason
+missing_release = sorted(f"#{f['pr']}" for f in findings
+                         if state_by_pr.get(str(f["pr"])) == "merged"
+                         and not (f.get("release", {}).get("channel") in ("stable", "nightly")
+                                  and f.get("release", {}).get("version")
+                                  and f.get("release", {}).get("releasedAt")
+                                  and f.get("release", {}).get("url")))
+for r in missing_release:
+    print(f"  ✗ 릴리즈 계보 없음(impact.json 의 release): {r}")
+missing += missing_release
 missing_times = sorted(f["repo"] for f in findings
                        if f.get("status") not in ("merged", "closed")
                        and f["repo"] not in MERGE_TIMES)

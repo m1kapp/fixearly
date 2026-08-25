@@ -4,7 +4,7 @@
    "title": "deleteBulkMetadata N+1",
    "type": "N+1 (루프 안 순차 DELETE, item당 왕복 1회)",
    "repo": "immich-app/immich",
-   "repoLabel": "immich · 112.4k★",
+   "repoLabel": "immich · 112.6k★",
    "pr": 30163,
    "createdAt": "2026-07-23T15:26:09Z",
    "status": "closed",
@@ -16,7 +16,7 @@
    "title": "sync-agent findOne N+1",
    "type": "N+1 (for 루프 안 findOne, 소스 통합당 쿼리 1회)",
    "repo": "novuhq/novu",
-   "repoLabel": "novu · 39.6k★",
+   "repoLabel": "novu · 39.7k★",
    "pr": 12074,
    "createdAt": "2026-07-23T23:16:52Z",
    "status": "closed",
@@ -40,7 +40,7 @@
    "title": "view-widget-upsert O(n²)",
    "type": "O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map)",
    "repo": "twentyhq/twenty",
-   "repoLabel": "twenty · 55.4k★",
+   "repoLabel": "twenty · 55.5k★",
    "pr": 23231,
    "createdAt": "2026-07-24T01:00:49Z",
    "closedAt": "2026-07-24T07:31:11Z",
@@ -52,7 +52,7 @@
    "title": "nested relations hydration O(n²)",
    "type": "O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map)",
    "repo": "twentyhq/twenty",
-   "repoLabel": "twenty · 55.4k★",
+   "repoLabel": "twenty · 55.5k★",
    "pr": 23232,
    "createdAt": "2026-07-24T01:48:53Z",
    "closedAt": "2026-07-24T16:25:37Z",
@@ -76,7 +76,7 @@
    "title": "dataloader doc placement O(n²)",
    "type": "O(n²) (배치당 keys.findIndex 전체 스캔 — Map으로 O(1))",
    "repo": "payloadcms/payload",
-   "repoLabel": "payload · 44.3k★",
+   "repoLabel": "payload · 44.4k★",
    "pr": 17469,
    "createdAt": "2026-07-24T12:40:04Z",
    "status": "closed",
@@ -94,7 +94,13 @@
    "status": "merged",
    "outcomeNote": "메인테이너 승인 뒤 머지",
    "outcomeNoteEn": "merged after maintainer approval",
-   "mergedAt": "2026-08-04T12:15:08Z"
+   "mergedAt": "2026-08-04T12:15:08Z",
+   "release": {
+    "channel": "stable",
+    "version": "v2.19.0",
+    "releasedAt": "2026-08-13T13:09:55Z",
+    "url": "https://github.com/medusajs/medusa/releases/tag/v2.19.0"
+   }
   },
   {
    "title": "markdown import merge O(n²)",
@@ -106,7 +112,13 @@
    "mergedAt": "2026-07-30T03:04:09Z",
    "status": "merged",
    "outcomeNote": "질문 없이 머지",
-   "outcomeNoteEn": "merged with no questions"
+   "outcomeNoteEn": "merged with no questions",
+   "release": {
+    "channel": "nightly",
+    "version": "nightly",
+    "releasedAt": "2026-08-01T15:14:24Z",
+    "url": "https://github.com/outline/outline/actions/runs/30705244467"
+   }
   },
   {
    "title": "doc-metadata localization O(n²)",
@@ -124,7 +136,7 @@
    "title": "parse-fields dedup O(n²)",
    "type": "O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1))",
    "repo": "directus/directus",
-   "repoLabel": "directus · 37.5k★",
+   "repoLabel": "directus · 37.4k★",
    "pr": 27978,
    "createdAt": "2026-07-24T13:03:10Z",
    "closedAt": "2026-07-29T19:34:55Z",
@@ -136,13 +148,19 @@
    "title": "resource-mapper schema validation O(n²)",
    "type": "O(n²) (value별 schema.find — id Map으로 O(1))",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 202k★",
+   "repoLabel": "n8n · 202.4k★",
    "pr": 34899,
    "createdAt": "2026-07-24T13:05:42Z",
    "status": "merged",
    "mergedAt": "2026-07-31T17:05:28Z",
    "outcomeNote": "봇이 요구한 changeset prefix 만 고치고 통과",
-   "outcomeNoteEn": "only the changeset prefix the bot asked for"
+   "outcomeNoteEn": "only the changeset prefix the bot asked for",
+   "release": {
+    "channel": "stable",
+    "version": "n8n@2.34.4",
+    "releasedAt": "2026-08-07T16:09:03Z",
+    "url": "https://github.com/n8n-io/n8n/releases/tag/n8n%402.34.4"
+   }
   },
   {
    "title": "user field validation O(n²)",
@@ -154,7 +172,13 @@
    "mergedAt": "2026-07-31T09:51:55Z",
    "status": "merged",
    "outcomeNote": "질문 없이 머지",
-   "outcomeNoteEn": "merged with no questions"
+   "outcomeNoteEn": "merged with no questions",
+   "release": {
+    "channel": "stable",
+    "version": "2026.08.0",
+    "releasedAt": "2026-08-05T11:26:21Z",
+    "url": "https://github.com/nocodb/nocodb/releases/tag/2026.08.0"
+   }
   },
   {
    "title": "ExternalRequest field lookup O(n²)",
@@ -178,14 +202,20 @@
    "status": "merged",
    "mergedAt": "2026-08-04T15:18:39Z",
    "outcomeNote": "메인테이너 승인 뒤 자동 머지",
-   "outcomeNoteEn": "auto-merged after maintainer approval"
+   "outcomeNoteEn": "auto-merged after maintainer approval",
+   "release": {
+    "channel": "stable",
+    "version": "v2.19.0",
+    "releasedAt": "2026-08-13T13:09:55Z",
+    "url": "https://github.com/medusajs/medusa/releases/tag/v2.19.0"
+   }
   },
   {
    "title": "eval dataset item 반복 조회",
    "titleEn": "eval dataset item re-read",
    "type": "중복 쿼리 (변수마다 동일 WHERE 로 같은 행 재조회 → 컬럼 합쳐 1회)",
    "repo": "langfuse/langfuse",
-   "repoLabel": "langfuse · 33.6k★",
+   "repoLabel": "langfuse · 33.7k★",
    "pr": 15585,
    "createdAt": "2026-07-29T14:13:47Z",
    "status": "waiting"
@@ -200,7 +230,13 @@
    "createdAt": "2026-07-29T15:06:43Z",
    "status": "merged",
    "mergedAt": "2026-08-19T07:36:43Z",
-   "outcomeNote": "사람 리뷰 없이 20.7일 만에 메인테이너가 직접 머지"
+   "outcomeNote": "사람 리뷰 없이 20.7일 만에 메인테이너가 직접 머지",
+   "release": {
+    "channel": "stable",
+    "version": "v3.18.0",
+    "releasedAt": "2026-08-21T16:59:33Z",
+    "url": "https://github.com/baptisteArno/typebot.io/releases/tag/v3.18.0"
+   }
   },
   {
    "title": "loadTables 카탈로그 전량 재스캔",
@@ -217,13 +253,19 @@
    "titleEn": "growth stats 3 serial aggregates",
    "type": "독립 순차 await (postId 하나로만 매개되는 집계 3개 직렬 → Promise.all, 합→최댓값)",
    "repo": "TryGhost/Ghost",
-   "repoLabel": "ghost · 55k★",
+   "repoLabel": "ghost · 55.1k★",
    "pr": 29704,
    "createdAt": "2026-07-31T05:35:10Z",
    "status": "merged",
    "mergedAt": "2026-08-03T16:54:15Z",
    "outcomeNote": "메인테이너가 병렬화 변경을 승인한 뒤 머지",
-   "outcomeNoteEn": "maintainer approved the concurrency change and merged"
+   "outcomeNoteEn": "maintainer approved the concurrency change and merged",
+   "release": {
+    "channel": "stable",
+    "version": "v6.56.0",
+    "releasedAt": "2026-08-04T17:48:55Z",
+    "url": "https://github.com/TryGhost/Ghost/releases/tag/v6.56.0"
+   }
   },
   {
    "title": "pure CSS 청크 선형 조회",
@@ -236,14 +278,20 @@
    "status": "merged",
    "outcomeNote": "당일 승인, 2일 만에 머지",
    "outcomeNoteEn": "approved same day, merged in 2 days",
-   "mergedAt": "2026-08-03T03:03:30Z"
+   "mergedAt": "2026-08-03T03:03:30Z",
+   "release": {
+    "channel": "stable",
+    "version": "v8.2.1",
+    "releasedAt": "2026-08-06T13:44:35Z",
+    "url": "https://github.com/vitejs/vite/releases/tag/v8.2.1"
+   }
   },
   {
    "title": "resize 핸들러 안 미사용 Map",
    "titleEn": "unused Map in resize handler",
    "type": "쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제)",
    "repo": "excalidraw/excalidraw",
-   "repoLabel": "excalidraw · 130.3k★",
+   "repoLabel": "excalidraw · 130.5k★",
    "pr": 11805,
    "createdAt": "2026-08-01T14:22:45Z",
    "status": "waiting"
@@ -253,11 +301,17 @@
    "titleEn": "unused Map in member count history",
    "type": "쓰기만 하는 컬렉션 (날짜별 Map 을 채우고 아무도 안 읽음 — 삭제)",
    "repo": "TryGhost/Ghost",
-   "repoLabel": "ghost · 55k★",
+   "repoLabel": "ghost · 55.1k★",
    "pr": 29831,
    "status": "merged",
    "createdAt": "2026-08-08T03:16:06Z",
-   "mergedAt": "2026-08-10T18:30:32Z"
+   "mergedAt": "2026-08-10T18:30:32Z",
+   "release": {
+    "channel": "stable",
+    "version": "v6.57.1",
+    "releasedAt": "2026-08-10T20:39:48Z",
+    "url": "https://github.com/TryGhost/Ghost/releases/tag/v6.57.1"
+   }
   },
   {
    "title": "invalidate() 안 미사용 Set",
@@ -284,7 +338,7 @@
    "titleEn": "unread task graph cache in the graph command",
    "type": "쓰기만 하는 컬렉션 (선언과 .clear() 만 남았다 — 읽기·쓰기는 #32418 에서 사라졌다)",
    "repo": "nrwl/nx",
-   "repoLabel": "nx · 29.2k★",
+   "repoLabel": "nx · 29.3k★",
    "pr": 36633,
    "createdAt": "2026-08-11T13:21:48Z",
    "status": "waiting"
@@ -308,7 +362,13 @@
    "pr": 6482,
    "status": "merged",
    "createdAt": "2026-08-20T08:33:07Z",
-   "mergedAt": "2026-08-20T18:25:17Z"
+   "mergedAt": "2026-08-20T18:25:17Z",
+   "release": {
+    "channel": "stable",
+    "version": "v4.63.0",
+    "releasedAt": "2026-08-25T13:05:57Z",
+    "url": "https://github.com/rollup/rollup/releases/tag/v4.63.0"
+   }
   },
   {
    "title": "의존성 분할 안 미사용 Set",
@@ -319,7 +379,13 @@
    "pr": 14032,
    "status": "merged",
    "createdAt": "2026-08-20T11:10:08Z",
-   "mergedAt": "2026-08-22T15:35:55Z"
+   "mergedAt": "2026-08-22T15:35:55Z",
+   "release": {
+    "channel": "stable",
+    "version": "v11.23.0",
+    "releasedAt": "2026-08-23T14:41:02Z",
+    "url": "https://github.com/pnpm/pnpm/releases/tag/v11.23.0"
+   }
   },
   {
    "title": "bulkSave 오류 문서 반복 매칭",
@@ -328,7 +394,7 @@
    "repo": "Automattic/mongoose",
    "repoLabel": "mongoose · 27.5k★",
    "pr": 16474,
-   "status": "waiting",
+   "status": "changes",
    "createdAt": "2026-08-23T09:00:03Z"
   }
  ]
