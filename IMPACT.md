@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 11**
+> **fixearly 임팩트 점수: 12**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -11,7 +11,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 
 | 발견 | repo | 유형 | PR | 상태 | 점수 |
 |------|------|------|----|------|------|
-| `deleteBulkMetadata N+1` | [immich · 112.6k★](https://github.com/immich-app/immich) | N+1 (루프 안 순차 DELETE, item당 왕복 1회) | [#30163](https://github.com/immich-app/immich/pull/30163) | ❌ closed | — |
+| `deleteBulkMetadata N+1` | [immich · 112.7k★](https://github.com/immich-app/immich) | N+1 (루프 안 순차 DELETE, item당 왕복 1회) | [#30163](https://github.com/immich-app/immich/pull/30163) | ❌ closed | — |
 | `sync-agent findOne N+1` | [novu · 39.7k★](https://github.com/novuhq/novu) | N+1 (for 루프 안 findOne, 소스 통합당 쿼리 1회) | [#12074](https://github.com/novuhq/novu/pull/12074) | ❌ closed | — |
 | `booking member diff O(n²)` | [cal.com · 47.9k★](https://github.com/calcom/cal.diy) | O(n²) 배열 조회 (루프 안 .some() 선형스캔 4회 → Set) | [#29828](https://github.com/calcom/cal.diy/pull/29828) | ❌ closed | — |
 | `view-widget-upsert O(n²)` | [twenty · 55.5k★](https://github.com/twentyhq/twenty) | O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map) | [#23231](https://github.com/twentyhq/twenty/pull/23231) | ❌ closed | — |
@@ -39,8 +39,8 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `페이지 monitor 검증 뒤 중복 조회` | [openstatus · 9k★](https://github.com/openstatusHQ/openstatus) | N+1 (페이지 생성·수정에서 일괄 검증한 monitor를 루프마다 재조회 — Map 재사용) | [#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | ⚪ awaiting review | — |
 | `청크 렌더 안 미사용 Map` | [rollup · 26.3k★](https://github.com/rollup/rollup) | 쓰기만 하는 컬렉션 (비어 있지 않은 렌더 모듈마다 .set(), 읽기 없음 — 삭제) | [#6482](https://github.com/rollup/rollup/pull/6482) | ✅ merged | +1 |
 | `의존성 분할 안 미사용 Set` | [pnpm · 36.2k★](https://github.com/pnpm/pnpm) | 쓰기만 하는 컬렉션 (함수 호출마다 Set 생성, 링크 의존성마다 .add(), 읽기 없음 — 삭제) | [#14032](https://github.com/pnpm/pnpm/pull/14032) | ✅ merged | +1 |
-| `bulkSave 오류 문서 반복 매칭` | [mongoose · 27.5k★](https://github.com/Automattic/mongoose) | O(n²) 배열 조회 (문서마다 writeErrors.find 전체 스캔 → 실패 id Set으로 O(1)) | [#16474](https://github.com/Automattic/mongoose/pull/16474) | 🟠 changes requested | — |
-| `credential 삭제 완료 전 명령 종료` | [n8n · 202.4k★](https://github.com/n8n-io/n8n) | 버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all) | [#37047](https://github.com/n8n-io/n8n/pull/37047) | 🟡 draft · 머지되면 +1 | — |
+| `bulkSave 오류 문서 반복 매칭` | [mongoose · 27.5k★](https://github.com/Automattic/mongoose) | O(n²) 배열 조회 (문서마다 writeErrors.find 전체 스캔 → 실패 id Set으로 O(1)) | [#16474](https://github.com/Automattic/mongoose/pull/16474) | ✅ merged | +1 |
+| `credential 삭제 완료 전 명령 종료` | [n8n · 202.4k★](https://github.com/n8n-io/n8n) | 버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all) | [#37047](https://github.com/n8n-io/n8n/pull/37047) | ⚪ awaiting review | — |
 | `post relation 연결 반복 조회` | [ghost · 55.1k★](https://github.com/TryGhost/Ghost) | O(n²) (relation마다 전체 posts.find → id Map으로 O(1), 100건에서 id 조회 5,050→100) | [#30284](https://github.com/TryGhost/Ghost/pull/30284) | ⚪ awaiting review | — |
 
 ## 규칙
