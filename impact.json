@@ -4,7 +4,7 @@
    "title": "deleteBulkMetadata N+1",
    "type": "N+1 (루프 안 순차 DELETE, item당 왕복 1회)",
    "repo": "immich-app/immich",
-   "repoLabel": "immich · 112.6k★",
+   "repoLabel": "immich · 112.7k★",
    "pr": 30163,
    "createdAt": "2026-07-23T15:26:09Z",
    "status": "closed",
@@ -394,8 +394,16 @@
    "repo": "Automattic/mongoose",
    "repoLabel": "mongoose · 27.5k★",
    "pr": 16474,
-   "status": "changes",
-   "createdAt": "2026-08-23T09:00:03Z"
+   "status": "merged",
+   "createdAt": "2026-08-23T09:00:03Z",
+   "mergedAt": "2026-08-25T15:43:45Z",
+   "outcomeNote": "리뷰의 변경 요청을 반영한 뒤 승인·머지",
+   "release": {
+    "channel": "stable",
+    "version": "9.9.4",
+    "releasedAt": "2026-08-25T16:57:00Z",
+    "url": "https://github.com/Automattic/mongoose/releases/tag/9.9.4"
+   }
   },
   {
    "title": "credential 삭제 완료 전 명령 종료",
@@ -404,7 +412,7 @@
    "repo": "n8n-io/n8n",
    "repoLabel": "n8n · 202.4k★",
    "pr": 37047,
-   "status": "draft",
+   "status": "waiting",
    "createdAt": "2026-08-25T15:17:47Z"
   },
   {
