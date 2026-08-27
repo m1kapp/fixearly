@@ -338,6 +338,19 @@ if (generatedSrc) {
   const inside = run(src2);
   check("대상 안의 scripts/ 는 여전히 제외된다", /파일: 1개/.test(inside.text));
 
+  // TypeScript 저장소의 tsc/testdata 에는 파서 오류를 검증하려고 의도적으로
+  // 깨뜨린 소스가 있다. 제품 코드로 읽으면 createSourceFile 자체가 assertion을
+  // 던질 수 있으므로, testdata 는 tests/·fixtures/와 같은 경계에서 제외한다.
+  const src3 = path.join(root, "testdata-boundary", "src");
+  fs.mkdirSync(path.join(src3, "testdata"), { recursive: true });
+  fs.writeFileSync(path.join(src3, "valid.ts"), body("valid"));
+  fs.writeFileSync(
+    path.join(src3, "testdata", "decoratorOnAwait.ts"),
+    "declare function dec<T>(target: T): T;\n\n@dec\nawait 1\n",
+  );
+  const testdata = run(src3);
+  check("testdata 의 깨진 파서 픽스처는 제외된다", testdata.code === 0 && /파일: 1개/.test(testdata.text));
+
   // 전부 걸러지면 채점하지 않고 실패한다 — 0개를 채점하면 모든 축이 0 이라 만점이 된다.
   const empty = run(src2, ["--exclude=*"]);
   check("전부 제외되면 만점 대신 실패", empty.code === 1 && /분석할 프로덕션 파일이 없습니다/.test(empty.text));
