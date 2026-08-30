@@ -175,6 +175,11 @@ if (unknown.length > 0) {
   process.exit(1);
 }
 
+// 열린 PR 의 경과일은 이 상태 조회가 끝난 시점을 기준으로 정적 HTML 에 박는다.
+// 카드 생성기가 실행 시각(Date.now)이 아니라 이 값을 써야 같은 레지스트리에서
+// 언제나 같은 index.html 이 나오고, 브라우저는 data-since 로 최신 경과를 덮어쓴다.
+registry.generatedAt = new Date().toISOString();
+
 // IMPACT.md 재생성
 const tableRows = rows
   .map((r) => {
