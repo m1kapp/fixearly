@@ -13,3 +13,10 @@ public/
 
 # 사내 비공개 저장소 대시보드 — 생성 결과·저장소명·등급을 절대 공개 배포에 싣지 않는다.
 .internal/
+
+# 개인 Flow MCP 대시보드·상류 수정 연구 — 사내 메시지, 저장소명, 보안 경로를 포함한다.
+.flow-insights-auth.json
+.flow-insights-cache.json
+flow-insights-*.html
+tools/flow-insights-server.mjs
+UPSTREAM-FIX-GAP*.md
