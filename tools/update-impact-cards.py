@@ -10,11 +10,39 @@ update-impact-cards — IMPACT.md 의 PR 상태를 랜딩 08 섹션 카드로 �
 import json
 import re
 import sys
+import datetime as dt
 from collections import Counter
 
 import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-findings = json.load(open(f"{ROOT}/impact.json", encoding="utf-8"))["findings"]
+registry = json.load(open(f"{ROOT}/impact.json", encoding="utf-8"))
+findings = registry["findings"]
+
+
+def parse_time(value):
+    return dt.datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+
+def snapshot_time(data, items):
+    """카드의 정적 폴백을 만든 상태 조회 시각.
+
+    열린 PR 의 경과일을 현재 시각으로 만들면 같은 impact.json 이 자정마다 다른
+    index.html 을 만들고 --check 가 실패한다. 새 레지스트리는 generatedAt 을 쓰고,
+    필드가 없던 기존 레지스트리는 마지막 관측 사건 시각으로 결정론적으로 복구한다.
+    """
+    if data.get("generatedAt"):
+        return parse_time(data["generatedAt"])
+    observed = []
+    for item in items:
+        observed.extend(item.get(key) for key in ("createdAt", "mergedAt", "closedAt"))
+        observed.append(item.get("release", {}).get("releasedAt"))
+    timestamps = [parse_time(value) for value in observed if value]
+    if not timestamps:
+        raise ValueError("impact.json 에 generatedAt 또는 상태 시각이 없습니다")
+    return max(timestamps)
+
+
+SNAPSHOT_AT = snapshot_time(registry, findings)
 # 저장소 아이콘은 data URI 로 박는다 — 랜딩은 외부 리소스가 0개다.
 # tools/fetch-repo-avatars.py 가 만든다.
 _av = f"{ROOT}/data/repo-avatars.json"
@@ -70,7 +98,7 @@ STAR = ('<svg class="st" viewBox="0 0 16 16" width="11" height="11" aria-hidden=
 
 
 
-def elapsed(f, key):
+def elapsed(f, key, reference=None):
     """카드에 붙일 (한글, 영어, 머지월, 경과일) 사중.
 
     시간은 사람이 제일 먼저 읽는 신호다 — 6일 만에 머지된 것과 3주째 대기 중인
@@ -84,23 +112,36 @@ def elapsed(f, key):
     머지된 건 언제 끝났는지도 남긴다("'26.7"). 기간만 있으면 6일이 언제의 6일인지
     모른다.
     """
-    import datetime as _d
     born = f.get("createdAt")
     if not born:
         return ("", "", "", None)
-    parse = lambda t: _d.datetime.fromisoformat(t.replace("Z", "+00:00"))
-    start = parse(born)
+    start = parse_time(born)
     merged = f.get("mergedAt")
     done = merged or f.get("closedAt")
-    end = parse(done) if done else _d.datetime.now(_d.timezone.utc)
+    end = parse_time(done) if done else (reference or SNAPSHOT_AT)
     days = (end - start).days
     # 머지월만 적는다. 닫힌 건 굳이 날짜를 새기지 않는다.
-    on = f"'{parse(merged):%y}.{parse(merged).month}" if merged else ""
+    on = f"'{parse_time(merged):%y}.{parse_time(merged).month}" if merged else ""
     if done:
         return ((f"{days}일 만에", f"in {days}d", on, days) if days >= 1
                 else ("당일", "same day", on, days))
     return ((f"{days}일째", f"day {days}", "", days) if days >= 1
             else ("오늘", "today", "", days))
+
+
+if "--selftest" in sys.argv:
+    open_pr = {"createdAt": "2026-08-25T15:17:47Z"}
+    fixed = snapshot_time({"generatedAt": "2026-08-26T01:00:00Z"}, [])
+    assert elapsed(open_pr, "waiting", fixed)[3] == 0
+    legacy = snapshot_time({}, [
+        open_pr,
+        {"release": {"releasedAt": "2026-08-29T15:17:47Z"}},
+    ])
+    assert elapsed(open_pr, "waiting", legacy)[3] == 4
+    closed_pr = {**open_pr, "closedAt": "2026-08-27T15:17:47Z"}
+    assert elapsed(closed_pr, "closed", fixed)[3] == 2
+    print("impact 카드 경과일이 상태 스냅샷 시각에 고정된다")
+    sys.exit(0)
 
 
 def esc(t):
