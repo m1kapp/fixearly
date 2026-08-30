@@ -1,14 +1,16 @@
 {
   "name": "fixearly",
   "version": "0.5.0",
-  "description": "코드가 아니라 '다음에 고칠 때 드는 비용'을 잰다 — 일찍 고치면 싸다. JS/TS 정적 분석, 100% 로컬, SSS~E 등급, 오픈소스 70개 기준선",
+  "description": "코드가 아니라 '다음에 고칠 때 드는 비용'을 잰다 — 일찍 고치면 싸다. JS/TS 정적 분석, 100% 로컬, SSS~E 등급, 오픈소스 74개 기준선",
   "type": "module",
   "bin": {
     "fixearly": "bin/fixearly.mjs"
   },
   "files": [
-    "bin",
-    "data"
+    "bin/fixearly.mjs",
+    "bin/report.mjs",
+    "bin/sweep.mjs",
+    "data/corpus.json"
   ],
   "keywords": [
     "code-quality",
@@ -19,14 +21,24 @@
     "cli"
   ],
   "engines": {
-    "node": ">=20"
+    "node": "^20.19.0 || >=22.12.0"
   },
   "dependencies": {
-    "knip": "^6.29.0",
+    "knip": "^6.33.0",
     "typescript": "^5.4.0"
   },
   "license": "MIT",
   "homepage": "https://fixearly.m1k.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/m1kapp/fixearly.git"
+  },
+  "bugs": {
+    "url": "https://github.com/m1kapp/fixearly/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "python3 -m http.server 4173",
     "test": "node bin/selftest.mjs && python3 tools/check-false-positives.py && python3 tools/test_internal_dashboard.py && python3 tools/update-impact-cards.test.py && python3 tools/update-corpus-labels.py --check && python3 tools/add-board-rows.py --check && python3 tools/update-history-ui.py --check && python3 tools/update-impact-cards.py --check && python3 tools/update-pr-queue.py --check",
@@ -47,6 +59,7 @@
     "refresh": "python3 tools/rebuild-corpus.py && python3 tools/update-board-data.py && python3 tools/add-board-rows.py && python3 tools/update-corpus-labels.py && python3 tools/build-score-history.py && python3 tools/update-history-ui.py && node tools/update-board.mjs && python3 tools/make-og.py",
     "history": "python3 tools/build-score-history.py && python3 tools/update-history-ui.py",
     "avatars": "python3 tools/fetch-repo-avatars.py",
-    "queue": "python3 tools/update-pr-queue.py"
+    "queue": "python3 tools/update-pr-queue.py",
+    "prepublishOnly": "npm test"
   }
 }
