@@ -90,6 +90,19 @@ def stall_after(f):
     middle = MERGE_TIMES.get(f["repo"], {}).get("medianDays")
     return None if middle is None else max(1, int(middle + .5)) + STALL_GRACE_DAYS
 
+
+def stage_age_days(f, key, reference=None):
+    """현재 단계에서 멈춘 기간.
+
+    대기는 PR 생성부터 재지만, 리뷰 중은 마지막 사람 개입부터 잰다. 오래 대기한 PR에
+    오늘 maintainer가 붙었는데 곧바로 보류로 접히면 현재 상태를 거꾸로 보여준다.
+    """
+    since = f.get("engagedAt") if key == "reviewing" else f.get("createdAt")
+    if not since:
+        return None
+    start = parse_time(since)
+    return int(((reference or SNAPSHOT_AT) - start).total_seconds() // 86400)
+
 GH_MARK = ('<svg class="gh" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">'
            '<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>')
 
@@ -140,7 +153,14 @@ if "--selftest" in sys.argv:
     assert elapsed(open_pr, "waiting", legacy)[3] == 4
     closed_pr = {**open_pr, "closedAt": "2026-08-27T15:17:47Z"}
     assert elapsed(closed_pr, "closed", fixed)[3] == 2
-    print("impact 카드 경과일이 상태 스냅샷 시각에 고정된다")
+    reviewing_pr = {
+        "createdAt": "2026-08-11T00:00:00Z",
+        "engagedAt": "2026-08-28T00:00:00Z",
+    }
+    snapshot = parse_time("2026-09-01T00:00:00Z")
+    assert stage_age_days(reviewing_pr, "reviewing", snapshot) == 4
+    assert stage_age_days(reviewing_pr, "waiting", snapshot) == 21
+    print("impact 카드 경과일이 상태 스냅샷 시각에 고정된다 · 리뷰 시계는 사람 개입부터 센다")
     sys.exit(0)
 
 
@@ -322,6 +342,9 @@ def card(f, key):
             # JS 가 상태 글자를 바꾼다. 경과와 같은 이유다(index.html 아래 .age 루프).
             if key in STALLABLE or key == "stalled":
                 attrs += f' data-stall-days="{mid_days + STALL_GRACE_DAYS}"'
+                stall_since = f.get("engagedAt") if key == "reviewing" else since
+                if stall_since:
+                    attrs += f' data-stall-since="{stall_since}"'
             pace_cls = (" pace-stall" if key == "stalled"
                         else " pace-late" if age_days > mid_days else " pace-ok")
         tip_ko = f"최근 닫힌 PR {timing.get('sampledClosed', 0)}건 중 외부 머지 {sample}건의 중앙값"
@@ -385,7 +408,7 @@ grouped = {k: [] for k in ORDER}
 for f in findings:
     key = state_by_pr.get(str(f["pr"]), "waiting")
     if key in STALLABLE:
-        limit, elapsed_days = stall_after(f), elapsed(f, key)[3]
+        limit, elapsed_days = stall_after(f), stage_age_days(f, key)
         if limit is not None and elapsed_days is not None and elapsed_days >= limit:
             key = "stalled"
     grouped[key].append(f)
