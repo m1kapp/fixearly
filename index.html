@@ -450,6 +450,21 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
 
 .ist .on{margin-left:6px;font-family:var(--font-mono);font-size:10.5px;font-weight:600;color:var(--gS);flex:none}
 
+/* Fixearly 탐지 PR과 섞지 않는 별도 OSS 기여. 숫자 그리드 밖에 둬서 집계를 오염시키지 않는다. */
+.security-proof{margin-top:var(--space-lg);padding:18px 20px;scroll-margin-top:100px;border:1px solid var(--line);
+  border-left:3px solid var(--accent);border-radius:var(--radius);background:color-mix(in srgb,var(--accent) 4%,var(--paper));
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center}
+.security-proof-kicker{font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--accent)}
+.security-proof h3{margin:5px 0 0;font-size:16px;line-height:1.4}
+.security-proof h3 a{color:var(--ink);text-decoration:none}
+.security-proof h3 a:hover{text-decoration:underline;text-underline-offset:3px}
+.security-proof p{margin:7px 0 0;color:var(--ink-2);font-size:12.5px;line-height:1.55;max-width:760px}
+.security-proof-state{display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap}
+.security-proof-state span{padding:4px 8px;border-radius:999px;background:var(--paper);border:1px solid var(--line-2);
+  color:var(--ink-2);font-family:var(--font-mono);font-size:10.5px;font-weight:650;white-space:nowrap}
+@media(max-width:640px){.security-proof{grid-template-columns:1fr}.security-proof-state{justify-content:flex-start}}
+
 /* 모바일 마감 — 손가락 크기와 가로 스크롤. */
 @media(max-width:560px){
   /* 28px 짜리 토글은 엄지로 못 누른다. */
@@ -666,6 +681,16 @@ body{counter-reset:step}
       <p class="ko">머지됨 13 · 리뷰 진행 3 · 아무도 안 봄 1 · 보류 4 · 닫힘 10 — 전체 기록은 <a href="https://github.com/m1kapp/fixearly/blob/main/IMPACT.md">IMPACT.md</a>. 상태는 GitHub 에서 자동 갱신된다. 기준선은 각 저장소의 최근 닫힌 PR 60건 중 외부 기여자 머지의 <b>중앙값</b>이다 — 평균은 묵은 몇 건이 통째로 끌고 간다(next.js 는 평균 6.7일인데 중앙값 0.9일). <b>초록불은 그 안, 빨간불은 초과, 보라불은 +7일을 넘긴 보류</b>다. 옆의 <b>수락률</b>은 그 저장소가 최근 닫힌 외부 PR 을 얼마나 머지했는지다 — 늦은 게 우리 것만 밀린 건지, 원래 대부분 거절인 곳인지를 가른다. 보류는 GitHub 에 없는 상태다 — 닫히지도 머지되지도 않은 채 그 저장소의 평소 속도를 크게 지난 것을 우리가 따로 센다.</p>
       <p class="en">13 merged · 3 in review · 1 nobody has looked · 4 stalled · 10 closed — full log in <a href="https://github.com/m1kapp/fixearly/blob/main/IMPACT.md">IMPACT.md</a>, refreshed from GitHub. The baseline is the <b>median</b> of external-contributor merges among each repository's latest 60 closed PRs — a mean gets dragged by a few stale PRs (next.js averages 6.7 days but its median is 0.9). <b>Green is within it; red is over; violet is stalled — past it by 7 days.</b> The percentage next to it is how many recently closed external PRs that repository merged — it separates "ours is being skipped" from "this repo turns most outsiders down". Stalled is not a GitHub state: it is neither merged nor closed, just well past how fast that repository usually moves, and we count it separately.</p>
     </div>
+    <aside class="security-proof" id="security-contribution" data-contribution="security" aria-labelledby="security-proof-title-ko security-proof-title-en">
+      <div>
+        <div class="security-proof-kicker"><span class="ko">별도 기여 · Fixearly 탐지 아님</span><span class="en">separate contribution · not found by Fixearly</span></div>
+        <h3 class="ko" id="security-proof-title-ko"><a href="https://github.com/openstatusHQ/openstatus/pull/2620" target="_blank" rel="noopener">OpenStatus #2620 · Hono 보안 패치</a></h3>
+        <h3 class="en" id="security-proof-title-en"><a href="https://github.com/openstatusHQ/openstatus/pull/2620" target="_blank" rel="noopener">OpenStatus #2620 · Hono security patch</a></h3>
+        <p class="ko">패키지 의존성 보안 점검에서 취약한 Hono 버전을 찾아 직접·전이 의존성을 함께 올렸다. 핵심 CI는 통과했고, 메인테이너가 요청한 검토에서도 보안 주장과 잠금파일 범위가 확인됐다. 위 Fixearly PR 집계에는 넣지 않는다.</p>
+        <p class="en">A dependency security audit found a vulnerable Hono version, so both direct and transitive copies were upgraded. Core CI passes, and the maintainer-triggered review verified the security claim and lockfile scope. It is excluded from the Fixearly PR totals above.</p>
+      </div>
+      <div class="security-proof-state"><span class="ko">리뷰 진행</span><span class="en">in review</span><span class="ko">핵심 CI 통과</span><span class="en">core CI passed</span></div>
+    </aside>
   </div>
 </section>
 
