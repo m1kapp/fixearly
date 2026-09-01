@@ -74,6 +74,16 @@ def age_days(f):
     return (d.datetime.now(d.timezone.utc) - born).days
 
 
+def stage_age_days(f):
+    """리뷰 중은 사람 개입부터, 대기는 PR 생성부터 현재 단계의 정체 시간을 잰다."""
+    import datetime as d
+    since = f.get("engagedAt") if f.get("status") == "reviewing" else f.get("createdAt")
+    if not since:
+        return None
+    born = d.datetime.fromisoformat(since.replace("Z", "+00:00"))
+    return (d.datetime.now(d.timezone.utc) - born).days
+
+
 def stall_after(f):
     middle = MERGE_TIMES.get(f["repo"], {}).get("medianDays")
     return None if middle is None else mid_label(middle) + STALL_GRACE_DAYS
@@ -85,7 +95,7 @@ def mid_label(middle):
 
 
 def is_stalled(f):
-    n, limit = age_days(f), stall_after(f)
+    n, limit = stage_age_days(f), stall_after(f)
     return n is not None and limit is not None and n >= limit
 
 

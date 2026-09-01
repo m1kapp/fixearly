@@ -22,6 +22,29 @@ const checkOnly = process.argv.includes("--check");
 const registry = JSON.parse(fs.readFileSync(path.join(ROOT, "impact.json"), "utf-8"));
 const findings = registry.findings || [];
 
+const REVIEWING_LABELS = new Set(["triage:in-progress"]);
+
+const isBot = (user) => user?.type === "Bot" || /\[bot\]$/.test(user?.login || "");
+
+/**
+ * 저장소마다 "사람이 보기 시작했다"는 신호가 다르다.
+ *
+ * 정식 review·review request 외에도 n8n 은 triage 라벨을, Nx 는 assignee 를
+ * 실제 검토 큐로 쓴다. 작성자나 봇이 스스로 붙인 흔적은 제외하고, 의미가 명시된
+ * 라벨과 작성자가 아닌 사람 assignee 만 검토 시작으로 센다.
+ */
+function hasReviewEngagement(pr, reviews, invitedByOther = false) {
+  const author = pr.user?.login;
+  const humanReview = reviews.some((r) => !isBot(r.user) && r.user?.login !== author);
+  const assignedToOther = (pr.assignees || []).some(
+    (user) => !isBot(user) && user?.login && user.login !== author,
+  );
+  const reviewingLabel = (pr.labels || []).some((label) =>
+    REVIEWING_LABELS.has(typeof label === "string" ? label : label?.name),
+  );
+  return humanReview || invitedByOther || assignedToOther || reviewingLabel;
+}
+
 /**
  * PR 상태 — "열림" 하나로 뭉치지 않는다.
  *
@@ -55,8 +78,6 @@ async function prStatus(repo, pr) {
     // 찍는 바람에 8일 동안 "승인 · 머지 대기"로 표시됐는데, 실제로는 사람이 아직
     // 본 적이 없었다. 그 저장소에서 실제로 머지된 것들은 사람 승인이 따로 있다.
     // 우리 보드가 파는 게 "머지로 검증됐다"인데 승인 개수가 부풀면 그 주장이 샌다.
-    const isBot = (u) => u?.type === "Bot" || /\[bot\]$/.test(u?.login || "");
-
     // 리뷰어별 마지막 판정만 센다. APPROVED 후 COMMENTED 가 와도 승인은 유지된다.
     const last = new Map();
     let botApproved = false;
@@ -81,19 +102,22 @@ async function prStatus(repo, pr) {
     // 이유다 — 이 보드가 파는 건 "사람이 봤다"이지 "자동화가 붙었다"가 아니다.
     // 작성자 자신의 review reply도 COMMENTED review로 잡힌다. 봇 지적에 답한 것을
     // maintainer가 본 흔적으로 세면 "리뷰 진행"이 거짓이 된다.
-    const humanReviews = reviews.filter(
-      (r) => !isBot(r.user) && r.user?.login !== d.user?.login,
-    );
     let invitedByOther = false;
-    if (!humanReviews.length && (d.requested_reviewers || []).length + (d.requested_teams || []).length > 0) {
+    if ((d.requested_reviewers || []).length + (d.requested_teams || []).length > 0) {
       try {
         const timeline = await get(`https://api.github.com/repos/${repo}/issues/${pr}/timeline?per_page=100`);
         invitedByOther = timeline.some((e) => e.event === "review_requested" &&
           e.actor?.login && e.actor.login !== d.user?.login && !isBot(e.actor));
       } catch { /* 타임라인 조회 실패 시엔 흔적 없음으로 둔다 — 부풀리는 쪽으로 틀리지 않는다 */ }
     }
-    const engaged = humanReviews.length > 0 || invitedByOther;
-    return { state: engaged ? "reviewing" : "waiting", url: d.html_url, botApproved, ...at };
+    const engaged = hasReviewEngagement(d, reviews, invitedByOther);
+    return {
+      state: engaged ? "reviewing" : "waiting",
+      url: d.html_url,
+      botApproved,
+      engagedAt: engaged ? d.updated_at : null,
+      ...at,
+    };
   } catch (e) {
     return { state: "unknown", err: e.message };
   }
@@ -137,6 +161,28 @@ const LABEL = {
   unknown: { icon: "⚪", ko: "unknown", point: 0 },
 };
 
+if (process.argv.includes("--selftest")) {
+  const author = { login: "author", type: "User" };
+  const maintainer = { login: "maintainer", type: "User" };
+  const bot = { login: "reviewer[bot]", type: "Bot" };
+  const base = { user: author, assignees: [], labels: [] };
+  const cases = [
+    ["no signal", base, [], false, false],
+    ["bot review", base, [{ user: bot }], false, false],
+    ["author review", base, [{ user: author }], false, false],
+    ["human review", base, [{ user: maintainer }], false, true],
+    ["review request", base, [], true, true],
+    ["maintainer assignee", { ...base, assignees: [maintainer] }, [], false, true],
+    ["n8n triage label", { ...base, labels: [{ name: "triage:in-progress" }] }, [], false, true],
+  ];
+  for (const [name, pr, reviews, invited, expected] of cases) {
+    const actual = hasReviewEngagement(pr, reviews, invited);
+    if (actual !== expected) throw new Error(`${name}: expected ${expected}, got ${actual}`);
+  }
+  console.log("impact 리뷰 신호 분류 7건 통과");
+  process.exit(0);
+}
+
 console.log("  PR 상태 조회 중...\n");
 const rows = [];
 let score = 0;
@@ -155,6 +201,9 @@ for (const f of findings) {
   if (st.approvers?.length) f.approvedBy = st.approvers; else delete f.approvedBy;
   // 봇만 승인한 상태 — 사람 리뷰 전인데 GitHub 의 reviewDecision 은 APPROVED 로 나온다.
   if (st.botApproved) f.botApproved = true; else delete f.botApproved;
+  // 리뷰가 시작된 뒤의 보류 시계는 PR 생성일이 아니라 마지막 사람 개입 시점부터 센다.
+  // GitHub 의 updated_at 은 review request·assignee·triage label 변경을 모두 포함한다.
+  if (st.engagedAt) f.engagedAt = st.engagedAt; else delete f.engagedAt;
   // 걸린 날짜를 registry 에 남긴다 — 랜딩 카드가 "며칠째"·"며칠 만에"를 보여준다.
   if (st.createdAt) f.createdAt = st.createdAt;
   if (st.mergedAt) f.mergedAt = st.mergedAt; else delete f.mergedAt;

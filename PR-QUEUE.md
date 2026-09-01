@@ -221,16 +221,16 @@ CLA·외부 PR 자동 닫기 없음. 열린 #2338 이 같은 두 파일을 건�
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 30일째 / 보통 11일 · 보류 |
-| [ghost#30284](https://github.com/TryGhost/Ghost/pull/30284) | O(n²) | ⚪ 대기 | 4일째 / 보통 2일 |
-| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 28일째 / 보통 1일 · 보류 |
-| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 31일째 / 보통 1일 · 보류 |
-| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | ⚪ 대기 | 4일째 / 보통 1일 |
-| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 18일째 / 보통 1일 · 보류 |
-| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 19일째 / 보통 2일 · 보류 |
-| [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 18일째 / 보통 2일 · 보류 |
+| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🟢 리뷰 진행 | 6일째 / 보통 1일 |
+| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 20일째 / 보통 1일 |
+| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 32일째 / 보통 11일 |
+| [ghost#30284](https://github.com/TryGhost/Ghost/pull/30284) | O(n²) | ⚪ 대기 | 6일째 / 보통 2일 |
+| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 30일째 / 보통 1일 · 보류 |
+| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 33일째 / 보통 1일 · 보류 |
+| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 21일째 / 보통 2일 · 보류 |
+| [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 20일째 / 보통 2일 · 보류 |
 
-**열린 것 8건(보류 6건 빼면 2건).** 판정 난 23건 중 머지 13 · 승인 0 · 닫힘 10.
+**열린 것 8건(보류 4건 빼면 4건).** 판정 난 23건 중 머지 13 · 승인 0 · 닫힘 10.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
