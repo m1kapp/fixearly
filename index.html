@@ -84,6 +84,8 @@ button{font:inherit;cursor:pointer;} :focus-visible{outline:2px solid var(--acce
 .internal-link{display:none;align-items:center;border:1px solid var(--line-2);border-radius:999px;
   padding:4px 10px;color:var(--ink-3);font-family:var(--font-mono);font-size:10.5px;font-weight:700;white-space:nowrap}
 .internal-link:hover{border-color:var(--accent);color:var(--accent)}
+.release-version{display:inline-flex;align-items:center;border:1px solid var(--line-2);border-radius:999px;
+  padding:4px 9px;color:var(--ink-3);font-family:var(--font-mono);font-size:10.5px;font-weight:700;white-space:nowrap}
 /* 오른쪽으로 미는 건 .navlinks 의 margin-left:auto 인데, 좁은 화면에선 그게
    숨겨져서 밀 게 없어진다 — 토글이 브랜드 옆에 붙어 버렸다. auto 를 넘겨받는다. */
 @media(max-width:760px){.navlinks{display:none;} .navcta{margin-left:auto;}}
@@ -500,6 +502,7 @@ body{counter-reset:step}
       <a href="#board"><span class="ko">74개 측정</span><span class="en">74 repos</span></a>
     </div>
     <div class="navcta">
+      <span class="release-version" aria-label="현재 릴리즈 버전">v0.5.0</span>
       <a class="internal-link" id="internal-link" href=".internal/madrascheck.html">internal</a>
       <div class="lang" role="group" aria-label="언어">
         <button data-setlang="ko" aria-pressed="true">한</button>
