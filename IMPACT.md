@@ -26,7 +26,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `user field validation O(n²)` | [nocodb · 64.8k★](https://github.com/nocodb/nocodb) | O(n²) (value별 baseUsers.find ×4 — id·email Map으로 O(1)) | [#14309](https://github.com/nocodb/nocodb/pull/14309) | ✅ merged | +1 |
 | `ExternalRequest field lookup O(n²)` | [budibase · 28.3k★](https://github.com/Budibase/budibase) | O(n²) (행 필드별 fieldNames.find — Set으로 O(1)) | [#19320](https://github.com/Budibase/budibase/pull/19320) | ❌ closed | — |
 | `cart variant lookup O(n²)` | [medusa · 36.1k★](https://github.com/medusajs/medusa) | O(n²) 배열 조회 (장바구니 아이템마다 variants 선형 스캔 → Map) | [#16233](https://github.com/medusajs/medusa/pull/16233) | ✅ merged | +1 |
-| `eval dataset item 반복 조회` | [langfuse · 34.1k★](https://github.com/langfuse/langfuse) | 중복 쿼리 (변수마다 동일 WHERE 로 같은 행 재조회 → 컬럼 합쳐 1회) | [#15585](https://github.com/langfuse/langfuse/pull/15585) | ⚪ awaiting review | — |
+| `eval dataset item 반복 조회` | [langfuse · 34.2k★](https://github.com/langfuse/langfuse) | 중복 쿼리 (변수마다 동일 WHERE 로 같은 행 재조회 → 컬럼 합쳐 1회) | [#15585](https://github.com/langfuse/langfuse/pull/15585) | ⚪ awaiting review | — |
 | `in-depth analytics 순차 await` | [typebot · 10.3k★](https://github.com/baptisteArno/typebot.io) | 독립 순차 await (독립 groupBy 3개 직렬 → Promise.all, 합→최댓값) | [#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | ✅ merged | +1 |
 | `loadTables 카탈로그 전량 재스캔` | [typeorm · 36.6k★](https://github.com/typeorm/typeorm) | O(n²) (테이블마다 columns·constraints·fks·indices 전량 스캔 — Map 그룹핑으로 O(1)) | [#12746](https://github.com/typeorm/typeorm/pull/12746) | 🟢 reviewing | — |
 | `growth stats 집계 3회 직렬` | [ghost · 55.1k★](https://github.com/TryGhost/Ghost) | 독립 순차 await (postId 하나로만 매개되는 집계 3개 직렬 → Promise.all, 합→최댓값) | [#29704](https://github.com/TryGhost/Ghost/pull/29704) | ✅ merged | +1 |
@@ -37,12 +37,13 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `스택 트레이스 절반 유실` | [astro · 62.3k★](https://github.com/withastro/astro) | 전역 정규식 상태 (/g 정규식을 filter 안에서 .test() — lastIndex 가 새어 프레임이 하나 걸러 사라진다) | [#17665](https://github.com/withastro/astro/pull/17665) | ⚪ awaiting review | — |
 | `graph 명령 안 미사용 Map` | [nx · 29.3k★](https://github.com/nrwl/nx) | 쓰기만 하는 컬렉션 (선언과 .clear() 만 남았다 — 읽기·쓰기는 #32418 에서 사라졌다) | [#36633](https://github.com/nrwl/nx/pull/36633) | 🟢 reviewing | — |
 | `페이지 monitor 검증 뒤 중복 조회` | [openstatus · 9.1k★](https://github.com/openstatusHQ/openstatus) | N+1 (페이지 생성·수정에서 일괄 검증한 monitor를 루프마다 재조회 — Map 재사용) | [#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | ✅ merged | +1 |
+| `Hono 보안 패치 · 의존성 점검` | [openstatus · 9.1k★](https://github.com/openstatusHQ/openstatus) | 보안 점검 (취약 Hono 직접·전이 의존성 업데이트) | [#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | ⚪ awaiting review | — |
 | `청크 렌더 안 미사용 Map` | [rollup · 26.3k★](https://github.com/rollup/rollup) | 쓰기만 하는 컬렉션 (비어 있지 않은 렌더 모듈마다 .set(), 읽기 없음 — 삭제) | [#6482](https://github.com/rollup/rollup/pull/6482) | ✅ merged | +1 |
 | `의존성 분할 안 미사용 Set` | [pnpm · 36.4k★](https://github.com/pnpm/pnpm) | 쓰기만 하는 컬렉션 (함수 호출마다 Set 생성, 링크 의존성마다 .add(), 읽기 없음 — 삭제) | [#14032](https://github.com/pnpm/pnpm/pull/14032) | ✅ merged | +1 |
 | `bulkSave 오류 문서 반복 매칭` | [mongoose · 27.5k★](https://github.com/Automattic/mongoose) | O(n²) 배열 조회 (문서마다 writeErrors.find 전체 스캔 → 실패 id Set으로 O(1)) | [#16474](https://github.com/Automattic/mongoose/pull/16474) | ✅ merged | +1 |
 | `credential 삭제 완료 전 명령 종료` | [n8n · 203.2k★](https://github.com/n8n-io/n8n) | 버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all) | [#37047](https://github.com/n8n-io/n8n/pull/37047) | 🟢 reviewing | — |
 | `post relation 연결 반복 조회` | [ghost · 55.1k★](https://github.com/TryGhost/Ghost) | O(n²) (relation마다 전체 posts.find → id Map으로 O(1), 100건에서 id 조회 5,050→100) | [#30284](https://github.com/TryGhost/Ghost/pull/30284) | ⚪ awaiting review | — |
-| `툴 피커 안 미사용 Map` | [vscode · 190.5k★](https://github.com/microsoft/vscode) | 쓰기만 하는 컬렉션 (MCP 툴마다 .set(), 읽기 없음 — #249448 이후 15개월째 · 삭제) | [#334230](https://github.com/microsoft/vscode/pull/334230) | ⚪ awaiting review | — |
+| `툴 피커 안 미사용 Map` | [vscode · 190.8k★](https://github.com/microsoft/vscode) | 쓰기만 하는 컬렉션 (MCP 툴마다 .set(), 읽기 없음 — #249448 이후 15개월째 · 삭제) | [#334230](https://github.com/microsoft/vscode/pull/334230) | ⚪ awaiting review | — |
 
 ## 규칙
 

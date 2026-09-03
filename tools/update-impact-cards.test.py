@@ -21,16 +21,15 @@ class ImpactCardTimeTest(unittest.TestCase):
         )
         self.assertIn("상태 스냅샷 시각에 고정된다", result.stdout)
 
-    def test_security_contribution_is_separate_from_fixearly_totals(self):
+    def test_security_contribution_is_in_grid_as_fixearly_detection(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         grid_pos = html.index('<div class="iwrap hide-stalled hide-closed">')
-        security_pos = html.index('data-contribution="security"')
+        security_pos = html.index("openstatusHQ/openstatus/pull/2620")
 
         self.assertGreater(security_pos, grid_pos)
-        self.assertNotIn("openstatusHQ/openstatus/pull/2620", html[grid_pos:security_pos])
-        self.assertIn("별도 기여 · Fixearly 탐지 아님", html)
-        self.assertIn('id="security-contribution"', html)
-        # 요약 줄의 머지 수는 impact.json 의 findings 만 센다 — 보안 기여(#2620)는 findings 에 없다.
+        self.assertIn("보안 점검", html)
+        self.assertNotIn('class="security-proof"', html)
+        # 요약 줄은 보안 점검을 포함한 모든 Fixearly findings 를 센다.
         # 리뷰·대기 칸은 스냅샷 시각에 따라 보류로 넘어가므로 숫자를 손으로 박지 않는다.
         findings = json.loads((ROOT / "impact.json").read_text(encoding="utf-8"))["findings"]
         merged = sum(1 for f in findings if f.get("status") == "merged")
