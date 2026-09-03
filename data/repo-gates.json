@@ -1,7 +1,7 @@
 {
   "_schema": "저장소별 게이트 0 · 주의사항. 수락률·중앙값과 달리 이건 재는 게 아니라 확인한 사실이라 손으로 쓴다. 표는 tools/update-pr-queue.py 가 이 값을 붙여 만든다.",
   "gates": {
-    "microsoft/vscode": "게이트 0 — 링크된 이슈 없는 외부 PR 을 봇이 닫는다",
+    "microsoft/vscode": "CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음",
     "immich-app/immich": "게이트 0 — `changelog:*` 라벨이 메인테이너 전용",
     "calcom/cal.diy": "게이트 0 — 외부 PR 에서 `required` 잡이 항상 실패",
     "angular/angular": "CLA 서명 필요",

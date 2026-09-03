@@ -216,21 +216,36 @@ CLA·외부 PR 자동 닫기 없음. 열린 #2338 이 같은 두 파일을 건�
 바꾸고 루프의 재조회는 그대로 남긴다. 그래서 중복 후보는 아니고, 먼저 머지되면 rebase 때
 조회 문법만 맞추면 된다. 제출 전 `pnpm verify` 와 두 route 테스트를 돌린다.
 
+**2026-09-03 준비 — vscode 후보를 최신 main(`09363dd1`)에서 손검증하고 브랜치를 밀어뒀다.**
+`chatToolPicker.ts` 의 `mcpServerByTool` 은 툴 id → `IMcpServer` Map 인데 읽는 곳이 없다. 마지막
+소비자 `mcpServerByTool.get(tool.id)` 는 2025-05-21 #249448("Add support for tool sets")이
+버킷 키를 `ToolDataSource.toKey` 로 바꾸면서 지웠고, 이튿날 #249556 이 그 상태 그대로
+`chatToolActions.ts` 에서 지금 파일로 옮겼다. QuickTree 재작성(#257748)·구 피커 삭제(#260414)도
+살아남아 15개월째다. 고침은 Map·채우는 이중 루프·`IMcpServer` import 삭제(−8/+1), `mcpService` 는
+아래 `mcpServers` 에서 계속 쓰므로 남긴다. 게이트: 수락률 91% · 중앙 0.1일 · 우리 열린 PR 0 ·
+CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는 외부 정리 PR 머지 사례
+있음(#334095). `queue-repos.json` 의 "링크된 이슈 없는 외부 PR 을 봇이 닫는다"는 메모는 워크플로·
+닫힌 PR 60건에서 근거를 못 찾았다 — 메인테이너가 *버그* PR 에 "이슈 먼저" 라고 답한 사례(#291187)
+뿐이라 정리 PR 에는 해당 없다고 본다. 로컬에서 hygiene(11,742 파일)·eslint·tsc 통과(tsc 잔여
+217건은 전부 electron-main 쪽 `Cannot find module 'electron'` — postinstall 을 건너뛴 환경 문제).
+열린 #287192(텔레메트리)가 같은 파일을 건드리지만 이 줄은 문맥으로만 지나간다. 같은 날 #334230 으로 제출했다(하루 1건).
+
 ## 지금 열려 있는 것
 
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🟢 리뷰 진행 | 6일째 / 보통 1일 |
-| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 20일째 / 보통 1일 |
-| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 32일째 / 보통 11일 |
-| [ghost#30284](https://github.com/TryGhost/Ghost/pull/30284) | O(n²) | ⚪ 대기 | 6일째 / 보통 2일 |
-| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 30일째 / 보통 1일 · 보류 |
-| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 33일째 / 보통 1일 · 보류 |
-| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 21일째 / 보통 2일 · 보류 |
-| [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 20일째 / 보통 2일 · 보류 |
+| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🟢 리뷰 진행 | 8일째 / 보통 1일 · 보류 |
+| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 22일째 / 보통 1일 |
+| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 34일째 / 보통 11일 |
+| [ghost#30284](https://github.com/TryGhost/Ghost/pull/30284) | O(n²) | ⚪ 대기 | 8일째 / 보통 2일 |
+| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 32일째 / 보통 1일 · 보류 |
+| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 35일째 / 보통 1일 · 보류 |
+| [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
+| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 23일째 / 보통 2일 · 보류 |
+| [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 22일째 / 보통 2일 · 보류 |
 
-**열린 것 8건(보류 4건 빼면 4건).** 판정 난 23건 중 머지 13 · 승인 0 · 닫힘 10.
+**열린 것 9건(보류 5건 빼면 4건).** 판정 난 23건 중 머지 13 · 승인 0 · 닫힘 10.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -412,7 +427,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 <!-- auto:rotation — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | 저장소 | 수락률 | 중앙 | 외부 머지 | 판정 | 메모 |
 |---|---|---|---|---|---|
-| vscode | 91% | 0.1일 | 20/22 | **통과** | 게이트 0 — 링크된 이슈 없는 외부 PR 을 봇이 닫는다 |
+| vscode | 91% | 0.1일 | 20/22 | **통과** | 열린 PR 있음 — 저장소당 1건 · CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음 |
 | langfuse | 89% | 0.6일 | 31/35 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | n8n | 89% | 1.2일 | 25/28 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | novu | 87% | 0.0일 | 27/31 | **통과** | 판정 경험 있음 |
