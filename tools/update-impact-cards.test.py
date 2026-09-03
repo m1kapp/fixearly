@@ -27,7 +27,7 @@ class ImpactCardTimeTest(unittest.TestCase):
         security_pos = html.index("openstatusHQ/openstatus/pull/2620")
 
         self.assertGreater(security_pos, grid_pos)
-        self.assertIn("보안 점검", html)
+        self.assertIn("Hono 보안 패치 · 의존성 점검", html)
         self.assertNotIn('class="security-proof"', html)
         # 요약 줄은 보안 점검을 포함한 모든 Fixearly findings 를 센다.
         # 리뷰·대기 칸은 스냅샷 시각에 따라 보류로 넘어가므로 숫자를 손으로 박지 않는다.
