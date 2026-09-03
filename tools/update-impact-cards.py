@@ -378,10 +378,6 @@ def card(f, key):
     bk, be = BLURB.get(f["repo"], ("", ""))
     what = (f'<span class="iw"><span class="ko">{esc(bk)}</span>'
             f'<span class="en">{esc(be)}</span></span>') if bk else ""
-    tag = ""
-    if f.get("contributionKind") == "security":
-        tag = ('<span class="ic-tag"><span class="ko">보안 점검</span>'
-               '<span class="en">security audit</span></span>')
     # 닫힌 카드는 사유를 그대로 싣는다. "닫힌 것도 같이 둔다"고만 적고 이유를 감추면
     # 남겨둔 의미가 없다 — 거절 사유가 이 목록에서 제일 정보량이 큰 줄이다.
     rk, re_ = f.get("closedReason", ""), f.get("closedReasonEn", "")
@@ -398,7 +394,6 @@ def card(f, key):
         f'{GH_MARK}'
         f'<b>{fav}{esc(name)}{star_html}</b>'
         f'{what}'
-        f'{tag}'
         f'<span class="it">{title_html}</span>'
         f'{status}'
     )
