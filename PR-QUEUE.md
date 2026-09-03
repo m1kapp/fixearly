@@ -236,16 +236,17 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
 | [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🟢 리뷰 진행 | 8일째 / 보통 1일 · 보류 |
-| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 22일째 / 보통 1일 |
+| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 23일째 / 보통 1일 |
 | [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 34일째 / 보통 11일 |
 | [ghost#30284](https://github.com/TryGhost/Ghost/pull/30284) | O(n²) | ⚪ 대기 | 8일째 / 보통 2일 |
 | [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 32일째 / 보통 1일 · 보류 |
 | [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 35일째 / 보통 1일 · 보류 |
 | [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
-| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 23일째 / 보통 2일 · 보류 |
-| [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 22일째 / 보통 2일 · 보류 |
+| [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 4일째 / 보통 1일 |
+| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 24일째 / 보통 2일 · 보류 |
+| [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 23일째 / 보통 2일 · 보류 |
 
-**열린 것 9건(보류 5건 빼면 4건).** 판정 난 23건 중 머지 13 · 승인 0 · 닫힘 10.
+**열린 것 10건(보류 5건 빼면 5건).** 판정 난 23건 중 머지 13 · 승인 0 · 닫힘 10.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -433,7 +434,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | novu | 87% | 0.0일 | 27/31 | **통과** | 판정 경험 있음 |
 | nx | 83% | 1.1일 | 19/23 | **통과** | 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 |
 | Ghost | 81% | 1.8일 | 13/16 | **통과** | 열린 PR 있음 — 저장소당 1건 |
-| openstatus | 80% | 0.5일 | 28/35 | **통과** | 판정 경험 있음 |
+| openstatus | 80% | 0.5일 | 28/35 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | storybook | 79% | 1.6일 | 33/42 | **통과** | 열린 PR 있음 — 저장소당 1건 · danger 가 `ci:*`·`qa:*` 라벨을 요구한다 — 메인테이너만 붙일 수 있어 그때까진 빨간불 |
 | astro | 74% | 2.0일 | 39/53 | **통과** | 열린 PR 있음 — 저장소당 1건 · 사용자에게 보이는 변화면 changeset 필요 |
 | rollup | 73% | 8.5일 | 11/15 | 통과 · 후순위(느림) | 판정 경험 있음 · 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요 |

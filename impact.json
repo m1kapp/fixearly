@@ -215,7 +215,7 @@
    "titleEn": "eval dataset item re-read",
    "type": "중복 쿼리 (변수마다 동일 WHERE 로 같은 행 재조회 → 컬럼 합쳐 1회)",
    "repo": "langfuse/langfuse",
-   "repoLabel": "langfuse · 34.1k★",
+   "repoLabel": "langfuse · 34.2k★",
    "pr": 15585,
    "createdAt": "2026-07-29T14:13:47Z",
    "status": "waiting"
@@ -363,6 +363,17 @@
    }
   },
   {
+   "title": "Hono 보안 패치 · 의존성 점검",
+   "titleEn": "Hono security patch · dependency audit",
+   "type": "보안 점검 (취약 Hono 직접·전이 의존성 업데이트)",
+   "repo": "openstatusHQ/openstatus",
+   "repoLabel": "openstatus · 9.1k★",
+   "pr": 2620,
+   "createdAt": "2026-08-30T09:24:27Z",
+   "status": "waiting",
+   "contributionKind": "security"
+  },
+  {
    "title": "청크 렌더 안 미사용 Map",
    "titleEn": "unused rendered module sources map",
    "type": "쓰기만 하는 컬렉션 (비어 있지 않은 렌더 모듈마다 .set(), 읽기 없음 — 삭제)",
@@ -440,11 +451,11 @@
    "titleEn": "unused MCP server map in the tools picker",
    "type": "쓰기만 하는 컬렉션 (MCP 툴마다 .set(), 읽기 없음 — #249448 이후 15개월째 · 삭제)",
    "repo": "microsoft/vscode",
-   "repoLabel": "vscode · 190.5k★",
+   "repoLabel": "vscode · 190.8k★",
    "pr": 334230,
    "status": "waiting",
    "createdAt": "2026-09-03T11:03:48Z"
   }
  ],
- "generatedAt": "2026-09-03T11:05:22.681Z"
+ "generatedAt": "2026-09-03T14:06:16.481Z"
 }
