@@ -386,10 +386,10 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
 
 /* 머지된 카드 — 유일하게 끝까지 간 것이라 눈에 걸리게 한다. */
 /* 머지된 카드는 왼쪽 띠 대신 카드를 통째로 두른다. 띠는 세로로 이어진 카드끼리
-   한 줄처럼 붙어 보여서 "여기부터 여기까지가 머지"가 안 읽혔다. .iwrap 이
-   gap:1px 로 격자선을 그리므로, 안쪽 1px 링이 그 선 바로 안에 앉는다. */
+   한 줄처럼 붙어 보여서 "여기부터 여기까지가 머지"가 안 읽혔다. 바깥 outline은
+   그리드 외곽과 겹치므로, 카드 안쪽 1px 링으로 강조한다. */
 .ic.done{background:color-mix(in srgb,var(--gS) 6%,var(--paper));
-  outline:1px solid var(--gS);outline-offset:0}
+  box-shadow:inset 0 0 0 1px var(--gS)}
 .ic.done .it{color:var(--ink)}
 .ic.done .trail .d{width:6px;height:6px}
 /* 닫힌 카드 — 진행 표시 없이 조용히 눕힌다. 대신 사유는 읽히게 남긴다. */
