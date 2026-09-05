@@ -4,7 +4,7 @@
    "title": "deleteBulkMetadata N+1",
    "type": "N+1 (루프 안 순차 DELETE, item당 왕복 1회)",
    "repo": "immich-app/immich",
-   "repoLabel": "immich · 113.3k★",
+   "repoLabel": "immich · 113.4k★",
    "pr": 30163,
    "createdAt": "2026-07-23T15:26:09Z",
    "status": "closed",
@@ -16,7 +16,7 @@
    "title": "sync-agent findOne N+1",
    "type": "N+1 (for 루프 안 findOne, 소스 통합당 쿼리 1회)",
    "repo": "novuhq/novu",
-   "repoLabel": "novu · 39.7k★",
+   "repoLabel": "novu · 39.8k★",
    "pr": 12074,
    "createdAt": "2026-07-23T23:16:52Z",
    "status": "closed",
@@ -28,7 +28,7 @@
    "title": "booking member diff O(n²)",
    "type": "O(n²) 배열 조회 (루프 안 .some() 선형스캔 4회 → Set)",
    "repo": "calcom/cal.diy",
-   "repoLabel": "cal.com · 48.1k★",
+   "repoLabel": "cal.com · 48.2k★",
    "pr": 29828,
    "createdAt": "2026-07-24T00:51:16Z",
    "status": "closed",
@@ -40,7 +40,7 @@
    "title": "view-widget-upsert O(n²)",
    "type": "O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map)",
    "repo": "twentyhq/twenty",
-   "repoLabel": "twenty · 56.1k★",
+   "repoLabel": "twenty · 56.3k★",
    "pr": 23231,
    "createdAt": "2026-07-24T01:00:49Z",
    "closedAt": "2026-07-24T07:31:11Z",
@@ -52,7 +52,7 @@
    "title": "nested relations hydration O(n²)",
    "type": "O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map)",
    "repo": "twentyhq/twenty",
-   "repoLabel": "twenty · 56.1k★",
+   "repoLabel": "twenty · 56.3k★",
    "pr": 23232,
    "createdAt": "2026-07-24T01:48:53Z",
    "closedAt": "2026-07-24T16:25:37Z",
@@ -64,7 +64,7 @@
    "title": "lucky-user set rebuild in loop",
    "type": "루프 불변 인덱스 재구축 (while마다 new Set 재구축 → 호이스팅)",
    "repo": "calcom/cal.diy",
-   "repoLabel": "cal.com · 48.1k★",
+   "repoLabel": "cal.com · 48.2k★",
    "pr": 29832,
    "createdAt": "2026-07-24T08:00:48Z",
    "status": "closed",
@@ -106,7 +106,7 @@
    "title": "markdown import merge O(n²)",
    "type": "O(n²) (형제 out.find title 스캔 — Map으로 O(1))",
    "repo": "outline/outline",
-   "repoLabel": "outline · 40.4k★",
+   "repoLabel": "outline · 40.5k★",
    "pr": 13117,
    "createdAt": "2026-07-24T12:49:22Z",
    "mergedAt": "2026-07-30T03:04:09Z",
@@ -148,7 +148,7 @@
    "title": "resource-mapper schema validation O(n²)",
    "type": "O(n²) (value별 schema.find — id Map으로 O(1))",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 203.2k★",
+   "repoLabel": "n8n · 203.4k★",
    "pr": 34899,
    "createdAt": "2026-07-24T13:05:42Z",
    "status": "merged",
@@ -193,6 +193,19 @@
    "closedReasonEn": "closed with no reason; unsolicited optimizations can simply be declined"
   },
   {
+   "title": "static formula 갱신 enriched row 조회 O(n²)",
+   "titleEn": "static formula enriched-row lookup O(n²)",
+   "type": "O(n²) (행마다 enrichedRows.find — id Map으로 O(1), 100건에서 5,050→100)",
+   "repo": "Budibase/budibase",
+   "repoLabel": "budibase · 28.3k★",
+   "pr": 19555,
+   "createdAt": "2026-08-26T02:31:53Z",
+   "closedAt": "2026-08-26T02:32:03Z",
+   "status": "closed",
+   "closedReason": "게이트 0 — 외부 PR 은 \"작성자에게 배정된\" 이슈를 참조해야 하는데 배정은 메인테이너만 한다",
+   "closedReasonEn": "gate 0 — external PRs must reference an issue assigned to the author, and only maintainers can assign"
+  },
+  {
    "title": "cart variant lookup O(n²)",
    "type": "O(n²) 배열 조회 (장바구니 아이템마다 variants 선형 스캔 → Map)",
    "repo": "medusajs/medusa",
@@ -218,7 +231,10 @@
    "repoLabel": "langfuse · 34.2k★",
    "pr": 15585,
    "createdAt": "2026-07-29T14:13:47Z",
-   "status": "waiting"
+   "status": "closed",
+   "closedReason": "우리가 접었다 — 중앙 0.6일인 곳에서 37일째 사람 반응 0(붙은 건 CLA 봇뿐)",
+   "closedReasonEn": "we closed it — 37 days with zero human response in a repo whose median is 0.6 days",
+   "closedAt": "2026-09-05T07:16:09Z"
   },
   {
    "title": "in-depth analytics 순차 await",
@@ -254,7 +270,7 @@
    "titleEn": "growth stats 3 serial aggregates",
    "type": "독립 순차 await (postId 하나로만 매개되는 집계 3개 직렬 → Promise.all, 합→최댓값)",
    "repo": "TryGhost/Ghost",
-   "repoLabel": "ghost · 55.1k★",
+   "repoLabel": "ghost · 55.2k★",
    "pr": 29704,
    "createdAt": "2026-07-31T05:35:10Z",
    "status": "merged",
@@ -292,17 +308,20 @@
    "titleEn": "unused Map in resize handler",
    "type": "쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제)",
    "repo": "excalidraw/excalidraw",
-   "repoLabel": "excalidraw · 131.1k★",
+   "repoLabel": "excalidraw · 131.2k★",
    "pr": 11805,
    "createdAt": "2026-08-01T14:22:45Z",
-   "status": "waiting"
+   "status": "closed",
+   "closedReason": "우리가 접었다 — 중앙 1일인 곳에서 34일째 사람 반응 0. 이 저장소 외부 PR 수락률 18%",
+   "closedReasonEn": "we closed it — 34 days with zero human response in a repo whose median is 1 day; external acceptance here is 18%",
+   "closedAt": "2026-09-05T07:16:12Z"
   },
   {
    "title": "member 통계 안 미사용 Map",
    "titleEn": "unused Map in member count history",
    "type": "쓰기만 하는 컬렉션 (날짜별 Map 을 채우고 아무도 안 읽음 — 삭제)",
    "repo": "TryGhost/Ghost",
-   "repoLabel": "ghost · 55.1k★",
+   "repoLabel": "ghost · 55.2k★",
    "pr": 29831,
    "status": "merged",
    "createdAt": "2026-08-08T03:16:06Z",
@@ -321,8 +340,11 @@
    "repoLabel": "storybook · 91k★",
    "pr": 35829,
    "createdAt": "2026-08-10T12:10:18Z",
-   "status": "waiting",
-   "titleEn": "unread invalidated Set in the story index"
+   "status": "closed",
+   "titleEn": "unread invalidated Set in the story index",
+   "closedReason": "우리가 접었다 — Danger 가 `ci:*`·`qa:*` 라벨에서 막는데 그 라벨은 메인테이너만 붙일 수 있다 (게이트 0)",
+   "closedReasonEn": "we closed it — Danger blocks on `ci:*` and `qa:*` labels only a maintainer can add, so nothing was actionable from our side",
+   "closedAt": "2026-09-05T07:16:23Z"
   },
   {
    "title": "스택 트레이스 절반 유실",
@@ -332,7 +354,10 @@
    "repoLabel": "astro · 62.3k★",
    "pr": 17665,
    "createdAt": "2026-08-11T12:35:43Z",
-   "status": "waiting"
+   "status": "closed",
+   "closedReason": "우리가 접었다 — 중앙 2일인 곳에서 24일째 사람 반응 0. CI 는 통과 상태였다",
+   "closedReasonEn": "we closed it — 24 days with zero human response in a repo whose median is 2 days; CI was green",
+   "closedAt": "2026-09-05T07:16:15Z"
   },
   {
    "title": "graph 명령 안 미사용 Map",
@@ -430,7 +455,7 @@
    "titleEn": "credential uninstall exits before deletions finish",
    "type": "버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all)",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 203.2k★",
+   "repoLabel": "n8n · 203.4k★",
    "pr": 37047,
    "status": "reviewing",
    "createdAt": "2026-08-25T15:17:47Z",
@@ -441,7 +466,7 @@
    "titleEn": "repeated post lookup while attaching import relations",
    "type": "O(n²) (relation마다 전체 posts.find → id Map으로 O(1), 100건에서 id 조회 5,050→100)",
    "repo": "TryGhost/Ghost",
-   "repoLabel": "ghost · 55.1k★",
+   "repoLabel": "ghost · 55.2k★",
    "pr": 30284,
    "status": "waiting",
    "createdAt": "2026-08-25T15:26:03Z"
@@ -451,11 +476,11 @@
    "titleEn": "unused MCP server map in the tools picker",
    "type": "쓰기만 하는 컬렉션 (MCP 툴마다 .set(), 읽기 없음 — #249448 이후 15개월째 · 삭제)",
    "repo": "microsoft/vscode",
-   "repoLabel": "vscode · 190.8k★",
+   "repoLabel": "vscode · 190.9k★",
    "pr": 334230,
    "status": "waiting",
    "createdAt": "2026-09-03T11:03:48Z"
   }
  ],
- "generatedAt": "2026-09-03T14:06:16.481Z"
+ "generatedAt": "2026-09-05T07:22:58.179Z"
 }

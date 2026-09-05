@@ -30,9 +30,13 @@
 | [ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 머지 | 메인테이너가 병렬화 변경을 승인한 뒤 머지 |
 | [ghost#29831](https://github.com/TryGhost/Ghost/pull/29831) | 머지 | — |
 | [n8n#34899](https://github.com/n8n-io/n8n/pull/34899) | 머지 | 봇이 요구한 changeset prefix 만 고치고 통과 |
+| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 닫힘 | 우리가 접었다 — 중앙 1일인 곳에서 34일째 사람 반응 0. 이 저장소 외부 PR 수락률 18% |
 | [novu#12074](https://github.com/novuhq/novu/pull/12074) | 닫힘 | 우리가 접었다 — 중앙 1일인 곳에서 15일째 사람 리뷰 0(승인은 봇). 슬롯을 회수했다 |
+| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 닫힘 | 우리가 접었다 — 중앙 0.6일인 곳에서 37일째 사람 반응 0(붙은 건 CLA 봇뿐) |
 | [payload#17469](https://github.com/payloadcms/payload/pull/17469) | 닫힘 | 우리가 접었다 — 중앙 4일인 곳에서 14일째 아무 반응이 없었다 |
+| [astro#17665](https://github.com/withastro/astro/pull/17665) | 닫힘 | 우리가 접었다 — 중앙 2일인 곳에서 24일째 사람 반응 0. CI 는 통과 상태였다 |
 | [budibase#19320](https://github.com/Budibase/budibase/pull/19320) | 닫힘 | 사유 없이 닫힘. 요청받지 않은 최적화는 그냥 거절될 수 있다 |
+| [budibase#19555](https://github.com/Budibase/budibase/pull/19555) | 닫힘 | 게이트 0 — 외부 PR 은 "작성자에게 배정된" 이슈를 참조해야 하는데 배정은 메인테이너만 한다 |
 | [twenty#23231](https://github.com/twentyhq/twenty/pull/23231) | 닫힘 | "redundant with #23232" — 같은 저장소에 겹치는 2건을 냈다 |
 | [twenty#23232](https://github.com/twentyhq/twenty/pull/23232) | 닫힘 | 겹친 2건 중 나머지. 사유는 남지 않았다 |
 | [strapi#27125](https://github.com/strapi/strapi/pull/27125) | 닫힘 | 우리가 접었다 — 중앙 2일인 곳에서 14일째 아무 반응이 없었다 |
@@ -40,6 +44,7 @@
 | [cal.com#29828](https://github.com/calcom/cal.diy/pull/29828) | 닫힘 | 우리가 접었다 — 외부 기여자는 `required` 잡이 항상 실패한다 (게이트 0). 이 저장소 수락률 10% |
 | [cal.com#29832](https://github.com/calcom/cal.diy/pull/29832) | 닫힘 | 우리가 접었다 — 같은 저장소에 2건이 열려 있어 큰 쪽(#29828)에 리뷰를 몰아줬다 |
 | [immich#30163](https://github.com/immich-app/immich/pull/30163) | 닫힘 | 우리가 접었다 — `changelog:*` 라벨은 메인테이너만 붙일 수 있어 우리 쪽에서 더 할 게 없었다 (게이트 0) |
+| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 닫힘 | 우리가 접었다 — Danger 가 `ci:*`·`qa:*` 라벨에서 막는데 그 라벨은 메인테이너만 붙일 수 있다 (게이트 0) |
 <!-- /auto:decided -->
 
 **크기는 판별자가 아니다.** budibase 는 +10/−6 으로 닫혔고 medusa 는 +71/−6 으로 승인됐다.
@@ -235,18 +240,14 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🟢 리뷰 진행 | 8일째 / 보통 1일 · 보류 |
-| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 23일째 / 보통 1일 |
-| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 34일째 / 보통 11일 |
-| [ghost#30284](https://github.com/TryGhost/Ghost/pull/30284) | O(n²) | ⚪ 대기 | 8일째 / 보통 2일 |
-| [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 32일째 / 보통 1일 · 보류 |
-| [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 중복 쿼리 | ⚪ 대기 | 35일째 / 보통 1일 · 보류 |
-| [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
-| [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 4일째 / 보통 1일 |
-| [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 24일째 / 보통 2일 · 보류 |
-| [astro#17665](https://github.com/withastro/astro/pull/17665) | 전역 정규식 상태 | ⚪ 대기 | 23일째 / 보통 2일 · 보류 |
+| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🟢 리뷰 진행 | 10일째 / 보통 1일 · 보류 |
+| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 24일째 / 보통 1일 · 보류 |
+| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 36일째 / 보통 11일 |
+| [ghost#30284](https://github.com/TryGhost/Ghost/pull/30284) | O(n²) | ⚪ 대기 | 10일째 / 보통 2일 · 보류 |
+| [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 1일째 / 보통 1일 |
+| [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 5일째 / 보통 1일 |
 
-**열린 것 10건(보류 5건 빼면 5건).** 판정 난 23건 중 머지 13 · 승인 0 · 닫힘 10.
+**열린 것 6건(보류 3건 빼면 3건).** 판정 난 28건 중 머지 13 · 승인 0 · 닫힘 15.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -429,14 +430,14 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | 저장소 | 수락률 | 중앙 | 외부 머지 | 판정 | 메모 |
 |---|---|---|---|---|---|
 | vscode | 91% | 0.1일 | 20/22 | **통과** | 열린 PR 있음 — 저장소당 1건 · CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음 |
-| langfuse | 89% | 0.6일 | 31/35 | **통과** | 열린 PR 있음 — 저장소당 1건 |
+| langfuse | 89% | 0.6일 | 31/35 | **통과** | 판정 경험 있음 |
 | n8n | 89% | 1.2일 | 25/28 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | novu | 87% | 0.0일 | 27/31 | **통과** | 판정 경험 있음 |
 | nx | 83% | 1.1일 | 19/23 | **통과** | 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 |
 | Ghost | 81% | 1.8일 | 13/16 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | openstatus | 80% | 0.5일 | 28/35 | **통과** | 열린 PR 있음 — 저장소당 1건 |
-| storybook | 79% | 1.6일 | 33/42 | **통과** | 열린 PR 있음 — 저장소당 1건 · danger 가 `ci:*`·`qa:*` 라벨을 요구한다 — 메인테이너만 붙일 수 있어 그때까진 빨간불 |
-| astro | 74% | 2.0일 | 39/53 | **통과** | 열린 PR 있음 — 저장소당 1건 · 사용자에게 보이는 변화면 changeset 필요 |
+| storybook | 79% | 1.6일 | 33/42 | **통과** | 판정 경험 있음 · danger 가 `ci:*`·`qa:*` 라벨을 요구한다 — 메인테이너만 붙일 수 있어 그때까진 빨간불 |
+| astro | 74% | 2.0일 | 39/53 | **통과** | 판정 경험 있음 · 사용자에게 보이는 변화면 changeset 필요 |
 | rollup | 73% | 8.5일 | 11/15 | 통과 · 후순위(느림) | 판정 경험 있음 · 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요 |
 | budibase | 72% | 1.0일 | 13/18 | **통과** | 판정 경험 있음 |
 | mongoose | 71% | 3.0일 | 20/28 | **통과** | 판정 경험 있음 |
@@ -453,7 +454,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | vite | 40% | 0.9일 | 19/47 | 컷 | 판정 경험 있음 |
 | nocodb | 40% | 4.1일 | 2/5 | 컷 | 판정 경험 있음 |
 | cal.diy | 20% | 6.4일 | 11/56 | 컷 | 판정 경험 있음 · 게이트 0 — 외부 PR 에서 `required` 잡이 항상 실패 |
-| excalidraw | 18% | 1.0일 | 7/38 | 컷 | 열린 PR 있음 — 저장소당 1건 |
+| excalidraw | 18% | 1.0일 | 7/38 | 컷 | 판정 경험 있음 |
 | typeorm | 12% | 10.9일 | 5/40 | 컷 | 열린 PR 있음 — 저장소당 1건 |
 | immich | 12% | 24.7일 | 2/16 | 컷 | 판정 경험 있음 · 게이트 0 — `changelog:*` 라벨이 메인테이너 전용 |
 | react | 10% | 0.6일 | 4/42 | 컷 | 후보가 `/* DISABLED */` 주석 건이라 PR 보다 이슈가 맞다 |
