@@ -336,6 +336,30 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 | ~~ghost~~ | `members-stats-service.js:115` | **제출됨 → #29831** |
 | ~~excalidraw~~ | `App.tsx:13467` | **제출됨 → #11805** (축 커버리지 예외) |
 
+### 순차 await 축 — novu 후보 (2026-09-05 손검증)
+
+`run-job.usecase.ts:202` 에서 서로 독립인 await 3개가 줄줄이 걸려 있다. 잡 실행 경로라
+잡마다 왕복 3회가 순차로 쌓인다.
+
+| # | 호출 | 읽는 것 |
+|---|---|---|
+| ① | `stepTemplateHydrationService.hydrateJobStep(job, workflow)` | `job.step` |
+| ② | `getSubscriberSchedule.execute(...)` | `job._environmentId`·`_organizationId`·`_subscriberId`·`contextKeys` |
+| ③ | `subscriberRepository.findOne(...)` | 같은 id 들 |
+
+**독립 확인**: `hydrateJobStep` 본문(`libs/application-generic/src/services/step-template-hydration.service.ts`)이
+건드리는 건 `step.template` 하나뿐이고, ②·③ 은 그걸 안 읽는다. `Promise.all` 로 묶어도
+결과가 안 바뀐다. 유일한 의미 변화는 **단락 평가가 사라지는 것** — ① 이 실패해도 ②·③ 이
+실행된다. 둘 다 읽기라 부작용은 없다. 본문에 이 문장을 그대로 적는다.
+
+**아직 안 냈다.** 2026-09-05 은 rollup#6506 으로 하루 1건을 썼다. 그리고 novu 는
+#12074 를 우리가 접은 곳이다 — 수락률 87%·중앙 0.0일인데도 15일간 사람 리뷰가 0이었다.
+꺼낼 때 그 이력을 근거로 다시 판단한다.
+
+**같이 훑은 것**: novu `apps/api` O(n²) 40곳(백엔드 후보 23) · `apps/worker` 3곳은
+아직 손검증 안 했다. N+1·중복 쿼리 축은 두 앱 모두 0곳이었다 — 이 저장소에서 그 축의
+커버리지는 못 채운다.
+
 ### T1 버그 축 — 2026-08-10 부터 여기서 꺼낸다
 
 옮긴 이유는 그날 `쓰기만 하는 컬렉션` 이 대기 3건에 머지 0 이었기 때문이다. 같은 축을
