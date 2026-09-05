@@ -433,6 +433,22 @@ if (generatedSrc) {
   check("관례에 맞으면 통과시킨다", right.code === 0);
   check("include 글롭을 주석 제거로 망가뜨리지 않는다", !/include 에도 안 걸린다/.test(right.text));
 
+  // rollup#6506 에서 밟았다 — `test/watch/index.js` 는 파일명에 `.test.` 가 없어서
+  // 회귀 테스트를 붙이고도 "테스트 변경이 없다"는 경고를 받았다. 디렉터리도 봐야 한다.
+  write("test/watch/index.js", "// harness\n");
+  git(["add", "-A"]);
+  git(["commit", "-qm", "add dir-style test"]);
+  const dirStyle = run();
+  check("test/ 아래 변경도 테스트 변경으로 본다", !/테스트 변경이 없다/.test(dirStyle.text));
+
+  // 여기서부터는 diff 기준을 옮겨 "소스만 바뀐 PR" 을 만든다.
+  git(["update-ref", "refs/remotes/origin/main", "HEAD"]);
+  write("src/main.js", "export const main = 1;\n");
+  git(["add", "-A"]);
+  git(["commit", "-qm", "src only"]);
+  const srcOnly = run();
+  check("소스만 고치면 테스트 경고를 낸다", /테스트 변경이 없다/.test(srcOnly.text));
+
   fs.rmSync(repo, { recursive: true, force: true });
 }
 
