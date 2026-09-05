@@ -245,9 +245,10 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 36일째 / 보통 11일 |
 | [ghost#30284](https://github.com/TryGhost/Ghost/pull/30284) | O(n²) | ⚪ 대기 | 10일째 / 보통 2일 · 보류 |
 | [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 1일째 / 보통 1일 |
-| [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 5일째 / 보통 1일 |
+| [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 6일째 / 보통 1일 |
+| [rollup#6506](https://github.com/rollup/rollup/pull/6506) | 버려진 Promise | ⚪ 대기 | 오늘 / 보통 9일 |
 
-**열린 것 6건(보류 3건 빼면 3건).** 판정 난 28건 중 머지 13 · 승인 0 · 닫힘 15.
+**열린 것 7건(보류 3건 빼면 4건).** 판정 난 28건 중 머지 13 · 승인 0 · 닫힘 15.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -436,10 +437,10 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | nx | 83% | 1.1일 | 19/23 | **통과** | 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 |
 | Ghost | 81% | 1.8일 | 13/16 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | openstatus | 80% | 0.5일 | 28/35 | **통과** | 열린 PR 있음 — 저장소당 1건 |
-| storybook | 79% | 1.6일 | 33/42 | **통과** | 판정 경험 있음 · danger 가 `ci:*`·`qa:*` 라벨을 요구한다 — 메인테이너만 붙일 수 있어 그때까진 빨간불 |
+| storybook | 79% | 1.6일 | 33/42 | **통과** | 판정 경험 있음 · 게이트 0 — danger 가 `ci:*`·`qa:*` 라벨을 요구하는데 메인테이너만 붙일 수 있다 (#35829 가 25일째 빨간불이라 접었다) |
 | astro | 74% | 2.0일 | 39/53 | **통과** | 판정 경험 있음 · 사용자에게 보이는 변화면 changeset 필요 |
-| rollup | 73% | 8.5일 | 11/15 | 통과 · 후순위(느림) | 판정 경험 있음 · 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요 |
-| budibase | 72% | 1.0일 | 13/18 | **통과** | 판정 경험 있음 |
+| rollup | 73% | 8.5일 | 11/15 | 통과 · 후순위(느림) | 열린 PR 있음 — 저장소당 1건 · 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요 |
+| budibase | 72% | 1.0일 | 13/18 | **통과** | 판정 경험 있음 · 게이트 0 — 외부 PR 은 '작성자에게 배정된' 이슈를 참조해야 하는데 배정은 메인테이너만 한다 (#19555 가 이 봇 체크로 당일 닫혔다) |
 | mongoose | 71% | 3.0일 | 20/28 | **통과** | 판정 경험 있음 |
 | next.js | 66% | 0.9일 | 29/44 | **통과** | 커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시 |
 | pnpm | 64% | 6.2일 | 9/14 | 통과 · 후순위(느림) | 판정 경험 있음 · AI 작성 PR 본문에 agent disclosure 필수 · 전체 저장소 대신 영향 패키지 테스트 실행 |
