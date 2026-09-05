@@ -29,8 +29,11 @@
 | `for-in-needs-array-evidence` | 배열에 for...in | 객체에 쓰는 `for...in` 은 정상인데 같이 잡았다 | 코퍼스 검증 | 배열이라는 증거(리터럴·`map`·`filter`·`split`)가 있는 변수만 | 없음 |
 | `fill-domain-api` | 공유 참조 fill | `page.fill(selector, {...})` 처럼 도메인 API 의 `.fill()` 을 `Array.prototype.fill` 로 봤다 | playwright **3곳** | 수신자가 '배열을 만드는 표현'일 때만 | 없음 |
 | `map-is-not-a-loop` | 루프 안 new RegExp | 모듈 로드 시 1회 도는 `CACHED = entries.map(... new RegExp ...)` 를 재컴파일로 봤다 | 코퍼스 검증 | 진짜 반복문(`for`/`while`) 안에서만 | 없음 |
-| `derived-copy` | 루프 안 인덱스 재구축 | `new Set(x).add(y)` 는 재구축이 아니라 '수정한 파생 복사본'이다 | 코퍼스 검증 | 생성 직후 체이닝된 수정은 제외 | 없음 |
-| `loop-var-argument` | 루프 안 인덱스 재구축 | 인자가 루프 변수를 참조하면 매 회 값이 달라 호이스팅 자체가 불가능하다 | 코퍼스 검증 | 루프 변수를 참조하면 제외 | 없음 |
+| `derived-copy` | 루프 안 인덱스 재구축 | `new Set(x).add(y)` 는 재구축이 아니라 '수정한 파생 복사본'이다 | 코퍼스 검증 | 생성 직후 체이닝된 수정은 제외 | `loop-invariant-index.ts` |
+| `loop-var-argument` | 루프 안 인덱스 재구축 | 인자가 루프 변수를 참조하면 매 회 값이 달라 호이스팅 자체가 불가능하다 | 코퍼스 검증 | 루프 변수를 참조하면 제외 | `loop-invariant-index.ts` |
+| `reassigned-in-loop` | 루프 안 인덱스 재구축 | 루프 **밖**에서 선언됐다는 이유로 '불변'으로 봤는데, 루프 안에서 다시 대입되고 있었다 | mongoose `getModelsMapForPopulate.js:151` — `modelNames = res.modelNames` 바로 뒤의 `new Set(modelNames)` | 루프 본문에서 대입되는 이름(`=`·복합대입·`++`)이 인자에 있으면 제외 | `loop-invariant-index.ts` |
+| `per-iteration-state` | 루프 안 인덱스 재구축 | 결과가 객체 프로퍼티·배열 원소·인자로 빠져나가는데 호이스팅하라고 했다 — 그러면 모든 반복이 같은 인스턴스를 공유한다 | mongoose `getModelsMapForPopulate.js:675·676` — `localField: new Set([data.localField])` | 결과가 리터럴 프로퍼티·원소·호출 인자로 escape 하면 제외 | `loop-invariant-index.ts` |
+| `loop-header-runs-once` | 루프 안 인덱스 재구축 · 루프 안 정규식 생성 | 루프 **헤더**를 본문으로 셌다 — `for (const x of new Map(fields))` 의 Map 은 반복마다가 아니라 한 번 만들어진다 | mongoose `model.js:2000` · nx 후보 **4건이 전부** 이 형태였다(`daemon-environment.ts:396·461` · `escape-dollar-sign-env-variables.ts:48` · `pruned-output.ts:745`) — `for (const x of new Set(xs))` 는 중복 제거 후 순회하는 관용구다 | for-of·for-in 의 순회 대상과 for 의 초기화·조건·증감은 바깥 루프 문맥으로 본다 | `loop-invariant-index.ts` |
 | `floating-needs-async-context` | floating promise | async 컨텍스트 밖에서는 `await` 를 붙일 수 없어 기계적 수정이 아니다 | 코퍼스 검증 | async 함수 안에서만 | 없음 |
 | `promise-all-batching` | 루프 안 DB/HTTP (N+1) | `Promise.all(items.map(async …))` 는 병렬 배칭인데 순차 N+1 로 봤다 | 코퍼스 스캔 | 루프 안에서 **직접 await** 하는 호출만 센다 | 없음 |
 | `minified-bundle` | 전 축 | 저장소에 커밋된 벤더 번들·시드 에셋이 git 추적 대상이라 모든 필터를 통과했다 | `for...in` **129곳** 오탐 + 점수 왜곡(twenty 78 B → 86 A, maxCog 356 → 97, 중복 15.7% → 9.5%) | 파일명 관례 + "한 줄이 비정상적으로 길다"로 전역 제외 | 없음 |

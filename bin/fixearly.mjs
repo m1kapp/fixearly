@@ -1609,6 +1609,25 @@ function analyzeTextbookIssues(ts, fileContents) {
       return names;
     };
 
+    // 서브트리 안에서 '대입되는' 이름 — 루프 밖에서 선언됐어도 루프 안에서 값이 바뀌면
+    // 그 값은 불변이 아니다. `x = f()` / `x += 1` / `x++` / `x ||= y` 를 전부 센다.
+    const assignedNamesIn = (node) => {
+      const names = new Set();
+      const g = (n) => {
+        if (ts.isBinaryExpression(n) && ts.isIdentifier(n.left) &&
+            (n.operatorToken.kind === ts.SyntaxKind.EqualsToken ||
+             /Equals(Token)?$/.test(ts.SyntaxKind[n.operatorToken.kind] || "")))
+          names.add(n.left.getText(sf));
+        if ((ts.isPostfixUnaryExpression(n) || ts.isPrefixUnaryExpression(n)) &&
+            ts.isIdentifier(n.operand) &&
+            (n.operator === ts.SyntaxKind.PlusPlusToken || n.operator === ts.SyntaxKind.MinusMinusToken))
+          names.add(n.operand.getText(sf));
+        ts.forEachChild(n, g);
+      };
+      ts.forEachChild(node, g);
+      return names;
+    };
+
     // 콜백 본문에 (중첩 함수 제외) await가 있나
     const hasDirectAwait = (fn) => {
       let found = false;
@@ -1649,16 +1668,18 @@ function analyzeTextbookIssues(ts, fileContents) {
       return false;
     };
 
-    const walk = (node, inLoop, inRealLoop, inAsyncFn, loopVars) => {
+    const walk = (node, inLoop, inRealLoop, inAsyncFn, loopVars, loopAssigned = new Set()) => {
       let childInLoop = inLoop;
       let childInRealLoop = inRealLoop;
       let childInAsyncFn = inAsyncFn;
       let childLoopVars = loopVars;
+      let childLoopAssigned = loopAssigned;
       if (isLoopNode(node)) {
         childInLoop = true; childInRealLoop = true;
         // 순회 변수뿐 아니라 루프 '본문에서 선언된 모든 이름'을 지역으로 본다.
         // (루프 안에서 만든 정규식/배열은 매 회 새 객체라 상태가 샐 수 없다)
         childLoopVars = new Set([...loopVars, ...declaredNamesIn(node)]);
+        childLoopAssigned = new Set([...loopAssigned, ...assignedNamesIn(node)]);
       }
       if (isFnLike(node)) {
         childInAsyncFn = !!node.modifiers?.some((m) => m.kind === ts.SyntaxKind.AsyncKeyword);
@@ -1695,7 +1716,17 @@ function analyzeTextbookIssues(ts, fileContents) {
         // 가드 [FP:loop-var-argument]: (a) 인자가 루프 변수를 참조하면 루프마다 값이 달라 호이스팅 불가 → 제외
         //       (b) 소스 루트가 하나라도 루프 밖(loopVars 아님)이어야 '불변'이다
         const hasOuterSource = [...roots].length > 0;
-        if (!usesLoopVar && hasOuterSource) {
+        // 가드 [FP:reassigned-in-loop]: 루프 밖에서 선언됐어도 루프 안에서 다시 대입되면 값이 매 회 다르다.
+        // mongoose `getModelsMapForPopulate.js:151` — `modelNames = res.modelNames` 뒤의 `new Set(modelNames)`.
+        const reassigned = [...roots].some((r) => childLoopAssigned.has(r));
+        // 가드 [FP:per-iteration-state]: 결과가 객체 리터럴 프로퍼티·배열 원소·인자로 '빠져나가면'
+        // 그 컬렉션은 반복마다 하나씩 필요한 상태다. 호이스팅하면 전부 같은 인스턴스를 공유한다.
+        // mongoose `getModelsMapForPopulate.js:675` — `localField: new Set([data.localField])`.
+        const escapes = node.parent && (
+          ts.isPropertyAssignment(node.parent) || ts.isArrayLiteralExpression(node.parent) ||
+          (ts.isCallExpression(node.parent) && node.parent.arguments.includes(node)) ||
+          (ts.isNewExpression(node.parent) && (node.parent.arguments || []).includes(node)));
+        if (!usesLoopVar && hasOuterSource && !reassigned && !escapes) {
           const src = [...roots][0];
           loopInvariantIndex.push({ file, line: lineOf(node), ctor: node.expression.getText(sf), src });
         }
@@ -1823,7 +1854,13 @@ function analyzeTextbookIssues(ts, fileContents) {
         const alreadyWalked =
           ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression) &&
           ITERATING_METHODS.has(node.expression.name.getText(sf)) && isFnLike(child);
-        if (!alreadyWalked) walk(child, childInLoop, childInRealLoop, childInAsyncFn, childLoopVars);
+        if (alreadyWalked) return;
+        // [FP:loop-header-runs-once] 루프 '헤더'(for-of/for-in 의 순회 대상, for 의 초기화·조건·증감)는
+        // 본문이 아니다 — `for (const x of new Map(fields))` 의 Map 은 반복마다가 아니라 한 번 만들어진다.
+        // mongoose `model.js:2000` 에서 밟았다. 헤더는 바깥 루프 문맥을 그대로 물려준다.
+        const isBody = !isLoopNode(node) || child === node.statement;
+        if (!isBody) { walk(child, inLoop, inRealLoop, childInAsyncFn, loopVars, loopAssigned); return; }
+        walk(child, childInLoop, childInRealLoop, childInAsyncFn, childLoopVars, childLoopAssigned);
       });
     };
     ts.forEachChild(sf, (n) => walk(n, false, false, false, new Set()));

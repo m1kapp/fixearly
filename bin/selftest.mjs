@@ -269,6 +269,18 @@ if (generatedSrc) {
       // 출력 줄: `    leaks.test() — src/...:11`
       namePattern: /^\s{4}([A-Za-z_$][\w$]*)\.test\(\)/gm,
     },
+    {
+      file: "loop-invariant-index.ts",
+      key: "loopInvariantIndex",
+      label: "루프 안 인덱스 재구축",
+      hit: ["allowed", "blocked"],
+      // chained 는 파생 복사본, perRow 는 인자가 루프 변수, mutated 는 루프 안에서 다시
+      // 대입되는 값, escaped 는 반복마다 하나씩 필요한 상태, paired 는 루프 헤더라
+      // 한 번만 만들어진다. 뒤 세 계열은 mongoose 에서 후보 5건이 전부 오탐으로 나왔다.
+      miss: ["base", "cells", "mutated", "escaped", "paired"],
+      // 출력 줄: `    new Set(allowed…) — src/...:10`
+      namePattern: /^\s{4}new (?:Map|Set)\(([A-Za-z_$][\w$]*)…\)/gm,
+    },
   ];
   for (const fx of FIXTURES) {
     const p = path.join(ROOT, "tools", "fixtures", fx.file);
