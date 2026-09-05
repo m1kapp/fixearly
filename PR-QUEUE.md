@@ -36,6 +36,7 @@
 | [payload#17469](https://github.com/payloadcms/payload/pull/17469) | 닫힘 | 우리가 접었다 — 중앙 4일인 곳에서 14일째 아무 반응이 없었다 |
 | [astro#17665](https://github.com/withastro/astro/pull/17665) | 닫힘 | 우리가 접었다 — 중앙 2일인 곳에서 24일째 사람 반응 0. CI 는 통과 상태였다 |
 | [budibase#19320](https://github.com/Budibase/budibase/pull/19320) | 닫힘 | 사유 없이 닫힘. 요청받지 않은 최적화는 그냥 거절될 수 있다 |
+| [budibase#19555](https://github.com/Budibase/budibase/pull/19555) | 닫힘 | 게이트 0 — 외부 PR 은 "작성자에게 배정된" 이슈를 참조해야 하는데 배정은 메인테이너만 한다 |
 | [twenty#23231](https://github.com/twentyhq/twenty/pull/23231) | 닫힘 | "redundant with #23232" — 같은 저장소에 겹치는 2건을 냈다 |
 | [twenty#23232](https://github.com/twentyhq/twenty/pull/23232) | 닫힘 | 겹친 2건 중 나머지. 사유는 남지 않았다 |
 | [strapi#27125](https://github.com/strapi/strapi/pull/27125) | 닫힘 | 우리가 접었다 — 중앙 2일인 곳에서 14일째 아무 반응이 없었다 |
@@ -246,7 +247,7 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 1일째 / 보통 1일 |
 | [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 5일째 / 보통 1일 |
 
-**열린 것 6건(보류 3건 빼면 3건).** 판정 난 27건 중 머지 13 · 승인 0 · 닫힘 14.
+**열린 것 6건(보류 3건 빼면 3건).** 판정 난 28건 중 머지 13 · 승인 0 · 닫힘 15.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라

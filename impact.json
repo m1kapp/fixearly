@@ -193,6 +193,19 @@
    "closedReasonEn": "closed with no reason; unsolicited optimizations can simply be declined"
   },
   {
+   "title": "static formula 갱신 enriched row 조회 O(n²)",
+   "titleEn": "static formula enriched-row lookup O(n²)",
+   "type": "O(n²) (행마다 enrichedRows.find — id Map으로 O(1), 100건에서 5,050→100)",
+   "repo": "Budibase/budibase",
+   "repoLabel": "budibase · 28.3k★",
+   "pr": 19555,
+   "createdAt": "2026-08-26T02:31:53Z",
+   "closedAt": "2026-08-26T02:32:03Z",
+   "status": "closed",
+   "closedReason": "게이트 0 — 외부 PR 은 \"작성자에게 배정된\" 이슈를 참조해야 하는데 배정은 메인테이너만 한다",
+   "closedReasonEn": "gate 0 — external PRs must reference an issue assigned to the author, and only maintainers can assign"
+  },
+  {
    "title": "cart variant lookup O(n²)",
    "type": "O(n²) 배열 조회 (장바구니 아이템마다 variants 선형 스캔 → Map)",
    "repo": "medusajs/medusa",
@@ -469,5 +482,5 @@
    "createdAt": "2026-09-03T11:03:48Z"
   }
  ],
- "generatedAt": "2026-09-05T07:21:03.373Z"
+ "generatedAt": "2026-09-05T07:22:58.179Z"
 }
