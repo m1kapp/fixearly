@@ -281,6 +281,17 @@ if (generatedSrc) {
       // 출력 줄: `    new Set(allowed…) — src/...:10`
       namePattern: /^\s{4}new (?:Map|Set)\(([A-Za-z_$][\w$]*)…\)/gm,
     },
+    {
+      file: "for-in-array.ts",
+      key: "forInArray",
+      label: "배열에 for...in",
+      hit: ["parts"],
+      // spec 은 객체를 도는 정상 for...in 이고, fields 는 아래 함수의 동명 배열 때문에
+      // 끌려오던 자리다(mongoose schema.js:2396 에서 밟았다).
+      miss: ["spec", "fields"],
+      // 출력 줄: `    parts — src/...:10` (경로 앞부분은 실행 위치에 따라 달라진다)
+      namePattern: /^\s{4}([A-Za-z_$][\w$]*) — \S*for-in-array\.ts:/gm,
+    },
   ];
   for (const fx of FIXTURES) {
     const p = path.join(ROOT, "tools", "fixtures", fx.file);

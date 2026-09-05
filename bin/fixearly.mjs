@@ -1546,9 +1546,18 @@ function analyzeTextbookIssues(ts, fileContents) {
     // ── 배열로 "보이는" 변수 수집: 리터럴/map/filter/Array.from/split 로 만들어진 것만.
     // for...in 은 객체에 쓰는 게 정상이므로, 배열이라는 증거가 있을 때만 잡는다.
     const arrayVars = new Set();
+    // 같은 이름이 파일 안에서 두 번 이상 선언되면 어느 쪽 증거인지 알 수 없다 — 통째로 포기한다.
+    // `쓰기만 하는 컬렉션` 축의 same-name-twice 와 같은 정책이다.
+    const declaredTwice = new Set();
     {
+      const seenDecl = new Set();
       const ARRAY_MAKERS = new Set(["map", "filter", "flatMap", "slice", "concat", "split", "from", "keys", "values"]);
       const collect = (n) => {
+        // 파라미터도 선언이다 — mongoose 에서 밟은 자리가 정확히 "다른 함수의 파라미터"였다.
+        if ((ts.isVariableDeclaration(n) || ts.isParameter(n)) && ts.isIdentifier(n.name)) {
+          const nm = n.name.getText(sf);
+          if (seenDecl.has(nm)) declaredTwice.add(nm); else seenDecl.add(nm);
+        }
         if (ts.isVariableDeclaration(n) && ts.isIdentifier(n.name) && n.initializer) {
           const init = n.initializer;
           if (ts.isRegularExpressionLiteral(init)) {
@@ -1788,8 +1797,12 @@ function analyzeTextbookIssues(ts, fileContents) {
 
       // ── 배열에 for...in: 인덱스가 문자열이고 상속 속성까지 돌며 순서 보장이 없다.
       // 가드 [FP:for-in-needs-array-evidence]: 배열이라는 증거(리터럴·map·filter·split 등)가 있는 변수만.
+      // 가드 [FP:for-in-name-collision]: 증거는 파일 스코프로 모으므로, 같은 이름이 다른 함수에서
+      // 배열로 선언돼 있으면 객체를 도는 정상 `for...in` 까지 끌려온다. 이름이 두 번 선언되면 포기한다.
+      // mongoose `schema.js:2396` — 객체 인덱스 스펙인데 `schema.js:1005` 의 동명 배열 때문에 잡혔다.
       if (ts.isForInStatement(node) && ts.isIdentifier(node.expression) &&
-          arrayVars.has(node.expression.getText(sf))) {
+          arrayVars.has(node.expression.getText(sf)) &&
+          !declaredTwice.has(node.expression.getText(sf))) {
         forInArray.push({ file, line: lineOf(node), name: node.expression.getText(sf) });
       }
 
