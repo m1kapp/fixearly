@@ -158,6 +158,7 @@ medusa · outline · nocodb · n8n)에서 `help wanted` + `good first issue` 를
 | ③ | 신규 `.ts` 가 어떤 tsconfig 의 `include` 에 걸리나 | 확장자가 같아도 글롭 밖이면 같은 증상 |
 | ④ | 저장소에 PR 제목 검증 스크립트가 있으면 **그걸로** 돌려본다 | nx `scripts/validate-pr-title.js` 처럼. 추측하지 말고 그 저장소 코드로 판정 |
 | ⑤ | changeset 쓰는 저장소인데 빠졌나 | 없으면 본문에 왜 없는지 적어야 한다 |
+| ⑥ | 테스트 변경이 있나 | 파일명(`*.test.*`)뿐 아니라 `test/`·`__tests__/` 디렉터리도 본다 — rollup 은 `test/watch/index.js` 라 파일명만 보면 놓친다 |
 
 `bin/selftest.mjs` 가 합성 저장소로 이 검사기의 양방향을 고정한다 — 어긋난 확장자는 잡고,
 맞으면 통과. 검사기 자신도 첫 실행에서 오탐을 냈다(주석 제거 정규식이 `include` 글롭의
