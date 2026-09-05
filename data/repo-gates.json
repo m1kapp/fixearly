@@ -1,17 +1,18 @@
 {
-  "_schema": "저장소별 게이트 0 · 주의사항. 수락률·중앙값과 달리 이건 재는 게 아니라 확인한 사실이라 손으로 쓴다. 표는 tools/update-pr-queue.py 가 이 값을 붙여 만든다.",
-  "gates": {
-    "microsoft/vscode": "CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음",
-    "immich-app/immich": "게이트 0 — `changelog:*` 라벨이 메인테이너 전용",
-    "calcom/cal.diy": "게이트 0 — 외부 PR 에서 `required` 잡이 항상 실패",
-    "angular/angular": "CLA 서명 필요",
-    "vitest-dev/vitest": "CLA 서명 필요",
-    "storybookjs/storybook": "danger 가 `ci:*`·`qa:*` 라벨을 요구한다 — 메인테이너만 붙일 수 있어 그때까진 빨간불",
-    "facebook/react": "후보가 `/* DISABLED */` 주석 건이라 PR 보다 이슈가 맞다",
-    "nrwl/nx": "PR 제목을 `scripts/validate-pr-title.js` 가 검증한다",
-    "withastro/astro": "사용자에게 보이는 변화면 changeset 필요",
-    "vercel/next.js": "커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시",
-    "rollup/rollup": "코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요",
-    "pnpm/pnpm": "AI 작성 PR 본문에 agent disclosure 필수 · 전체 저장소 대신 영향 패키지 테스트 실행"
-  }
+ "_schema": "저장소별 게이트 0 · 주의사항. 수락률·중앙값과 달리 이건 재는 게 아니라 확인한 사실이라 손으로 쓴다. 표는 tools/update-pr-queue.py 가 이 값을 붙여 만든다.",
+ "gates": {
+  "microsoft/vscode": "CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음",
+  "immich-app/immich": "게이트 0 — `changelog:*` 라벨이 메인테이너 전용",
+  "calcom/cal.diy": "게이트 0 — 외부 PR 에서 `required` 잡이 항상 실패",
+  "angular/angular": "CLA 서명 필요",
+  "vitest-dev/vitest": "CLA 서명 필요",
+  "storybookjs/storybook": "게이트 0 — danger 가 `ci:*`·`qa:*` 라벨을 요구하는데 메인테이너만 붙일 수 있다 (#35829 가 25일째 빨간불이라 접었다)",
+  "facebook/react": "후보가 `/* DISABLED */` 주석 건이라 PR 보다 이슈가 맞다",
+  "nrwl/nx": "PR 제목을 `scripts/validate-pr-title.js` 가 검증한다",
+  "withastro/astro": "사용자에게 보이는 변화면 changeset 필요",
+  "vercel/next.js": "커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시",
+  "rollup/rollup": "코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요",
+  "pnpm/pnpm": "AI 작성 PR 본문에 agent disclosure 필수 · 전체 저장소 대신 영향 패키지 테스트 실행",
+  "Budibase/budibase": "게이트 0 — 외부 PR 은 '작성자에게 배정된' 이슈를 참조해야 하는데 배정은 메인테이너만 한다 (#19555 가 이 봇 체크로 당일 닫혔다)"
+ }
 }

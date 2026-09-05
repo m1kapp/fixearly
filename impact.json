@@ -4,7 +4,7 @@
    "title": "deleteBulkMetadata N+1",
    "type": "N+1 (루프 안 순차 DELETE, item당 왕복 1회)",
    "repo": "immich-app/immich",
-   "repoLabel": "immich · 113.4k★",
+   "repoLabel": "immich · 113.5k★",
    "pr": 30163,
    "createdAt": "2026-07-23T15:26:09Z",
    "status": "closed",
@@ -136,7 +136,7 @@
    "title": "parse-fields dedup O(n²)",
    "type": "O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1))",
    "repo": "directus/directus",
-   "repoLabel": "directus · 37.7k★",
+   "repoLabel": "directus · 37.8k★",
    "pr": 27978,
    "createdAt": "2026-07-24T13:03:10Z",
    "closedAt": "2026-07-29T19:34:55Z",
@@ -416,6 +416,16 @@
    }
   },
   {
+   "title": "watch 재실행 결과를 안 기다림",
+   "titleEn": "watcher rerun not awaited",
+   "type": "버려진 Promise (재실행을 await 하지 않아 리스너 실패가 catch 를 지나쳐 ERROR·END 이벤트가 사라진다)",
+   "repo": "rollup/rollup",
+   "repoLabel": "rollup · 26.3k★",
+   "pr": 6506,
+   "createdAt": "2026-09-05T09:31:52Z",
+   "status": "waiting"
+  },
+  {
    "title": "의존성 분할 안 미사용 Set",
    "titleEn": "unused linked dependency aliases Set",
    "type": "쓰기만 하는 컬렉션 (함수 호출마다 Set 생성, 링크 의존성마다 .add(), 읽기 없음 — 삭제)",
@@ -482,5 +492,5 @@
    "createdAt": "2026-09-03T11:03:48Z"
   }
  ],
- "generatedAt": "2026-09-05T07:22:58.179Z"
+ "generatedAt": "2026-09-05T09:32:42.792Z"
 }
