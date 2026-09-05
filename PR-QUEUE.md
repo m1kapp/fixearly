@@ -485,6 +485,8 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | ghost | 순차 43 중 2 | 이메일 알림은 SMTP 가 DB 왕복을 압도 · stripe-migrations 는 순차가 의도 |
 | ghost | N+1 23 | **전부 탈락**(2026-08-11). 12곳이 마이그레이션·CLI(1회 실행) · `member-repository` 4곳은 루프 대상이 tier 목록인데 **세 줄 위에서 `products.length > 1` 이면 던진다**(n≤1) · 구독 루프 2곳은 iteration 마다 try/catch 로 오류를 격리해서 배치하면 의미가 바뀐다 · 나머지는 청크 삽입(의도된 배칭) |
 | medusa | N+1 2 | `link.ts:556` 은 루프가 *서비스* 단위이고 쿼리는 이미 `$or` 로 배치돼 있다 · 나머지 1곳은 재시도 루프 |
+| mongoose | O(n²) 13 | **전부 탈락**(2026-09-05). n 이 전부 스키마·프로젝션 크기라 유계다 — `document.js:2386`·`updateValidators.js:129` 는 `startsWith` 접두 매칭이라 Set 으로 안 바뀌고, `model.js:1505` 는 컬렉션 인덱스 수(수십), `schema.js:2776·2794` 는 모델 정의 시 1회, `queryHelpers.js:360` 은 경로 깊이(≈3) 다 |
+| mongoose | 루프 불변 인덱스 5 · 배열 for...in 2 | **오탐이었다.** 5건은 전부 오탐이라 가드 3계열을 넣었고(nx 4건도 같은 형태였다), for...in 2건 중 1건은 동명 변수 충돌이었다 — 남은 `model.js:1954` 는 진짜지만 관측 가능한 오동작이 없어 '요청받지 않은 정리'라 안 낸다 |
 
 ## 게이트 0 에서 막힌 곳
 

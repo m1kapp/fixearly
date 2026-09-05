@@ -26,7 +26,8 @@
 | `regex-exec-walk` | 전역 정규식 상태 | `while ((m = re.exec(s)) !== null)` 는 `/g` 의 정석 순회 관용구다 | twenty (거기선 `lastIndex = 0` 리셋까지 하고 있었다) | `.exec()` 는 이 축에서 제외 | `stateful-regex.ts` |
 | `regex-created-in-loop` | 전역 정규식 상태 | 루프 안에서 만든 정규식은 매 회 새 객체라 `lastIndex` 가 샐 수 없다 | 코퍼스 검증 | 루프 안 선언은 제외 | `stateful-regex.ts` |
 | `regex-lastindex-reset` | 전역 정규식 상태 | 저자가 `RE.lastIndex = 0` 으로 이미 막아둔 자리를 버그로 잡았다 | nx `update-jest-preset-angular-setup.ts:43·61` — 그 저장소 후보 **2건이 전부 오탐** | `<이름>.lastIndex = ...` 가 파일에 있으면 그 이름 제외 | `stateful-regex.ts` |
-| `for-in-needs-array-evidence` | 배열에 for...in | 객체에 쓰는 `for...in` 은 정상인데 같이 잡았다 | 코퍼스 검증 | 배열이라는 증거(리터럴·`map`·`filter`·`split`)가 있는 변수만 | 없음 |
+| `for-in-needs-array-evidence` | 배열에 for...in | 객체에 쓰는 `for...in` 은 정상인데 같이 잡았다 | 코퍼스 검증 | 배열이라는 증거(리터럴·`map`·`filter`·`split`)가 있는 변수만 | `for-in-array.ts` |
+| `for-in-name-collision` | 배열에 for...in | 증거를 파일 스코프로 모으는 탓에, 다른 함수에서 같은 이름이 배열로 선언돼 있으면 객체를 도는 정상 `for...in` 까지 끌려왔다 | mongoose `schema.js:2396`(객체 인덱스 스펙) 이 `schema.js:1005` 의 동명 배열 때문에 잡혔다 — 그 저장소 후보 2건 중 1건 | 같은 이름이 파일에서 두 번 이상 선언되면(파라미터 포함) 포기한다 — `same-name-twice` 와 같은 정책이고 미탐을 산다 | `for-in-array.ts` |
 | `fill-domain-api` | 공유 참조 fill | `page.fill(selector, {...})` 처럼 도메인 API 의 `.fill()` 을 `Array.prototype.fill` 로 봤다 | playwright **3곳** | 수신자가 '배열을 만드는 표현'일 때만 | 없음 |
 | `map-is-not-a-loop` | 루프 안 new RegExp | 모듈 로드 시 1회 도는 `CACHED = entries.map(... new RegExp ...)` 를 재컴파일로 봤다 | 코퍼스 검증 | 진짜 반복문(`for`/`while`) 안에서만 | 없음 |
 | `derived-copy` | 루프 안 인덱스 재구축 | `new Set(x).add(y)` 는 재구축이 아니라 '수정한 파생 복사본'이다 | 코퍼스 검증 | 생성 직후 체이닝된 수정은 제외 | `loop-invariant-index.ts` |
