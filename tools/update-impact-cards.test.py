@@ -31,10 +31,12 @@ class ImpactCardTimeTest(unittest.TestCase):
         self.assertNotIn('class="security-proof"', html)
         # 요약 줄은 보안 점검을 포함한 모든 Fixearly findings 를 센다.
         # 리뷰·대기 칸은 스냅샷 시각에 따라 보류로 넘어가므로 숫자를 손으로 박지 않는다.
+        # 칸의 '구성'도 박지 않는다 — n8n#37047 이 승인되자 `1 approved` 칸이 새로 생겨
+        # `merged · in review` 를 붙여 읽던 정규식이 깨졌다. 머지 수만 본다.
         findings = json.loads((ROOT / "impact.json").read_text(encoding="utf-8"))["findings"]
         merged = sum(1 for f in findings if f.get("status") == "merged")
         self.assertIsNotNone(
-            re.search(rf"\b{merged} merged · \d+ in review · \d+ nobody has looked", html)
+            re.search(rf"\b{merged} merged · ", html)
         )
 
 
