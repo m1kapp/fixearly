@@ -19,7 +19,7 @@
 
 | id | 축 | 무엇을 잘못 잡았나 | 어디서 밟았나 | 가드 | 픽스처 |
 |---|---|---|---|---|---|
-| `io-name-collision` | 루프 안 파일읽기 | 이름만 보고 유저 함수로 해석 — `x.get()`·`x.find()` 같은 빌트인 호출을 "리더 함수 호출"로 셌다 | 코퍼스 스캔에서 **834곳** | 빌트인 메서드명 제외 + 리더 해석을 파일 스코프로 한정 → 834 → 36 | 없음 |
+| `io-name-collision` | 루프 안 파일읽기 | 이름만 보고 유저 함수로 해석 — `x.get()`·`x.find()` 같은 빌트인 호출을 "리더 함수 호출"로 셌다 | 코퍼스 스캔에서 **834곳** | 빌트인 메서드명 제외 + 리더 해석을 파일 스코프로 한정 → 834 → 36 | `io-in-loop.ts` |
 | `exported-name-escapes-file` | 쓰기만 하는 컬렉션 | `export const allNativeEvents = new Set()` — 이 파일엔 `.add` 뿐이고 읽는 쪽이 다른 모듈에 있다 | react `DOMPluginEventSystem`·`ReactDOMEventHandle` 가 읽는다 | export 된 이름은 통째로 제외 | `write-only-collection.ts` |
 | `write-return-value-is-read` | 쓰기만 하는 컬렉션 | `if (skipExit.delete(node)) return` — `delete` 는 있었는지를 돌려주고 그 불리언이 곧 조회다 | tailwind | 값이 버려지는 호출(`ExpressionStatement`)일 때만 쓰기로 센다 | `write-only-collection.ts` |
 | `same-name-twice` | 쓰기만 하는 컬렉션 | 다른 스코프의 동명 변수를 한 덩어리로 봤다 | 코퍼스 검증 | 같은 이름이 두 번 선언되면 그 이름은 통째로 포기(미탐을 산다) | `write-only-collection.ts` |

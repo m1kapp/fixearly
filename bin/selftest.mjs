@@ -282,6 +282,18 @@ if (generatedSrc) {
       namePattern: /^\s{4}new (?:Map|Set)\(([A-Za-z_$][\w$]*)…\)/gm,
     },
     {
+      file: "io-in-loop.ts",
+      key: "io",
+      label: "루프 안 파일읽기",
+      hit: ["loadTemplate"],
+      // get 은 Map 의 빌트인 메서드 호출인데 같은 이름의 파일 스코프 리더가 있다.
+      // 이름만 보고 리더로 해석하면 코퍼스에서 834곳이 오탐으로 터졌던 자리다.
+      // join 도 같은 이유로 리더가 아니다.
+      miss: ["get", "join"],
+      // 출력 줄: `    반복 읽기: loadTemplate() — src/...:22`
+      namePattern: /^\s{4}반복 읽기: ([A-Za-z_$][\w$]*)\(\)/gm,
+    },
+    {
       file: "floating-promise.ts",
       key: "floatingPromise",
       label: "floating promise",
