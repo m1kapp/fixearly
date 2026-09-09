@@ -30,6 +30,7 @@
 | [ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 머지 | 메인테이너가 병렬화 변경을 승인한 뒤 머지 |
 | [ghost#29831](https://github.com/TryGhost/Ghost/pull/29831) | 머지 | — |
 | [n8n#34899](https://github.com/n8n-io/n8n/pull/34899) | 머지 | 봇이 요구한 changeset prefix 만 고치고 통과 |
+| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 승인 | — |
 | [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 닫힘 | 우리가 접었다 — 중앙 1일인 곳에서 34일째 사람 반응 0. 이 저장소 외부 PR 수락률 18% |
 | [novu#12074](https://github.com/novuhq/novu/pull/12074) | 닫힘 | 우리가 접었다 — 중앙 1일인 곳에서 15일째 사람 리뷰 0(승인은 봇). 슬롯을 회수했다 |
 | [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 닫힘 | 우리가 접었다 — 중앙 0.6일인 곳에서 37일째 사람 반응 0(붙은 건 CLA 봇뿐) |
@@ -44,6 +45,7 @@
 | [cal.com#29828](https://github.com/calcom/cal.diy/pull/29828) | 닫힘 | 우리가 접었다 — 외부 기여자는 `required` 잡이 항상 실패한다 (게이트 0). 이 저장소 수락률 10% |
 | [cal.com#29832](https://github.com/calcom/cal.diy/pull/29832) | 닫힘 | 우리가 접었다 — 같은 저장소에 2건이 열려 있어 큰 쪽(#29828)에 리뷰를 몰아줬다 |
 | [immich#30163](https://github.com/immich-app/immich/pull/30163) | 닫힘 | 우리가 접었다 — `changelog:*` 라벨은 메인테이너만 붙일 수 있어 우리 쪽에서 더 할 게 없었다 (게이트 0) |
+| [ghost#30284](https://github.com/TryGhost/Ghost/pull/30284) | 닫힘 | 우리가 접었다 — 중앙 1.8일인 곳에서 15일째 사람 반응 0. 09-01 에 핑도 보냈지만 답이 없었다 |
 | [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 닫힘 | 우리가 접었다 — Danger 가 `ci:*`·`qa:*` 라벨에서 막는데 그 라벨은 메인테이너만 붙일 수 있다 (게이트 0) |
 <!-- /auto:decided -->
 
@@ -241,15 +243,14 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🟢 리뷰 진행 | 10일째 / 보통 1일 · 보류 |
-| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 24일째 / 보통 1일 · 보류 |
-| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 36일째 / 보통 11일 |
-| [ghost#30284](https://github.com/TryGhost/Ghost/pull/30284) | O(n²) | ⚪ 대기 | 10일째 / 보통 2일 · 보류 |
-| [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 1일째 / 보통 1일 |
-| [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 6일째 / 보통 1일 |
-| [rollup#6506](https://github.com/rollup/rollup/pull/6506) | 버려진 Promise | ⚪ 대기 | 오늘 / 보통 9일 |
+| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 14일째 / 보통 1일 · 보류 |
+| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 29일째 / 보통 1일 · 보류 |
+| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 40일째 / 보통 11일 |
+| [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 6일째 / 보통 1일 |
+| [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 10일째 / 보통 1일 · 보류 |
+| [rollup#6506](https://github.com/rollup/rollup/pull/6506) | 버려진 Promise | ⚪ 대기 | 4일째 / 보통 9일 |
 
-**열린 것 7건(보류 3건 빼면 4건).** 판정 난 28건 중 머지 13 · 승인 0 · 닫힘 15.
+**열린 것 6건(보류 3건 빼면 3건).** 판정 난 30건 중 머지 13 · 승인 1 · 닫힘 16.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -460,7 +461,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | n8n | 89% | 1.2일 | 25/28 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | novu | 87% | 0.0일 | 27/31 | **통과** | 판정 경험 있음 |
 | nx | 83% | 1.1일 | 19/23 | **통과** | 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 |
-| Ghost | 81% | 1.8일 | 13/16 | **통과** | 열린 PR 있음 — 저장소당 1건 |
+| Ghost | 81% | 1.8일 | 13/16 | **통과** | 판정 경험 있음 |
 | openstatus | 80% | 0.5일 | 28/35 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | storybook | 79% | 1.6일 | 33/42 | **통과** | 판정 경험 있음 · 게이트 0 — danger 가 `ci:*`·`qa:*` 라벨을 요구하는데 메인테이너만 붙일 수 있다 (#35829 가 25일째 빨간불이라 접었다) |
 | astro | 74% | 2.0일 | 39/53 | **통과** | 판정 경험 있음 · 사용자에게 보이는 변화면 changeset 필요 |
