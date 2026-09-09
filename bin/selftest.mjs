@@ -282,6 +282,16 @@ if (generatedSrc) {
       namePattern: /^\s{4}new (?:Map|Set)\(([A-Za-z_$][\w$]*)…\)/gm,
     },
     {
+      file: "n-plus-one.ts",
+      key: "nplusOne",
+      label: "루프 안 N+1",
+      hit: ["eachRepo"],
+      // Promise.all(map(async ...)) 은 병렬 배칭이지 순차 N+1 이 아니다.
+      miss: ["batchedRepo"],
+      // 이 축은 콘솔에 안 찍힌다 — 산출물 JSON 에서 수신자 이름으로 읽는다.
+      fromJson: (j) => (j.quality?.nplusOne?.worst || []).map((w) => w.recv),
+    },
+    {
       file: "shared-ref-fill.ts",
       key: "sharedRefFill",
       label: "공유 참조 fill",
@@ -343,15 +353,31 @@ if (generatedSrc) {
       [path.join(ROOT, "bin", "fixearly.mjs"), `--dir=${path.join(out, "src")}`],
       { cwd: out, encoding: "utf8" }); // cwd 를 옮겨 산출물(public/)이 저장소에 안 남게
     const text0 = (r.stdout || "") + (r.stderr || "");
+    // 콘솔에 안 찍는 축이 있다(N+1 은 seqIo 로만 점수에 들어간다). 그런 축은 산출물
+    // JSON 에서 읽는다 — 테스트를 위해 리포트 출력을 바꾸지 않으려고 이 경로를 둔다.
+    let json = null;
+    if (fx.fromJson) {
+      const jp = path.join(out, "public", "fixearly.json");
+      if (fs.existsSync(jp)) json = JSON.parse(fs.readFileSync(jp, "utf8"));
+    }
     fs.rmSync(out, { recursive: true, force: true });
     if (/regex 근사 모드/.test(text0)) check(`${fx.key} AST 모드로 측정됨`, false);
     const text = text0;
-    const head = text.match(new RegExp(`${fx.label}: (\\d+)곳`));
-    const names = new Set([...text.matchAll(fx.namePattern)].map((m) => m[1]));
+    let names;
+    let total;
+    if (fx.fromJson) {
+      const found = json ? fx.fromJson(json) : null;
+      names = new Set(found || []);
+      total = found ? found.length : null;
+    } else {
+      const head = text.match(new RegExp(`${fx.label}: (\\d+)곳`));
+      names = new Set([...text.matchAll(fx.namePattern)].map((m) => m[1]));
+      total = head ? Number(head[1]) : null;
+    }
     for (const n of fx.hit) check(`${fx.key} 잡음 "${n}"`, names.has(n));
     for (const n of fx.miss) check(`${fx.key} 안 잡음 "${n}"`, !names.has(n));
     // 출력은 상위 몇 건만 찍히므로 총량도 따로 본다 — 오탐이 늘면 여기가 먼저 깨진다.
-    check(`${fx.key} 총 ${fx.hit.length}건`, head ? Number(head[1]) === fx.hit.length : false);
+    check(`${fx.key} 총 ${fx.hit.length}건`, total === fx.hit.length);
   }
 }
 
