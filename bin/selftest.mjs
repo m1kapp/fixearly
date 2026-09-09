@@ -282,6 +282,17 @@ if (generatedSrc) {
       namePattern: /^\s{4}new (?:Map|Set)\(([A-Za-z_$][\w$]*)…\)/gm,
     },
     {
+      file: "shared-ref-fill.ts",
+      key: "sharedRefFill",
+      label: "공유 참조 fill",
+      // 출력 줄이 `.fill(<인자>)` 라 인자 텍스트로 판정한다.
+      hit: ["[]"],
+      // page.fill({ once: true }) 은 도메인 API 다 — 수신자가 '배열을 만드는 표현'이 아니면
+      // Array.prototype.fill 이 아니다(playwright 에서 3곳 밟았다).
+      miss: ["{ once: true }"],
+      namePattern: /^\s{4}\.fill\((.+?)\) — /gm,
+    },
+    {
       file: "io-in-loop.ts",
       key: "io",
       label: "루프 안 파일읽기",
