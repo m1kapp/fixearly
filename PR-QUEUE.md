@@ -435,7 +435,7 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 
 | 저장소 | 수락률 | `[같이자람]` | 판정 |
 |---|---|---|---|
-| Ghost | 86% | 8 | `email-renderer:1034` 은 m 이 **고유** 치환자 수라 10 미만 — 탈락 |
+| Ghost | 86% | 8 | 여덟 건 전부 탈락 — `email-renderer:1034` 은 m 이 **고유** 치환자 수라 10 미만 · `subscription-stats:53·56` 은 cadence·tier 가짓수(2~5)에서 **포화** · `mention-sending:264` 은 진짜로 같이 자라지만 n 이 글 하나의 링크 수라 중앙이 10 남짓이다(앱 코드라 ①-a 대상 아님) |
 | astro | 68% | 1 | 폰트 패밀리 수 — 탈락 |
 | **twenty** | 73% | 5 | `field-permission.service.ts:489` — 아래 |
 
