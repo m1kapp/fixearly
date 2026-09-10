@@ -38,8 +38,8 @@
 | `floating-needs-async-context` | floating promise | async 컨텍스트 밖에서는 `await` 를 붙일 수 없어 기계적 수정이 아니다 | 코퍼스 검증 | async 함수 안에서만 | `floating-promise.ts` |
 | `promise-all-batching` | 루프 안 DB/HTTP (N+1) | `Promise.all(items.map(async …))` 는 병렬 배칭인데 순차 N+1 로 봤다 | 코퍼스 스캔 | 루프 안에서 **직접 await** 하는 호출만 센다 — 중첩 함수 경계와 `inCombinator` 가 **각각 독립으로** 막는다(하나만 빼면 안 뚫린다) | `n-plus-one.ts` |
 | `intentional-sequential-loop` | 루프 안 DB/HTTP (N+1) | 청크·재시도·페이지네이션 루프를 N+1 로 봤다 — 그건 메모리·레이트리밋 때문에 일부러 줄 세운 것이라 `Promise.all` 로 펴면 의미가 바뀐다 | 픽스처를 쓰다 발견했다(2026-09-10): 배칭 케이스를 `for (const chunk of chunks)` 로 썼더니 배칭 가드가 아니라 이 규칙에 먼저 걸려 있었다 | 루프 라벨이 `chunks?`·`batches?`·`retries`·`attempt`·`page`·`cursor`·`hasMore` 등이면 루프를 통째로 건너뛴다 | `n-plus-one.ts` |
-| `minified-bundle` | 전 축 | 저장소에 커밋된 벤더 번들·시드 에셋이 git 추적 대상이라 모든 필터를 통과했다 | `for...in` **129곳** 오탐 + 점수 왜곡(twenty 78 B → 86 A, maxCog 356 → 97, 중복 15.7% → 9.5%) | 파일명 관례 + "한 줄이 비정상적으로 길다"로 전역 제외 | 없음 |
-| `non-production-file` | 전 축 · 데드코드 | knip 이 `.test-d.ts`·`benchmarks/` 를 "미사용"으로 보고했다 | 데드 **181곳**(파일 수보다 많았다) | 비-프로덕션 파일을 모든 축에서 일관 제외 + 분석 대상과 교집합만 집계 | 없음 |
+| `minified-bundle` | 전 축 | 저장소에 커밋된 벤더 번들·시드 에셋이 git 추적 대상이라 모든 필터를 통과했다 | `for...in` **129곳** 오탐 + 점수 왜곡(twenty 78 B → 86 A, maxCog 356 → 97, 중복 15.7% → 9.5%) | 파일명 관례 + "한 줄이 비정상적으로 길다"로 전역 제외 | selftest `커밋된 벤더 번들은 제외된다` |
+| `non-production-file` | 전 축 · 데드코드 | knip 이 `.test-d.ts`·`benchmarks/` 를 "미사용"으로 보고했다 | 데드 **181곳**(파일 수보다 많았다) | 비-프로덕션 파일을 모든 축에서 일관 제외 + 분석 대상과 교집합만 집계 | selftest `테스트 파일은 프로덕션에서 빠진다` |
 | `retroactive-author-association` | (측정 자체) | "그 저장소에 처음 내는 사람의 수락률"을 GitHub `author_association` 으로 재려 했다 | PR 이 머지되면 저자가 **소급해서** CONTRIBUTOR 가 된다 — 우리 머지 4건(outline#13117 · nocodb#14309 · vite#23114 · ghost#29831)도 낼 때는 NONE 이었는데 지금은 전부 CONTRIBUTOR 로 조회된다 (2026-08-11) | 그 계산을 걷어냈다. "NONE 이면서 머지됨"은 구조적으로 0 이라 cal.com 0/43 같은 가짜 0% 가 나온다 | 해당 없음 — 이 계열은 가드가 아니라 **걷어낸 계산**이라 고정할 코드가 없다 |
 | `path-scope-outside-root` | (측정 자체) | 제외 규칙이 절대경로에 물려, 측정 대상 **바깥** 디렉터리 이름이 판정을 뒤집었다 | `/private/tmp` 아래 클론한 storybook — 1559개가 전부 제외되고 **"SSS 100점"** 이 나왔다 (2026-08-10) | 판정을 `--dir` 기준 상대경로로. 0개면 채점 대신 실패 | selftest `제외 규칙 경로 범위` |
 
