@@ -422,6 +422,39 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 
 한 번 보류했다가 규칙 ① 의 "중앙"을 다시 정의하고 냈다. 아래가 그 개정이다.
 
+### `[같이자람]` 으로 다시 훑기 — 2026-09-10
+
+신호를 엔진에 넣고([#49](https://github.com/m1kapp/fixearly/pull/49)) 이미 받아둔 클론부터
+다시 걸렀다.
+
+**앞서 손검증했던 6곳(novu api·novu worker·payload·langfuse·mongoose·tailwind)에서
+`[같이자람]` 후보가 0건이다.** 그 저장소들에서 PR 이 한 건도 안 나온 결과와 정확히 맞는다 —
+이 신호가 먼저 있었다면 그 손검증을 전부 건너뛸 수 있었다.
+
+새로 훑은 셋에서는 나왔다.
+
+| 저장소 | 수락률 | `[같이자람]` | 판정 |
+|---|---|---|---|
+| Ghost | 86% | 8 | `email-renderer:1034` 은 m 이 **고유** 치환자 수라 10 미만 — 탈락 |
+| astro | 68% | 1 | 폰트 패밀리 수 — 탈락 |
+| **twenty** | 73% | 5 | `field-permission.service.ts:489` — 아래 |
+
+#### twenty `field-permission.service.ts:489` (미제출 · 다음 슬롯 후보)
+
+`addRelatedFieldPermissionsToDesired` 가 `inputFieldPermissions` 를 돌면서, 관계 필드마다
+**같은 배열을** `find` 로 다시 훑는다. n 과 m 이 같은 배열이라 정의상 함께 자란다.
+
+고침이 그 파일 관용구 그대로다 — 바로 위에서 이미
+`inputKeys = new Set(inputFieldPermissions.map(keyFrom))` 를 만들고 있다. 그 Set 을
+`Map<key, permission>` 으로 바꾸면 `inputKeys.has(k)` 는 `byKey.has(k)` 로, `find` 는
+`byKey.get(k)` 로 그대로 대응된다. 키가 중복될 때 `find` 가 첫 번째를 주므로 Map 도
+`if (!byKey.has(k)) byKey.set(k, fp)` 로 넣어 first-match 를 지킨다.
+
+**아직 안 냈다** — 2026-09-10 하루 1건은 eslint#21317 이 썼다. 내기 전에 남은 것:
+이 서비스에 스펙이 없어서(`__tests__` 없음) 공개 경로인 upsert 를 통해 회귀 테스트를
+붙일지, 아니면 동등성만 본문으로 논증할지 정해야 한다. twenty 는 우리 PR 2건이 닫힌
+곳이기도 하다(하나는 우리가 같은 저장소에 겹치게 낸 탓).
+
 ### 후보를 죽이는 건 n 이 아니라 **m 이다** — 2026-09-10
 
 ①-a 로 "n 이 큰 곳"을 찾으러 갔더니 다음 벽이 나왔다. O(n·m) 자리에서 **n 은 크게 열려
