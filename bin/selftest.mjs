@@ -282,6 +282,17 @@ if (generatedSrc) {
       namePattern: /^\s{4}new (?:Map|Set)\(([A-Za-z_$][\w$]*)…\)/gm,
     },
     {
+      file: "regex-in-loop.ts",
+      key: "regexInLoop",
+      label: "루프 안 new RegExp",
+      hit: ["inLoop"],
+      // map() 은 모듈 로드 시 1회 도는 캐시 생성이지 재컴파일이 아니다.
+      miss: ["atLoad"],
+      // 이 축은 file:line 만 남긴다 — 그 줄의 변수 이름으로 판정한다.
+      fromJson: (j, srcAt) => (j.quality?.textbook?.regexInLoop?.worst || [])
+        .map((w) => (srcAt(w.line).match(/const\s+([A-Za-z_$][\w$]*)/) || [])[1] || "?"),
+    },
+    {
       file: "n-plus-one.ts",
       key: "nplusOne",
       label: "루프 안 N+1",
@@ -366,7 +377,11 @@ if (generatedSrc) {
     let names;
     let total;
     if (fx.fromJson) {
-      const found = json ? fx.fromJson(json) : null;
+      // file:line 만 기록하는 축이 있다(regexInLoop). 줄 번호로 판정하면 픽스처를 한 줄만
+      // 옮겨도 깨지므로, 그 줄의 소스 텍스트를 넘겨 이름으로 판정할 수 있게 한다.
+      const fixtureLines = fs.readFileSync(p, "utf8").split("\n");
+      const srcAt = (line) => (fixtureLines[line - 1] || "").trim();
+      const found = json ? fx.fromJson(json, srcAt) : null;
       names = new Set(found || []);
       total = found ? found.length : null;
     } else {

@@ -29,7 +29,7 @@
 | `for-in-needs-array-evidence` | 배열에 for...in | 객체에 쓰는 `for...in` 은 정상인데 같이 잡았다 | 코퍼스 검증 | 배열이라는 증거(리터럴·`map`·`filter`·`split`)가 있는 변수만 | `for-in-array.ts` |
 | `for-in-name-collision` | 배열에 for...in | 증거를 파일 스코프로 모으는 탓에, 다른 함수에서 같은 이름이 배열로 선언돼 있으면 객체를 도는 정상 `for...in` 까지 끌려왔다 | mongoose `schema.js:2396`(객체 인덱스 스펙) 이 `schema.js:1005` 의 동명 배열 때문에 잡혔다 — 그 저장소 후보 2건 중 1건 | 같은 이름이 파일에서 두 번 이상 선언되면(파라미터 포함) 포기한다 — `same-name-twice` 와 같은 정책이고 미탐을 산다 | `for-in-array.ts` |
 | `fill-domain-api` | 공유 참조 fill | `page.fill(selector, {...})` 처럼 도메인 API 의 `.fill()` 을 `Array.prototype.fill` 로 봤다 | playwright **3곳** | 수신자가 '배열을 만드는 표현'일 때만 | `shared-ref-fill.ts` |
-| `map-is-not-a-loop` | 루프 안 new RegExp | 모듈 로드 시 1회 도는 `CACHED = entries.map(... new RegExp ...)` 를 재컴파일로 봤다 | 코퍼스 검증 | 진짜 반복문(`for`/`while`) 안에서만 | 없음 |
+| `map-is-not-a-loop` | 루프 안 new RegExp | 모듈 로드 시 1회 도는 `CACHED = entries.map(... new RegExp ...)` 를 재컴파일로 봤다 | 코퍼스 검증 | 진짜 반복문(`for`/`while`) 안에서만 | `regex-in-loop.ts` |
 | `derived-copy` | 루프 안 인덱스 재구축 | `new Set(x).add(y)` 는 재구축이 아니라 '수정한 파생 복사본'이다 | 코퍼스 검증 | 생성 직후 체이닝된 수정은 제외 | `loop-invariant-index.ts` |
 | `loop-var-argument` | 루프 안 인덱스 재구축 | 인자가 루프 변수를 참조하면 매 회 값이 달라 호이스팅 자체가 불가능하다 | 코퍼스 검증 | 루프 변수를 참조하면 제외 | `loop-invariant-index.ts` |
 | `reassigned-in-loop` | 루프 안 인덱스 재구축 | 루프 **밖**에서 선언됐다는 이유로 '불변'으로 봤는데, 루프 안에서 다시 대입되고 있었다 | mongoose `getModelsMapForPopulate.js:151` — `modelNames = res.modelNames` 바로 뒤의 `new Set(modelNames)` | 루프 본문에서 대입되는 이름(`=`·복합대입·`++`)이 인자에 있으면 제외 | `loop-invariant-index.ts` |
@@ -40,7 +40,7 @@
 | `intentional-sequential-loop` | 루프 안 DB/HTTP (N+1) | 청크·재시도·페이지네이션 루프를 N+1 로 봤다 — 그건 메모리·레이트리밋 때문에 일부러 줄 세운 것이라 `Promise.all` 로 펴면 의미가 바뀐다 | 픽스처를 쓰다 발견했다(2026-09-10): 배칭 케이스를 `for (const chunk of chunks)` 로 썼더니 배칭 가드가 아니라 이 규칙에 먼저 걸려 있었다 | 루프 라벨이 `chunks?`·`batches?`·`retries`·`attempt`·`page`·`cursor`·`hasMore` 등이면 루프를 통째로 건너뛴다 | `n-plus-one.ts` |
 | `minified-bundle` | 전 축 | 저장소에 커밋된 벤더 번들·시드 에셋이 git 추적 대상이라 모든 필터를 통과했다 | `for...in` **129곳** 오탐 + 점수 왜곡(twenty 78 B → 86 A, maxCog 356 → 97, 중복 15.7% → 9.5%) | 파일명 관례 + "한 줄이 비정상적으로 길다"로 전역 제외 | 없음 |
 | `non-production-file` | 전 축 · 데드코드 | knip 이 `.test-d.ts`·`benchmarks/` 를 "미사용"으로 보고했다 | 데드 **181곳**(파일 수보다 많았다) | 비-프로덕션 파일을 모든 축에서 일관 제외 + 분석 대상과 교집합만 집계 | 없음 |
-| `retroactive-author-association` | (측정 자체) | "그 저장소에 처음 내는 사람의 수락률"을 GitHub `author_association` 으로 재려 했다 | PR 이 머지되면 저자가 **소급해서** CONTRIBUTOR 가 된다 — 우리 머지 4건(outline#13117 · nocodb#14309 · vite#23114 · ghost#29831)도 낼 때는 NONE 이었는데 지금은 전부 CONTRIBUTOR 로 조회된다 (2026-08-11) | 그 계산을 걷어냈다. "NONE 이면서 머지됨"은 구조적으로 0 이라 cal.com 0/43 같은 가짜 0% 가 나온다 | 없음 |
+| `retroactive-author-association` | (측정 자체) | "그 저장소에 처음 내는 사람의 수락률"을 GitHub `author_association` 으로 재려 했다 | PR 이 머지되면 저자가 **소급해서** CONTRIBUTOR 가 된다 — 우리 머지 4건(outline#13117 · nocodb#14309 · vite#23114 · ghost#29831)도 낼 때는 NONE 이었는데 지금은 전부 CONTRIBUTOR 로 조회된다 (2026-08-11) | 그 계산을 걷어냈다. "NONE 이면서 머지됨"은 구조적으로 0 이라 cal.com 0/43 같은 가짜 0% 가 나온다 | 해당 없음 — 이 계열은 가드가 아니라 **걷어낸 계산**이라 고정할 코드가 없다 |
 | `path-scope-outside-root` | (측정 자체) | 제외 규칙이 절대경로에 물려, 측정 대상 **바깥** 디렉터리 이름이 판정을 뒤집었다 | `/private/tmp` 아래 클론한 storybook — 1559개가 전부 제외되고 **"SSS 100점"** 이 나왔다 (2026-08-10) | 판정을 `--dir` 기준 상대경로로. 0개면 채점 대신 실패 | selftest `제외 규칙 경로 범위` |
 
 ## 가드로 못 막아서 **축을 폐기한 것**
