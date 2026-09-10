@@ -422,6 +422,25 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 
 한 번 보류했다가 규칙 ① 의 "중앙"을 다시 정의하고 냈다. 아래가 그 개정이다.
 
+### 후보를 죽이는 건 n 이 아니라 **m 이다** — 2026-09-10
+
+①-a 로 "n 이 큰 곳"을 찾으러 갔더니 다음 벽이 나왔다. O(n·m) 자리에서 **n 은 크게 열려
+있는데 m 이 항상 작다.** pnpm 이 교과서다:
+
+| 자리 | n | m |
+|---|---|---|
+| `tryFastUpdatePatchedDependencies:134` | 락파일 전체 패키지(수천) | 패치된 의존성(1~5) |
+| `tryFastUpdateImporters:295` | 워크스페이스 importer(수백) | 바뀐 것(몇 개) |
+| `pkg-metadata-filter:68` | 패키지 버전(수천) | trustedVersions(몇 개) + 단락 평가 |
+| `resolveDependencyTree:381` | 직접 의존성(수십) | 직접 의존성(수십) |
+
+**둘 다 큰 자리라야 이차식이 보인다.** eslint `no-duplicate-case` 가 통과한 이유가
+이것이다 — 거기선 n 과 m 이 같은 배열(이전 case 들)이라 함께 자란다.
+
+그래서 후보를 볼 때 첫 질문을 바꾼다: **"안쪽 배열이 바깥 루프와 같이 자라는가."**
+같이 자라지 않으면 n 이 아무리 커도 사실상 선형이다. 이걸로 먼저 거르면 손검증이
+훨씬 싸진다.
+
 ### tailwind `ast.ts:502` — ①-a 를 적용해도 안 나온다 (2026-09-10 실측)
 
 규칙 ①-a 를 만들고 나서 "그럼 tailwind 것도 풀리는 것 아니냐"를 실제로 재봤다. 안 풀린다.
@@ -643,6 +662,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | ghost | 순차 43 중 2 | 이메일 알림은 SMTP 가 DB 왕복을 압도 · stripe-migrations 는 순차가 의도 |
 | ghost | N+1 23 | **전부 탈락**(2026-08-11). 12곳이 마이그레이션·CLI(1회 실행) · `member-repository` 4곳은 루프 대상이 tier 목록인데 **세 줄 위에서 `products.length > 1` 이면 던진다**(n≤1) · 구독 루프 2곳은 iteration 마다 try/catch 로 오류를 격리해서 배치하면 의미가 바뀐다 · 나머지는 청크 삽입(의도된 배칭) |
 | medusa | N+1 2 | `link.ts:556` 은 루프가 *서비스* 단위이고 쿼리는 이미 `$or` 로 배치돼 있다 · 나머지 1곳은 재시도 루프 |
+| pnpm | O(n²) 33 (후보 30) · 순차 await 3 | **전부 탈락**(2026-09-10, ①-a 기준). `projects-graph:85` 은 이미 `projectMapByDir`·`projectMapByManifestName` 로 인덱싱돼 있고 남은 `find` 는 주석에 "Slow path; only needed when there are case mismatches" 라고 적힌 의도된 폴백이다 · `pkg-metadata-filter:68` 의 `trustedVersions.includes` 는 날짜 체크가 실패할 때만 도는 단락이라 m 이 작다 · 나머지는 `movedBases`·`stale`·`directDeps` 처럼 **한쪽이 항상 작다** |
 | langfuse | O(n²) 35 (후보 24) · 순차 await 3 · floating promise 1 | **전부 탈락**(2026-09-10). 제일 좋았던 `handleCloudUsageMeteringJob.ts:207`(독립 CH 집계 3개 직렬)은 **`worker/src/ee/` 라 EE 라이선스 구역**이다 — 레포가 "MIT except `ee/`" 라 외부 기여 대상이 아니다. `traceDelete.ts:55` 는 진짜 O(n·m) 이지만 n 이 삭제 배치 크기라 단건 삭제가 중앙이다. `blobstorage:1606` 의 floating promise 는 바로 위 주석이 "Not awaited: this path rethrows" 라고 **의도를 적어둔 자리**다 |
 | payload | O(n²) 56 (후보 37) · 순차 await 6 | **전부 탈락**(2026-09-09). `runJSONJob:114` 은 워크플로 스텝 수(한 자릿수) · `find.ts:290` 은 진짜 O(docs×locks) 지만 n 이 페이지 크기(기본 10)라 중앙에서 이득이 없다 · `dataloader.ts:152` 는 우리가 접은 #17469 자리 그대로다 |
 | mongoose | O(n²) 13 | **전부 탈락**(2026-09-05). n 이 전부 스키마·프로젝션 크기라 유계다 — `document.js:2386`·`updateValidators.js:129` 는 `startsWith` 접두 매칭이라 Set 으로 안 바뀌고, `model.js:1505` 는 컬렉션 인덱스 수(수십), `schema.js:2776·2794` 는 모델 정의 시 1회, `queryHelpers.js:360` 은 경로 깊이(≈3) 다 |
