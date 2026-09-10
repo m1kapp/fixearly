@@ -921,6 +921,32 @@ function quadConstOuter(text, moduleConsts) {
 //    cypress screenshot 건: 매칭 직후 파일마다 fs.stat + 업로드 — 그쪽이 압도한다.
 const QUAD_IO_HINT =
   /\b(prisma|knex|repository|repo|dataSource|entityManager|redis|cache|s3|storage|axios|fetch|http|client|api|sdk|queue|stripe|supabase|clickhouse|mongo)\b|\b(readFile|readdir|stat|writeFile)\b/i;
+// 안쪽 배열이 바깥 루프와 **같이 자라는가**. O(n·m) 은 둘 다 자랄 때만 이차식이다 —
+// pnpm 실측: 락파일 수천 개를 패치된 의존성 1~5개와 맞대는 자리는 사실상 선형이었다.
+// 같이 자란다고 보는 신호 두 개:
+//   (a) 누적기 — 루프 안에서 수신자에 push/add/unshift/set 하거나 재대입한다
+//   (b) 같은 컬렉션 — 수신자가 바로 그 루프의 반복 대상이다
+function quadCoGrows(ts, loopNode, sf, root, outerText) {
+  if (outerText && String(outerText).trim() === root) return true;
+  if (!loopNode) return false;
+  const GROWERS = new Set(["push", "add", "unshift", "set", "concat"]);
+  let found = false;
+  const g = (n) => {
+    if (found) return;
+    if (ts.isCallExpression(n) && ts.isPropertyAccessExpression(n.expression) &&
+        GROWERS.has(n.expression.name.getText(sf))) {
+      let c = n.expression.expression;
+      while (ts.isPropertyAccessExpression(c)) c = c.expression;
+      if (ts.isIdentifier(c) && c.getText(sf) === root) { found = true; return; }
+    }
+    if (ts.isBinaryExpression(n) && n.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
+        ts.isIdentifier(n.left) && n.left.getText(sf) === root) { found = true; return; }
+    ts.forEachChild(n, g);
+  };
+  ts.forEachChild(loopNode, g);
+  return found;
+}
+
 function quadIoInLoop(ts, loopNode, sf) {
   if (!loopNode) return false;
   let found = false;
@@ -1100,13 +1126,16 @@ function analyzeQuadraticLookups(ts, fileContents) {
               cuts.push("const-inner");
             if (quadIoInLoop(ts, loopNode, sf)) cuts.push("io-in-loop");
             if (quadCappedN(fnNode ? fnNode.getText(sf) : "")) cuts.push("capped-n");
+            const coGrows = quadCoGrows(ts, loopNode, sf, root, outerText);
             sites.push({
+              coGrows,
               file, line: lineOf(node), recv, method,
               kind: QUADRATIC_GROUP_METHODS.has(method) ? "group" : "lookup",
               zone, outer: outerText || null, dynamicOuter,
               cuts: cuts.length ? cuts : null,
               // PR 우선순위: 백엔드 + 무계 반복이 최상, 게이트에 걸린 건 최하로 민다.
-              rank: (QUAD_ZONE_RANK[zone] ?? 2) * 2 + (dynamicOuter ? 1 : 0) - cuts.length * 4,
+              rank: (QUAD_ZONE_RANK[zone] ?? 2) * 2 + (dynamicOuter ? 1 : 0)
+                + (coGrows ? 3 : 0) - cuts.length * 4,
             });
           }
         }
@@ -1154,7 +1183,7 @@ function analyzeQuadraticLookups(ts, fileContents) {
     candidateList: candidates
       .sort((a, b) => b.rank - a.rank)
       .slice(0, 500)
-      .map((s) => ({ file: s.file, line: s.line, recv: s.recv, method: s.method, zone: s.zone, outer: s.outer })),
+      .map((s) => ({ file: s.file, line: s.line, recv: s.recv, method: s.method, zone: s.zone, outer: s.outer, coGrows: s.coGrows })),
     files: [...byFile.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([file, n]) => ({ file, n })),
   };
 }
@@ -2947,7 +2976,7 @@ if (quadratic && quadratic.sites > 0) {
     const list = quadratic.candidateList || [];
     console.log(`\n  ── --mine: PR 후보 전체 ${list.length}곳 (backend/기타·무계 반복, 손검증 대상) ──`);
     for (const c of list) {
-      console.log(`    [${c.zone}] ${c.recv}.${c.method}() — ${c.file}:${c.line}${c.outer ? `  (loop: ${c.outer})` : ""}`);
+      console.log(`    ${c.coGrows ? "[같이자람]" : "[m작음?]"} [${c.zone}] ${c.recv}.${c.method}() — ${c.file}:${c.line}${c.outer ? `  (loop: ${c.outer})` : ""}`);
     }
     const minePath = path.join(outDir, "quadratic-candidates.json");
     try { fs.writeFileSync(minePath, JSON.stringify(list, null, 2)); console.log(`  ✓ 후보 목록 저장 → ${minePath}`); } catch {}

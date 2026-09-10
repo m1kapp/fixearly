@@ -282,6 +282,17 @@ if (generatedSrc) {
       namePattern: /^\s{4}new (?:Map|Set)\(([A-Za-z_$][\w$]*)…\)/gm,
     },
     {
+      file: "quadratic-co-growth.ts",
+      key: "quadraticCoGrowth",
+      label: "O(n²) 배열 조회",
+      // 후보 목록에는 둘 다 올라오고, '같이 자라는' 쪽만 coGrows 가 붙어야 한다.
+      hit: ["seenRows"],
+      miss: ["patchedNames"],
+      fromJson: (j) => (j.quality?.quadratic?.candidateList || [])
+        .filter((c) => c.coGrows)
+        .map((c) => c.recv),
+    },
+    {
       file: "regex-in-loop.ts",
       key: "regexInLoop",
       label: "루프 안 new RegExp",
