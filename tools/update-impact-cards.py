@@ -271,6 +271,7 @@ def delivery_timeline(f, key, pr_url, age_html):
 # 무엇을 하는 물건인지만 남긴다. 새 저장소는 여기 없으면 빈칸으로 나가고,
 # --check 가 잡는다.
 BLURB = {
+    "eslint/eslint": ("자바스크립트 린터", "JavaScript linter"),
     "outline/outline": ("팀 위키·문서", "team knowledge base"),
     "nocodb/nocodb": ("노코드 DB · Airtable 대안", "no-code database"),
     "novuhq/novu": ("알림 인프라", "notification infrastructure"),

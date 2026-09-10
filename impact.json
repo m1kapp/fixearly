@@ -76,7 +76,7 @@
    "title": "dataloader doc placement O(n²)",
    "type": "O(n²) (배치당 keys.findIndex 전체 스캔 — Map으로 O(1))",
    "repo": "payloadcms/payload",
-   "repoLabel": "payload · 44.6k★",
+   "repoLabel": "payload · 44.7k★",
    "pr": 17469,
    "createdAt": "2026-07-24T12:40:04Z",
    "status": "closed",
@@ -148,7 +148,7 @@
    "title": "resource-mapper schema validation O(n²)",
    "type": "O(n²) (value별 schema.find — id Map으로 O(1))",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 203.8k★",
+   "repoLabel": "n8n · 203.9k★",
    "pr": 34899,
    "createdAt": "2026-07-24T13:05:42Z",
    "status": "merged",
@@ -465,7 +465,7 @@
    "titleEn": "credential uninstall exits before deletions finish",
    "type": "버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all)",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 203.8k★",
+   "repoLabel": "n8n · 203.9k★",
    "pr": 37047,
    "status": "approved",
    "createdAt": "2026-08-25T15:17:47Z",
@@ -495,7 +495,17 @@
    "pr": 334230,
    "status": "waiting",
    "createdAt": "2026-09-03T11:03:48Z"
+  },
+  {
+   "title": "no-duplicate-case 이전 case 재스캔",
+   "titleEn": "no-duplicate-case rescans earlier cases",
+   "type": "O(n²) (case 마다 이전 case 전량 비교, 비교마다 토큰 전수 — 토큰 키 Set 으로 O(n))",
+   "repo": "eslint/eslint",
+   "repoLabel": "eslint · 27.5k★",
+   "pr": 21317,
+   "createdAt": "2026-09-10T00:46:32Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-09-09T14:12:14.210Z"
+ "generatedAt": "2026-09-10T00:47:30.609Z"
 }
