@@ -449,6 +449,31 @@ if (generatedSrc) {
   const testdata = run(src3);
   check("testdata 의 깨진 파서 픽스처는 제외된다", testdata.code === 0 && /파일: 1개/.test(testdata.text));
 
+  // [FP:minified-bundle] 저장소에 커밋된 벤더 번들은 git 추적 대상이라 모든 필터를
+  // 통과한다. twenty 에서 for...in 129곳 오탐과 점수 왜곡(78 B → 86 A)을 냈다.
+  const src4 = path.join(root, "vendor-bundle", "src");
+  fs.mkdirSync(src4, { recursive: true });
+  fs.writeFileSync(path.join(src4, "keep.ts"), body("kept"));
+  // 이름에 아무 단서를 두지 않는다 — `bundle`·`generated` 같은 낱말이 들어가면
+  // 이름 규칙이 먼저 걸러서, 정작 "한 줄이 비정상적으로 길다" 판정이 사는지 확인할 수 없다.
+  // 줄 수는 평범하게 두고(자잘 파일 필터가 먼저 걸리지 않게) 한 줄만 비정상적으로 길게 —
+  // 그래야 "긴 줄" 판정 하나만 시험된다.
+  fs.writeFileSync(
+    path.join(src4, "seed.ts"),
+    `${body("bundled")}export const PAYLOAD = "${"x".repeat(4000)}";\n`,
+  );
+  const bundled = run(src4);
+  check("커밋된 벤더 번들은 제외된다", /파일: 1개/.test(bundled.text));
+
+  // [FP:non-production-file] 테스트·벤치는 프로덕션이 아니다. knip 이 이걸 '미사용'으로
+  // 세면서 데드 코드가 파일 수보다 많이 나온 적이 있다(181곳).
+  const src5 = path.join(root, "non-production", "src");
+  fs.mkdirSync(src5, { recursive: true });
+  fs.writeFileSync(path.join(src5, "keep.ts"), body("kept"));
+  fs.writeFileSync(path.join(src5, "keep.test.ts"), body("tested"));
+  const nonProd = run(src5);
+  check("테스트 파일은 프로덕션에서 빠진다", /파일: 1개/.test(nonProd.text));
+
   // 전부 걸러지면 채점하지 않고 실패한다 — 0개를 채점하면 모든 축이 0 이라 만점이 된다.
   const empty = run(src2, ["--exclude=*"]);
   check("전부 제외되면 만점 대신 실패", empty.code === 1 && /분석할 프로덕션 파일이 없습니다/.test(empty.text));
