@@ -287,7 +287,7 @@ if (generatedSrc) {
       label: "루프 안 N+1",
       hit: ["eachRepo"],
       // Promise.all(map(async ...)) 은 병렬 배칭이지 순차 N+1 이 아니다.
-      miss: ["batchedRepo"],
+      miss: ["batchedRepo", "intentRepo"],
       // 이 축은 콘솔에 안 찍힌다 — 산출물 JSON 에서 수신자 이름으로 읽는다.
       fromJson: (j) => (j.quality?.nplusOne?.worst || []).map((w) => w.recv),
     },

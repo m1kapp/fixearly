@@ -1217,7 +1217,9 @@ function analyzeNPlusOne(ts, fileContents) {
     const visit = (node) => {
       if (LOOPS.has(node.kind) && node.statement) {
         const label = loopLabel(node);
-        // 의도적 순차면 이 루프는 통째로 건너뛴다.
+        // 가드 [FP:intentional-sequential-loop]: 루프 라벨이 `chunks`·`batches`·`retries`·`page`
+        // 같은 모양이면 통째로 건너뛴다 — 청크·재시도·페이지네이션은 메모리나 레이트리밋
+        // 때문에 일부러 줄 세운 것이라 Promise.all 로 펴면 의미가 바뀐다.
         if (!NPLUS_INTENT.test(label.trim())) {
           const scan = (n) => {
             // 중첩 함수 경계는 넘지 않는다 — 콜백은 동시성 판단이 다르다.
