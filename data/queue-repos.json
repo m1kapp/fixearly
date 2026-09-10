@@ -1,38 +1,70 @@
 {
-  "_schema": "큐에 후보를 들고 있는(또는 곧 훑을) 저장소. impact.json 에 아직 PR 이 없어서 회전 속도가 안 재지던 곳들이다. tools/update-repo-merge-times.py 가 여기 것도 같이 잰다.",
-  "_why": "게이트 표(수락률·중앙 머지일)를 손으로 적어두고 2026-08-08 값을 그대로 쓰고 있었다. 8/11 에 다시 재니 ghost 중앙이 0.2일→3.9일, storybook 수락률이 75%→85% 로 움직였다. 손으로 적은 값은 반드시 어긋난다.",
-  "repos": [
-    {
-      "repo": "rollup/rollup",
-      "note": "Chunk.ts:1343 후보 보유"
-    },
-    {
-      "repo": "pnpm/pnpm",
-      "note": "toResolveImporter.ts:110 제출됨 #14032"
-    },
-    {
-      "repo": "angular/angular",
-      "note": "후보 3건 · CLA 필요"
-    },
-    {
-      "repo": "microsoft/vscode",
-      "note": "chatToolPicker.ts mcpServerByTool 제출됨 #334230"
-    },
-    {
-      "repo": "vercel/next.js",
-      "note": "후보 보유"
-    },
-    {
-      "repo": "facebook/react",
-      "note": "후보는 DISABLED 주석 건 — PR 보다 이슈"
-    },
-    {
-      "repo": "Automattic/mongoose",
-      "note": "bulkSave 오류 매칭 제출됨 #16474"
-    },
-    {
-      "repo": "vitest-dev/vitest",
-      "note": "미훑음 · CLA 있음"
-    }
-  ]
+ "_schema": "큐에 후보를 들고 있는(또는 곧 훑을) 저장소. impact.json 에 아직 PR 이 없어서 회전 속도가 안 재지던 곳들이다. tools/update-repo-merge-times.py 가 여기 것도 같이 잰다.",
+ "_why": "게이트 표(수락률·중앙 머지일)를 손으로 적어두고 2026-08-08 값을 그대로 쓰고 있었다. 8/11 에 다시 재니 ghost 중앙이 0.2일→3.9일, storybook 수락률이 75%→85% 로 움직였다. 손으로 적은 값은 반드시 어긋난다.",
+ "repos": [
+  {
+   "repo": "rollup/rollup",
+   "note": "Chunk.ts:1343 후보 보유"
+  },
+  {
+   "repo": "pnpm/pnpm",
+   "note": "toResolveImporter.ts:110 제출됨 #14032"
+  },
+  {
+   "repo": "angular/angular",
+   "note": "후보 3건 · CLA 필요"
+  },
+  {
+   "repo": "microsoft/vscode",
+   "note": "chatToolPicker.ts mcpServerByTool 제출됨 #334230"
+  },
+  {
+   "repo": "vercel/next.js",
+   "note": "후보 보유"
+  },
+  {
+   "repo": "facebook/react",
+   "note": "후보는 DISABLED 주석 건 — PR 보다 이슈"
+  },
+  {
+   "repo": "Automattic/mongoose",
+   "note": "bulkSave 오류 매칭 제출됨 #16474"
+  },
+  {
+   "repo": "vitest-dev/vitest",
+   "note": "미훑음 · CLA 있음"
+  },
+  {
+   "repo": "prettier/prettier",
+   "note": "미훑음 후보 — 코드 포매터 — n 이 AST 크기(사용자 파일)에 열려 있다"
+  },
+  {
+   "repo": "babel/babel",
+   "note": "미훑음 후보 — 컴파일러 — n 이 AST 노드 수"
+  },
+  {
+   "repo": "eslint/eslint",
+   "note": "미훑음 후보 — 린터 — n 이 파일·규칙·AST 크기"
+  },
+  {
+   "repo": "webpack/webpack",
+   "note": "미훑음 후보 — 번들러 — n 이 모듈 그래프 크기"
+  },
+  {
+   "repo": "jestjs/jest",
+   "note": "미훑음 후보 — 테스트 러너 — n 이 테스트·파일 수"
+  },
+  {
+   "repo": "postcss/postcss",
+   "note": "미훑음 후보 — CSS 파서 — n 이 노드 수"
+  },
+  {
+   "repo": "tailwindlabs/tailwindcss",
+   "note": "미훑음 후보 — CSS 생성기 — n 이 클래스·파일 수"
+  },
+  {
+   "repo": "drizzle-team/drizzle-orm",
+   "note": "미훑음 후보 — 쿼리 빌더 — n 이 스키마·행 수"
+  }
+ ]
 }

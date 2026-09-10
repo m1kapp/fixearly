@@ -183,8 +183,11 @@ rot.sort()
 rbody = ["| 저장소 | 수락률 | 중앙 | 외부 머지 | 판정 | 메모 |", "|---|---|---|---|---|---|"]
 for _, _, _, repo, rate, middle, mg, cl, note in rot:
     short = repo.split("/")[-1]
+    # 외부 PR 이 아직 안 닫힌 저장소는 중앙값이 없다(nocodb 0/3). 그때도 표는 나와야 한다 —
+    # 여기서 죽으면 "새 후보를 큐에 넣었더니 생성기가 멈추는" 모양이 된다.
+    mid = f"{middle:.1f}일" if middle is not None else "표본 없음"
     rbody.append(f"| {short} | {rate if rate is not None else '—'}% | "
-                 f"{middle:.1f}일 | {mg}/{cl} | {verdict(rate, middle)} | {note or '—'} |")
+                 f"{mid} | {mg}/{cl} | {verdict(rate, middle)} | {note or '—'} |")
 rblock = R_BEGIN + "\n" + "\n".join(rbody) + "\n" + R_END
 
 doc = open(DOC, encoding="utf-8").read()
