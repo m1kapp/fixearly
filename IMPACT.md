@@ -17,12 +17,12 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `view-widget-upsert O(n²)` | [twenty · 56.5k★](https://github.com/twentyhq/twenty) | O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map) | [#23231](https://github.com/twentyhq/twenty/pull/23231) | ❌ closed | — |
 | `nested relations hydration O(n²)` | [twenty · 56.5k★](https://github.com/twentyhq/twenty) | O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map) | [#23232](https://github.com/twentyhq/twenty/pull/23232) | ❌ closed | — |
 | `lucky-user set rebuild in loop` | [cal.com · 48.3k★](https://github.com/calcom/cal.diy) | 루프 불변 인덱스 재구축 (while마다 new Set 재구축 → 호이스팅) | [#29832](https://github.com/calcom/cal.diy/pull/29832) | ❌ closed | — |
-| `dataloader doc placement O(n²)` | [payload · 44.6k★](https://github.com/payloadcms/payload) | O(n²) (배치당 keys.findIndex 전체 스캔 — Map으로 O(1)) | [#17469](https://github.com/payloadcms/payload/pull/17469) | ❌ closed | — |
+| `dataloader doc placement O(n²)` | [payload · 44.7k★](https://github.com/payloadcms/payload) | O(n²) (배치당 keys.findIndex 전체 스캔 — Map으로 O(1)) | [#17469](https://github.com/payloadcms/payload/pull/17469) | ❌ closed | — |
 | `translations batch match O(n²)` | [medusa · 36.2k★](https://github.com/medusajs/medusa) | O(n²) (batch당 filter+some 전체 스캔 — Set으로 O(1)) | [#16188](https://github.com/medusajs/medusa/pull/16188) | ✅ merged | +1 |
 | `markdown import merge O(n²)` | [outline · 40.5k★](https://github.com/outline/outline) | O(n²) (형제 out.find title 스캔 — Map으로 O(1)) | [#13117](https://github.com/outline/outline/pull/13117) | ✅ merged | +1 |
 | `doc-metadata localization O(n²)` | [strapi · 73.1k★](https://github.com/strapi/strapi) | O(n²) (localization별 versions.find — 복합키 Map으로 O(1)) | [#27125](https://github.com/strapi/strapi/pull/27125) | ❌ closed | — |
 | `parse-fields dedup O(n²)` | [directus · 37.8k★](https://github.com/directus/directus) | O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1)) | [#27978](https://github.com/directus/directus/pull/27978) | ❌ closed | — |
-| `resource-mapper schema validation O(n²)` | [n8n · 203.8k★](https://github.com/n8n-io/n8n) | O(n²) (value별 schema.find — id Map으로 O(1)) | [#34899](https://github.com/n8n-io/n8n/pull/34899) | ✅ merged | +1 |
+| `resource-mapper schema validation O(n²)` | [n8n · 203.9k★](https://github.com/n8n-io/n8n) | O(n²) (value별 schema.find — id Map으로 O(1)) | [#34899](https://github.com/n8n-io/n8n/pull/34899) | ✅ merged | +1 |
 | `user field validation O(n²)` | [nocodb · 64.9k★](https://github.com/nocodb/nocodb) | O(n²) (value별 baseUsers.find ×4 — id·email Map으로 O(1)) | [#14309](https://github.com/nocodb/nocodb/pull/14309) | ✅ merged | +1 |
 | `ExternalRequest field lookup O(n²)` | [budibase · 28.3k★](https://github.com/Budibase/budibase) | O(n²) (행 필드별 fieldNames.find — Set으로 O(1)) | [#19320](https://github.com/Budibase/budibase/pull/19320) | ❌ closed | — |
 | `static formula 갱신 enriched row 조회 O(n²)` | [budibase · 28.3k★](https://github.com/Budibase/budibase) | O(n²) (행마다 enrichedRows.find — id Map으로 O(1), 100건에서 5,050→100) | [#19555](https://github.com/Budibase/budibase/pull/19555) | ❌ closed | — |
@@ -43,9 +43,10 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `watch 재실행 결과를 안 기다림` | [rollup · 26.3k★](https://github.com/rollup/rollup) | 버려진 Promise (재실행을 await 하지 않아 리스너 실패가 catch 를 지나쳐 ERROR·END 이벤트가 사라진다) | [#6506](https://github.com/rollup/rollup/pull/6506) | ⚪ awaiting review | — |
 | `의존성 분할 안 미사용 Set` | [pnpm · 36.5k★](https://github.com/pnpm/pnpm) | 쓰기만 하는 컬렉션 (함수 호출마다 Set 생성, 링크 의존성마다 .add(), 읽기 없음 — 삭제) | [#14032](https://github.com/pnpm/pnpm/pull/14032) | ✅ merged | +1 |
 | `bulkSave 오류 문서 반복 매칭` | [mongoose · 27.5k★](https://github.com/Automattic/mongoose) | O(n²) 배열 조회 (문서마다 writeErrors.find 전체 스캔 → 실패 id Set으로 O(1)) | [#16474](https://github.com/Automattic/mongoose/pull/16474) | ✅ merged | +1 |
-| `credential 삭제 완료 전 명령 종료` | [n8n · 203.8k★](https://github.com/n8n-io/n8n) | 버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all) | [#37047](https://github.com/n8n-io/n8n/pull/37047) | 🔵 approved · 머지 대기 | — |
+| `credential 삭제 완료 전 명령 종료` | [n8n · 203.9k★](https://github.com/n8n-io/n8n) | 버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all) | [#37047](https://github.com/n8n-io/n8n/pull/37047) | 🔵 approved · 머지 대기 | — |
 | `post relation 연결 반복 조회` | [ghost · 55.2k★](https://github.com/TryGhost/Ghost) | O(n²) (relation마다 전체 posts.find → id Map으로 O(1), 100건에서 id 조회 5,050→100) | [#30284](https://github.com/TryGhost/Ghost/pull/30284) | ❌ closed | — |
 | `툴 피커 안 미사용 Map` | [vscode · 191.5k★](https://github.com/microsoft/vscode) | 쓰기만 하는 컬렉션 (MCP 툴마다 .set(), 읽기 없음 — #249448 이후 15개월째 · 삭제) | [#334230](https://github.com/microsoft/vscode/pull/334230) | ⚪ awaiting review | — |
+| `no-duplicate-case 이전 case 재스캔` | [eslint · 27.5k★](https://github.com/eslint/eslint) | O(n²) (case 마다 이전 case 전량 비교, 비교마다 토큰 전수 — 토큰 키 Set 으로 O(n)) | [#21317](https://github.com/eslint/eslint/pull/21317) | ⚪ awaiting review | — |
 
 ## 규칙
 
