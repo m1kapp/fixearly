@@ -508,6 +508,16 @@
    "closedReason": "AI 보조 PR 은 선행 이슈가 필요하다는 정책(게이트 0, 우리가 안 읽었다) · 메인테이너는 이득도 의심했다 — \"린터는 보통 생성 코드를 안 훑는다\"",
    "closedReasonEn": "their AI policy requires a backing issue for AI-assisted PRs (a gate we had not read), and the maintainer doubted the benefit: linters usually do not run on generated code",
    "closedAt": "2026-09-10T09:15:11Z"
+  },
+  {
+   "title": "템플릿 파이프라인의 쓰기만 하는 컬렉션",
+   "titleEn": "write-only collections in template pipeline phases",
+   "type": "쓰기만 하는 컬렉션 (allocateSlots 의 slotMap, generateTemporaries 의 released — 채우기만 하고 읽지 않음, slotMap 은 주석이 '다음 순회에서 쓴다'고 잘못 설명)",
+   "repo": "angular/angular",
+   "repoLabel": "angular · 101k★",
+   "pr": 70690,
+   "createdAt": "2026-09-11T13:27:18Z",
+   "status": "waiting"
   }
  ],
  "generatedAt": "2026-09-11T05:22:07.170Z"

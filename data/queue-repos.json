@@ -12,7 +12,7 @@
     },
     {
       "repo": "angular/angular",
-      "note": "후보 3건 · CLA 필요"
+      "note": "compiler slotMap·released 제출됨 #70690 · schematics skippedInputs 대기"
     },
     {
       "repo": "microsoft/vscode",

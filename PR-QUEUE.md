@@ -287,13 +287,14 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
 | [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 16일째 / 보통 1일 · 보류 |
-| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 30일째 / 보통 1일 · 보류 |
+| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 31일째 / 보통 1일 · 보류 |
 | [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 42일째 / 보통 13일 |
+| [angular#70690](https://github.com/angular/angular/pull/70690) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 2일 |
 | [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 8일째 / 보통 1일 · 보류 |
 | [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 12일째 / 보통 1일 · 보류 |
 | [rollup#6506](https://github.com/rollup/rollup/pull/6506) | 버려진 Promise | ⚪ 대기 | 6일째 / 보통 6일 |
 
-**열린 것 6건(보류 4건 빼면 2건).** 판정 난 31건 중 머지 13 · 승인 1 · 닫힘 17.
+**열린 것 7건(보류 4건 빼면 3건).** 판정 난 31건 중 머지 13 · 승인 1 · 닫힘 17.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -703,7 +704,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | n8n | 100% | 1.1일 | 21/21 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | langfuse | 87% | 0.0일 | 13/15 | **통과** | 판정 경험 있음 |
 | Ghost | 86% | 0.6일 | 37/43 | **통과** | 판정 경험 있음 |
-| angular | 83% | 2.1일 | 34/41 | **통과** | CLA 서명 필요 |
+| angular | 83% | 2.1일 | 34/41 | **통과** | 열린 PR 있음 — 저장소당 1건 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
 | postcss | 81% | 0.2일 | 42/52 | **통과** | — |
 | novu | 77% | 0.1일 | 24/31 | **통과** | 판정 경험 있음 |
 | rollup | 77% | 5.6일 | 10/13 | 통과 · 후순위(느림) | 열린 PR 있음 — 저장소당 1건 · 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요 |
