@@ -8,7 +8,7 @@
     },
     {
       "repo": "pnpm/pnpm",
-      "note": "toResolveImporter.ts:110 제출됨 #14032"
+      "note": "#14032 머지됨(슬롯 빔) · 2026-09-12 재훑음: 같이자람 3건 전부 루프 본문이 지배(맨페스트 파싱)"
     },
     {
       "repo": "angular/angular",
