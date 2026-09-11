@@ -182,3 +182,12 @@ perf 는 5.1%) 탐지기를 만들었다. **코퍼스 검증에서 떨어졌다.
 둘 다 `ensureNoDuplicateConfigs` 의 오류 메시지 안 `indexOf` 였다 — throw 하는 블록이라 실패할 때
 한 번 돈다. webpack 에 이어 두 번째로 "오류 경로"였고, 이번 건 **같은 함수 안에서 보인다**.
 그래서 `[FP:throw-path-runs-once]` 가드로 넣었다. webpack 처럼 호출자 쪽에서 식는 건 여전히 손검증이다.
+
+이어서 vitest·drizzle·next.js. vitest 는 `[같이자람]` 0건. drizzle 은 23건(대부분 drizzle-kit
+스키마 diff)이지만 수락률 10%(5/51)로 로테이션 컷이고, 가장 그럴듯한 `snapshotsDiffer.ts:2028`
+은 beta(v1 재작성)에 파일 자체가 없다. next.js 는 이미 컷이고 PR 템플릿이 외부 기여자의 PR
+설명을 **사람이 직접 쓰라**고 한다.
+
+**큐 등록 저장소에서 지금 낼 수 있는 후보는 바닥났다.** 걸림돌이 코드가 아니라 게이트로 옮겨갔다:
+babel·next.js 는 사람이 쓴 PR 설명, vitest 는 사람의 답글, angular 는 CLA 서명. 유명 저장소일수록
+AI 정책이 명시적이다 — ⑦ 검사가 이번 판에서 가장 많이 거른 칸이다.
