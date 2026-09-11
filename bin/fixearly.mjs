@@ -1126,7 +1126,13 @@ function analyzeQuadraticLookups(ts, fileContents) {
               cuts.push("const-inner");
             if (quadIoInLoop(ts, loopNode, sf)) cuts.push("io-in-loop");
             if (quadCappedN(fnNode ? fnNode.getText(sf) : "")) cuts.push("capped-n");
-            const coGrows = quadCoGrows(ts, loopNode, sf, root, outerText);
+            // [FP:throw-path-runs-once] 스캔이 throw 로 끝나는 블록 안이면 실패할 때 한 번 돈다 —
+            // 루프 반복마다가 아니다. jest ensureNoDuplicateConfigs 가 오류 메시지에 indexOf 를 썼다.
+            let throwPath = false;
+            for (let p = node.parent; p && p !== loopNode; p = p.parent)
+              if (ts.isBlock(p) && p.statements.some(ts.isThrowStatement)) { throwPath = true; break; }
+            if (throwPath) cuts.push("throw-path");
+            const coGrows = !throwPath && quadCoGrows(ts, loopNode, sf, root, outerText);
             sites.push({
               coGrows,
               file, line: lineOf(node), recv, method,

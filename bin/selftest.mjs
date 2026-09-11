@@ -287,7 +287,8 @@ if (generatedSrc) {
       label: "O(n²) 배열 조회",
       // 후보 목록에는 둘 다 올라오고, '같이 자라는' 쪽만 coGrows 가 붙어야 한다.
       hit: ["seenRows"],
-      miss: ["patchedNames"],
+      // failedRows: 같은 배열이지만 throw 블록 안 — 실패할 때 한 번 돈다.
+      miss: ["patchedNames", "failedRows"],
       fromJson: (j) => (j.quality?.quadratic?.candidateList || [])
         .filter((c) => c.coGrows)
         .map((c) => c.recv),

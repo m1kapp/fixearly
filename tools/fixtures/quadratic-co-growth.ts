@@ -36,3 +36,18 @@ export function markPatched(rows: Row[], patchedNames: string[]): Row[] {
   }
   return marked;
 }
+
+// failedRows: 루프 반복대상과 같은 배열이라 모양은 '같이 자람'이지만, 스캔이 throw 하는
+// 블록 안에 있다 — 실패할 때 한 번 돌고 끝난다. jest `ensureNoDuplicateConfigs` 가 이 모양.
+// [FP:throw-path-runs-once]
+export function assertUnique(failedRows: Row[]): void {
+  const byId = new Map<string, Row>();
+  for (const row of failedRows) {
+    const prior = byId.get(row.id);
+    if (prior) {
+      const message = `duplicate id at ${failedRows.indexOf(row)} and ${failedRows.indexOf(prior)}`;
+      throw new Error(message);
+    }
+    byId.set(row.id, row);
+  }
+}

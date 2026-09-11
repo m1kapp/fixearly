@@ -177,3 +177,8 @@ perf 는 5.1%) 탐지기를 만들었다. **코퍼스 검증에서 떨어졌다.
   금지한다. `removeTypeDuplicates` 의 `types.includes` 가 가장 그럴듯했지만 보지 않았다.
 
 이번 판의 교훈은 co-growth 다음 칸이다: 뜬 자리의 **호출자가 뜨거운가**를 본다.
+
+같은 날 prettier·postcss·jest 도 돌렸다. prettier·postcss 는 `[같이자람]` **0건**. jest 는 2건인데
+둘 다 `ensureNoDuplicateConfigs` 의 오류 메시지 안 `indexOf` 였다 — throw 하는 블록이라 실패할 때
+한 번 돈다. webpack 에 이어 두 번째로 "오류 경로"였고, 이번 건 **같은 함수 안에서 보인다**.
+그래서 `[FP:throw-path-runs-once]` 가드로 넣었다. webpack 처럼 호출자 쪽에서 식는 건 여전히 손검증이다.
