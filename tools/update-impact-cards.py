@@ -272,6 +272,7 @@ def delivery_timeline(f, key, pr_url, age_html):
 # --check 가 잡는다.
 BLURB = {
     "eslint/eslint": ("자바스크립트 린터", "JavaScript linter"),
+    "angular/angular": ("웹 프레임워크", "web framework"),
     "outline/outline": ("팀 위키·문서", "team knowledge base"),
     "nocodb/nocodb": ("노코드 DB · Airtable 대안", "no-code database"),
     "novuhq/novu": ("알림 인프라", "notification infrastructure"),
