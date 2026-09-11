@@ -38,6 +38,7 @@
 | [astro#17665](https://github.com/withastro/astro/pull/17665) | 닫힘 | 우리가 접었다 — 중앙 2일인 곳에서 24일째 사람 반응 0. CI 는 통과 상태였다 |
 | [budibase#19320](https://github.com/Budibase/budibase/pull/19320) | 닫힘 | 사유 없이 닫힘. 요청받지 않은 최적화는 그냥 거절될 수 있다 |
 | [budibase#19555](https://github.com/Budibase/budibase/pull/19555) | 닫힘 | 게이트 0 — 외부 PR 은 "작성자에게 배정된" 이슈를 참조해야 하는데 배정은 메인테이너만 한다 |
+| [eslint#21317](https://github.com/eslint/eslint/pull/21317) | 닫힘 | AI 보조 PR 은 선행 이슈가 필요하다는 정책(게이트 0, 우리가 안 읽었다) · 메인테이너는 이득도 의심했다 — "린터는 보통 생성 코드를 안 훑는다" |
 | [twenty#23231](https://github.com/twentyhq/twenty/pull/23231) | 닫힘 | "redundant with #23232" — 같은 저장소에 겹치는 2건을 냈다 |
 | [twenty#23232](https://github.com/twentyhq/twenty/pull/23232) | 닫힘 | 겹친 2건 중 나머지. 사유는 남지 않았다 |
 | [strapi#27125](https://github.com/strapi/strapi/pull/27125) | 닫힘 | 우리가 접었다 — 중앙 2일인 곳에서 14일째 아무 반응이 없었다 |
@@ -51,6 +52,30 @@
 
 **크기는 판별자가 아니다.** budibase 는 +10/−6 으로 닫혔고 medusa 는 +71/−6 으로 승인됐다.
 머지된 outline 이 +12/−1 로 제일 작긴 하지만, 작다고 통과하는 게 아니다.
+
+### ①-a 정정 — 린터에는 적용하지 않는다 (2026-09-11, eslint#21317 닫힘)
+
+아래 개정을 근거로 eslint#21317 을 냈고 **닫혔다.** 메인테이너 사유 두 줄 중 하나가
+①-a 를 정면으로 친다:
+
+> ESLint usually does not run on generated code.
+
+맞는 말이다. ①-a 는 "도구는 레포 전체를 훑으니 제일 큰 입력이 비용을 정한다"고 했는데,
+**린터는 생성 코드를 애초에 안 훑는다**(`.eslintignore`·`ignores` 로 빠진다). 그러니
+"생성된 파서의 case 600개"는 그 도구가 실제로 만나는 입력이 아니다. 꼬리를 잘못 잡았다.
+
+그래서 ①-a 는 이렇게 좁힌다:
+
+- **린터·포매터에는 적용하지 않는다.** 이들은 사람이 쓴 소스만 본다 — 사람이 손으로
+  쓴 switch 는 case 10개 미만이고, 그게 중앙이자 꼬리다.
+- **번들러·패키지 매니저·컴파일러에는 계속 적용한다.** 이들은 생성·벤더 코드를 **반드시**
+  통과시킨다(번들러는 node_modules 를, 패키지 매니저는 락파일 전체를). 꼬리가 실제 입력이다.
+- 판별 질문: **"그 도구가 생성 코드를 입력으로 받는 게 정상인가?"** 아니면 ① 로 돌아간다.
+
+부수로 배운 것: **낼 곳의 AI 정책을 먼저 읽는다.** eslint 는 AI 보조 PR 에 선행 이슈를
+요구하는데(`ai-policy#pull-request-acceptance-criteria`) 그걸 안 읽고 냈다. PR 템플릿의
+AI 체크박스를 정직하게 체크하면 그 정책이 그대로 적용된다 — 체크를 피하는 게 아니라
+**정책을 먼저 읽고 이슈부터 여는 게** 맞는 순서다.
 
 ### ①-a 도구 코드에서는 "중앙"이 파일이 아니라 **입력 전체**다 — 2026-09-10 개정
 
@@ -178,6 +203,7 @@ medusa · outline · nocodb · n8n)에서 `help wanted` + `good first issue` 를
 | ④ | 저장소에 PR 제목 검증 스크립트가 있으면 **그걸로** 돌려본다 | nx `scripts/validate-pr-title.js` 처럼. 추측하지 말고 그 저장소 코드로 판정 |
 | ⑤ | changeset 쓰는 저장소인데 빠졌나 | 없으면 본문에 왜 없는지 적어야 한다 |
 | ⑥ | 테스트 변경이 있나 | 파일명(`*.test.*`)뿐 아니라 `test/`·`__tests__/` 디렉터리도 본다 — rollup 은 `test/watch/index.js` 라 파일명만 보면 놓친다 |
+| ⑦ | 저장소에 **AI 정책**이 있나 | eslint#21317 이 여기서 닫혔다 — AI 보조 PR 은 선행 이슈 필수. 템플릿·CONTRIBUTING 에서 찾아 알린다 |
 
 `bin/selftest.mjs` 가 합성 저장소로 이 검사기의 양방향을 고정한다 — 어긋난 확장자는 잡고,
 맞으면 통과. 검사기 자신도 첫 실행에서 오탐을 냈다(주석 제거 정규식이 `include` 글롭의
@@ -260,15 +286,14 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 15일째 / 보통 1일 · 보류 |
-| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 29일째 / 보통 1일 · 보류 |
-| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 40일째 / 보통 13일 |
-| [eslint#21317](https://github.com/eslint/eslint/pull/21317) | O(n²) | ⚪ 대기 | 오늘 / 보통 2일 |
-| [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 6일째 / 보통 1일 |
-| [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 10일째 / 보통 1일 · 보류 |
-| [rollup#6506](https://github.com/rollup/rollup/pull/6506) | 버려진 Promise | ⚪ 대기 | 4일째 / 보통 6일 |
+| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 16일째 / 보통 1일 · 보류 |
+| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 30일째 / 보통 1일 · 보류 |
+| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 42일째 / 보통 13일 |
+| [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 7일째 / 보통 1일 |
+| [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
+| [rollup#6506](https://github.com/rollup/rollup/pull/6506) | 버려진 Promise | ⚪ 대기 | 5일째 / 보통 6일 |
 
-**열린 것 7건(보류 3건 빼면 4건).** 판정 난 30건 중 머지 13 · 승인 1 · 닫힘 16.
+**열린 것 6건(보류 3건 빼면 3건).** 판정 난 31건 중 머지 13 · 승인 1 · 닫힘 17.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -680,7 +705,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | jest | 71% | 37.5일 | 12/17 | 통과 · 후순위(느림) | — |
 | astro | 68% | 1.0일 | 27/40 | **통과** | 판정 경험 있음 · 사용자에게 보이는 변화면 changeset 필요 |
 | tailwindcss | 63% | 0.2일 | 38/60 | **통과** | — |
-| eslint | 57% | 2.1일 | 26/46 | 컷 | 열린 PR 있음 — 저장소당 1건 |
+| eslint | 57% | 2.1일 | 26/46 | 컷 | 판정 경험 있음 · 게이트 0 — AI 보조 PR 은 **선행 이슈**가 있어야 받는다(eslint.org/docs/latest/contribute/ai-policy). PR 템플릿의 AI 체크박스를 정직하게 체크하면 이 정책이 적용된다 |
 | vscode | 54% | 0.2일 | 14/26 | 컷 | 열린 PR 있음 — 저장소당 1건 · CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음 |
 | babel | 53% | 10.0일 | 23/43 | 컷 | — |
 | directus | 52% | 4.0일 | 24/46 | 컷 | 판정 경험 있음 |

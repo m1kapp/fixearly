@@ -552,6 +552,18 @@ if (generatedSrc) {
   const dirStyle = run();
   check("test/ 아래 변경도 테스트 변경으로 본다", !/테스트 변경이 없다/.test(dirStyle.text));
 
+  // eslint#21317 은 AI 정책(선행 이슈 필요)을 안 읽고 내서 닫혔다. 정책이 있으면 알린다.
+  write(".github/PULL_REQUEST_TEMPLATE.md", "#### AI acknowledgment\n\n- [ ] I did not use AI.\n");
+  git(["add", "-A"]);
+  git(["commit", "-qm", "add PR template with AI policy"]);
+  const aiPolicy = run();
+  check("AI 정책이 있으면 알린다", /AI 정책이 있다/.test(aiPolicy.text));
+
+  git(["rm", "-q", ".github/PULL_REQUEST_TEMPLATE.md"]);
+  git(["commit", "-qm", "drop template"]);
+  const noAiPolicy = run();
+  check("AI 정책이 없으면 조용하다", /AI 정책 언급 없음/.test(noAiPolicy.text));
+
   // 여기서부터는 diff 기준을 옮겨 "소스만 바뀐 PR" 을 만든다.
   git(["update-ref", "refs/remotes/origin/main", "HEAD"]);
   write("src/main.js", "export const main = 1;\n");
