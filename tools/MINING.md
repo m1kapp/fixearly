@@ -160,3 +160,20 @@ perf 는 5.1%) 탐지기를 만들었다. **코퍼스 검증에서 떨어졌다.
 세 번째로 좁히는 건 표본 1건에 맞추는 과적합이라 멈췄다. 되살리려면
 `git log --all --oneline -- tools/fixtures/unremovable-registration.ts` 로 코드와
 줄마커 방식 픽스처 하니스를 꺼내 쓸 수 있다.
+
+## 도구 코드 훑기 — babel·webpack (2026-09-11, 둘 다 낼 것 없음)
+
+①-a(생성 코드가 정상 입력인 도구)에 해당하는 번들러·컴파일러로 옮겨 `--mine` 을 돌렸다.
+`[같이자람]` 은 babel 7건, webpack 2건.
+
+- **webpack `ExportsInfo.js:707`** — `export * as ns` 의 이름 합치기가 `array.includes` 라
+  아이콘 배럴이면 m² 이다. 모양은 진짜다. 그런데 `_redirectTo` 는 **중첩** exports info 에만
+  걸리고(`createNestedExportsInfo`, `FlagDependencyExportsPlugin`), 뜨거운 호출자
+  (`ModuleGraph.getProvidedExports`·연결 최적화·stats)는 모두 **최상위**를 읽는다. 중첩을 읽는
+  건 `HarmonyImportDependency` 의 "export 없음" 오류 메시지 경로뿐이다 — 실패할 때 한 번.
+  **정적으로는 같이 자라도, 그 줄에 도달하는 경로가 식어 있으면 낼 게 없다.**
+- **webpack `Compilation.js:6382`** — `notCacheableReasons` 는 포화 누적기(이유 문자열 몇 개).
+- **babel** — 손검증 전에 게이트 0 에서 멈췄다. `AI_POLICY.md` 가 LLM 이 쓴 PR 설명을
+  금지한다. `removeTypeDuplicates` 의 `types.includes` 가 가장 그럴듯했지만 보지 않았다.
+
+이번 판의 교훈은 co-growth 다음 칸이다: 뜬 자리의 **호출자가 뜨거운가**를 본다.

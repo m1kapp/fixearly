@@ -290,8 +290,8 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 30일째 / 보통 1일 · 보류 |
 | [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 42일째 / 보통 13일 |
 | [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 7일째 / 보통 1일 |
-| [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
-| [rollup#6506](https://github.com/rollup/rollup/pull/6506) | 버려진 Promise | ⚪ 대기 | 5일째 / 보통 6일 |
+| [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 12일째 / 보통 1일 · 보류 |
+| [rollup#6506](https://github.com/rollup/rollup/pull/6506) | 버려진 Promise | ⚪ 대기 | 6일째 / 보통 6일 |
 
 **열린 것 6건(보류 3건 빼면 3건).** 판정 난 31건 중 머지 13 · 승인 1 · 닫힘 17.
 <!-- /auto:open -->
@@ -716,7 +716,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | tailwindcss | 63% | 0.2일 | 38/60 | **통과** | — |
 | eslint | 57% | 2.1일 | 26/46 | 컷 | 판정 경험 있음 · 게이트 0 — AI 보조 PR 은 **선행 이슈**가 있어야 받는다(eslint.org/docs/latest/contribute/ai-policy). PR 템플릿의 AI 체크박스를 정직하게 체크하면 이 정책이 적용된다 |
 | vscode | 54% | 0.2일 | 14/26 | 컷 | 열린 PR 있음 — 저장소당 1건 · CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음 |
-| babel | 53% | 10.0일 | 23/43 | 컷 | — |
+| babel | 53% | 10.0일 | 23/43 | 컷 | 게이트 0 — AI_POLICY.md: LLM 이 쓴 PR 설명 금지(본인이 직접 써야 함), LLM 산문은 앞에 명시 표기. 어기면 조직 차단까지. 설명을 사람이 쓰지 않는 한 내지 않는다 |
 | directus | 52% | 4.0일 | 24/46 | 컷 | 판정 경험 있음 |
 | medusa | 50% | 24.9일 | 14/28 | 컷 | 판정 경험 있음 |
 | vitest | 46% | 0.5일 | 18/39 | 컷 | CLA 서명 필요 |
@@ -731,7 +731,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | immich | 26% | 0.5일 | 6/23 | 컷 | 판정 경험 있음 · 게이트 0 — `changelog:*` 라벨이 메인테이너 전용 |
 | react | 26% | 0.9일 | 9/35 | 컷 | 후보가 `/* DISABLED */` 주석 건이라 PR 보다 이슈가 맞다 |
 | next.js | 22% | 16.1일 | 9/41 | 컷 | 커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시 |
-| webpack | 20% | 0.6일 | 1/5 | 컷 | — |
+| webpack | 20% | 0.6일 | 1/5 | 컷 | 게이트 0 — AGENTS.md 가 PR 본문 양식(Use of AI 섹션 필수, governance AI_POLICY: human-in-the-loop·질문에 답할 수 있어야 함)과 Co-authored-by 금지, 커밋 author 는 사람만을 REQUIRED 로 둔다 |
 | cal.diy | 17% | 3.1일 | 10/60 | 컷 | 판정 경험 있음 · 게이트 0 — 외부 PR 에서 `required` 잡이 항상 실패 |
 | excalidraw | 12% | 2.5일 | 4/34 | 컷 | 판정 경험 있음 |
 | payload | 12% | 7.8일 | 4/32 | 컷 | 판정 경험 있음 |
