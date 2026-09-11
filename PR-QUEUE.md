@@ -31,6 +31,7 @@
 | [ghost#29831](https://github.com/TryGhost/Ghost/pull/29831) | 머지 | — |
 | [n8n#34899](https://github.com/n8n-io/n8n/pull/34899) | 머지 | 봇이 요구한 changeset prefix 만 고치고 통과 |
 | [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 승인 | — |
+| [angular#70690](https://github.com/angular/angular/pull/70690) | 승인 | — |
 | [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 닫힘 | 우리가 접었다 — 중앙 1일인 곳에서 34일째 사람 반응 0. 이 저장소 외부 PR 수락률 18% |
 | [novu#12074](https://github.com/novuhq/novu/pull/12074) | 닫힘 | 우리가 접었다 — 중앙 1일인 곳에서 15일째 사람 리뷰 0(승인은 봇). 슬롯을 회수했다 |
 | [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 닫힘 | 우리가 접었다 — 중앙 0.6일인 곳에서 37일째 사람 반응 0(붙은 건 CLA 봇뿐) |
@@ -286,15 +287,15 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 16일째 / 보통 1일 · 보류 |
+| [angular#70690](https://github.com/angular/angular/pull/70690) | 쓰기만 하는 컬렉션 | 🔵 승인 · 머지 대기 | 오늘 / 보통 2일 |
+| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 17일째 / 보통 1일 · 보류 |
 | [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 31일째 / 보통 1일 · 보류 |
 | [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 42일째 / 보통 13일 |
-| [angular#70690](https://github.com/angular/angular/pull/70690) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 2일 |
 | [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 8일째 / 보통 1일 · 보류 |
 | [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 12일째 / 보통 1일 · 보류 |
 | [rollup#6506](https://github.com/rollup/rollup/pull/6506) | 버려진 Promise | ⚪ 대기 | 6일째 / 보통 6일 |
 
-**열린 것 7건(보류 4건 빼면 3건).** 판정 난 31건 중 머지 13 · 승인 1 · 닫힘 17.
+**열린 것 7건(보류 4건 빼면 3건).** 판정 난 32건 중 머지 13 · 승인 2 · 닫힘 17.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -722,7 +723,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | medusa | 50% | 24.9일 | 14/28 | 컷 | 판정 경험 있음 |
 | vitest | 46% | 0.5일 | 18/39 | 컷 | 게이트 0 — CONTRIBUTING 'AI Contributions': 실제 사람이 공식 템플릿으로 열고 AI 도구를 밝혀야 함. 사람 개입 없는 PR 은 'maybe automated' 라벨 후 1일 뒤 자동 닫힘, 답글도 LLM 이 쓴 게 아니어야 함 |
 | nx | 46% | 1.1일 | 17/37 | 컷 | 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 |
-| storybook | 45% | 4.6일 | 14/31 | 컷 | 판정 경험 있음 · 게이트 0 — danger 가 `ci:*`·`qa:*` 라벨을 요구하는데 메인테이너만 붙일 수 있다 (#35829 가 25일째 빨간불이라 접었다) |
+| storybook | 45% | 4.6일 | 14/31 | 컷 | 판정 경험 있음 · 게이트 0 — danger 가 `ci:*`·`qa:*` 라벨을 요구하는데 메인테이너만 붙일 수 있다 (#35829 가 25일째 빨간불이라 접었다) · CONTRIBUTING 'Never let an LLM speak for you': 사람 개입 없는 PR 은 3일 뒤 자동 닫힘 |
 | strapi | 42% | 3.9일 | 20/48 | 컷 | 판정 경험 있음 |
 | outline | 38% | 5.9일 | 3/8 | 컷 | 판정 경험 있음 |
 | typeorm | 36% | 12.8일 | 15/42 | 컷 | 열린 PR 있음 — 저장소당 1건 |

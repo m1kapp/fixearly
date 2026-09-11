@@ -517,7 +517,10 @@
    "repoLabel": "angular · 101k★",
    "pr": 70690,
    "createdAt": "2026-09-11T13:27:18Z",
-   "status": "waiting"
+   "status": "approved",
+   "approvedBy": [
+    "JeanMeche"
+   ]
   }
  ],
  "generatedAt": "2026-09-11T05:22:07.170Z"
