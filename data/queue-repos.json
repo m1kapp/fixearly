@@ -97,6 +97,10 @@
     {
       "repo": "parcel-bundler/parcel",
       "note": "미훑음 · 외부 PR 8/15 · 마지막 머지 2026-08-03"
+    },
+    {
+      "repo": "microsoft/TypeScript",
+      "note": "게이트 0 — 큐 방식 PR 금지(사람이 직접 고르고 리뷰까지 끌 때만) · 외부 PR 37/50 머지"
     }
   ]
 }
