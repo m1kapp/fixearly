@@ -101,6 +101,18 @@
     {
       "repo": "microsoft/TypeScript",
       "note": "게이트 0 — 큐 방식 PR 금지(사람이 직접 고르고 리뷰까지 끌 때만) · 외부 PR 37/50 머지"
+    },
+    {
+      "repo": "medusajs/medusa",
+      "note": "2026-09-13 재훑음 · build-config.ts 의 parents 는 엔티티당 한 자릿수 · 게이트 0(선행 이슈·develop 대상)"
+    },
+    {
+      "repo": "outline/outline",
+      "note": "2026-09-13 재훑음 · 알림 태스크 8건 전부 루프 본문이 DB 왕복"
+    },
+    {
+      "repo": "baptisteArno/typebot.io",
+      "note": "2026-09-13 재훑음 · 같이자람 0건"
     }
   ]
 }
