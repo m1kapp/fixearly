@@ -314,8 +314,9 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
 | [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 13일째 / 보통 1일 · 보류 |
 | [rollup#6506](https://github.com/rollup/rollup/pull/6506) | 버려진 Promise | ⚪ 대기 | 7일째 / 보통 6일 |
+| [astro#17987](https://github.com/withastro/astro/pull/17987) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
 
-**열린 것 7건(보류 4건 빼면 3건).** 판정 난 32건 중 머지 13 · 승인 2 · 닫힘 17.
+**열린 것 8건(보류 4건 빼면 4건).** 판정 난 32건 중 머지 13 · 승인 2 · 닫힘 17.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -391,13 +392,13 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 |---|---|---|
 | ~~storybook~~ | `StoryIndexGenerator.ts:826` | **제출됨 → #35829** |
 | ~~rollup~~ | `Chunk.ts:1343` | **제출됨 → #6482** |
-| angular | `slot_allocation.ts:25` | 주석은 "다음 순회에서 slotMap 을 쓴다"는데 안 쓴다 |
-| angular | `temporary_variables.ts:57` · `migration.ts:261` | 같은 형태 2건 |
+| ~~angular~~ | `slot_allocation.ts:25` · `temporary_variables.ts:57` | **제출됨 → #70690** (승인됨, 머지 대기) |
+| angular | `migration.ts:261` | 같은 형태 · #70690 이 판정 나면 다음 건(저장소당 1건) |
 | react | `renderer.js:817` | 읽는 코드가 `/* DISABLED: …/pull/28417 */` 주석 안에 있다 |
 | react | `CollectHoistablePropertyLoads.ts:499` · `AlignReactiveScopesToBlockScopesHIR.ts:78` | 컴파일러 패스 2건 |
-| vscode | `chatToolPicker.ts:261` | `mcpServerByTool.set(...)` 뒤 조회 없음 |
+| ~~vscode~~ | `chatToolPicker.ts:261` | **제출됨 → #334230** |
 | ~~next.js~~ | `export/index.ts:292` · `:316` | **탈락** — 진짜 dead state지만 현재 기여 가이드가 사소한 정리 PR을 명시적으로 거른다 |
-| astro | `core/build/static-build.ts:91` | 손검증 완료 · **보류** — 같은 저장소의 T1 버그(아래)를 먼저 낸다 |
+| ~~astro~~ | `core/build/static-build.ts:91` | **제출됨 → #17987** · 보류 사유(T1 버그 선행)는 그 건(#17665)이 회수되며 해소됐다 |
 | pnpm · nx | 각 1건 | 같은 형태 · 미검증 |
 | ~~ghost~~ | `members-stats-service.js:115` | **제출됨 → #29831** |
 | ~~excalidraw~~ | `App.tsx:13467` | **제출됨 → #11805** (축 커버리지 예외) |
@@ -645,7 +646,7 @@ n 이 스키마·페이지 크기로 묶여 있다.
 | ~~nx~~ | `command-line/graph/graph.ts:1194` | 쓰기만 하는 컬렉션 | **제출됨 → #36633** |
 | ~~rollup~~ | `src/Chunk.ts:1343` | 쓰기만 하는 컬렉션 | **제출됨 → #6482** · 5,442건 통과 |
 | ~~pnpm~~ | `pnpm11/installing/deps-resolver/src/toResolveImporter.ts:110` | 쓰기만 하는 컬렉션 | **제출됨 → #14032** · 185건 통과 |
-| astro | `core/build/static-build.ts:91` | 쓰기만 하는 컬렉션 | 손검증 완료 · 보류(같은 저장소에 위 버그 건이 먼저) |
+| ~~astro~~ | `core/build/static-build.ts:91` | 쓰기만 하는 컬렉션 | **제출됨 → #17987** · tsc 0/0(수정 전후 동일) |
 
 **2026-08-10 에 위 다섯 건을 전부 손검증했다.** 각각 왜 진짜인지:
 
@@ -734,7 +735,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | twenty | 73% | 0.1일 | 16/22 | **통과** | 판정 경험 있음 |
 | mongoose | 72% | 1.1일 | 26/36 | **통과** | 판정 경험 있음 |
 | jest | 71% | 37.5일 | 12/17 | 통과 · 후순위(느림) | — |
-| astro | 68% | 1.0일 | 27/40 | **통과** | 판정 경험 있음 · 사용자에게 보이는 변화면 changeset 필요 |
+| astro | 68% | 1.0일 | 27/40 | **통과** | 열린 PR 있음 — 저장소당 1건 · 사용자에게 보이는 변화면 changeset 필요 — 내부 전용 변경은 changeset 없이 머지된다(#17430 refactor·#16734 chore 가 changeset 0) · AI 정책 없음 · **포크 PR 워크플로가 승인 게이트가 아니다**(2026-09-13 #17987 제출 직후 CI 가 바로 돌았다 — angular·nx 와 다르다) |
 | tailwindcss | 63% | 0.2일 | 38/60 | **통과** | — |
 | eslint | 57% | 2.1일 | 26/46 | 컷 | 판정 경험 있음 · 게이트 0 — AI 보조 PR 은 **선행 이슈**가 있어야 받는다(eslint.org/docs/latest/contribute/ai-policy). PR 템플릿의 AI 체크박스를 정직하게 체크하면 이 정책이 적용된다 |
 | vscode | 54% | 0.2일 | 14/26 | 컷 | 열린 PR 있음 — 저장소당 1건 · CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음 |
