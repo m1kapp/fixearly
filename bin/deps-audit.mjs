@@ -33,31 +33,50 @@ export function lockPackages(dir) {
   const direct = directNames(dir);
   // 전이 의존은 "이 패키지를 올려라"가 통하지 않는다 — 내 package.json 에 없기 때문이다.
   // 직접 목록을 못 구하면 표시 자체를 생략한다. 전부 전이로 찍는 것보다 침묵이 낫다.
-  return rawLockPackages(dir).map((p) => (direct ? { ...p, direct: direct.has(p.name) } : p));
+  return rawLockPackages(dir).map((p) => (direct ? { ...p, direct: direct.has(p.name + "@" + p.version) } : p));
 }
 
 /**
- * 내가 직접 부르는 이름 집합. 못 구하면 null.
+ * 내가 직접 부르는 `이름@설치버전` 집합. 못 구하면 null.
+ *
+ * 이름만으로 판정하면 틀린다. repattern 실측(2026-09-13): `nanoid` 를 `^5.1.5` 로 부르는데
+ * 락파일에는 3.3.11·3.3.15·3.3.17 이 전이로 같이 들어와 있었고, 이름만 보면 그 셋도 직접이
+ * 된다 — "버전 제약을 올려라"는 지시가 나가지만 올릴 제약이 없다. 같은 형태가 13건이었다.
+ *
  * ponytail: npm 은 루트 package.json 만 본다 — 워크스페이스는 pnpm 쪽에서만 정확하다.
  */
 function directNames(dir) {
   const pnpm = path.join(dir, "pnpm-lock.yaml");
   if (fs.existsSync(pnpm)) {
     const out = new Set();
-    let inSection = false;
+    let inSection = false, name = null;
     for (const line of fs.readFileSync(pnpm, "utf-8").split("\n")) {
       if (/^[^\s]/.test(line)) { inSection = line.startsWith("importers:"); continue; }
       if (!inSection) continue;
-      // importer 경로가 2칸, dependencies: 가 4칸, 의존성 이름이 6칸이다.
-      const m = line.match(/^ {6}'?((?:@[^/'\s]+\/)?[^:'\s]+)'?:\s*$/);
-      if (m) out.add(m[1]);
+      // importer 경로가 2칸, dependencies: 가 4칸, 의존성 이름이 6칸, specifier/version 이 8칸이다.
+      let m = line.match(/^ {6}'?((?:@[^/'\s]+\/)?[^:'\s]+)'?:\s*$/);
+      if (m) { name = m[1]; continue; }
+      // version 에는 `1.2.3(peer@4)` 처럼 peer 가 붙는다.
+      m = line.match(/^ {8}version:\s*([^\s(]+)/);
+      if (m && name) out.add(name + "@" + m[1]);
     }
     return out.size ? out : null;
   }
+  const lock = path.join(dir, "package-lock.json");
   const pj = path.join(dir, "package.json");
   if (!fs.existsSync(pj)) return null;
   const p = JSON.parse(fs.readFileSync(pj, "utf-8"));
-  const out = new Set([...Object.keys(p.dependencies || {}), ...Object.keys(p.devDependencies || {})]);
+  const names = new Set([...Object.keys(p.dependencies || {}), ...Object.keys(p.devDependencies || {})]);
+  if (!names.size) return null;
+  // npm 락파일은 최상위 설치본이 `node_modules/<이름>` 에 있다. 중첩(전이)은 더 깊은 경로다.
+  const out = new Set();
+  if (fs.existsSync(lock)) {
+    const j = JSON.parse(fs.readFileSync(lock, "utf-8"));
+    for (const name of names) {
+      const v = (j.packages || {})[`node_modules/${name}`];
+      if (v && v.version) out.add(name + "@" + v.version);
+    }
+  }
   return out.size ? out : null;
 }
 

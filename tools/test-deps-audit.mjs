@@ -56,6 +56,8 @@ packages:
 
   '@adobe/css-tools@4.5.0':
     resolution: {integrity: sha512-xxx}
+  lodash@3.10.1:
+    resolution: {integrity: sha512-old}
   lodash@4.17.15:
     resolution: {integrity: sha512-yyy}
   esbuild@0.21.5(patch_hash=abc):
@@ -71,10 +73,12 @@ snapshots:
     dependencies: {}
 `);
 assert.deepStrictEqual(lockPackages(tmp3).map((p) => `${p.name}@${p.version}`).sort(),
-  ["@adobe/css-tools@4.5.0", "@types/react@18.3.1", "esbuild@0.21.5", "lodash@4.17.15", "typescript@5.9.3"],
+  ["@adobe/css-tools@4.5.0", "@types/react@18.3.1", "esbuild@0.21.5", "lodash@3.10.1", "lodash@4.17.15", "typescript@5.9.3"],
   "packages 섹션만 · 스코프 이름 유지 · peer/patch 접미 제거 · snapshots 와 importers 는 제외");
 const p3 = lockPackages(tmp3);
-assert.strictEqual(p3.find((p) => p.name === "lodash").direct, true, "importers 의 dependencies 는 직접");
+assert.strictEqual(p3.find((p) => p.version === "4.17.15").direct, true, "importers 의 dependencies 는 직접");
+// 같은 이름의 다른 버전이 전이로 들어오면 그건 직접이 아니다 (repattern 의 nanoid 3.x 형태)
+assert.strictEqual(p3.find((p) => p.version === "3.10.1").direct, false, "이름만 같고 버전이 다르면 전이");
 assert.strictEqual(p3.find((p) => p.name === "@adobe/css-tools").direct, true, "워크스페이스의 devDependencies 도 직접");
 assert.strictEqual(p3.find((p) => p.name === "typescript").direct, false, "importers 에 없으면 전이");
 
