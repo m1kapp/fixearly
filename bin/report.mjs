@@ -196,7 +196,9 @@ function itemPrompt(f, ctx) {
     "버려진 의존성": f.latestDeprecated
       ? `저자가 이 패키지를 접었고 **최신 버전도 중단 상태라 올려도 안 풀린다.** 저자가 남긴 안내가 전부다: "${f.note}". 후속 패키지가 지목돼 있으면 호출부를 세어 교체 비용을 견적만 내고, 지목이 없으면 이 패키지가 하는 일이 지금도 필요한지부터 판단하라. **교체를 이 커밋에서 하지 마라.**`
       : `\`${f.latest}\` 는 유지되고 있다. \`${f.file}\` 의 제약${f.spec ? `(현재 \`${f.spec}\`)` : ""}을 올리고 락파일을 갱신한다. 저자 안내: "${f.note}". 메이저가 올라가면 호출부가 깨질 수 있다 — 고치지 말고 무엇이 깨지는지만 보고하라.`,
-    "취약한 의존성": f.direct === false
+    "취약한 의존성": f.runtimeBlocked
+      ? `**런타임이 먼저 막고 있다.** \`${f.fixed}\` 는 Node ${f.runtimeBlocked.need} 이상을 요구하는데 이 프로젝트는 Node ${f.runtimeBlocked.floor} 에서 돈다(\`${f.runtimeBlocked.from}\`). 그냥 올리면 타입체크도 CI 도 통과하고 **배포에서만 터진다.** 이 커밋에서 올리지 마라 — 배포 런타임을 올리는 것이 선행 작업이고, 그게 어려우면 Node ${f.runtimeBlocked.floor} 을 지원하는 마지막 버전을 찾아 거기에 **정확히 고정**하라(\`^\` 로 두면 다음 마이너가 다시 넘어간다). 참고: ${(f.ids || []).join(", ")}`
+      : f.direct === false
       ? `이건 **전이 의존**이라 \`${f.file}\` 에 없다. 먼저 누가 끌어오는지 찾아라(\`pnpm why <이름>\` / \`npm ls <이름>\`). 그 상위 패키지를 올려서 풀리면 그걸로 끝이다. 안 풀릴 때만 \`overrides\`(npm) / \`pnpm.overrides\` 로 ${f.fixed ? `\`${f.fixed}\` 이상` : "안전한 버전"}에 고정하고, 왜 상위 패키지로는 안 되는지 적어라. 참고: ${(f.ids || []).join(", ")}`
       : f.covered === true
       ? `이미 제약(\`${f.spec}\`) 안에서 풀린다 — **package.json 을 고치지 마라.** 락파일만 갱신하면 된다(\`pnpm update ${f.where.split(":")[1]}\` / \`npm update ${f.where.split(":")[1]}\`). 갱신 후 설치본이 \`${f.fixed}\` 이상인지 확인하고, 아니면 무엇이 막는지 적어라. 참고: ${(f.ids || []).join(", ")}`

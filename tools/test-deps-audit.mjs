@@ -4,7 +4,13 @@ import assert from "node:assert";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { lockPackages, toFixes, auditDeps, inRange, auditDeprecated, toDeprecatedFixes } from "../bin/deps-audit.mjs";
+import { lockPackages, toFixes, auditDeps, inRange, auditDeprecated, toDeprecatedFixes, engineFloor, runtimeFloor } from "../bin/deps-audit.mjs";
+
+// ── 배포 런타임 하한 ───────────────────────────────────────
+assert.strictEqual(engineFloor(">=22.13.0 || >=24"), 22, "구간이 여럿이면 가장 낮은 major");
+assert.strictEqual(engineFloor("^20.19.0 || >=22.12.0"), 20, "^20.19.0 의 19 를 major 로 세지 않는다");
+assert.strictEqual(engineFloor(">=20.16.0"), 20);
+assert.strictEqual(engineFloor(undefined), null);
 
 // ── 고친 버전이 지금 제약 안인가 ────────────────────────────
 // 실측(repattern, 2026-09-13): axios ^1.14.0 → 1.20.0 은 안, sharp ^0.34.3 → 0.35.4 는 밖.
@@ -213,6 +219,51 @@ const dep = await auditDeprecated(tmp, { fetchImpl: regFetch });
 assert.deepStrictEqual(asked, ["lodash"], "전이(typescript)는 묻지 않는다");
 assert.strictEqual(dep.length, 1);
 assert.strictEqual(dep[0].latestDeprecated, false);
+
+// ── Dockerfile 이 유일한 신호일 때 (repattern 형태) ────────
+const tmp5 = fs.mkdtempSync(path.join(os.tmpdir(), "fixearly-deps-"));
+fs.mkdirSync(path.join(tmp5, "deploy", "docker"), { recursive: true });
+fs.writeFileSync(path.join(tmp5, "deploy", "docker", "Dockerfile.front"),
+  "FROM --platform=$BUILDPLATFORM node:20-alpine AS base\nRUN echo hi\nFROM --platform=$TARGETPLATFORM node:20-alpine AS runner\n");
+fs.writeFileSync(path.join(tmp5, "package.json"), JSON.stringify({ name: "app" }));
+assert.strictEqual(runtimeFloor(tmp5).major, 20, "Dockerfile 의 FROM node:20 을 읽는다");
+assert.match(runtimeFloor(tmp5).from, /Dockerfile\.front$/);
+
+// engines 가 Dockerfile 보다 낮으면 낮은 쪽이 실제 하한이다
+fs.writeFileSync(path.join(tmp5, "package.json"), JSON.stringify({ engines: { node: ">=18.0.0" } }));
+assert.strictEqual(runtimeFloor(tmp5).major, 18);
+fs.rmSync(tmp5, { recursive: true, force: true });
+
+// 아무 신호도 없으면 판단하지 않는다
+const tmp6 = fs.mkdtempSync(path.join(os.tmpdir(), "fixearly-deps-"));
+assert.strictEqual(runtimeFloor(tmp6), null);
+fs.rmSync(tmp6, { recursive: true, force: true });
+
+// ── 권고 버전이 배포 런타임을 넘으면 표시한다 (pdfjs 사건) ──
+const tmp7 = fs.mkdtempSync(path.join(os.tmpdir(), "fixearly-deps-"));
+fs.writeFileSync(path.join(tmp7, "package.json"), JSON.stringify({ dependencies: { "pdfjs-dist": "^5.5.207" } }));
+fs.writeFileSync(path.join(tmp7, "package-lock.json"), JSON.stringify({
+  lockfileVersion: 3, packages: { "node_modules/pdfjs-dist": { version: "5.6.205" } },
+}));
+fs.writeFileSync(path.join(tmp7, "Dockerfile"), "FROM node:20-alpine\n");
+const blockedFetch = async (url, opt) => {
+  if (url.endsWith("/querybatch")) {
+    const body = JSON.parse(opt.body);
+    return { ok: true, json: async () => ({ results: body.queries.map(() => ({ vulns: [{ id: "GHSA-hq66" }] })) }) };
+  }
+  if (url.endsWith("/query")) {
+    return { ok: true, json: async () => ({ vulns: [{
+      id: "GHSA-hq66", summary: "Arbitrary JS execution", database_specific: { severity: "HIGH" },
+      affected: [{ package: { name: "pdfjs-dist" }, ranges: [{ events: [{ fixed: "6.2.108" }] }] }],
+    }] }) };
+  }
+  return { ok: true, json: async () => ({ "dist-tags": { latest: "6.2.108" }, versions: { "6.2.108": { engines: { node: ">=22.13.0 || >=24" } } } }) };
+};
+const [blocked] = await auditDeps(tmp7, { fetchImpl: blockedFetch });
+assert.deepStrictEqual(blocked.runtimeBlocked, { need: 22, floor: 20, from: "Dockerfile" },
+  "배포가 Node 20 인데 권고 버전이 Node 22 를 요구하면 막힌 것으로 본다");
+assert.match(blocked.why, /^권고 버전이 Node 22 이상을 요구하는데/);
+fs.rmSync(tmp7, { recursive: true, force: true });
 
 // 한 패키지가 죽어도 목록은 나와야 한다
 const flaky = await auditDeprecated(tmp, { fetchImpl: async () => { throw new Error("보내기 실패"); } });
