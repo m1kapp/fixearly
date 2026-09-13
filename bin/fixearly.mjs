@@ -3165,18 +3165,27 @@ let previous = null;
 let depsFixes = null;
 if (wantDeps) {
   try {
-    const { auditDeps } = await import("./deps-audit.mjs");
-    depsFixes = await auditDeps(DISPLAY_BASE);
-    if (!depsFixes.length) {
-      console.log("  의존성: 알려진 취약점 없음 (OSV.dev)\n");
-    } else {
-      console.log(`  의존성 취약점 ${depsFixes.length}건 (OSV.dev)`);
-      for (const d of depsFixes.slice(0, 5)) {
+    const { auditDeps, auditDeprecated } = await import("./deps-audit.mjs");
+    const vulns = await auditDeps(DISPLAY_BASE);
+    // 저자가 접은 패키지도 같이 본다 — 취약점이 0건이어도 "지금 이걸 쓰고 있는 게 맞나"는 남는다.
+    const dropped = await auditDeprecated(DISPLAY_BASE);
+    depsFixes = [...vulns, ...dropped].sort((a, b) => b.weight - a.weight);
+    if (!vulns.length) console.log("  의존성: 알려진 취약점 없음 (OSV.dev)");
+    else {
+      console.log(`  의존성 취약점 ${vulns.length}건 (OSV.dev)`);
+      for (const d of vulns.slice(0, 5)) {
         console.log(`    ${d.what}${d.fixed ? ` → ${d.fixed} 로 올리면 끝` : " · 고쳐진 버전 없음"}`);
       }
-      if (depsFixes.length > 5) console.log(`    … 외 ${depsFixes.length - 5}건`);
-      console.log("");
+      if (vulns.length > 5) console.log(`    … 외 ${vulns.length - 5}건`);
     }
+    if (dropped.length) {
+      console.log(`  저자가 중단 선언한 직접 의존 ${dropped.length}건 (npm registry)`);
+      for (const d of dropped.slice(0, 5)) {
+        console.log(`    ${d.what.replace(" — 저자가 중단 선언", "")}${d.latestDeprecated ? ` · 최신(${d.latest})도 중단 — 갈아타야 함` : ` → ${d.latest} 로 올리면 끝`}`);
+      }
+      if (dropped.length > 5) console.log(`    … 외 ${dropped.length - 5}건`);
+    }
+    console.log("");
   } catch (e) {
     // 못 물어본 것과 0건은 다른 결과다 — 조용히 0건으로 만들지 않는다.
     console.error(`  의존성 점검 실패: ${e.message}\n`);

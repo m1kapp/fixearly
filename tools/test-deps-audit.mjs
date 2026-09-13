@@ -4,7 +4,7 @@ import assert from "node:assert";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { lockPackages, toFixes, auditDeps, inRange } from "../bin/deps-audit.mjs";
+import { lockPackages, toFixes, auditDeps, inRange, auditDeprecated, toDeprecatedFixes } from "../bin/deps-audit.mjs";
 
 // ── 고친 버전이 지금 제약 안인가 ────────────────────────────
 // 실측(repattern, 2026-09-13): axios ^1.14.0 → 1.20.0 은 안, sharp ^0.34.3 → 0.35.4 는 밖.
@@ -184,6 +184,39 @@ assert.strictEqual(out[0].fixed, "4.17.21");
 await assert.rejects(
   auditDeps(tmp, { fetchImpl: async () => ({ ok: false, status: 503 }) }),
   /OSV querybatch 503/);
+
+// ── 저자가 중단 선언한 직접 의존 ──────────────────────────
+// 실측(repattern, 2026-09-13): cron-parser 는 최신이 멀쩡해 올리면 끝이고,
+// prom-client 는 최신도 중단이라 @prometheus-io/client 로 갈아타야 한다.
+const [live, dead] = toDeprecatedFixes([
+  { pkg: { name: "cron-parser", version: "4.9.0", spec: "^4.9.0" }, note: "v4 is no longer maintained, upgrade to v5", latest: "5.10.1", latestDeprecated: false },
+  { pkg: { name: "prom-client", version: "15.1.3" }, note: "prom-client has been replaced by @prometheus-io/client", latest: "15.1.3", latestDeprecated: true },
+]);
+assert.strictEqual(live.kind, "버려진 의존성");
+assert.ok(live.weight > dead.weight, "올리면 끝나는 쪽이 위다");
+assert.match(live.why, /5\.10\.1 는 유지되고 있다/);
+assert.match(dead.why, /최신\(15\.1\.3\)도 중단 상태다/);
+assert.strictEqual(live.scored, false, "보안과 같이 채점축이 아니다");
+assert.strictEqual(live.file, "package.json");
+
+// 직접 의존만 묻는다. 전이까지 조회하면 갈아탈 수 없는 것을 목록에 올리게 된다
+const asked = [];
+const regFetch = async (url) => {
+  const name = url.replace("https://registry.npmjs.org/", "");
+  asked.push(name);
+  return { ok: true, json: async () => ({
+    "dist-tags": { latest: "9.0.0" },
+    versions: { "4.17.15": { deprecated: "use something else" }, "9.0.0": {} },
+  }) };
+};
+const dep = await auditDeprecated(tmp, { fetchImpl: regFetch });
+assert.deepStrictEqual(asked, ["lodash"], "전이(typescript)는 묻지 않는다");
+assert.strictEqual(dep.length, 1);
+assert.strictEqual(dep[0].latestDeprecated, false);
+
+// 한 패키지가 죽어도 목록은 나와야 한다
+const flaky = await auditDeprecated(tmp, { fetchImpl: async () => { throw new Error("보내기 실패"); } });
+assert.deepStrictEqual(flaky, [], "조회 실패는 조용히 건너뛴다 — 취약점 조회와 달리 없어도 되는 정보다");
 
 fs.rmSync(tmp, { recursive: true, force: true });
 fs.rmSync(tmp2, { recursive: true, force: true });
