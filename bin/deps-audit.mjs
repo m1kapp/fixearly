@@ -232,6 +232,69 @@ export function toFixes(rows) {
 }
 
 /**
+ * `>=22.13.0 || >=24` → 22. 구간이 여럿이면 가장 낮은 major 가 그 패키지가 받아주는 하한이다.
+ * 구간 안에서는 첫 숫자만 본다 — `^20.19.0` 의 19 를 major 로 세면 안 된다.
+ */
+export function engineFloor(spec) {
+  if (!spec) return null;
+  const majors = String(spec).split("||")
+    .map((part) => { const m = part.match(/(\d+)/); return m ? +m[1] : null; })
+    .filter((n) => n != null);
+  return majors.length ? Math.min(...majors) : null;
+}
+
+/**
+ * 이 프로젝트가 실제로 돌아야 하는 최저 Node.
+ *
+ * 2026-09-13 repattern: `pdfjs-dist` 6.x 로 올렸더니 typecheck 도 CI 도 전부 초록이었는데
+ * 리뷰어가 막았다 — 6.x 는 `engines: {node: '>=22.13.0'}` 인데 배포 이미지가 `node:20-alpine`
+ * 이었다. CI 러너 Node 가 아니라 **배포가 기준**이고, 그 둘은 다를 수 있다.
+ *
+ * 신호는 저장소마다 다른 데 있다: repattern 은 Dockerfile 뿐이었고(engines·nvmrc 없음),
+ * fixearly 는 package.json engines 뿐이다(Dockerfile 없음). 그래서 셋 다 읽고 가장 낮은 값을 쓴다.
+ * 못 찾으면 null — 모르면 아무 말도 하지 않는다.
+ *
+ * ponytail: 하한이 저장소 하나당 하나다. 모노레포에서 front 만 Node 22 이미지를 써도
+ * scheduler 의 node:20 이 전체 하한이 되어 실제보다 보수적으로 막는다. 오탐 쪽이 아니라
+ * "덜 권하는" 쪽으로 틀리므로 그대로 둔다. 앱별로 갈라야 할 일이 실제로 생기면,
+ * 락파일 importer 경로와 Dockerfile 경로를 접두사로 이어 워크스페이스별 하한을 만든다.
+ */
+export function runtimeFloor(dir) {
+  const found = [];
+  const walk = (d, depth) => {
+    if (depth > 3) return;
+    let entries = [];
+    try { entries = fs.readdirSync(d, { withFileTypes: true }); } catch { return; }
+    for (const e of entries) {
+      if (e.name === "node_modules" || e.name.startsWith(".git")) continue;
+      const p = path.join(d, e.name);
+      if (e.isDirectory()) { walk(p, depth + 1); continue; }
+      if (!/^Dockerfile/.test(e.name)) continue;
+      try {
+        for (const m of fs.readFileSync(p, "utf-8").matchAll(/^FROM[^\n]*\bnode:(\d+)/gm)) {
+          found.push({ major: +m[1], from: path.relative(dir, p) });
+        }
+      } catch { /* 읽을 수 없으면 그 파일만 건너뛴다 */ }
+    }
+  };
+  walk(dir, 0);
+  const nvmrc = path.join(dir, ".nvmrc");
+  if (fs.existsSync(nvmrc)) {
+    const m = fs.readFileSync(nvmrc, "utf-8").match(/(\d+)/);
+    if (m) found.push({ major: +m[1], from: ".nvmrc" });
+  }
+  const pj = path.join(dir, "package.json");
+  if (fs.existsSync(pj)) {
+    try {
+      const f = engineFloor(JSON.parse(fs.readFileSync(pj, "utf-8")).engines?.node);
+      if (f) found.push({ major: f, from: "package.json engines" });
+    } catch { /* 파싱 실패는 신호 없음으로 본다 */ }
+  }
+  if (!found.length) return null;
+  return found.reduce((a, b) => (b.major < a.major ? b : a));
+}
+
+/**
  * 설치본을 저자가 "이제 쓰지 마라"라고 선언했는가. npm 레지스트리의 deprecated 필드다.
  *
  * "신버전에 더 좋은 게 생겼나"는 CHANGELOG 를 읽어야 알고 정적 도구가 답할 수 없다.
@@ -319,5 +382,33 @@ export async function auditDeps(dir, { fetchImpl = fetch } = {}) {
     const j = await res.json();
     rows.push({ pkg: p, vulns: j.vulns || [] });
   }
-  return toFixes(rows);
+  const fixes = toFixes(rows);
+  await markRuntimeBlocked(dir, fixes, fetchImpl);
+  return fixes;
+}
+
+/**
+ * 권고 버전이 이 프로젝트의 배포 런타임에서 돌지 않으면 표시한다.
+ * 권고 버전의 engines 는 레지스트리에만 있다 — 락파일에는 설치된 버전 것만 들어 있다.
+ * 직접 의존 중 고쳐진 버전이 있는 것만 물으므로 왕복은 몇 건이다.
+ */
+async function markRuntimeBlocked(dir, fixes, fetchImpl) {
+  const floor = runtimeFloor(dir);
+  if (!floor) return;
+  const targets = fixes.filter((f) => f.direct !== false && f.fixed);
+  for (let i = 0; i < targets.length; i += 8) {
+    await Promise.all(targets.slice(i, i + 8).map(async (f) => {
+      try {
+        const res = await fetchImpl(`https://registry.npmjs.org/${f.where.split(":")[1]}`);
+        if (!res.ok) return;
+        const d = await res.json();
+        const need = engineFloor(d.versions?.[f.fixed]?.engines?.node);
+        if (!need || need <= floor.major) return;
+        f.runtimeBlocked = { need, floor: floor.major, from: floor.from };
+        f.why = `권고 버전이 Node ${need} 이상을 요구하는데 이 프로젝트는 Node ${floor.major} 에서 돈다(${floor.from}) — 런타임이 선행이다. ${f.why}`;
+        // 지금 못 올리는 것이라 올릴 수 있는 것들 아래로 내린다.
+        f.weight -= 300;
+      } catch { /* 못 물어보면 표시하지 않는다 */ }
+    }));
+  }
 }
