@@ -194,12 +194,18 @@ npx fixearly --dir=src --hotspots
 # 데드코드 축 추가 (knip 내장)
 npx fixearly --dir=src --dead
 
+# 락파일 취약점 추가 (OSV.dev 조회 — 네트워크 필요)
+npx fixearly --dir=src --deps --report
+
 # 모노레포에서 산출물 아닌 패키지 제외 (근거를 남길 것)
 npx fixearly --dir=packages --exclude=packages/devtools,packages/examples
 
 # README 배지
 npx fixearly --dir=src --badge
 ```
+
+`--deps`는 락파일의 (이름, 버전)을 OSV.dev에 물어 **고쳐진 버전이 나온 취약점**을 리포트 맨 위에 올린다.
+소스 항목은 "고칠지 말지"가 판단이지만 이쪽은 판단할 게 없다 — 그래서 점수축이 아니라 목록 우선순위로만 들어간다.
 
 측정할 때마다 `.fixearly-history.json`에 스냅샷이 쌓이고, 리포트에 **지난번 대비** 변화가 표시된다.
 점수는 절대 위치, 변화량은 당신이 한 일이다 — 자기 이력과의 비교라 지표만 건드려서는 움직이지 않는다.

@@ -193,6 +193,9 @@ function itemPrompt(f, ctx) {
       : "중첩을 걷어낸다(빠른 반환·가드절·분기 테이블). 분기 자체를 없애려 들지 말고 깊이를 낮춰라.",
     "O(n²)": "먼저 바깥 배열의 실제 크기를 코드에서 역추적하라. 상수 목록·설정값이면 고치지 말고 그 근거를 적어라. 크면 Map/Set으로 O(1).",
     "루프 안 I/O": "순차가 필수인지 먼저 판단하라(재시도·커서 페이지네이션은 정상). 아니면 배치 조회나 캐시로 호출 수를 줄인다.",
+    "취약한 의존성": f.fixed
+      ? `\`${f.file}\` 의 버전 제약을 \`${f.fixed}\` 이상으로 올리고 락파일을 갱신한다(\`npm install\`). 코드는 건드리지 않는다 — 메이저가 올라가 호출부가 깨지면, 고치지 말고 무엇이 깨지는지만 보고하라. 참고: ${(f.ids || []).join(", ")}`
+      : `고쳐진 버전이 없다. 이 패키지를 **직접 부르는 곳**을 찾아 취약한 경로를 실제로 지나는지 확인하고, 지나지 않으면 그 근거를 적어라. 지난다면 대체 패키지나 자체 구현 비용을 견적만 내라. 참고: ${(f.ids || []).join(", ")}`,
   }[f.kind] || "가장 작은 변경으로 고친다.";
   return `# 결함 하나 수정: ${f.kind}
 
@@ -369,6 +372,9 @@ function scoreEffect(f, q, si) {
     }
     return { gain, note: gain < 0.5 ? "복잡도 축은 이미 기준선 안 — 점수는 거의 안 움직인다" : "상위10 평균 항이 함께 내려간다" };
   }
+  if (f.kind === "취약한 의존성") {
+    return { gain: 0, note: f.fixed ? "채점축 아님 — 버전만 올리면 끝난다" : "채점축 아님 — 아직 고쳐진 버전이 없다" };
+  }
   return { gain: 0, note: "진단 항목 — 점수에 반영되지 않는다 (성능·정확성 문제)" };
 }
 
@@ -485,7 +491,7 @@ ${top}
 - 한 커밋에 여러 항목 섞기`;
 }
 
-export function renderReport({ projectName, quality, source, corpus, hotspots, previous, history, repoActivity, churnByFile }) {
+export function renderReport({ projectName, quality, source, corpus, hotspots, previous, history, repoActivity, churnByFile, deps }) {
   const q = quality;
   const si = q.scoreInputs;
   const score = q.score;
@@ -510,7 +516,9 @@ export function renderReport({ projectName, quality, source, corpus, hotspots, p
   // 동결 판정: git 이력이 있는데 최근 6개월 변경이 0건이면 '지금 고칠 이유 없음'.
   const frozen = act.tracked === true && act.commits6mo === 0;
   const sweep = q.sweep || null;
-  const fixes = buildFixList(q, (churnByFile && churnByFile.length ? churnByFile : hotspots));
+  // 의존성 취약점은 소스 항목보다 위다. 소스 쪽은 "고칠지 말지"가 판단이지만
+  // 고쳐진 버전이 나온 취약점은 판단할 게 없다 — 목록을 다 밀어내지 않게 8건까지만 올린다.
+  const fixes = [...(deps || []).slice(0, 8), ...buildFixList(q, (churnByFile && churnByFile.length ? churnByFile : hotspots))];
   const pens = penaltyBreakdown(si);
   const totalPen = pens.reduce((s, p) => s + p.got, 0);
   // 지켜낸 축 — 감점 0인 항목. "잘하고 있는 것"을 먼저 보여준다.
