@@ -60,6 +60,7 @@
     "history": "python3 tools/build-score-history.py && python3 tools/update-history-ui.py",
     "avatars": "python3 tools/fetch-repo-avatars.py",
     "queue": "python3 tools/update-pr-queue.py",
-    "prepublishOnly": "npm test"
+    "prepublishOnly": "npm test",
+    "alive": "python3 tools/check-merged-alive.py"
   }
 }
