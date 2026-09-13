@@ -521,6 +521,16 @@
    "approvedBy": [
     "JeanMeche"
    ]
+  },
+  {
+   "title": "빌드에서 쓰기만 하는 페이지 입력 집합",
+   "titleEn": "write-only page input set in the build",
+   "type": "쓰기만 하는 컬렉션 (viteBuild 가 pageInput 을 채우기만 하고 읽지 않는다 — 소비자 ssrBuild 인자가 #14306 Environment API 에서 사라졌다)",
+   "repo": "withastro/astro",
+   "repoLabel": "astro · 62.5k★",
+   "pr": 17987,
+   "createdAt": "2026-09-13T04:00:19Z",
+   "status": "waiting"
   }
  ],
  "generatedAt": "2026-09-11T05:22:07.170Z"
