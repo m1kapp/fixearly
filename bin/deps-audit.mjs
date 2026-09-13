@@ -30,6 +30,38 @@ function cmpVer(a, b) {
  * ponytail: npm 락파일만. pnpm/yarn 은 YAML 파서가 필요하다 — 실제로 그 저장소를 볼 때 붙인다.
  */
 export function lockPackages(dir) {
+  const direct = directNames(dir);
+  // 전이 의존은 "이 패키지를 올려라"가 통하지 않는다 — 내 package.json 에 없기 때문이다.
+  // 직접 목록을 못 구하면 표시 자체를 생략한다. 전부 전이로 찍는 것보다 침묵이 낫다.
+  return rawLockPackages(dir).map((p) => (direct ? { ...p, direct: direct.has(p.name) } : p));
+}
+
+/**
+ * 내가 직접 부르는 이름 집합. 못 구하면 null.
+ * ponytail: npm 은 루트 package.json 만 본다 — 워크스페이스는 pnpm 쪽에서만 정확하다.
+ */
+function directNames(dir) {
+  const pnpm = path.join(dir, "pnpm-lock.yaml");
+  if (fs.existsSync(pnpm)) {
+    const out = new Set();
+    let inSection = false;
+    for (const line of fs.readFileSync(pnpm, "utf-8").split("\n")) {
+      if (/^[^\s]/.test(line)) { inSection = line.startsWith("importers:"); continue; }
+      if (!inSection) continue;
+      // importer 경로가 2칸, dependencies: 가 4칸, 의존성 이름이 6칸이다.
+      const m = line.match(/^ {6}'?((?:@[^/'\s]+\/)?[^:'\s]+)'?:\s*$/);
+      if (m) out.add(m[1]);
+    }
+    return out.size ? out : null;
+  }
+  const pj = path.join(dir, "package.json");
+  if (!fs.existsSync(pj)) return null;
+  const p = JSON.parse(fs.readFileSync(pj, "utf-8"));
+  const out = new Set([...Object.keys(p.dependencies || {}), ...Object.keys(p.devDependencies || {})]);
+  return out.size ? out : null;
+}
+
+function rawLockPackages(dir) {
   const lock = path.join(dir, "package-lock.json");
   if (fs.existsSync(lock)) {
     const j = JSON.parse(fs.readFileSync(lock, "utf-8"));
@@ -130,15 +162,17 @@ export function toFixes(rows) {
       file: "package.json",
       lines: [pkg.name],
       count: 1,
-      why: fixed
-        ? `${fixed} 에서 고쳐졌다 — 올리는 것 말고 할 일이 없다${pkg.dev ? " (dev 의존성)" : ""}. ${title}`
-        : `고쳐진 버전이 아직 없다 — 대체하거나 호출부를 막아야 한다${pkg.dev ? " (dev 의존성)" : ""}. ${title}`,
+      why: (pkg.direct === false ? "전이 의존 — 내 package.json 에 없다. " : "")
+        + (fixed
+          ? `${fixed} 에서 고쳐졌다 — 올리는 것 말고 할 일이 없다${pkg.dev ? " (dev 의존성)" : ""}. ${title}`
+          : `고쳐진 버전이 아직 없다 — 대체하거나 호출부를 막아야 한다${pkg.dev ? " (dev 의존성)" : ""}. ${title}`),
       // 심각도 우선, 같은 심각도면 고칠 수 있는 것(고쳐진 버전 있음)이 먼저.
-      // dev 의존성은 런타임에 안 실리므로 한 칸 내린다.
-      weight: 1000 + (RANK[sev] || 0) * 100 + (fixed ? 50 : 0) - (pkg.dev ? 120 : 0),
+      // dev 의존성은 런타임에 안 실리므로 한 칸 내리고, 전이 의존은 내 손으로 못 올리므로 더 내린다.
+      weight: 1000 + (RANK[sev] || 0) * 100 + (fixed ? 50 : 0)
+        - (pkg.dev ? 120 : 0) - (pkg.direct === false ? 200 : 0),
       scored: false,
       stable: false,
-      sev, fixed, ids, dev: pkg.dev,
+      sev, fixed, ids, dev: pkg.dev, direct: pkg.direct,
     });
   }
   return items.sort((a, b) => b.weight - a.weight);
