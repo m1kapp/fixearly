@@ -253,6 +253,11 @@ export function engineFloor(spec) {
  * 신호는 저장소마다 다른 데 있다: repattern 은 Dockerfile 뿐이었고(engines·nvmrc 없음),
  * fixearly 는 package.json engines 뿐이다(Dockerfile 없음). 그래서 셋 다 읽고 가장 낮은 값을 쓴다.
  * 못 찾으면 null — 모르면 아무 말도 하지 않는다.
+ *
+ * ponytail: 하한이 저장소 하나당 하나다. 모노레포에서 front 만 Node 22 이미지를 써도
+ * scheduler 의 node:20 이 전체 하한이 되어 실제보다 보수적으로 막는다. 오탐 쪽이 아니라
+ * "덜 권하는" 쪽으로 틀리므로 그대로 둔다. 앱별로 갈라야 할 일이 실제로 생기면,
+ * 락파일 importer 경로와 Dockerfile 경로를 접두사로 이어 워크스페이스별 하한을 만든다.
  */
 export function runtimeFloor(dir) {
   const found = [];
