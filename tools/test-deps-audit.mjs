@@ -32,6 +32,38 @@ fs.writeFileSync(path.join(tmp2, "package.json"), JSON.stringify({
 assert.deepStrictEqual(lockPackages(tmp2).map((p) => p.name), ["pinned"],
   "범위 지정은 실제 설치본을 모르므로 묻지 않는다");
 
+// ── pnpm-lock.yaml v9 ─────────────────────────────────────
+const tmp3 = fs.mkdtempSync(path.join(os.tmpdir(), "fixearly-deps-"));
+fs.writeFileSync(path.join(tmp3, "pnpm-lock.yaml"), `lockfileVersion: '9.0'
+
+importers:
+  .:
+    dependencies:
+      lodash@9.9.9: {}
+
+packages:
+
+  '@adobe/css-tools@4.5.0':
+    resolution: {integrity: sha512-xxx}
+  lodash@4.17.15:
+    resolution: {integrity: sha512-yyy}
+  esbuild@0.21.5(patch_hash=abc):
+    resolution: {integrity: sha512-zzz}
+  '@types/react@18.3.1(peer@1.0.0)':
+    resolution: {integrity: sha512-www}
+  typescript@5.9.3:
+    engines: {node: '>=14'}
+
+snapshots:
+
+  'not-a-package@1.0.0':
+    dependencies: {}
+`);
+assert.deepStrictEqual(lockPackages(tmp3).map((p) => `${p.name}@${p.version}`).sort(),
+  ["@adobe/css-tools@4.5.0", "@types/react@18.3.1", "esbuild@0.21.5", "lodash@4.17.15", "typescript@5.9.3"],
+  "packages 섹션만 · 스코프 이름 유지 · peer/patch 접미 제거 · snapshots 와 importers 는 제외");
+fs.rmSync(tmp3, { recursive: true, force: true });
+
 // ── OSV 레코드 → fixes 항목 ────────────────────────────────
 const vulns = [
   {

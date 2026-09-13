@@ -53,6 +53,8 @@ export function lockPackages(dir) {
     }
     return dedupe(out);
   }
+  const pnpm = path.join(dir, "pnpm-lock.yaml");
+  if (fs.existsSync(pnpm)) return dedupe(pnpmPackages(pnpm));
   const pkgPath = path.join(dir, "package.json");
   if (!fs.existsSync(pkgPath)) return [];
   const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
@@ -63,6 +65,24 @@ export function lockPackages(dir) {
     }
   }
   return dedupe(out);
+}
+
+/**
+ * pnpm-lock.yaml 의 `packages:` 섹션만 읽는다. 키가 `'@scope/name@1.2.3':` 꼴이라
+ * 마지막 @ 앞뒤로 가른다. 뒤에 붙는 `(peer@1)`·`(patch_hash=..)` 는 버린다.
+ * ponytail: YAML 파서를 들이지 않는다 — 필요한 건 최상위 한 섹션의 키뿐이다.
+ * pnpm v9 packages 섹션에는 dev 표시가 없다. 전이 의존은 어차피 구분이 안 되므로 전부 런타임 취급한다.
+ */
+function pnpmPackages(file) {
+  const out = [];
+  let inSection = false;
+  for (const line of fs.readFileSync(file, "utf-8").split("\n")) {
+    if (/^[^\s]/.test(line)) { inSection = line.startsWith("packages:"); continue; }
+    if (!inSection) continue;
+    const m = line.match(/^ {2}'?((?:@[^/'\s]+\/)?[^@'\s]+)@([^'():\s]+)/);
+    if (m && /^\d/.test(m[2])) out.push({ name: m[1], version: m[2], dev: false });
+  }
+  return out;
 }
 
 function dedupe(rows) {
