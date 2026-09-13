@@ -5,6 +5,7 @@
  * Usage:
  *   npx fixearly --dir=src                # 점수·등급 (git 추적 파일만, 빌드산출물 제외)
  *   npx fixearly --dir=src --report       # 한 장짜리 HTML 리포트 (위치·고칠 목록·AI 지시문)
+ *   npx fixearly --dir=src --deps         # (선택) 락파일 취약점 — OSV.dev 조회, 네트워크 필요
  *   npx fixearly --dir=src --sweep        # 빠른 훑기 → 깊게 검증/맥락 확인/변경 감시
  *   npx fixearly --dir=src --hotspots     # 복잡도 × 변경빈도 = 먼저 고칠 파일
  *   npx fixearly --dir=src --dead         # (선택) knip 데드코드축 — 느림. // @keep 파일 제외
@@ -56,6 +57,8 @@ const wantMine = args.includes("--mine");   // O(n²) PR 후보 전체 덤프(�
 const wantReport = args.includes("--report") || !!getFlag("report"); // 한 장짜리 HTML 리포트
 const wantHotspots = args.includes("--hotspots");
 const wantSweep = args.includes("--sweep"); // 기존 진단을 비싼 검증 전의 후보 게이트로 재사용
+// 의존성 취약점은 네트워크(OSV.dev)를 타므로 옵트인이다. 오프라인에서도 리포트가 나와야 한다.
+const wantDeps = args.includes("--deps");
 // @m1kapp/kit 사용 현황은 부가 정보라 옵트인이다. 범용 도구가 특정 패키지 이름을
 // 기본 경로에서 찾고 있으면 "저자 라이브러리를 광고한다"는 인상을 준다.
 const wantKit = args.includes("--kit"); // cog × git churn = "먼저 고칠 파일" 랭킹(git 이력 필요)
@@ -3157,6 +3160,29 @@ let previous = null;
   }
 }
 
+// --deps : 락파일의 (이름, 버전)을 OSV.dev 에 물어 취약점을 받는다.
+// 소스 결함과 달리 판단할 게 없는 항목이라, 리포트에서는 '무엇부터 고칠까' 맨 위에 붙는다.
+let depsFixes = null;
+if (wantDeps) {
+  try {
+    const { auditDeps } = await import("./deps-audit.mjs");
+    depsFixes = await auditDeps(DISPLAY_BASE);
+    if (!depsFixes.length) {
+      console.log("  의존성: 알려진 취약점 없음 (OSV.dev)\n");
+    } else {
+      console.log(`  의존성 취약점 ${depsFixes.length}건 (OSV.dev)`);
+      for (const d of depsFixes.slice(0, 5)) {
+        console.log(`    ${d.what}${d.fixed ? ` → ${d.fixed} 로 올리면 끝` : " · 고쳐진 버전 없음"}`);
+      }
+      if (depsFixes.length > 5) console.log(`    … 외 ${depsFixes.length - 5}건`);
+      console.log("");
+    }
+  } catch (e) {
+    // 못 물어본 것과 0건은 다른 결과다 — 조용히 0건으로 만들지 않는다.
+    console.error(`  의존성 점검 실패: ${e.message}\n`);
+  }
+}
+
 // --report : 한 장짜리 HTML 리포트. "어디쯤인가 + 무엇부터 고칠까" 두 질문에만 답한다.
 // 코퍼스(유명 OSS 70개) 기준선을 패키지에 동봉해 오프라인에서도 비교가 된다.
 if (wantReport && !stats.quality.scoreInputs) {
@@ -3178,6 +3204,7 @@ if (wantReport && !stats.quality.scoreInputs) {
       previous, history: history.filter((h) => h.dir === (path.relative(process.cwd(), path.resolve(srcDir)) || ".")),
       repoActivity,
       churnByFile,
+      deps: depsFixes,
     });
     fs.writeFileSync(reportPath, html);
     console.log(`  ✓ 리포트 → ${path.relative(process.cwd(), reportPath)}  (브라우저로 열어보세요)\n`);
