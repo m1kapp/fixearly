@@ -4,7 +4,25 @@ import assert from "node:assert";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { lockPackages, toFixes, auditDeps } from "../bin/deps-audit.mjs";
+import { lockPackages, toFixes, auditDeps, inRange } from "../bin/deps-audit.mjs";
+
+// ── 고친 버전이 지금 제약 안인가 ────────────────────────────
+// 실측(repattern, 2026-09-13): axios ^1.14.0 → 1.20.0 은 안, sharp ^0.34.3 → 0.35.4 는 밖.
+assert.strictEqual(inRange("^1.14.0", "1.20.0"), true);
+assert.strictEqual(inRange("^1.14.0", "2.0.0"), false, "^ 는 메이저를 넘지 않는다");
+assert.strictEqual(inRange("^0.34.3", "0.35.4"), false, "0.x 의 ^ 는 minor 까지 고정이다");
+assert.strictEqual(inRange("^0.34.3", "0.34.9"), true);
+assert.strictEqual(inRange("~1.2.3", "1.2.9"), true);
+assert.strictEqual(inRange("~1.2.3", "1.3.0"), false, "~ 는 minor 를 넘지 않는다");
+assert.strictEqual(inRange("4.1.1", "4.3.2"), false, "정확 고정은 무엇을 올리든 밖이다");
+assert.strictEqual(inRange(">=1.0.0", "9.9.9"), true);
+// 뒷자리를 생략한 범위 — repattern 의 postcss 가 `^8` 이었고 실제로 8.5.28 을 받았다
+assert.strictEqual(inRange("^8", "8.5.23"), true, "^8 은 8.x 전부를 받는다");
+assert.strictEqual(inRange("^8", "9.0.0"), false);
+assert.strictEqual(inRange("8", "8.5.23"), true);
+assert.strictEqual(inRange("^1 || ^2", "2.1.0"), null, "판정 못 하면 침묵한다");
+assert.strictEqual(inRange("workspace:*", "1.0.0"), null);
+assert.strictEqual(inRange(undefined, "1.0.0"), null);
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "fixearly-deps-"));
 

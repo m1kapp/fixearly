@@ -33,7 +33,35 @@ export function lockPackages(dir) {
   const direct = directNames(dir);
   // 전이 의존은 "이 패키지를 올려라"가 통하지 않는다 — 내 package.json 에 없기 때문이다.
   // 직접 목록을 못 구하면 표시 자체를 생략한다. 전부 전이로 찍는 것보다 침묵이 낫다.
-  return rawLockPackages(dir).map((p) => (direct ? { ...p, direct: direct.has(p.name + "@" + p.version) } : p));
+  return rawLockPackages(dir).map((p) => {
+    if (!direct) return p;
+    const key = p.name + "@" + p.version;
+    return { ...p, direct: direct.has(key), spec: direct.get(key) };
+  });
+}
+
+/**
+ * 고친 버전이 지금 제약 안에 들어오는가. 들어오면 락파일만 갱신하면 되고(`pnpm update`),
+ * 아니면 package.json 의 하한을 사람이 올려야 한다 — 리뷰 비용이 다르다.
+ * 판정할 수 없는 형태는 null 을 준다. 틀린 지시문보다 말 안 하는 쪽이 낫다.
+ * ponytail: semver 라이브러리를 들이지 않는다. 실측에서 나온 건 ^ · ~ · >= · 정확 고정뿐이다.
+ */
+export function inRange(spec, fixed) {
+  if (!spec || !fixed) return null;
+  const s = String(spec).trim();
+  if (s === "*" || s === "latest" || s.startsWith(">=")) return true;
+  // `^8` `~1.2` 처럼 뒷자리를 생략한 형태가 실제로 흔하다(repattern 의 postcss).
+  const m = s.match(/^([\^~]?)(\d+)(?:\.(\d+))?(?:\.(\d+))?$/);
+  if (!m || s.includes("||") || s.includes(" ")) return null;
+  const f = String(fixed).match(/^(\d+)\.(\d+)\.(\d+)/);
+  if (!f) return null;
+  const [, op, a, b] = m;
+  // 생략된 자리는 "아무 값이나"라서 major 만 맞으면 된다: `8` 은 8.x.x 고정, `^8` 도 같다.
+  if (b === undefined) return op === "" ? f[1] === a : f[1] === a;
+  if (!op) return false; // 정확 고정 — 무엇을 올리든 밖이다
+  if (op === "~") return f[1] === a && f[2] === b;
+  // ^ 는 0.x 에서 minor 까지 고정된다. ^0.34.3 은 0.35.0 을 받지 않는다.
+  return a === "0" ? f[1] === "0" && f[2] === b : f[1] === a;
 }
 
 /**
@@ -48,17 +76,19 @@ export function lockPackages(dir) {
 function directNames(dir) {
   const pnpm = path.join(dir, "pnpm-lock.yaml");
   if (fs.existsSync(pnpm)) {
-    const out = new Set();
-    let inSection = false, name = null;
+    const out = new Map();
+    let inSection = false, name = null, spec = null;
     for (const line of fs.readFileSync(pnpm, "utf-8").split("\n")) {
       if (/^[^\s]/.test(line)) { inSection = line.startsWith("importers:"); continue; }
       if (!inSection) continue;
       // importer 경로가 2칸, dependencies: 가 4칸, 의존성 이름이 6칸, specifier/version 이 8칸이다.
       let m = line.match(/^ {6}'?((?:@[^/'\s]+\/)?[^:'\s]+)'?:\s*$/);
-      if (m) { name = m[1]; continue; }
+      if (m) { name = m[1]; spec = null; continue; }
+      m = line.match(/^ {8}specifier:\s*(.+)$/);
+      if (m) { spec = m[1].trim(); continue; }
       // version 에는 `1.2.3(peer@4)` 처럼 peer 가 붙는다.
       m = line.match(/^ {8}version:\s*([^\s(]+)/);
-      if (m && name) out.add(name + "@" + m[1]);
+      if (m && name) out.set(name + "@" + m[1], spec);
     }
     return out.size ? out : null;
   }
@@ -66,15 +96,15 @@ function directNames(dir) {
   const pj = path.join(dir, "package.json");
   if (!fs.existsSync(pj)) return null;
   const p = JSON.parse(fs.readFileSync(pj, "utf-8"));
-  const names = new Set([...Object.keys(p.dependencies || {}), ...Object.keys(p.devDependencies || {})]);
-  if (!names.size) return null;
+  const ranges = new Map([...Object.entries(p.dependencies || {}), ...Object.entries(p.devDependencies || {})]);
+  if (!ranges.size) return null;
   // npm 락파일은 최상위 설치본이 `node_modules/<이름>` 에 있다. 중첩(전이)은 더 깊은 경로다.
-  const out = new Set();
+  const out = new Map();
   if (fs.existsSync(lock)) {
     const j = JSON.parse(fs.readFileSync(lock, "utf-8"));
-    for (const name of names) {
+    for (const [name, range] of ranges) {
       const v = (j.packages || {})[`node_modules/${name}`];
-      if (v && v.version) out.add(name + "@" + v.version);
+      if (v && v.version) out.set(name + "@" + v.version, range);
     }
   }
   return out.size ? out : null;
@@ -174,6 +204,8 @@ export function toFixes(rows) {
       if (cheapest && (!fixed || cmpVer(cheapest, fixed) > 0)) fixed = cheapest;
     }
     const title = String(vulns[0].summary || "").replace(/\s+/g, " ").trim();
+    // 제약 안에서 풀리면 락파일 갱신만으로 끝난다. 실측(repattern): 9건 중 4건이 그랬다.
+    const covered = pkg.direct === false ? null : inRange(pkg.spec, fixed);
     items.push({
       kind: "취약한 의존성", kindEn: "vulnerable dependency",
       what: `${pkg.name} ${pkg.version} — ${sev === "UNKNOWN" ? "심각도 미상" : sev} ${vulns.length}건`,
@@ -183,7 +215,9 @@ export function toFixes(rows) {
       count: 1,
       why: (pkg.direct === false ? "전이 의존 — 내 package.json 에 없다. " : "")
         + (fixed
-          ? `${fixed} 에서 고쳐졌다 — 올리는 것 말고 할 일이 없다${pkg.dev ? " (dev 의존성)" : ""}. ${title}`
+          ? `${fixed} 에서 고쳐졌다 — ${covered === true ? "지금 제약 안이라 락파일만 갱신하면 된다"
+              : covered === false ? `제약(${pkg.spec}) 밖이라 하한을 올려야 한다`
+              : "올리는 것 말고 할 일이 없다"}${pkg.dev ? " (dev 의존성)" : ""}. ${title}`
           : `고쳐진 버전이 아직 없다 — 대체하거나 호출부를 막아야 한다${pkg.dev ? " (dev 의존성)" : ""}. ${title}`),
       // 심각도 우선, 같은 심각도면 고칠 수 있는 것(고쳐진 버전 있음)이 먼저.
       // dev 의존성은 런타임에 안 실리므로 한 칸 내리고, 전이 의존은 내 손으로 못 올리므로 더 내린다.
@@ -191,7 +225,7 @@ export function toFixes(rows) {
         - (pkg.dev ? 120 : 0) - (pkg.direct === false ? 200 : 0),
       scored: false,
       stable: false,
-      sev, fixed, ids, dev: pkg.dev, direct: pkg.direct,
+      sev, fixed, ids, dev: pkg.dev, direct: pkg.direct, spec: pkg.spec, covered,
     });
   }
   return items.sort((a, b) => b.weight - a.weight);
