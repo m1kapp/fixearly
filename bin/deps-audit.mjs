@@ -231,6 +231,65 @@ export function toFixes(rows) {
   return items.sort((a, b) => b.weight - a.weight);
 }
 
+/**
+ * 설치본을 저자가 "이제 쓰지 마라"라고 선언했는가. npm 레지스트리의 deprecated 필드다.
+ *
+ * "신버전에 더 좋은 게 생겼나"는 CHANGELOG 를 읽어야 알고 정적 도구가 답할 수 없다.
+ * deprecated 는 그중 기계가 확실히 아는 부분집합이다 — 저자가 직접 쓴 문장이라 추측이 없고,
+ * 대개 후속 패키지 이름까지 적혀 있다. `npm outdated` 는 이 사유를 보여주지 않는다.
+ *
+ * 직접 의존만 본다. 전이 의존은 갈아탈 대상이 내 package.json 에 없다.
+ * ponytail: "몇 버전 뒤처졌나"는 넣지 않는다 — repattern 실측에서 263개 중 190개가 뒤처져 있었다.
+ * 목록이 190줄이면 아무도 안 본다. `npm outdated` 가 이미 하는 일이기도 하다.
+ */
+export async function auditDeprecated(dir, { fetchImpl = fetch } = {}) {
+  const direct = lockPackages(dir).filter((p) => p.direct);
+  if (!direct.length) return [];
+  const rows = [];
+  for (let i = 0; i < direct.length; i += 8) {
+    await Promise.all(direct.slice(i, i + 8).map(async (p) => {
+      // 한 패키지가 응답하지 않아도 나머지 목록은 나와야 한다.
+      try {
+        const res = await fetchImpl(`https://registry.npmjs.org/${p.name}`);
+        if (!res.ok) return;
+        const d = await res.json();
+        const note = d.versions?.[p.version]?.deprecated;
+        if (!note) return;
+        const latest = d["dist-tags"]?.latest;
+        rows.push({
+          pkg: p, note: String(note), latest,
+          // 최신도 중단 상태면 올려봐야 소용없다 — 갈아타야 한다.
+          latestDeprecated: !!(latest && d.versions?.[latest]?.deprecated),
+        });
+      } catch { /* 이 패키지는 건너뛴다 */ }
+    }));
+  }
+  return toDeprecatedFixes(rows);
+}
+
+/** 레지스트리 응답 → fixes 항목. 네트워크를 타지 않는 순수 함수다. */
+export function toDeprecatedFixes(rows) {
+  return rows.map(({ pkg, note, latest, latestDeprecated }) => {
+    const short = note.replace(/\s+/g, " ").trim().slice(0, 160);
+    return {
+      kind: "버려진 의존성", kindEn: "deprecated dependency",
+      what: `${pkg.name} ${pkg.version} — 저자가 중단 선언`,
+      where: `package.json:${pkg.name}`,
+      file: "package.json",
+      lines: [pkg.name],
+      count: 1,
+      why: latestDeprecated
+        ? `최신(${latest})도 중단 상태다 — 올려도 안 풀리고 갈아타야 한다. "${short}"`
+        : `${latest} 는 유지되고 있다 — 올리면 끝난다. "${short}"`,
+      // 보안(1000~)보다 아래, 소스 결함보다 위. 지금 깨지진 않지만 판단할 게 없는 항목이다.
+      weight: 600 + (latestDeprecated ? 0 : 50),
+      scored: false,
+      stable: false,
+      note: short, latest, latestDeprecated, direct: true, spec: pkg.spec,
+    };
+  }).sort((a, b) => b.weight - a.weight);
+}
+
 /** 락파일 → OSV → fixes 항목. 네트워크를 탄다. */
 export async function auditDeps(dir, { fetchImpl = fetch } = {}) {
   const pkgs = lockPackages(dir);
