@@ -35,6 +35,7 @@
 | [angular#70690](https://github.com/angular/angular/pull/70690) | 승인 | — |
 | [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 닫힘 | 우리가 접었다 — 중앙 1일인 곳에서 34일째 사람 반응 0. 이 저장소 외부 PR 수락률 18% |
 | [novu#12074](https://github.com/novuhq/novu/pull/12074) | 닫힘 | 우리가 접었다 — 중앙 1일인 곳에서 15일째 사람 리뷰 0(승인은 봇). 슬롯을 회수했다 |
+| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | 닫힘 | 우리가 접었다 — 46일째 사람 리뷰 0(반응은 봇뿐), 09-12 핑에도 무응답. 슬롯을 회수했다 |
 | [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 닫힘 | 우리가 접었다 — 중앙 0.6일인 곳에서 37일째 사람 반응 0(붙은 건 CLA 봇뿐) |
 | [payload#17469](https://github.com/payloadcms/payload/pull/17469) | 닫힘 | 우리가 접었다 — 중앙 4일인 곳에서 14일째 아무 반응이 없었다 |
 | [astro#17665](https://github.com/withastro/astro/pull/17665) | 닫힘 | 우리가 접었다 — 중앙 2일인 곳에서 24일째 사람 반응 0. CI 는 통과 상태였다 |
@@ -50,6 +51,8 @@
 | [immich#30163](https://github.com/immich-app/immich/pull/30163) | 닫힘 | 우리가 접었다 — `changelog:*` 라벨은 메인테이너만 붙일 수 있어 우리 쪽에서 더 할 게 없었다 (게이트 0) |
 | [ghost#30284](https://github.com/TryGhost/Ghost/pull/30284) | 닫힘 | 우리가 접었다 — 중앙 1.8일인 곳에서 15일째 사람 반응 0. 09-01 에 핑도 보냈지만 답이 없었다 |
 | [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 닫힘 | 우리가 접었다 — Danger 가 `ci:*`·`qa:*` 라벨에서 막는데 그 라벨은 메인테이너만 붙일 수 있다 (게이트 0) |
+| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 닫힘 | 우리가 접었다 — 34일째 사람 리뷰 0(반응은 봇뿐), 09-12 핑에도 무응답. 슬롯을 회수했다 |
+| [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 닫힘 | 우리가 접었다 — 12일째 사람 리뷰 0(반응은 봇뿐), 09-12 핑에도 무응답. 슬롯을 회수했다 |
 <!-- /auto:decided -->
 
 **크기는 판별자가 아니다.** budibase 는 +10/−6 으로 닫혔고 medusa 는 +71/−6 으로 승인됐다.
@@ -310,13 +313,10 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 |---|---|---|---|
 | [angular#70690](https://github.com/angular/angular/pull/70690) | 쓰기만 하는 컬렉션 | 🔵 승인 · 머지 대기 | 3일째 / 보통 2일 |
 | [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 20일째 / 보통 1일 · 보류 |
-| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 34일째 / 보통 1일 |
-| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 45일째 / 보통 13일 |
-| [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
 | [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 15일째 / 보통 1일 · 보류 |
 | [astro#17987](https://github.com/withastro/astro/pull/17987) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 1일째 / 보통 1일 |
 
-**열린 것 7건(보류 3건 빼면 4건).** 판정 난 33건 중 머지 14 · 승인 2 · 닫힘 17.
+**열린 것 4건(보류 2건 빼면 2건).** 판정 난 36건 중 머지 14 · 승인 2 · 닫힘 20.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -739,16 +739,16 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | astro | 68% | 1.0일 | 27/40 | **통과** | 열린 PR 있음 — 저장소당 1건 · 사용자에게 보이는 변화면 changeset 필요 — 내부 전용 변경은 changeset 없이 머지된다(#17430 refactor·#16734 chore 가 changeset 0) · AI 정책 없음 · **포크 PR 워크플로가 승인 게이트가 아니다**(2026-09-13 #17987 제출 직후 CI 가 바로 돌았다 — angular·nx 와 다르다) · **`Test (Smoke)` 는 `smoke/docs` 의존성을 pkg.pr.new 커밋 핀에서 받는다** — 그 빌드가 만료되면 `ERR_PNPM_FETCH_404` 로 죽는다(2026-09-13 #17987 에서 밟음). PR 내용과 무관하다 |
 | tailwindcss | 63% | 0.2일 | 38/60 | **통과** | — |
 | eslint | 57% | 2.1일 | 26/46 | 컷 | 판정 경험 있음 · 게이트 0 — AI 보조 PR 은 **선행 이슈**가 있어야 받는다(eslint.org/docs/latest/contribute/ai-policy). PR 템플릿의 AI 체크박스를 정직하게 체크하면 이 정책이 적용된다 |
-| vscode | 54% | 0.2일 | 14/26 | 컷 | 열린 PR 있음 — 저장소당 1건 · CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음 |
+| vscode | 54% | 0.2일 | 14/26 | 컷 | 판정 경험 있음 · CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음 |
 | babel | 53% | 10.0일 | 23/43 | 컷 | 게이트 0 — AI_POLICY.md: LLM 이 쓴 PR 설명 금지(본인이 직접 써야 함), LLM 산문은 앞에 명시 표기. 어기면 조직 차단까지. 설명을 사람이 쓰지 않는 한 내지 않는다 |
 | directus | 52% | 4.0일 | 24/46 | 컷 | 판정 경험 있음 |
 | medusa | 50% | 24.9일 | 14/28 | 컷 | 판정 경험 있음 · 게이트 0 — CONTRIBUTING 'Issues before PRs': 작업 전에 이슈가 먼저 있어야 한다 · PR 대상 브랜치는 main 이 아니라 `develop` · 브랜치 이름 접두사가 PR 라벨을 정한다(CLAUDE.md) · PR 템플릿이 What/Why/How/Testing + 사용 예제를 요구한다 · AI 정책은 없다 |
 | vitest | 46% | 0.5일 | 18/39 | 컷 | 게이트 0 — CONTRIBUTING 'AI Contributions': 실제 사람이 공식 템플릿으로 열고 AI 도구를 밝혀야 함. 사람 개입 없는 PR 은 'maybe automated' 라벨 후 1일 뒤 자동 닫힘, 답글도 LLM 이 쓴 게 아니어야 함 |
-| nx | 46% | 1.1일 | 17/37 | 컷 | 열린 PR 있음 — 저장소당 1건 · 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 · **포크 PR 의 워크플로는 메인테이너 승인이 있어야 돈다**(2026-09-12 확인: 네 워크플로 전부 `action_required`). 빨간불처럼 보여도 우리 코드가 깬 게 아니다 — 재푸시하면 승인만 다시 걸린다 |
+| nx | 46% | 1.1일 | 17/37 | 컷 | 판정 경험 있음 · 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 · **포크 PR 의 워크플로는 메인테이너 승인이 있어야 돈다**(2026-09-12 확인: 네 워크플로 전부 `action_required`). 빨간불처럼 보여도 우리 코드가 깬 게 아니다 — 재푸시하면 승인만 다시 걸린다 |
 | storybook | 45% | 4.6일 | 14/31 | 컷 | 판정 경험 있음 · 게이트 0 — danger 가 `ci:*`·`qa:*` 라벨을 요구하는데 메인테이너만 붙일 수 있다 (#35829 가 25일째 빨간불이라 접었다) · CONTRIBUTING 'Never let an LLM speak for you': 사람 개입 없는 PR 은 3일 뒤 자동 닫힘 |
 | strapi | 42% | 3.9일 | 20/48 | 컷 | 판정 경험 있음 |
 | outline | 38% | 5.9일 | 3/8 | 컷 | 판정 경험 있음 · AI 정책 없음 · 수락률 38%(3/8)·중앙 5.9일 로 로테이션 컷 |
-| typeorm | 36% | 12.8일 | 15/42 | 컷 | 열린 PR 있음 — 저장소당 1건 |
+| typeorm | 36% | 12.8일 | 15/42 | 컷 | 판정 경험 있음 |
 | vite | 32% | 5.5일 | 13/41 | 컷 | 판정 경험 있음 · 게이트 0 — CONTRIBUTING 'AI Policy': 댓글·이슈·PR 설명은 본인 말로 써야 함(LLM 이 대신 말하지 말 것). 어기면 바로 닫을 수 있음 |
 | prettier | 29% | 1.1일 | 7/24 | 컷 | — |
 | typebot.io | 29% | 16.9일 | 5/17 | 컷 | 판정 경험 있음 |
