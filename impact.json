@@ -262,8 +262,10 @@
    "repoLabel": "typeorm · 36.7k★",
    "pr": 12746,
    "createdAt": "2026-07-31T05:18:11Z",
-   "status": "reviewing",
-   "engagedAt": "2026-09-12T10:27:55Z"
+   "status": "closed",
+   "closedAt": "2026-09-15T00:48:32Z",
+   "closedReason": "우리가 접었다 — 46일째 사람 리뷰 0(반응은 봇뿐), 09-12 핑에도 무응답. 슬롯을 회수했다",
+   "closedReasonEn": "we closed it — no human review in 46 days (bots only) and no reply to the 09-12 ping, so we reclaimed the slot"
   },
   {
    "title": "growth stats 집계 3회 직렬",
@@ -367,8 +369,10 @@
    "repoLabel": "nx · 29.3k★",
    "pr": 36633,
    "createdAt": "2026-08-11T13:21:48Z",
-   "status": "reviewing",
-   "engagedAt": "2026-09-12T10:27:53Z"
+   "status": "closed",
+   "closedAt": "2026-09-15T00:48:29Z",
+   "closedReason": "우리가 접었다 — 34일째 사람 리뷰 0(반응은 봇뿐), 09-12 핑에도 무응답. 슬롯을 회수했다",
+   "closedReasonEn": "we closed it — no human review in 34 days (bots only) and no reply to the 09-12 ping, so we reclaimed the slot"
   },
   {
    "title": "페이지 monitor 검증 뒤 중복 조회",
@@ -500,8 +504,11 @@
    "repo": "microsoft/vscode",
    "repoLabel": "vscode · 192.6k★",
    "pr": 334230,
-   "status": "waiting",
-   "createdAt": "2026-09-03T11:03:48Z"
+   "status": "closed",
+   "createdAt": "2026-09-03T11:03:48Z",
+   "closedAt": "2026-09-15T00:47:41Z",
+   "closedReason": "우리가 접었다 — 12일째 사람 리뷰 0(반응은 봇뿐), 09-12 핑에도 무응답. 슬롯을 회수했다",
+   "closedReasonEn": "we closed it — no human review in 12 days (bots only) and no reply to the 09-12 ping, so we reclaimed the slot"
   },
   {
    "title": "no-duplicate-case 이전 case 재스캔",
@@ -540,5 +547,5 @@
    "status": "waiting"
   }
  ],
- "generatedAt": "2026-09-15T00:23:23.877Z"
+ "generatedAt": "2026-09-15T00:49:34.027Z"
 }
