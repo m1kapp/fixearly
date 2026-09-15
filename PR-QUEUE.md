@@ -20,6 +20,7 @@
 | [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 머지 | 사람 리뷰 없이 20.7일 만에 메인테이너가 직접 머지 |
 | [openstatus#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | 머지 | — |
 | [rollup#6482](https://github.com/rollup/rollup/pull/6482) | 머지 | — |
+| [rollup#6506](https://github.com/rollup/rollup/pull/6506) | 머지 | — |
 | [outline#13117](https://github.com/outline/outline/pull/13117) | 머지 | 질문 없이 머지 |
 | [pnpm#14032](https://github.com/pnpm/pnpm/pull/14032) | 머지 | — |
 | [nocodb#14309](https://github.com/nocodb/nocodb/pull/14309) | 머지 | 질문 없이 머지 |
@@ -307,16 +308,15 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [angular#70690](https://github.com/angular/angular/pull/70690) | 쓰기만 하는 컬렉션 | 🔵 승인 · 머지 대기 | 1일째 / 보통 2일 |
-| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 18일째 / 보통 1일 · 보류 |
-| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 32일째 / 보통 1일 · 보류 |
-| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 43일째 / 보통 13일 |
-| [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
-| [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 13일째 / 보통 1일 · 보류 |
-| [rollup#6506](https://github.com/rollup/rollup/pull/6506) | 버려진 Promise | ⚪ 대기 | 7일째 / 보통 6일 |
-| [astro#17987](https://github.com/withastro/astro/pull/17987) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
+| [angular#70690](https://github.com/angular/angular/pull/70690) | 쓰기만 하는 컬렉션 | 🔵 승인 · 머지 대기 | 3일째 / 보통 2일 |
+| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 20일째 / 보통 1일 · 보류 |
+| [nx#36633](https://github.com/nrwl/nx/pull/36633) | 쓰기만 하는 컬렉션 | 🟢 리뷰 진행 | 34일째 / 보통 1일 |
+| [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | O(n²) | 🟢 리뷰 진행 | 45일째 / 보통 13일 |
+| [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
+| [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 보안 점검 | ⚪ 대기 | 15일째 / 보통 1일 · 보류 |
+| [astro#17987](https://github.com/withastro/astro/pull/17987) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 1일째 / 보통 1일 |
 
-**열린 것 8건(보류 4건 빼면 4건).** 판정 난 32건 중 머지 13 · 승인 2 · 닫힘 17.
+**열린 것 7건(보류 3건 빼면 4건).** 판정 난 33건 중 머지 14 · 승인 2 · 닫힘 17.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -730,7 +730,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | angular | 83% | 2.1일 | 34/41 | **통과** | 열린 PR 있음 — 저장소당 1건 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
 | postcss | 81% | 0.2일 | 42/52 | **통과** | — |
 | novu | 77% | 0.1일 | 24/31 | **통과** | 판정 경험 있음 |
-| rollup | 77% | 5.6일 | 10/13 | 통과 · 후순위(느림) | 열린 PR 있음 — 저장소당 1건 · 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요 |
+| rollup | 77% | 5.6일 | 10/13 | 통과 · 후순위(느림) | 판정 경험 있음 · 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요 |
 | pnpm | 76% | 1.5일 | 16/21 | **통과** | 판정 경험 있음 · AI 작성 PR 본문에 agent disclosure 필수 · 전체 저장소 대신 영향 패키지 테스트 실행 |
 | budibase | 74% | 1.3일 | 14/19 | **통과** | 판정 경험 있음 · 게이트 0 — 외부 PR 은 '작성자에게 배정된' 이슈를 참조해야 하는데 배정은 메인테이너만 한다 (#19555 가 이 봇 체크로 당일 닫혔다) |
 | twenty | 73% | 0.1일 | 16/22 | **통과** | 판정 경험 있음 |
