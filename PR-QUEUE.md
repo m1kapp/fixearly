@@ -407,6 +407,20 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 | ~~ghost~~ | `members-stats-service.js:115` | **제출됨 → #29831** |
 | ~~excalidraw~~ | `App.tsx:13467` | **제출됨 → #11805** (축 커버리지 예외) |
 
+### OG 이미지 폰트 3개 순차 로드 — openstatus 후보 (2026-09-27 손검증)
+
+최신 `main` `d37322c7`의 `apps/web/src/app/api/og/route.tsx:13`과
+`apps/web/src/app/api/og/status/route.tsx:52`는 매 요청에서 서로 독립인 폰트
+3개를 `fetch(...).arrayBuffer()`로 차례로 읽는다. 같은 영역의
+`og/external-service/route.tsx`는 이미 `Promise.all`로 폰트를 함께 읽는다.
+두 라우트도 요청 결과는 그대로 두고 대기 시간을 세 요청의 합에서 최댓값으로 줄일 수 있다.
+한 폰트가 실패하면 이미지 응답이 실패하는 계약도 같다(다른 읽기가 이미 시작되는 차이만 있다).
+
+우리의 열린 OpenStatus PR은 0건. 열린 OG 이미지 PR #2398은 `og/page`만 수정해
+두 파일과 겹치지 않는다. **아직 코드 변경·실측·`pnpm verify`는 안 했다.**
+그 세 경계를 통과한 뒤 제출 여부를 정한다. 이 저장소는 `pnpm verify`가 필수이고,
+새 PR은 개인 계정 `irontaek`의 포크에서 낸다.
+
 ### 순차 await 축 — novu 후보 (2026-09-05 손검증)
 
 `run-job.usecase.ts:202` 에서 서로 독립인 await 3개가 줄줄이 걸려 있다. 잡 실행 경로라
