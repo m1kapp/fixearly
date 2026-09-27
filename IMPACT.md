@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 14**
+> **fixearly 임팩트 점수: 16**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -38,7 +38,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `스택 트레이스 절반 유실` | [astro · 62.6k★](https://github.com/withastro/astro) | 전역 정규식 상태 (/g 정규식을 filter 안에서 .test() — lastIndex 가 새어 프레임이 하나 걸러 사라진다) | [#17665](https://github.com/withastro/astro/pull/17665) | ❌ closed | — |
 | `graph 명령 안 미사용 Map` | [nx · 29.3k★](https://github.com/nrwl/nx) | 쓰기만 하는 컬렉션 (선언과 .clear() 만 남았다 — 읽기·쓰기는 #32418 에서 사라졌다) | [#36633](https://github.com/nrwl/nx/pull/36633) | ❌ closed | — |
 | `페이지 monitor 검증 뒤 중복 조회` | [openstatus · 9.1k★](https://github.com/openstatusHQ/openstatus) | N+1 (페이지 생성·수정에서 일괄 검증한 monitor를 루프마다 재조회 — Map 재사용) | [#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | ✅ merged | +1 |
-| `Hono 보안 패치 · 의존성 점검` | [openstatus · 9.1k★](https://github.com/openstatusHQ/openstatus) | 보안 점검 (취약 Hono 직접·전이 의존성 업데이트) | [#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | ⚪ awaiting review | — |
+| `Hono 보안 패치 · 의존성 점검` | [openstatus · 9.1k★](https://github.com/openstatusHQ/openstatus) | 보안 점검 (취약 Hono 직접·전이 의존성 업데이트) | [#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | ❌ closed | — |
 | `청크 렌더 안 미사용 Map` | [rollup · 26.3k★](https://github.com/rollup/rollup) | 쓰기만 하는 컬렉션 (비어 있지 않은 렌더 모듈마다 .set(), 읽기 없음 — 삭제) | [#6482](https://github.com/rollup/rollup/pull/6482) | ✅ merged | +1 |
 | `watch 재실행 결과를 안 기다림` | [rollup · 26.3k★](https://github.com/rollup/rollup) | 버려진 Promise (재실행을 await 하지 않아 리스너 실패가 catch 를 지나쳐 ERROR·END 이벤트가 사라진다) | [#6506](https://github.com/rollup/rollup/pull/6506) | ✅ merged | +1 |
 | `의존성 분할 안 미사용 Set` | [pnpm · 36.5k★](https://github.com/pnpm/pnpm) | 쓰기만 하는 컬렉션 (함수 호출마다 Set 생성, 링크 의존성마다 .add(), 읽기 없음 — 삭제) | [#14032](https://github.com/pnpm/pnpm/pull/14032) | ✅ merged | +1 |
@@ -47,8 +47,8 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `post relation 연결 반복 조회` | [ghost · 55.3k★](https://github.com/TryGhost/Ghost) | O(n²) (relation마다 전체 posts.find → id Map으로 O(1), 100건에서 id 조회 5,050→100) | [#30284](https://github.com/TryGhost/Ghost/pull/30284) | ❌ closed | — |
 | `툴 피커 안 미사용 Map` | [vscode · 192.6k★](https://github.com/microsoft/vscode) | 쓰기만 하는 컬렉션 (MCP 툴마다 .set(), 읽기 없음 — #249448 이후 15개월째 · 삭제) | [#334230](https://github.com/microsoft/vscode/pull/334230) | ❌ closed | — |
 | `no-duplicate-case 이전 case 재스캔` | [eslint · 27.5k★](https://github.com/eslint/eslint) | O(n²) (case 마다 이전 case 전량 비교, 비교마다 토큰 전수 — 토큰 키 Set 으로 O(n)) | [#21317](https://github.com/eslint/eslint/pull/21317) | ❌ closed | — |
-| `템플릿 파이프라인의 쓰기만 하는 컬렉션` | [angular · 101k★](https://github.com/angular/angular) | 쓰기만 하는 컬렉션 (allocateSlots 의 slotMap, generateTemporaries 의 released — 채우기만 하고 읽지 않음, slotMap 은 주석이 '다음 순회에서 쓴다'고 잘못 설명) | [#70690](https://github.com/angular/angular/pull/70690) | 🔵 approved · 머지 대기 | — |
-| `빌드에서 쓰기만 하는 페이지 입력 집합` | [astro · 62.6k★](https://github.com/withastro/astro) | 쓰기만 하는 컬렉션 (viteBuild 가 pageInput 을 채우기만 하고 읽지 않는다 — 소비자 ssrBuild 인자가 #14306 Environment API 에서 사라졌다) | [#17987](https://github.com/withastro/astro/pull/17987) | ⚪ awaiting review | — |
+| `템플릿 파이프라인의 쓰기만 하는 컬렉션` | [angular · 101k★](https://github.com/angular/angular) | 쓰기만 하는 컬렉션 (allocateSlots 의 slotMap, generateTemporaries 의 released — 채우기만 하고 읽지 않음, slotMap 은 주석이 '다음 순회에서 쓴다'고 잘못 설명) | [#70690](https://github.com/angular/angular/pull/70690) | ✅ merged | +1 |
+| `빌드에서 쓰기만 하는 페이지 입력 집합` | [astro · 62.6k★](https://github.com/withastro/astro) | 쓰기만 하는 컬렉션 (viteBuild 가 pageInput 을 채우기만 하고 읽지 않는다 — 소비자 ssrBuild 인자가 #14306 Environment API 에서 사라졌다) | [#17987](https://github.com/withastro/astro/pull/17987) | ✅ merged | +1 |
 
 ## 규칙
 

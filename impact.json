@@ -114,10 +114,10 @@
    "outcomeNote": "질문 없이 머지",
    "outcomeNoteEn": "merged with no questions",
    "release": {
-    "channel": "nightly",
-    "version": "nightly",
-    "releasedAt": "2026-08-01T15:14:24Z",
-    "url": "https://github.com/outline/outline/actions/runs/30705244467"
+    "channel": "stable",
+    "version": "v1.10.0",
+    "releasedAt": "2026-09-02T00:05:15Z",
+    "url": "https://github.com/outline/outline/releases/tag/v1.10.0"
    }
   },
   {
@@ -399,8 +399,11 @@
    "repoLabel": "openstatus · 9.1k★",
    "pr": 2620,
    "createdAt": "2026-08-30T09:24:27Z",
-   "status": "waiting",
-   "contributionKind": "security"
+   "status": "closed",
+   "contributionKind": "security",
+   "closedAt": "2026-09-27T04:10:09Z",
+   "closedReason": "상위 #2751 의존성 업데이트로 Hono 4.13.8·node-server 2.1.1이 반영돼 보안 목표가 충족됐다. 이 PR은 미병합",
+   "closedReasonEn": "upstream #2751 updated Hono to 4.13.8 and node-server to 2.1.1, covering the security goal; this PR was not merged"
   },
   {
    "title": "청크 렌더 안 미사용 Map",
@@ -531,10 +534,14 @@
    "repoLabel": "angular · 101k★",
    "pr": 70690,
    "createdAt": "2026-09-11T13:27:18Z",
-   "status": "approved",
-   "approvedBy": [
-    "JeanMeche"
-   ]
+   "status": "merged",
+   "mergedAt": "2026-09-16T13:39:03Z",
+   "release": {
+    "channel": "stable",
+    "version": "v22.2.0",
+    "releasedAt": "2026-09-23T17:53:03Z",
+    "url": "https://github.com/angular/angular/releases/tag/v22.2.0"
+   }
   },
   {
    "title": "빌드에서 쓰기만 하는 페이지 입력 집합",
@@ -544,8 +551,15 @@
    "repoLabel": "astro · 62.6k★",
    "pr": 17987,
    "createdAt": "2026-09-13T04:00:19Z",
-   "status": "waiting"
+   "status": "merged",
+   "mergedAt": "2026-09-17T12:23:24Z",
+   "release": {
+    "channel": "stable",
+    "version": "astro@7.3.4",
+    "releasedAt": "2026-09-22T18:55:08Z",
+    "url": "https://github.com/withastro/astro/releases/tag/astro%407.3.4"
+   }
   }
  ],
- "generatedAt": "2026-09-15T00:49:34.027Z"
+ "generatedAt": "2026-09-27T04:12:03.264Z"
 }
