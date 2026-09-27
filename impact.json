@@ -637,7 +637,17 @@
    "pr": 6534,
    "createdAt": "2026-09-27T11:08:27Z",
    "status": "waiting"
+  },
+  {
+   "title": "알림 목록의 모니터 관계 반복 검색",
+   "titleEn": "repeated notification monitor association scans",
+   "type": "O(n²) 배열 조회 (알림마다 전체 모니터 관계 재검색 → Map 그룹화)",
+   "repo": "openstatusHQ/openstatus",
+   "repoLabel": "openstatus · 9.1k★",
+   "pr": 2780,
+   "createdAt": "2026-09-27T11:27:24Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-09-27T11:10:10.497Z"
+ "generatedAt": "2026-09-27T11:28:45.613Z"
 }
