@@ -506,7 +506,7 @@
    "titleEn": "unused MCP server map in the tools picker",
    "type": "쓰기만 하는 컬렉션 (MCP 툴마다 .set(), 읽기 없음 — #249448 이후 15개월째 · 삭제)",
    "repo": "microsoft/vscode",
-   "repoLabel": "vscode · 193.1k★",
+   "repoLabel": "vscode · 193.2k★",
    "pr": 334230,
    "status": "closed",
    "createdAt": "2026-09-03T11:03:48Z",
@@ -617,7 +617,17 @@
    "pr": 18149,
    "createdAt": "2026-09-27T10:21:18Z",
    "status": "waiting"
+  },
+  {
+   "title": "Vite 입력 CSS 의존성 기록 경합",
+   "titleEn": "Vite input stylesheet dependency race",
+   "type": "버려진 Promise (입력 CSS 파일 시각 기록을 기다리지 않아 재빌드 누락)",
+   "repo": "tailwindlabs/tailwindcss",
+   "repoLabel": "tailwindcss · 97.7k★",
+   "pr": 20525,
+   "createdAt": "2026-09-27T10:48:19Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-09-27T10:22:39.794Z"
+ "generatedAt": "2026-09-27T10:50:47.563Z"
 }

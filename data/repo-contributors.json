@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-27T08:33:38+00:00",
+  "generatedAt": "2026-09-27T10:49:55+00:00",
   "method": "GitHub REST contributors?per_page=1&anon=true; last-page count; commit authors, not unique humans",
   "repos": {
     "Automattic/mongoose": 1080,
@@ -10,7 +10,7 @@
     "calcom/cal.diy": 981,
     "directus/directus": 584,
     "eslint/eslint": 1250,
-    "excalidraw/excalidraw": 374,
+    "excalidraw/excalidraw": 375,
     "facebook/react": 2018,
     "immich-app/immich": 1009,
     "langfuse/langfuse": 214,
@@ -23,10 +23,11 @@
     "openstatusHQ/openstatus": 121,
     "outline/outline": 263,
     "payloadcms/payload": 577,
-    "pnpm/pnpm": 674,
+    "pnpm/pnpm": 678,
     "rollup/rollup": 469,
     "storybookjs/storybook": 2739,
     "strapi/strapi": 1395,
+    "tailwindlabs/tailwindcss": 376,
     "twentyhq/twenty": 758,
     "typeorm/typeorm": 1258,
     "vitejs/vite": 1351,

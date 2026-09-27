@@ -45,7 +45,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `bulkSave 오류 문서 반복 매칭` | [mongoose · 27.5k★](https://github.com/Automattic/mongoose) | O(n²) 배열 조회 (문서마다 writeErrors.find 전체 스캔 → 실패 id Set으로 O(1)) | [#16474](https://github.com/Automattic/mongoose/pull/16474) | ✅ merged | +1 |
 | `credential 삭제 완료 전 명령 종료` | [n8n · 206.1k★](https://github.com/n8n-io/n8n) | 버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all) | [#37047](https://github.com/n8n-io/n8n/pull/37047) | 🔵 approved · 머지 대기 | — |
 | `post relation 연결 반복 조회` | [ghost · 55.4k★](https://github.com/TryGhost/Ghost) | O(n²) (relation마다 전체 posts.find → id Map으로 O(1), 100건에서 id 조회 5,050→100) | [#30284](https://github.com/TryGhost/Ghost/pull/30284) | ❌ closed | — |
-| `툴 피커 안 미사용 Map` | [vscode · 193.1k★](https://github.com/microsoft/vscode) | 쓰기만 하는 컬렉션 (MCP 툴마다 .set(), 읽기 없음 — #249448 이후 15개월째 · 삭제) | [#334230](https://github.com/microsoft/vscode/pull/334230) | ❌ closed | — |
+| `툴 피커 안 미사용 Map` | [vscode · 193.2k★](https://github.com/microsoft/vscode) | 쓰기만 하는 컬렉션 (MCP 툴마다 .set(), 읽기 없음 — #249448 이후 15개월째 · 삭제) | [#334230](https://github.com/microsoft/vscode/pull/334230) | ❌ closed | — |
 | `no-duplicate-case 이전 case 재스캔` | [eslint · 27.5k★](https://github.com/eslint/eslint) | O(n²) (case 마다 이전 case 전량 비교, 비교마다 토큰 전수 — 토큰 키 Set 으로 O(n)) | [#21317](https://github.com/eslint/eslint/pull/21317) | ❌ closed | — |
 | `템플릿 파이프라인의 쓰기만 하는 컬렉션` | [angular · 101k★](https://github.com/angular/angular) | 쓰기만 하는 컬렉션 (allocateSlots 의 slotMap, generateTemporaries 의 released — 채우기만 하고 읽지 않음, slotMap 은 주석이 '다음 순회에서 쓴다'고 잘못 설명) | [#70690](https://github.com/angular/angular/pull/70690) | ✅ merged | +1 |
 | `빌드에서 쓰기만 하는 페이지 입력 집합` | [astro · 62.9k★](https://github.com/withastro/astro) | 쓰기만 하는 컬렉션 (viteBuild 가 pageInput 을 채우기만 하고 읽지 않는다 — 소비자 ssrBuild 인자가 #14306 Environment API 에서 사라졌다) | [#17987](https://github.com/withastro/astro/pull/17987) | ✅ merged | +1 |
@@ -54,6 +54,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `React 컴파일러 패스의 쓰기만 하는 컬렉션` | [react · 250.8k★](https://github.com/facebook/react) | 쓰기만 하는 컬렉션 (propagateNonNull 의 terminalPreds Set · alignReactiveScopesToBlockScopesHIR 의 placeScopes Map — 기록만 하고 읽지 않음) | [#37699](https://github.com/react/react/pull/37699) | ⚪ awaiting review | — |
 | `댓글 신고 이메일의 조회 3회 직렬` | [ghost · 55.4k★](https://github.com/TryGhost/Ghost) | 독립 순차 await (신고 API 가 기다리는 post·member·owner 조회 3개를 병렬 시작) | [#31019](https://github.com/TryGhost/Ghost/pull/31019) | ⚪ awaiting review | — |
 | `sitemap 청크 URL 분류 O(n²)` | [astro · 62.9k★](https://github.com/withastro/astro) | O(n²) (청크별 배열 복사와 URL 포함 검사 → Set) | [#18149](https://github.com/withastro/astro/pull/18149) | ⚪ awaiting review | — |
+| `Vite 입력 CSS 의존성 기록 경합` | [tailwindcss · 97.7k★](https://github.com/tailwindlabs/tailwindcss) | 버려진 Promise (입력 CSS 파일 시각 기록을 기다리지 않아 재빌드 누락) | [#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | ⚪ awaiting review | — |
 
 ## 규칙
 
