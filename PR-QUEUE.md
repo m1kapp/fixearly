@@ -319,11 +319,12 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 32일째 / 보통 1일 · 보류 |
 | [ghost#31019](https://github.com/TryGhost/Ghost/pull/31019) | 순차 I/O | ⚪ 대기 | 오늘 / 보통 1일 |
 | [react#37699](https://github.com/facebook/react/pull/37699) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
+| [openstatus#2780](https://github.com/openstatusHQ/openstatus/pull/2780) | O(n²) | ⚪ 대기 | 오늘 / 보통 1일 |
 | [rollup#6534](https://github.com/rollup/rollup/pull/6534) | O(n²) | ⚪ 대기 | 오늘 / 보통 6일 |
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 오늘 / 보통 1일 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 오늘 / 보통 1일 |
 
-**열린 것 7건(보류 1건 빼면 6건).** 판정 난 40건 중 머지 16 · 승인 2 · 닫힘 22.
+**열린 것 8건(보류 1건 빼면 7건).** 판정 난 40건 중 머지 16 · 승인 2 · 닫힘 22.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -747,7 +748,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 <!-- auto:rotation — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | 저장소 | 수락률 | 중앙 | 외부 머지 | 판정 | 메모 |
 |---|---|---|---|---|---|
-| openstatus | 100% | 1.0일 | 28/28 | **통과** | 판정 경험 있음 |
+| openstatus | 100% | 1.0일 | 28/28 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | n8n | 100% | 1.1일 | 21/21 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | langfuse | 87% | 0.0일 | 13/15 | **통과** | 판정 경험 있음 |
 | Ghost | 86% | 0.6일 | 37/43 | **통과** | 열린 PR 있음 — 저장소당 1건 |
