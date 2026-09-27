@@ -49,6 +49,9 @@ _av = f"{ROOT}/data/repo-avatars.json"
 AVATAR = json.load(open(_av, encoding="utf-8")) if os.path.exists(_av) else {}
 _mt = f"{ROOT}/data/repo-merge-times.json"
 MERGE_TIMES = json.load(open(_mt, encoding="utf-8")).get("repos", {}) if os.path.exists(_mt) else {}
+_contributors = json.load(open(f"{ROOT}/data/repo-contributors.json", encoding="utf-8"))
+CONTRIBUTORS = _contributors["repos"]
+CONTRIBUTORS_ASOF = _contributors["generatedAt"][:10]
 md = open(f"{ROOT}/IMPACT.md", encoding="utf-8").read()
 
 STAGE = [
@@ -94,10 +97,11 @@ def stall_after(f):
 def stage_age_days(f, key, reference=None):
     """현재 단계에서 멈춘 기간.
 
-    대기는 PR 생성부터 재지만, 리뷰 중은 마지막 사람 개입부터 잰다. 오래 대기한 PR에
+    대기는 PR 생성부터 재지만, 리뷰 중과 승인은 마지막 사람 개입부터 잰다. 오래 대기한 PR에
     오늘 maintainer가 붙었는데 곧바로 보류로 접히면 현재 상태를 거꾸로 보여준다.
     """
-    since = f.get("engagedAt") if key == "reviewing" else f.get("createdAt")
+    since = (f.get("engagedAt") if key == "reviewing" else
+             f.get("approvedAt") if key == "approved" else f.get("createdAt"))
     if not since:
         return None
     start = parse_time(since)
@@ -160,6 +164,7 @@ if "--selftest" in sys.argv:
     snapshot = parse_time("2026-09-01T00:00:00Z")
     assert stage_age_days(reviewing_pr, "reviewing", snapshot) == 4
     assert stage_age_days(reviewing_pr, "waiting", snapshot) == 21
+    assert stage_age_days({"approvedAt": "2026-08-28T00:00:00Z"}, "approved", snapshot) == 4
     print("impact 카드 경과일이 상태 스냅샷 시각에 고정된다 · 리뷰 시계는 사람 개입부터 센다")
     sys.exit(0)
 
@@ -208,8 +213,11 @@ def delivery_timeline(f, key, pr_url, age_html):
     created_month = month(created)
     pr_link = f'href="{pr_url}" target="_blank" rel="noopener"'
     if key != "merged":
+        approved_delayed = (key == "approved" and f.get("approvedAt") and
+                            stall_after(f) is not None and
+                            stage_age_days(f, key) >= stall_after(f))
         pending_ko = {
-            "approved": "승인 · 머지 대기",
+            "approved": "승인 후 장기 대기" if approved_delayed else "진행 중 · 승인 · 머지 대기",
             "changes": "변경 요청 대응 중",
             "reviewing": "리뷰 진행 중",
             "waiting": "아직 아무도 안 봄",
@@ -217,7 +225,7 @@ def delivery_timeline(f, key, pr_url, age_html):
             "draft": "초안",
         }.get(key, "아직")
         pending_en = {
-            "approved": "approved · awaiting merge",
+            "approved": "approved · long wait" if approved_delayed else "in progress · approved · awaiting merge",
             "changes": "changes requested",
             "reviewing": "in review",
             "waiting": "not reviewed yet",
@@ -271,6 +279,7 @@ def delivery_timeline(f, key, pr_url, age_html):
 # 무엇을 하는 물건인지만 남긴다. 새 저장소는 여기 없으면 빈칸으로 나가고,
 # --check 가 잡는다.
 BLURB = {
+    "facebook/react": ("UI 라이브러리 · 컴파일러", "UI library and compiler"),
     "eslint/eslint": ("자바스크립트 린터", "JavaScript linter"),
     "angular/angular": ("웹 프레임워크", "web framework"),
     "outline/outline": ("팀 위키·문서", "team knowledge base"),
@@ -302,7 +311,7 @@ BLURB = {
 }
 
 
-def card(f, key):
+def card(f, key, rank=None):
     ko, en, at, ended = META[key]
     url = f"https://github.com/{f['repo']}/pull/{f['pr']}"
     name, stars = split_label(f["repoLabel"])
@@ -316,6 +325,7 @@ def card(f, key):
            + (" off" if ended or key == "stalled" else "")
            + (" closed" if ended else "")
            + (" stalled" if key == "stalled" else ""))
+    rank_attr = f' data-rank="{rank:02d}"' if rank is not None else ""
     age_ko, age_en, on, age_days = elapsed(f, key)
     on_html = f'<span class="on">{on}</span>' if on else ""
     # 경과는 생성 시점의 값이라 그대로 두면 시간이 지날수록 거짓말이 된다 —
@@ -378,8 +388,9 @@ def card(f, key):
     title_html = (f'<span class="ko">{esc(f["title"])}</span>'
                   f'<span class="en">{esc(ten)}</span>') if ten else esc(f["title"])
     bk, be = BLURB.get(f["repo"], ("", ""))
-    what = (f'<span class="iw"><span class="ko">{esc(bk)}</span>'
-            f'<span class="en">{esc(be)}</span></span>') if bk else ""
+    contributors = f'{CONTRIBUTORS[f["repo"]]:,}'
+    what = (f'<span class="iw"><span class="ko">{esc(bk)} · 기여자 약 {contributors}명</span>'
+            f'<span class="en">{esc(be)} · ~{contributors} contributors</span></span>')
     # 닫힌 카드는 사유를 그대로 싣는다. "닫힌 것도 같이 둔다"고만 적고 이유를 감추면
     # 남겨둔 의미가 없다 — 거절 사유가 이 목록에서 제일 정보량이 큰 줄이다.
     rk, re_ = f.get("closedReason", ""), f.get("closedReasonEn", "")
@@ -400,10 +411,10 @@ def card(f, key):
         f'{status}'
     )
     if shipped:
-        return (f'<article class="{cls}">'
+        return (f'<article class="{cls}"{rank_attr}>'
                 f'<a class="icmain" href="{url}" target="_blank" rel="noopener">{core}</a>'
                 f'{shipped}</article>')
-    return (f'<a class="{cls}" href="{url}" target="_blank" rel="noopener">'
+    return (f'<a class="{cls}"{rank_attr} href="{url}" target="_blank" rel="noopener">'
             f'{core}{why}</a>')
 
 
@@ -416,7 +427,13 @@ for f in findings:
             key = "stalled"
     grouped[key].append(f)
 
-rows = "\n      ".join(card(f, k) for k in ORDER for f in grouped[k])
+entries = sorted(((f, k) for k in ORDER for f in grouped[k]),
+                 key=lambda item: (0 if item[1] == "closed" else 1 if item[1] == "merged"
+                                   else 3 if item[1] == "approved" else 2,
+                                   item[0].get("createdAt", ""), item[0]["pr"]), reverse=True)
+merged_oldest_first = sorted(grouped["merged"], key=lambda f: (f.get("createdAt", ""), f["pr"]))
+rank_by_pr = {f["pr"]: rank for rank, f in enumerate(merged_oldest_first, 1)}
+rows = "\n      ".join(card(f, k, rank_by_pr.get(f["pr"])) for f, k in entries)
 
 # 머지된 저장소는 히어로에서 로고만 먼저 보여준다. 유명 로고를 장식처럼 빌려온 게
 # 아니라 실제 PR이 들어간 곳이라는 뜻이므로, 각 로고는 해당 머지 PR 자체로 연결한다.
@@ -445,6 +462,12 @@ for f in merged_contrib:
     )
 
 h = open(f"{ROOT}/index.html", encoding="utf-8").read()
+h = re.sub(r'(<time class="contrib-asof" datetime=")[^"]+(">)[^<]+(</time>)',
+           lambda m: f'{m.group(1)}{CONTRIBUTORS_ASOF}{m.group(2)}{CONTRIBUTORS_ASOF}{m.group(3)}', h)
+for marker, count in (("impact-repos", len({f["repo"] for f in grouped["merged"]})),
+                      ("impact-merged", len(grouped["merged"]))):
+    h, changed = re.subn(rf'(<b id="{marker}">)\d+(</b>)', rf'\g<1>{count}\g<2>', h, count=1)
+    assert changed == 1, marker
 m = re.search(r'(<div class="iwrap[^"]*">)(.*?)(\n    </div>)', h, re.S)
 assert m
 h = h[: m.start(2)] + "\n      " + rows + h[m.end(2):]
@@ -516,17 +539,20 @@ for t in notranslated:
 repos = {f["repo"] for f in findings}
 missing = sorted(repos - set(BLURB))
 noicon = sorted(repos - set(AVATAR))
+nocount = sorted(repos - set(CONTRIBUTORS))
 for r in missing:
     print(f"  ✗ BLURB 없음: {r}")
 for r in noicon:
     print(f"  ✗ 아이콘 없음(python3 tools/fetch-repo-avatars.py): {r}")
+for r in nocount:
+    print(f"  ✗ 기여자 수 없음(npm run contributors): {r}")
 # 닫힌 건 사유가 없으면 카드가 조용히 "닫힘"만 남는다 — 그게 제일 읽히는 줄인데.
 noreason = sorted(f"#{f['pr']}" for f in findings
                   if state_by_pr.get(str(f["pr"])) == "closed"
                   and not (f.get("closedReason") and f.get("closedReasonEn")))
 for r in noreason:
     print(f"  ✗ 닫힌 사유 없음(impact.json 의 closedReason/closedReasonEn): {r}")
-missing = missing + noicon + notranslated + noreason
+missing = missing + noicon + nocount + notranslated + noreason
 missing_release = sorted(f"#{f['pr']}" for f in findings
                          if state_by_pr.get(str(f["pr"])) == "merged"
                          and not (f.get("release", {}).get("channel") in ("stable", "nightly")
