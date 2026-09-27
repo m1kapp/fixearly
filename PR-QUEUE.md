@@ -395,7 +395,7 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 | ~~angular~~ | `slot_allocation.ts:25` · `temporary_variables.ts:57` | **머지됨 → #70690** |
 | ~~angular~~ | `migration.ts:261` | **[제출됨 → #70977](https://github.com/angular/angular/pull/70977)** · 2026-09-27 `main` `319a3c4`에서 `skippedInputs` 읽기 0 확인 · 마이그레이션 Bazel 테스트·Prettier 통과 · #70690 머지로 저장소당 1건 제한 해소 |
 | react | `renderer.js:817` | 읽는 코드가 `/* DISABLED: …/pull/28417 */` 주석 안에 있다 |
-| react | `CollectHoistablePropertyLoads.ts:499` · `AlignReactiveScopesToBlockScopesHIR.ts:78` | 컴파일러 패스 2건 |
+| react | `CollectHoistablePropertyLoads.ts:499` · `AlignReactiveScopesToBlockScopesHIR.ts:78` | **제출 준비** · 최신 `main` `d083ec1`에서 읽기 0 확인 · 미사용 Set·Map 및 기록 9줄 제거 · 컴파일러 스냅샷 1,827/1,827 통과(색상 변수 해제) · 원격 미제출 |
 | ~~vscode~~ | `chatToolPicker.ts:261` | **제출됨 → #334230** |
 | ~~next.js~~ | `export/index.ts:292` · `:316` | **탈락** — 진짜 dead state지만 현재 기여 가이드가 사소한 정리 PR을 명시적으로 거른다 |
 | ~~astro~~ | `core/build/static-build.ts:91` | **제출됨 → #17987** · 보류 사유(T1 버그 선행)는 그 건(#17665)이 회수되며 해소됐다 |
@@ -753,7 +753,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | prettier | 29% | 1.1일 | 7/24 | 컷 | — |
 | typebot.io | 29% | 16.9일 | 5/17 | 컷 | 판정 경험 있음 |
 | immich | 26% | 0.5일 | 6/23 | 컷 | 판정 경험 있음 · 게이트 0 — `changelog:*` 라벨이 메인테이너 전용 |
-| react | 26% | 0.9일 | 9/35 | 컷 | 후보가 `/* DISABLED */` 주석 건이라 PR 보다 이슈가 맞다 |
+| react | 26% | 0.9일 | 9/35 | 조건부 | `renderer.js` 후보는 `/* DISABLED */` 주석 안이라 컷 · 컴파일러의 별도 후보 2건은 최신 코드와 1,827개 스냅샷으로 검증 |
 | next.js | 22% | 16.1일 | 9/41 | 컷 | 커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시 · PR 템플릿: 외부 기여자 PR 설명은 사람이 직접 써야 함 |
 | webpack | 20% | 0.6일 | 1/5 | 컷 | 게이트 0 — AGENTS.md 가 PR 본문 양식(Use of AI 섹션 필수, governance AI_POLICY: human-in-the-loop·질문에 답할 수 있어야 함)과 Co-authored-by 금지, 커밋 author 는 사람만을 REQUIRED 로 둔다 |
 | cal.diy | 17% | 3.1일 | 10/60 | 컷 | 판정 경험 있음 · 게이트 0 — 외부 PR 에서 `required` 잡이 항상 실패 |
