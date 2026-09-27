@@ -570,7 +570,17 @@
    "pr": 70977,
    "createdAt": "2026-09-27T06:02:06Z",
    "status": "waiting"
+  },
+  {
+   "title": "React 컴파일러 패스의 쓰기만 하는 컬렉션",
+   "titleEn": "write-only collections in React Compiler passes",
+   "type": "쓰기만 하는 컬렉션 (propagateNonNull 의 terminalPreds Set · alignReactiveScopesToBlockScopesHIR 의 placeScopes Map — 기록만 하고 읽지 않음)",
+   "repo": "facebook/react",
+   "repoLabel": "react · 250.8k★",
+   "pr": 37698,
+   "createdAt": "2026-09-27T06:18:39Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-09-27T06:04:08.375Z"
+ "generatedAt": "2026-09-27T06:20:31.173Z"
 }
