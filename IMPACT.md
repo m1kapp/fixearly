@@ -50,7 +50,8 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `템플릿 파이프라인의 쓰기만 하는 컬렉션` | [angular · 101k★](https://github.com/angular/angular) | 쓰기만 하는 컬렉션 (allocateSlots 의 slotMap, generateTemporaries 의 released — 채우기만 하고 읽지 않음, slotMap 은 주석이 '다음 순회에서 쓴다'고 잘못 설명) | [#70690](https://github.com/angular/angular/pull/70690) | ✅ merged | +1 |
 | `빌드에서 쓰기만 하는 페이지 입력 집합` | [astro · 62.8k★](https://github.com/withastro/astro) | 쓰기만 하는 컬렉션 (viteBuild 가 pageInput 을 채우기만 하고 읽지 않는다 — 소비자 ssrBuild 인자가 #14306 Environment API 에서 사라졌다) | [#17987](https://github.com/withastro/astro/pull/17987) | ✅ merged | +1 |
 | `signal 입력 마이그레이션의 쓰기만 하는 Set` | [angular · 101k★](https://github.com/angular/angular) | 쓰기만 하는 컬렉션 (filterInputsViaConfig 의 skippedInputs 는 추가만 하고 읽지 않음 — 기존 markFieldIncompatible 는 그대로 유지) | [#70977](https://github.com/angular/angular/pull/70977) | ⚪ awaiting review | — |
-| `React 컴파일러 패스의 쓰기만 하는 컬렉션` | [react · 250.8k★](https://github.com/facebook/react) | 쓰기만 하는 컬렉션 (propagateNonNull 의 terminalPreds Set · alignReactiveScopesToBlockScopesHIR 의 placeScopes Map — 기록만 하고 읽지 않음) | [#37698](https://github.com/react/react/pull/37698) | ⚪ awaiting review | — |
+| `React 컴파일러 패스의 쓰기만 하는 컬렉션` | [react · 250.8k★](https://github.com/facebook/react) | 쓰기만 하는 컬렉션 (propagateNonNull 의 terminalPreds Set · alignReactiveScopesToBlockScopesHIR 의 placeScopes Map — 기록만 하고 읽지 않음) | [#37698](https://github.com/react/react/pull/37698) | ❌ closed | — |
+| `React 컴파일러 패스의 쓰기만 하는 컬렉션` | [react · 250.8k★](https://github.com/facebook/react) | 쓰기만 하는 컬렉션 (propagateNonNull 의 terminalPreds Set · alignReactiveScopesToBlockScopesHIR 의 placeScopes Map — 기록만 하고 읽지 않음) | [#37699](https://github.com/react/react/pull/37699) | ⚪ awaiting review | — |
 
 ## 규칙
 

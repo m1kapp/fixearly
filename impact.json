@@ -579,8 +579,21 @@
    "repoLabel": "react · 250.8k★",
    "pr": 37698,
    "createdAt": "2026-09-27T06:18:39Z",
+   "status": "closed",
+   "closedAt": "2026-09-27T06:31:05Z",
+   "closedReason": "잘못된 GitHub 계정(yoominho91)으로 제출해 닫고 irontaek의 #37699로 교체했다",
+   "closedReasonEn": "closed after submission from the wrong GitHub account (yoominho91); replaced by irontaek's #37699"
+  },
+  {
+   "title": "React 컴파일러 패스의 쓰기만 하는 컬렉션",
+   "titleEn": "write-only collections in React Compiler passes",
+   "type": "쓰기만 하는 컬렉션 (propagateNonNull 의 terminalPreds Set · alignReactiveScopesToBlockScopesHIR 의 placeScopes Map — 기록만 하고 읽지 않음)",
+   "repo": "facebook/react",
+   "repoLabel": "react · 250.8k★",
+   "pr": 37699,
+   "createdAt": "2026-09-27T06:31:18Z",
    "status": "waiting"
   }
  ],
- "generatedAt": "2026-09-27T06:20:31.173Z"
+ "generatedAt": "2026-09-27T06:33:09.262Z"
 }

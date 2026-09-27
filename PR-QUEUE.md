@@ -54,6 +54,7 @@
 | [ghost#30284](https://github.com/TryGhost/Ghost/pull/30284) | 닫힘 | 우리가 접었다 — 중앙 1.8일인 곳에서 15일째 사람 반응 0. 09-01 에 핑도 보냈지만 답이 없었다 |
 | [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 닫힘 | 우리가 접었다 — Danger 가 `ci:*`·`qa:*` 라벨에서 막는데 그 라벨은 메인테이너만 붙일 수 있다 (게이트 0) |
 | [nx#36633](https://github.com/nrwl/nx/pull/36633) | 닫힘 | 우리가 접었다 — 34일째 사람 리뷰 0(반응은 봇뿐), 09-12 핑에도 무응답. 슬롯을 회수했다 |
+| [react#37698](https://github.com/facebook/react/pull/37698) | 닫힘 | 잘못된 GitHub 계정(yoominho91)으로 제출해 닫고 irontaek의 #37699로 교체했다 |
 | [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 닫힘 | 우리가 접었다 — 12일째 사람 리뷰 0(반응은 봇뿐), 09-12 핑에도 무응답. 슬롯을 회수했다 |
 <!-- /auto:decided -->
 
@@ -315,9 +316,9 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 |---|---|---|---|
 | [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 32일째 / 보통 1일 · 보류 |
 | [angular#70977](https://github.com/angular/angular/pull/70977) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 2일 |
-| [react#37698](https://github.com/facebook/react/pull/37698) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
+| [react#37699](https://github.com/facebook/react/pull/37699) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
 
-**열린 것 3건(보류 1건 빼면 2건).** 판정 난 38건 중 머지 16 · 승인 1 · 닫힘 21.
+**열린 것 3건(보류 1건 빼면 2건).** 판정 난 39건 중 머지 16 · 승인 1 · 닫힘 22.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -396,7 +397,7 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 | ~~angular~~ | `slot_allocation.ts:25` · `temporary_variables.ts:57` | **머지됨 → #70690** |
 | ~~angular~~ | `migration.ts:261` | **[제출됨 → #70977](https://github.com/angular/angular/pull/70977)** · 2026-09-27 `main` `319a3c4`에서 `skippedInputs` 읽기 0 확인 · 마이그레이션 Bazel 테스트·Prettier 통과 · #70690 머지로 저장소당 1건 제한 해소 |
 | react | `renderer.js:817` | 읽는 코드가 `/* DISABLED: …/pull/28417 */` 주석 안에 있다 |
-| ~~react~~ | `CollectHoistablePropertyLoads.ts:499` · `AlignReactiveScopesToBlockScopesHIR.ts:78` | **[제출됨 → #37698](https://github.com/react/react/pull/37698)** · 최신 `main` `d083ec1`에서 읽기 0 확인 · 미사용 Set·Map 및 기록 9줄 제거 · 컴파일러 스냅샷 1,827/1,827·Prettier 통과 · **Meta CLA 서명 필요** |
+| ~~react~~ | `CollectHoistablePropertyLoads.ts:499` · `AlignReactiveScopesToBlockScopesHIR.ts:78` | **[제출됨 → #37699](https://github.com/react/react/pull/37699)** · #37698은 잘못된 계정으로 제출해 닫음 · 최신 `main` `d083ec1`에서 읽기 0 확인 · 미사용 Set·Map 및 기록 9줄 제거 · 컴파일러 스냅샷 1,827/1,827·Prettier 통과 · **irontaek Meta CLA 서명 필요** |
 | ~~vscode~~ | `chatToolPicker.ts:261` | **제출됨 → #334230** |
 | ~~next.js~~ | `export/index.ts:292` · `:316` | **탈락** — 진짜 dead state지만 현재 기여 가이드가 사소한 정리 PR을 명시적으로 거른다 |
 | ~~astro~~ | `core/build/static-build.ts:91` | **제출됨 → #17987** · 보류 사유(T1 버그 선행)는 그 건(#17665)이 회수되며 해소됐다 |
