@@ -155,17 +155,20 @@ _gates_path = f"{ROOT}/data/repo-gates.json"
 if os.path.exists(_gates_path):
     GATES = json.load(open(_gates_path, encoding="utf-8")).get("gates", {})
 
-ACCEPT_CUT = 60      # 이 아래는 안 낸다 — 판별력이 검증된 유일한 기준
+ACCEPT_CUT = 80      # 1차 저장소 필터. 개별 PR 의 병합 확률은 아니다.
+MIN_CLOSED = 20      # 작은 표본의 높은 수락률은 근거로 쓰지 않는다.
 SLOW_MEDIAN = 3      # 중앙 머지일이 이보다 크면 후순위
 
-def verdict(rate, middle):
+def verdict(rate, middle, closed):
     if rate is None:
         return "표본 없음"
     if rate < ACCEPT_CUT:
         return "컷"
+    if closed is None or closed < MIN_CLOSED:
+        return "표본 부족"
     if middle is None:
-        return "통과"
-    return "통과 · 후순위(느림)" if middle > SLOW_MEDIAN else "**통과**"
+        return "1차 통과"
+    return "1차 통과 · 후순위(느림)" if middle > SLOW_MEDIAN else "**1차 통과**"
 
 open_repos = {f["repo"] for f in findings if f.get("status") in OPEN}
 done_repos = {f["repo"] for f in findings if f.get("status") in ("merged", "closed")}
@@ -187,7 +190,7 @@ for _, _, _, repo, rate, middle, mg, cl, note in rot:
     # 여기서 죽으면 "새 후보를 큐에 넣었더니 생성기가 멈추는" 모양이 된다.
     mid = f"{middle:.1f}일" if middle is not None else "표본 없음"
     rbody.append(f"| {short} | {rate if rate is not None else '—'}% | "
-                 f"{mid} | {mg}/{cl} | {verdict(rate, middle)} | {note or '—'} |")
+                 f"{mid} | {mg}/{cl} | {verdict(rate, middle, cl)} | {note or '—'} |")
 rblock = R_BEGIN + "\n" + "\n".join(rbody) + "\n" + R_END
 
 doc = open(DOC, encoding="utf-8").read()
