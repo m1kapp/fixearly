@@ -65,6 +65,7 @@ class ImpactCardTimeTest(unittest.TestCase):
         repo_count = len({f["repo"] for f in findings if f["status"] == "merged"})
         self.assertIn(f'<b id="impact-repos">{repo_count}</b>', html)
         self.assertIn(f'<b id="impact-merged">{merged}</b>', html)
+        self.assertIn("건 PR 머지 성공 · 목표 100건", html)
         self.assertNotIn('id="impact-prs"', html)
         self.assertNotIn('id="impact-pending"', html)
         self.assertIn("PR 머지 · 승인 후 장기 대기", grid)
