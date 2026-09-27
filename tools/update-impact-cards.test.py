@@ -62,12 +62,11 @@ class ImpactCardTimeTest(unittest.TestCase):
         ranks = re.findall(r'<(?:article|a) class="([^"]+)" data-rank="(\d+)"', grid)
         merged = sum(f["status"] == "merged" for f in findings)
         self.assertEqual(ranks, [("ic done", f"{n:02d}") for n in range(merged, 0, -1)])
-        self.assertIn(f'<b id="impact-prs">{len(findings)}</b>', html)
-        repo_count = len({f["repo"] for f in findings})
+        repo_count = len({f["repo"] for f in findings if f["status"] == "merged"})
         self.assertIn(f'<b id="impact-repos">{repo_count}</b>', html)
         self.assertIn(f'<b id="impact-merged">{merged}</b>', html)
-        pending = sum(f["status"] not in ("merged", "closed") for f in findings)
-        self.assertIn(f'<b id="impact-pending">{pending}</b>', html)
+        self.assertNotIn('id="impact-prs"', html)
+        self.assertNotIn('id="impact-pending"', html)
         self.assertIn("PR 머지 · 승인 후 장기 대기", grid)
 
 

@@ -464,10 +464,8 @@ for f in merged_contrib:
 h = open(f"{ROOT}/index.html", encoding="utf-8").read()
 h = re.sub(r'(<time class="contrib-asof" datetime=")[^"]+(">)[^<]+(</time>)',
            lambda m: f'{m.group(1)}{CONTRIBUTORS_ASOF}{m.group(2)}{CONTRIBUTORS_ASOF}{m.group(3)}', h)
-for marker, count in (("impact-prs", len(findings)),
-                      ("impact-repos", len({f["repo"] for f in findings})),
-                      ("impact-merged", len(grouped["merged"])),
-                      ("impact-pending", sum(len(grouped[k]) for k in ORDER if k not in ("merged", "closed")))):
+for marker, count in (("impact-repos", len({f["repo"] for f in grouped["merged"]})),
+                      ("impact-merged", len(grouped["merged"]))):
     h, changed = re.subn(rf'(<b id="{marker}">)\d+(</b>)', rf'\g<1>{count}\g<2>', h, count=1)
     assert changed == 1, marker
 m = re.search(r'(<div class="iwrap[^"]*">)(.*?)(\n    </div>)', h, re.S)
