@@ -94,10 +94,11 @@ def stall_after(f):
 def stage_age_days(f, key, reference=None):
     """현재 단계에서 멈춘 기간.
 
-    대기는 PR 생성부터 재지만, 리뷰 중은 마지막 사람 개입부터 잰다. 오래 대기한 PR에
+    대기는 PR 생성부터 재지만, 리뷰 중과 승인은 마지막 사람 개입부터 잰다. 오래 대기한 PR에
     오늘 maintainer가 붙었는데 곧바로 보류로 접히면 현재 상태를 거꾸로 보여준다.
     """
-    since = f.get("engagedAt") if key == "reviewing" else f.get("createdAt")
+    since = (f.get("engagedAt") if key == "reviewing" else
+             f.get("approvedAt") if key == "approved" else f.get("createdAt"))
     if not since:
         return None
     start = parse_time(since)
@@ -160,6 +161,7 @@ if "--selftest" in sys.argv:
     snapshot = parse_time("2026-09-01T00:00:00Z")
     assert stage_age_days(reviewing_pr, "reviewing", snapshot) == 4
     assert stage_age_days(reviewing_pr, "waiting", snapshot) == 21
+    assert stage_age_days({"approvedAt": "2026-08-28T00:00:00Z"}, "approved", snapshot) == 4
     print("impact 카드 경과일이 상태 스냅샷 시각에 고정된다 · 리뷰 시계는 사람 개입부터 센다")
     sys.exit(0)
 
@@ -208,8 +210,11 @@ def delivery_timeline(f, key, pr_url, age_html):
     created_month = month(created)
     pr_link = f'href="{pr_url}" target="_blank" rel="noopener"'
     if key != "merged":
+        approved_delayed = (key == "approved" and f.get("approvedAt") and
+                            stall_after(f) is not None and
+                            stage_age_days(f, key) >= stall_after(f))
         pending_ko = {
-            "approved": "승인 · 머지 대기",
+            "approved": "승인 후 장기 대기" if approved_delayed else "진행 중 · 승인 · 머지 대기",
             "changes": "변경 요청 대응 중",
             "reviewing": "리뷰 진행 중",
             "waiting": "아직 아무도 안 봄",
@@ -217,7 +222,7 @@ def delivery_timeline(f, key, pr_url, age_html):
             "draft": "초안",
         }.get(key, "아직")
         pending_en = {
-            "approved": "approved · awaiting merge",
+            "approved": "approved · long wait" if approved_delayed else "in progress · approved · awaiting merge",
             "changes": "changes requested",
             "reviewing": "in review",
             "waiting": "not reviewed yet",
@@ -302,7 +307,7 @@ BLURB = {
 }
 
 
-def card(f, key):
+def card(f, key, rank=None):
     ko, en, at, ended = META[key]
     url = f"https://github.com/{f['repo']}/pull/{f['pr']}"
     name, stars = split_label(f["repoLabel"])
@@ -316,6 +321,7 @@ def card(f, key):
            + (" off" if ended or key == "stalled" else "")
            + (" closed" if ended else "")
            + (" stalled" if key == "stalled" else ""))
+    rank_attr = f' data-rank="{rank:02d}"' if rank is not None else ""
     age_ko, age_en, on, age_days = elapsed(f, key)
     on_html = f'<span class="on">{on}</span>' if on else ""
     # 경과는 생성 시점의 값이라 그대로 두면 시간이 지날수록 거짓말이 된다 —
@@ -400,10 +406,10 @@ def card(f, key):
         f'{status}'
     )
     if shipped:
-        return (f'<article class="{cls}">'
+        return (f'<article class="{cls}"{rank_attr}>'
                 f'<a class="icmain" href="{url}" target="_blank" rel="noopener">{core}</a>'
                 f'{shipped}</article>')
-    return (f'<a class="{cls}" href="{url}" target="_blank" rel="noopener">'
+    return (f'<a class="{cls}"{rank_attr} href="{url}" target="_blank" rel="noopener">'
             f'{core}{why}</a>')
 
 
@@ -416,7 +422,12 @@ for f in findings:
             key = "stalled"
     grouped[key].append(f)
 
-rows = "\n      ".join(card(f, k) for k in ORDER for f in grouped[k])
+entries = sorted(((f, k) for k in ORDER for f in grouped[k]),
+                 key=lambda item: (0 if item[1] == "closed" else 1 if item[1] == "merged" else 2,
+                                   item[0].get("createdAt", ""), item[0]["pr"]), reverse=True)
+merged_oldest_first = sorted(grouped["merged"], key=lambda f: (f.get("createdAt", ""), f["pr"]))
+rank_by_pr = {f["pr"]: rank for rank, f in enumerate(merged_oldest_first, 1)}
+rows = "\n      ".join(card(f, k, rank_by_pr.get(f["pr"])) for f, k in entries)
 
 # 머지된 저장소는 히어로에서 로고만 먼저 보여준다. 유명 로고를 장식처럼 빌려온 게
 # 아니라 실제 PR이 들어간 곳이라는 뜻이므로, 각 로고는 해당 머지 PR 자체로 연결한다.
@@ -445,6 +456,12 @@ for f in merged_contrib:
     )
 
 h = open(f"{ROOT}/index.html", encoding="utf-8").read()
+for marker, count in (("impact-prs", len(findings)),
+                      ("impact-repos", len({f["repo"] for f in findings})),
+                      ("impact-merged", len(grouped["merged"])),
+                      ("impact-pending", sum(len(grouped[k]) for k in ORDER if k not in ("merged", "closed")))):
+    h, changed = re.subn(rf'(<b id="{marker}">)\d+(</b>)', rf'\g<1>{count}\g<2>', h, count=1)
+    assert changed == 1, marker
 m = re.search(r'(<div class="iwrap[^"]*">)(.*?)(\n    </div>)', h, re.S)
 assert m
 h = h[: m.start(2)] + "\n      " + rows + h[m.end(2):]

@@ -39,6 +39,26 @@ class ImpactCardTimeTest(unittest.TestCase):
             re.search(rf"\b{merged} merged · ", html)
         )
 
+    def test_grid_prioritizes_active_then_newest_with_registry_totals(self):
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        findings = json.loads((ROOT / "impact.json").read_text(encoding="utf-8"))["findings"]
+        grid = html[html.index('<div class="iwrap hide-stalled hide-closed">'):]
+        ordered = sorted(findings, key=lambda f: (
+            0 if f["status"] == "closed" else 1 if f["status"] == "merged" else 2,
+            f["createdAt"], f["pr"]), reverse=True)
+        positions = [grid.index(f"/{f['repo']}/pull/{f['pr']}") for f in ordered]
+        self.assertEqual(positions, sorted(positions))
+        ranks = re.findall(r'<(?:article|a) class="([^"]+)" data-rank="(\d+)"', grid)
+        merged = sum(f["status"] == "merged" for f in findings)
+        self.assertEqual(ranks, [("ic done", f"{n:02d}") for n in range(merged, 0, -1)])
+        self.assertIn(f'<b id="impact-prs">{len(findings)}</b>', html)
+        repo_count = len({f["repo"] for f in findings})
+        self.assertIn(f'<b id="impact-repos">{repo_count}</b>', html)
+        self.assertIn(f'<b id="impact-merged">{merged}</b>', html)
+        pending = sum(f["status"] not in ("merged", "closed") for f in findings)
+        self.assertIn(f'<b id="impact-pending">{pending}</b>', html)
+        self.assertIn("PR 머지 · 승인 후 장기 대기", grid)
+
 
 if __name__ == "__main__":
     unittest.main()
