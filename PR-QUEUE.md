@@ -34,6 +34,7 @@
 | [n8n#34899](https://github.com/n8n-io/n8n/pull/34899) | 머지 | 봇이 요구한 changeset prefix 만 고치고 통과 |
 | [angular#70690](https://github.com/angular/angular/pull/70690) | 머지 | — |
 | [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 승인 | — |
+| [angular#70977](https://github.com/angular/angular/pull/70977) | 승인 | — |
 | [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 닫힘 | 상위 #2751 의존성 업데이트로 Hono 4.13.8·node-server 2.1.1이 반영돼 보안 목표가 충족됐다. 이 PR은 미병합 |
 | [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 닫힘 | 우리가 접었다 — 중앙 1일인 곳에서 34일째 사람 반응 0. 이 저장소 외부 PR 수락률 18% |
 | [novu#12074](https://github.com/novuhq/novu/pull/12074) | 닫힘 | 우리가 접었다 — 중앙 1일인 곳에서 15일째 사람 리뷰 0(승인은 봇). 슬롯을 회수했다 |
@@ -314,11 +315,11 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
+| [angular#70977](https://github.com/angular/angular/pull/70977) | 쓰기만 하는 컬렉션 | 🔵 승인 · 머지 대기 | 오늘 / 보통 2일 |
 | [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 32일째 / 보통 1일 · 보류 |
-| [angular#70977](https://github.com/angular/angular/pull/70977) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 2일 |
 | [react#37699](https://github.com/facebook/react/pull/37699) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
 
-**열린 것 3건(보류 1건 빼면 2건).** 판정 난 39건 중 머지 16 · 승인 1 · 닫힘 22.
+**열린 것 3건(보류 1건 빼면 2건).** 판정 난 40건 중 머지 16 · 승인 2 · 닫힘 22.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라

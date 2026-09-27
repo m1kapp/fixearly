@@ -569,7 +569,11 @@
    "repoLabel": "angular · 101k★",
    "pr": 70977,
    "createdAt": "2026-09-27T06:02:06Z",
-   "status": "waiting"
+   "status": "approved",
+   "approvedAt": "2026-09-27T09:05:22Z",
+   "approvedBy": [
+    "JeanMeche"
+   ]
   },
   {
    "title": "React 컴파일러 패스의 쓰기만 하는 컬렉션",
@@ -595,5 +599,5 @@
    "status": "waiting"
   }
  ],
- "generatedAt": "2026-09-27T06:33:09.262Z"
+ "generatedAt": "2026-09-27T09:16:57.536Z"
 }
