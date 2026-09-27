@@ -314,8 +314,9 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
 | [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 32일째 / 보통 1일 · 보류 |
+| [angular#70977](https://github.com/angular/angular/pull/70977) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 2일 |
 
-**열린 것 1건(보류 1건 빼면 0건).** 판정 난 38건 중 머지 16 · 승인 1 · 닫힘 21.
+**열린 것 2건(보류 1건 빼면 1건).** 판정 난 38건 중 머지 16 · 승인 1 · 닫힘 21.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -392,7 +393,7 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 | ~~storybook~~ | `StoryIndexGenerator.ts:826` | **제출됨 → #35829** |
 | ~~rollup~~ | `Chunk.ts:1343` | **제출됨 → #6482** |
 | ~~angular~~ | `slot_allocation.ts:25` · `temporary_variables.ts:57` | **머지됨 → #70690** |
-| angular | `migration.ts:261` | **제출 준비** · 2026-09-27 `main` `319a3c4`에서 `skippedInputs` 읽기 0 확인 · 로컬 브랜치 `refactor/remove-unused-skipped-inputs` (`e4e7cb6`) · 마이그레이션 Bazel 테스트·Prettier 통과 · #70690 머지로 저장소당 1건 제한 해소 |
+| ~~angular~~ | `migration.ts:261` | **[제출됨 → #70977](https://github.com/angular/angular/pull/70977)** · 2026-09-27 `main` `319a3c4`에서 `skippedInputs` 읽기 0 확인 · 마이그레이션 Bazel 테스트·Prettier 통과 · #70690 머지로 저장소당 1건 제한 해소 |
 | react | `renderer.js:817` | 읽는 코드가 `/* DISABLED: …/pull/28417 */` 주석 안에 있다 |
 | react | `CollectHoistablePropertyLoads.ts:499` · `AlignReactiveScopesToBlockScopesHIR.ts:78` | 컴파일러 패스 2건 |
 | ~~vscode~~ | `chatToolPicker.ts:261` | **제출됨 → #334230** |
@@ -726,7 +727,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | n8n | 100% | 1.1일 | 21/21 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | langfuse | 87% | 0.0일 | 13/15 | **통과** | 판정 경험 있음 |
 | Ghost | 86% | 0.6일 | 37/43 | **통과** | 판정 경험 있음 |
-| angular | 83% | 2.1일 | 34/41 | **통과** | 판정 경험 있음 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
+| angular | 83% | 2.1일 | 34/41 | **통과** | 열린 PR 있음 — 저장소당 1건 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
 | postcss | 81% | 0.2일 | 42/52 | **통과** | — |
 | novu | 77% | 0.1일 | 24/31 | **통과** | 판정 경험 있음 |
 | rollup | 77% | 5.6일 | 10/13 | 통과 · 후순위(느림) | 판정 경험 있음 · 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요 |

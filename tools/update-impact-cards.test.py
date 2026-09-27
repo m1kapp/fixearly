@@ -44,7 +44,8 @@ class ImpactCardTimeTest(unittest.TestCase):
         findings = json.loads((ROOT / "impact.json").read_text(encoding="utf-8"))["findings"]
         grid = html[html.index('<div class="iwrap hide-stalled hide-closed">'):]
         ordered = sorted(findings, key=lambda f: (
-            0 if f["status"] == "closed" else 1 if f["status"] == "merged" else 2,
+            0 if f["status"] == "closed" else 1 if f["status"] == "merged"
+            else 3 if f["status"] == "approved" else 2,
             f["createdAt"], f["pr"]), reverse=True)
         positions = [grid.index(f"/{f['repo']}/pull/{f['pr']}") for f in ordered]
         self.assertEqual(positions, sorted(positions))

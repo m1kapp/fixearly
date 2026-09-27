@@ -423,7 +423,8 @@ for f in findings:
     grouped[key].append(f)
 
 entries = sorted(((f, k) for k in ORDER for f in grouped[k]),
-                 key=lambda item: (0 if item[1] == "closed" else 1 if item[1] == "merged" else 2,
+                 key=lambda item: (0 if item[1] == "closed" else 1 if item[1] == "merged"
+                                   else 3 if item[1] == "approved" else 2,
                                    item[0].get("createdAt", ""), item[0]["pr"]), reverse=True)
 merged_oldest_first = sorted(grouped["merged"], key=lambda f: (f.get("createdAt", ""), f["pr"]))
 rank_by_pr = {f["pr"]: rank for rank, f in enumerate(merged_oldest_first, 1)}
