@@ -308,6 +308,7 @@ BLURB = {
     "microsoft/vscode": ("코드 에디터", "code editor"),
     "pnpm/pnpm": ("JavaScript 패키지 매니저", "JavaScript package manager"),
     "Automattic/mongoose": ("MongoDB ODM", "MongoDB object modelling"),
+    "tailwindlabs/tailwindcss": ("CSS 유틸리티 프레임워크", "utility-first CSS framework"),
 }
 
 
