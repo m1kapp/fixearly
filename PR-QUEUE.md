@@ -392,7 +392,7 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 | ~~storybook~~ | `StoryIndexGenerator.ts:826` | **제출됨 → #35829** |
 | ~~rollup~~ | `Chunk.ts:1343` | **제출됨 → #6482** |
 | ~~angular~~ | `slot_allocation.ts:25` · `temporary_variables.ts:57` | **머지됨 → #70690** |
-| angular | `migration.ts:261` | 같은 형태 · #70690 머지로 저장소당 1건 제한 해소 |
+| angular | `migration.ts:261` | **제출 준비** · 2026-09-27 `main` `319a3c4`에서 `skippedInputs` 읽기 0 확인 · 로컬 브랜치 `refactor/remove-unused-skipped-inputs` (`e4e7cb6`) · 마이그레이션 Bazel 테스트·Prettier 통과 · #70690 머지로 저장소당 1건 제한 해소 |
 | react | `renderer.js:817` | 읽는 코드가 `/* DISABLED: …/pull/28417 */` 주석 안에 있다 |
 | react | `CollectHoistablePropertyLoads.ts:499` · `AlignReactiveScopesToBlockScopesHIR.ts:78` | 컴파일러 패스 2건 |
 | ~~vscode~~ | `chatToolPicker.ts:261` | **제출됨 → #334230** |
