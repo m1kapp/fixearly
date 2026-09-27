@@ -40,7 +40,7 @@
    "title": "view-widget-upsert O(n²)",
    "type": "O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map)",
    "repo": "twentyhq/twenty",
-   "repoLabel": "twenty · 57.5k★",
+   "repoLabel": "twenty · 57.6k★",
    "pr": 23231,
    "createdAt": "2026-07-24T01:00:49Z",
    "closedAt": "2026-07-24T07:31:11Z",
@@ -52,7 +52,7 @@
    "title": "nested relations hydration O(n²)",
    "type": "O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map)",
    "repo": "twentyhq/twenty",
-   "repoLabel": "twenty · 57.5k★",
+   "repoLabel": "twenty · 57.6k★",
    "pr": 23232,
    "createdAt": "2026-07-24T01:48:53Z",
    "closedAt": "2026-07-24T16:25:37Z",
@@ -353,7 +353,7 @@
    "titleEn": "printed error stacks lose every other frame",
    "type": "전역 정규식 상태 (/g 정규식을 filter 안에서 .test() — lastIndex 가 새어 프레임이 하나 걸러 사라진다)",
    "repo": "withastro/astro",
-   "repoLabel": "astro · 62.8k★",
+   "repoLabel": "astro · 62.9k★",
    "pr": 17665,
    "createdAt": "2026-08-11T12:35:43Z",
    "status": "closed",
@@ -549,7 +549,7 @@
    "titleEn": "write-only page input set in the build",
    "type": "쓰기만 하는 컬렉션 (viteBuild 가 pageInput 을 채우기만 하고 읽지 않는다 — 소비자 ssrBuild 인자가 #14306 Environment API 에서 사라졌다)",
    "repo": "withastro/astro",
-   "repoLabel": "astro · 62.8k★",
+   "repoLabel": "astro · 62.9k★",
    "pr": 17987,
    "createdAt": "2026-09-13T04:00:19Z",
    "status": "merged",
@@ -597,7 +597,17 @@
    "pr": 37699,
    "createdAt": "2026-09-27T06:31:18Z",
    "status": "waiting"
+  },
+  {
+   "title": "댓글 신고 이메일의 조회 3회 직렬",
+   "titleEn": "three sequential lookups for comment report email",
+   "type": "독립 순차 await (신고 API 가 기다리는 post·member·owner 조회 3개를 병렬 시작)",
+   "repo": "TryGhost/Ghost",
+   "repoLabel": "ghost · 55.4k★",
+   "pr": 31019,
+   "createdAt": "2026-09-27T09:58:36Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-09-27T09:16:57.536Z"
+ "generatedAt": "2026-09-27T10:00:43.606Z"
 }

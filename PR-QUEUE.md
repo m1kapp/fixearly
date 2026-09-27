@@ -317,9 +317,10 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 |---|---|---|---|
 | [angular#70977](https://github.com/angular/angular/pull/70977) | 쓰기만 하는 컬렉션 | 🔵 승인 · 머지 대기 | 오늘 / 보통 2일 |
 | [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 32일째 / 보통 1일 · 보류 |
+| [ghost#31019](https://github.com/TryGhost/Ghost/pull/31019) | 순차 I/O | ⚪ 대기 | 오늘 / 보통 1일 |
 | [react#37699](https://github.com/facebook/react/pull/37699) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
 
-**열린 것 3건(보류 1건 빼면 2건).** 판정 난 40건 중 머지 16 · 승인 2 · 닫힘 22.
+**열린 것 4건(보류 1건 빼면 3건).** 판정 난 40건 중 머지 16 · 승인 2 · 닫힘 22.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -746,7 +747,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | openstatus | 100% | 1.0일 | 28/28 | **통과** | 판정 경험 있음 |
 | n8n | 100% | 1.1일 | 21/21 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | langfuse | 87% | 0.0일 | 13/15 | **통과** | 판정 경험 있음 |
-| Ghost | 86% | 0.6일 | 37/43 | **통과** | 판정 경험 있음 |
+| Ghost | 86% | 0.6일 | 37/43 | **통과** | 열린 PR 있음 — 저장소당 1건 |
 | angular | 83% | 2.1일 | 34/41 | **통과** | 열린 PR 있음 — 저장소당 1건 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
 | postcss | 81% | 0.2일 | 42/52 | **통과** | — |
 | novu | 77% | 0.1일 | 24/31 | **통과** | 판정 경험 있음 |
@@ -804,7 +805,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | svelte | 멤버십 12 | ARIA 명세 고정 테이블 · 코드모드 · n 이 엘리먼트당 속성/주석당 코드 수 |
 | typeorm | 순차 14 | `query()` 가 QueryRunner 의 커넥션 하나로 보낸다 — 단일 pg Client 는 큐잉해 순차 실행하므로 `Promise.all` 로 왕복이 안 준다 |
 | vite | O(n²) optimizer | `crawlDeps`/`scanDeps` 대칭 차집합은 진짜 O(n²)지만 n 이 의존성 수(수십~수백)라 마이크로초 |
-| ghost | 순차 43 중 2 | 이메일 알림은 SMTP 가 DB 왕복을 압도 · stripe-migrations 는 순차가 의도 |
+| ghost | 순차 43 중 2 | 이메일 알림은 SMTP 가 DB 왕복을 압도한다고 봤으나, 신고 API 가 이메일 완료를 기다리고 Post·Member·Owner 조회 3건이 독립인 `notifyReport` 는 #31019 로 제출했다. 직렬 호출에서 실패·병렬 호출에서 통과하는 테스트는 확인했다. 실제 응답시간 개선은 미측정이라 채택 위험이 남는다 · stripe-migrations 는 순차가 의도 |
 | ghost | N+1 23 | **전부 탈락**(2026-08-11). 12곳이 마이그레이션·CLI(1회 실행) · `member-repository` 4곳은 루프 대상이 tier 목록인데 **세 줄 위에서 `products.length > 1` 이면 던진다**(n≤1) · 구독 루프 2곳은 iteration 마다 try/catch 로 오류를 격리해서 배치하면 의미가 바뀐다 · 나머지는 청크 삽입(의도된 배칭) |
 | medusa | N+1 2 | `link.ts:556` 은 루프가 *서비스* 단위이고 쿼리는 이미 `$or` 로 배치돼 있다 · 나머지 1곳은 재시도 루프 |
 | pnpm | O(n²) 33 (후보 30) · 순차 await 3 | **전부 탈락**(2026-09-10, ①-a 기준). `projects-graph:85` 은 이미 `projectMapByDir`·`projectMapByManifestName` 로 인덱싱돼 있고 남은 `find` 는 주석에 "Slow path; only needed when there are case mismatches" 라고 적힌 의도된 폴백이다 · `pkg-metadata-filter:68` 의 `trustedVersions.includes` 는 날짜 체크가 실패할 때만 도는 단락이라 m 이 작다 · 나머지는 `movedBases`·`stale`·`directDeps` 처럼 **한쪽이 항상 작다** |

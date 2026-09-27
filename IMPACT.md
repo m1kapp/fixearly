@@ -14,8 +14,8 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `deleteBulkMetadata N+1` | [immich · 115.1k★](https://github.com/immich-app/immich) | N+1 (루프 안 순차 DELETE, item당 왕복 1회) | [#30163](https://github.com/immich-app/immich/pull/30163) | ❌ closed | — |
 | `sync-agent findOne N+1` | [novu · 40.1k★](https://github.com/novuhq/novu) | N+1 (for 루프 안 findOne, 소스 통합당 쿼리 1회) | [#12074](https://github.com/novuhq/novu/pull/12074) | ❌ closed | — |
 | `booking member diff O(n²)` | [cal.com · 48.7k★](https://github.com/calcom/cal.diy) | O(n²) 배열 조회 (루프 안 .some() 선형스캔 4회 → Set) | [#29828](https://github.com/calcom/cal.diy/pull/29828) | ❌ closed | — |
-| `view-widget-upsert O(n²)` | [twenty · 57.5k★](https://github.com/twentyhq/twenty) | O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map) | [#23231](https://github.com/twentyhq/twenty/pull/23231) | ❌ closed | — |
-| `nested relations hydration O(n²)` | [twenty · 57.5k★](https://github.com/twentyhq/twenty) | O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map) | [#23232](https://github.com/twentyhq/twenty/pull/23232) | ❌ closed | — |
+| `view-widget-upsert O(n²)` | [twenty · 57.6k★](https://github.com/twentyhq/twenty) | O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map) | [#23231](https://github.com/twentyhq/twenty/pull/23231) | ❌ closed | — |
+| `nested relations hydration O(n²)` | [twenty · 57.6k★](https://github.com/twentyhq/twenty) | O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map) | [#23232](https://github.com/twentyhq/twenty/pull/23232) | ❌ closed | — |
 | `lucky-user set rebuild in loop` | [cal.com · 48.7k★](https://github.com/calcom/cal.diy) | 루프 불변 인덱스 재구축 (while마다 new Set 재구축 → 호이스팅) | [#29832](https://github.com/calcom/cal.diy/pull/29832) | ❌ closed | — |
 | `dataloader doc placement O(n²)` | [payload · 45k★](https://github.com/payloadcms/payload) | O(n²) (배치당 keys.findIndex 전체 스캔 — Map으로 O(1)) | [#17469](https://github.com/payloadcms/payload/pull/17469) | ❌ closed | — |
 | `translations batch match O(n²)` | [medusa · 36.5k★](https://github.com/medusajs/medusa) | O(n²) (batch당 filter+some 전체 스캔 — Set으로 O(1)) | [#16188](https://github.com/medusajs/medusa/pull/16188) | ✅ merged | +1 |
@@ -35,7 +35,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `resize 핸들러 안 미사용 Map` | [excalidraw · 133k★](https://github.com/excalidraw/excalidraw) | 쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제) | [#11805](https://github.com/excalidraw/excalidraw/pull/11805) | ❌ closed | — |
 | `member 통계 안 미사용 Map` | [ghost · 55.4k★](https://github.com/TryGhost/Ghost) | 쓰기만 하는 컬렉션 (날짜별 Map 을 채우고 아무도 안 읽음 — 삭제) | [#29831](https://github.com/TryGhost/Ghost/pull/29831) | ✅ merged | +1 |
 | `invalidate() 안 미사용 Set` | [storybook · 91.2k★](https://github.com/storybookjs/storybook) | 쓰기만 하는 컬렉션 (파일 변경마다 채우고 아무도 안 읽음 — 소비자는 2022-11 에 이미 삭제됨) | [#35829](https://github.com/storybookjs/storybook/pull/35829) | ❌ closed | — |
-| `스택 트레이스 절반 유실` | [astro · 62.8k★](https://github.com/withastro/astro) | 전역 정규식 상태 (/g 정규식을 filter 안에서 .test() — lastIndex 가 새어 프레임이 하나 걸러 사라진다) | [#17665](https://github.com/withastro/astro/pull/17665) | ❌ closed | — |
+| `스택 트레이스 절반 유실` | [astro · 62.9k★](https://github.com/withastro/astro) | 전역 정규식 상태 (/g 정규식을 filter 안에서 .test() — lastIndex 가 새어 프레임이 하나 걸러 사라진다) | [#17665](https://github.com/withastro/astro/pull/17665) | ❌ closed | — |
 | `graph 명령 안 미사용 Map` | [nx · 29.4k★](https://github.com/nrwl/nx) | 쓰기만 하는 컬렉션 (선언과 .clear() 만 남았다 — 읽기·쓰기는 #32418 에서 사라졌다) | [#36633](https://github.com/nrwl/nx/pull/36633) | ❌ closed | — |
 | `페이지 monitor 검증 뒤 중복 조회` | [openstatus · 9.1k★](https://github.com/openstatusHQ/openstatus) | N+1 (페이지 생성·수정에서 일괄 검증한 monitor를 루프마다 재조회 — Map 재사용) | [#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | ✅ merged | +1 |
 | `Hono 보안 패치 · 의존성 점검` | [openstatus · 9.1k★](https://github.com/openstatusHQ/openstatus) | 보안 점검 (취약 Hono 직접·전이 의존성 업데이트) | [#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | ❌ closed | — |
@@ -48,10 +48,11 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `툴 피커 안 미사용 Map` | [vscode · 193.1k★](https://github.com/microsoft/vscode) | 쓰기만 하는 컬렉션 (MCP 툴마다 .set(), 읽기 없음 — #249448 이후 15개월째 · 삭제) | [#334230](https://github.com/microsoft/vscode/pull/334230) | ❌ closed | — |
 | `no-duplicate-case 이전 case 재스캔` | [eslint · 27.5k★](https://github.com/eslint/eslint) | O(n²) (case 마다 이전 case 전량 비교, 비교마다 토큰 전수 — 토큰 키 Set 으로 O(n)) | [#21317](https://github.com/eslint/eslint/pull/21317) | ❌ closed | — |
 | `템플릿 파이프라인의 쓰기만 하는 컬렉션` | [angular · 101k★](https://github.com/angular/angular) | 쓰기만 하는 컬렉션 (allocateSlots 의 slotMap, generateTemporaries 의 released — 채우기만 하고 읽지 않음, slotMap 은 주석이 '다음 순회에서 쓴다'고 잘못 설명) | [#70690](https://github.com/angular/angular/pull/70690) | ✅ merged | +1 |
-| `빌드에서 쓰기만 하는 페이지 입력 집합` | [astro · 62.8k★](https://github.com/withastro/astro) | 쓰기만 하는 컬렉션 (viteBuild 가 pageInput 을 채우기만 하고 읽지 않는다 — 소비자 ssrBuild 인자가 #14306 Environment API 에서 사라졌다) | [#17987](https://github.com/withastro/astro/pull/17987) | ✅ merged | +1 |
-| `signal 입력 마이그레이션의 쓰기만 하는 Set` | [angular · 101k★](https://github.com/angular/angular) | 쓰기만 하는 컬렉션 (filterInputsViaConfig 의 skippedInputs 는 추가만 하고 읽지 않음 — 기존 markFieldIncompatible 는 그대로 유지) | [#70977](https://github.com/angular/angular/pull/70977) | 🔵 승인 · 머지 대기 | — |
+| `빌드에서 쓰기만 하는 페이지 입력 집합` | [astro · 62.9k★](https://github.com/withastro/astro) | 쓰기만 하는 컬렉션 (viteBuild 가 pageInput 을 채우기만 하고 읽지 않는다 — 소비자 ssrBuild 인자가 #14306 Environment API 에서 사라졌다) | [#17987](https://github.com/withastro/astro/pull/17987) | ✅ merged | +1 |
+| `signal 입력 마이그레이션의 쓰기만 하는 Set` | [angular · 101k★](https://github.com/angular/angular) | 쓰기만 하는 컬렉션 (filterInputsViaConfig 의 skippedInputs 는 추가만 하고 읽지 않음 — 기존 markFieldIncompatible 는 그대로 유지) | [#70977](https://github.com/angular/angular/pull/70977) | 🔵 approved · 머지 대기 | — |
 | `React 컴파일러 패스의 쓰기만 하는 컬렉션` | [react · 250.8k★](https://github.com/facebook/react) | 쓰기만 하는 컬렉션 (propagateNonNull 의 terminalPreds Set · alignReactiveScopesToBlockScopesHIR 의 placeScopes Map — 기록만 하고 읽지 않음) | [#37698](https://github.com/react/react/pull/37698) | ❌ closed | — |
 | `React 컴파일러 패스의 쓰기만 하는 컬렉션` | [react · 250.8k★](https://github.com/facebook/react) | 쓰기만 하는 컬렉션 (propagateNonNull 의 terminalPreds Set · alignReactiveScopesToBlockScopesHIR 의 placeScopes Map — 기록만 하고 읽지 않음) | [#37699](https://github.com/react/react/pull/37699) | ⚪ awaiting review | — |
+| `댓글 신고 이메일의 조회 3회 직렬` | [ghost · 55.4k★](https://github.com/TryGhost/Ghost) | 독립 순차 await (신고 API 가 기다리는 post·member·owner 조회 3개를 병렬 시작) | [#31019](https://github.com/TryGhost/Ghost/pull/31019) | ⚪ awaiting review | — |
 
 ## 규칙
 
