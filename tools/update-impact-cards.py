@@ -49,6 +49,9 @@ _av = f"{ROOT}/data/repo-avatars.json"
 AVATAR = json.load(open(_av, encoding="utf-8")) if os.path.exists(_av) else {}
 _mt = f"{ROOT}/data/repo-merge-times.json"
 MERGE_TIMES = json.load(open(_mt, encoding="utf-8")).get("repos", {}) if os.path.exists(_mt) else {}
+_contributors = json.load(open(f"{ROOT}/data/repo-contributors.json", encoding="utf-8"))
+CONTRIBUTORS = _contributors["repos"]
+CONTRIBUTORS_ASOF = _contributors["generatedAt"][:10]
 md = open(f"{ROOT}/IMPACT.md", encoding="utf-8").read()
 
 STAGE = [
@@ -385,8 +388,9 @@ def card(f, key, rank=None):
     title_html = (f'<span class="ko">{esc(f["title"])}</span>'
                   f'<span class="en">{esc(ten)}</span>') if ten else esc(f["title"])
     bk, be = BLURB.get(f["repo"], ("", ""))
-    what = (f'<span class="iw"><span class="ko">{esc(bk)}</span>'
-            f'<span class="en">{esc(be)}</span></span>') if bk else ""
+    contributors = f'{CONTRIBUTORS[f["repo"]]:,}'
+    what = (f'<span class="iw"><span class="ko">{esc(bk)} · 기여자 약 {contributors}명</span>'
+            f'<span class="en">{esc(be)} · ~{contributors} contributors</span></span>')
     # 닫힌 카드는 사유를 그대로 싣는다. "닫힌 것도 같이 둔다"고만 적고 이유를 감추면
     # 남겨둔 의미가 없다 — 거절 사유가 이 목록에서 제일 정보량이 큰 줄이다.
     rk, re_ = f.get("closedReason", ""), f.get("closedReasonEn", "")
@@ -458,6 +462,8 @@ for f in merged_contrib:
     )
 
 h = open(f"{ROOT}/index.html", encoding="utf-8").read()
+h = re.sub(r'(<time class="contrib-asof" datetime=")[^"]+(">)[^<]+(</time>)',
+           lambda m: f'{m.group(1)}{CONTRIBUTORS_ASOF}{m.group(2)}{CONTRIBUTORS_ASOF}{m.group(3)}', h)
 for marker, count in (("impact-prs", len(findings)),
                       ("impact-repos", len({f["repo"] for f in findings})),
                       ("impact-merged", len(grouped["merged"])),
@@ -535,17 +541,20 @@ for t in notranslated:
 repos = {f["repo"] for f in findings}
 missing = sorted(repos - set(BLURB))
 noicon = sorted(repos - set(AVATAR))
+nocount = sorted(repos - set(CONTRIBUTORS))
 for r in missing:
     print(f"  ✗ BLURB 없음: {r}")
 for r in noicon:
     print(f"  ✗ 아이콘 없음(python3 tools/fetch-repo-avatars.py): {r}")
+for r in nocount:
+    print(f"  ✗ 기여자 수 없음(npm run contributors): {r}")
 # 닫힌 건 사유가 없으면 카드가 조용히 "닫힘"만 남는다 — 그게 제일 읽히는 줄인데.
 noreason = sorted(f"#{f['pr']}" for f in findings
                   if state_by_pr.get(str(f["pr"])) == "closed"
                   and not (f.get("closedReason") and f.get("closedReasonEn")))
 for r in noreason:
     print(f"  ✗ 닫힌 사유 없음(impact.json 의 closedReason/closedReasonEn): {r}")
-missing = missing + noicon + notranslated + noreason
+missing = missing + noicon + nocount + notranslated + noreason
 missing_release = sorted(f"#{f['pr']}" for f in findings
                          if state_by_pr.get(str(f["pr"])) == "merged"
                          and not (f.get("release", {}).get("channel") in ("stable", "nightly")

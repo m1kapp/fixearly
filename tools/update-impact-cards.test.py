@@ -11,6 +11,16 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 
 class ImpactCardTimeTest(unittest.TestCase):
+    def test_every_impact_card_shows_contributor_count(self):
+        findings = json.loads((ROOT / "impact.json").read_text(encoding="utf-8"))["findings"]
+        counts = json.loads((ROOT / "data/repo-contributors.json").read_text(encoding="utf-8"))["repos"]
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        grid = html[html.index('<div class="iwrap hide-stalled hide-closed">'):]
+
+        self.assertEqual(set(counts), {f["repo"] for f in findings})
+        self.assertEqual(grid.count("기여자 약 "), len(findings))
+        self.assertIn(f'기여자 약 {counts["facebook/react"]:,}명', grid)
+
     def test_elapsed_time_uses_registry_snapshot(self):
         result = subprocess.run(
             [sys.executable, ROOT / "tools/update-impact-cards.py", "--selftest"],
