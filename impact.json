@@ -607,7 +607,17 @@
    "pr": 31019,
    "createdAt": "2026-09-27T09:58:36Z",
    "status": "waiting"
+  },
+  {
+   "title": "sitemap 청크 URL 분류 O(n²)",
+   "titleEn": "quadratic sitemap chunk URL lookups",
+   "type": "O(n²) (청크별 배열 복사와 URL 포함 검사 → Set)",
+   "repo": "withastro/astro",
+   "repoLabel": "astro · 62.9k★",
+   "pr": 18149,
+   "createdAt": "2026-09-27T10:21:18Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-09-27T10:00:43.606Z"
+ "generatedAt": "2026-09-27T10:22:39.794Z"
 }

@@ -53,6 +53,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `React 컴파일러 패스의 쓰기만 하는 컬렉션` | [react · 250.8k★](https://github.com/facebook/react) | 쓰기만 하는 컬렉션 (propagateNonNull 의 terminalPreds Set · alignReactiveScopesToBlockScopesHIR 의 placeScopes Map — 기록만 하고 읽지 않음) | [#37698](https://github.com/react/react/pull/37698) | ❌ closed | — |
 | `React 컴파일러 패스의 쓰기만 하는 컬렉션` | [react · 250.8k★](https://github.com/facebook/react) | 쓰기만 하는 컬렉션 (propagateNonNull 의 terminalPreds Set · alignReactiveScopesToBlockScopesHIR 의 placeScopes Map — 기록만 하고 읽지 않음) | [#37699](https://github.com/react/react/pull/37699) | ⚪ awaiting review | — |
 | `댓글 신고 이메일의 조회 3회 직렬` | [ghost · 55.4k★](https://github.com/TryGhost/Ghost) | 독립 순차 await (신고 API 가 기다리는 post·member·owner 조회 3개를 병렬 시작) | [#31019](https://github.com/TryGhost/Ghost/pull/31019) | ⚪ awaiting review | — |
+| `sitemap 청크 URL 분류 O(n²)` | [astro · 62.9k★](https://github.com/withastro/astro) | O(n²) (청크별 배열 복사와 URL 포함 검사 → Set) | [#18149](https://github.com/withastro/astro/pull/18149) | ⚪ awaiting review | — |
 
 ## 규칙
 
