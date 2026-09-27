@@ -627,7 +627,17 @@
    "pr": 20525,
    "createdAt": "2026-09-27T10:48:19Z",
    "status": "waiting"
+  },
+  {
+   "title": "ES 청크 재내보내기 이름 반복 검색",
+   "titleEn": "repeated ES chunk reexport name scans",
+   "type": "O(n²) 배열 조회 (재내보내기마다 렌더된 export 배열 탐색 → Set)",
+   "repo": "rollup/rollup",
+   "repoLabel": "rollup · 26.3k★",
+   "pr": 6534,
+   "createdAt": "2026-09-27T11:08:27Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-09-27T10:50:47.563Z"
+ "generatedAt": "2026-09-27T11:10:10.497Z"
 }

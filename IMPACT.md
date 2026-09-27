@@ -55,6 +55,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `댓글 신고 이메일의 조회 3회 직렬` | [ghost · 55.4k★](https://github.com/TryGhost/Ghost) | 독립 순차 await (신고 API 가 기다리는 post·member·owner 조회 3개를 병렬 시작) | [#31019](https://github.com/TryGhost/Ghost/pull/31019) | ⚪ awaiting review | — |
 | `sitemap 청크 URL 분류 O(n²)` | [astro · 62.9k★](https://github.com/withastro/astro) | O(n²) (청크별 배열 복사와 URL 포함 검사 → Set) | [#18149](https://github.com/withastro/astro/pull/18149) | ⚪ awaiting review | — |
 | `Vite 입력 CSS 의존성 기록 경합` | [tailwindcss · 97.7k★](https://github.com/tailwindlabs/tailwindcss) | 버려진 Promise (입력 CSS 파일 시각 기록을 기다리지 않아 재빌드 누락) | [#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | ⚪ awaiting review | — |
+| `ES 청크 재내보내기 이름 반복 검색` | [rollup · 26.3k★](https://github.com/rollup/rollup) | O(n²) 배열 조회 (재내보내기마다 렌더된 export 배열 탐색 → Set) | [#6534](https://github.com/rollup/rollup/pull/6534) | ⚪ awaiting review | — |
 
 ## 규칙
 
