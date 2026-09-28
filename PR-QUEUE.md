@@ -36,6 +36,7 @@
 | [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 승인 | — |
 | [angular#70977](https://github.com/angular/angular/pull/70977) | 승인 | — |
 | [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 닫힘 | 상위 #2751 의존성 업데이트로 Hono 4.13.8·node-server 2.1.1이 반영돼 보안 목표가 충족됐다. 이 PR은 미병합 |
+| [openstatus#2780](https://github.com/openstatusHQ/openstatus/pull/2780) | 닫힘 | 메인테이너가 V1 API 폐기 예정이라고 밝혀 우리가 닫았다 |
 | [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 닫힘 | 우리가 접었다 — 중앙 1일인 곳에서 34일째 사람 반응 0. 이 저장소 외부 PR 수락률 18% |
 | [novu#12074](https://github.com/novuhq/novu/pull/12074) | 닫힘 | 우리가 접었다 — 중앙 1일인 곳에서 15일째 사람 리뷰 0(승인은 봇). 슬롯을 회수했다 |
 | [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | 닫힘 | 우리가 접었다 — 46일째 사람 리뷰 0(반응은 봇뿐), 09-12 핑에도 무응답. 슬롯을 회수했다 |
@@ -325,16 +326,15 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [angular#70977](https://github.com/angular/angular/pull/70977) | 쓰기만 하는 컬렉션 | 🔵 승인 · 머지 대기 | 오늘 / 보통 2일 |
-| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 32일째 / 보통 1일 · 보류 |
-| [ghost#31019](https://github.com/TryGhost/Ghost/pull/31019) | 순차 I/O | ⚪ 대기 | 오늘 / 보통 1일 |
-| [react#37699](https://github.com/facebook/react/pull/37699) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
-| [openstatus#2780](https://github.com/openstatusHQ/openstatus/pull/2780) | O(n²) | ⚪ 대기 | 오늘 / 보통 1일 |
-| [rollup#6534](https://github.com/rollup/rollup/pull/6534) | O(n²) | ⚪ 대기 | 오늘 / 보통 6일 |
-| [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 오늘 / 보통 1일 |
-| [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 오늘 / 보통 1일 |
+| [angular#70977](https://github.com/angular/angular/pull/70977) | 쓰기만 하는 컬렉션 | 🔵 승인 · 머지 대기 | 1일째 / 보통 2일 |
+| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 33일째 / 보통 1일 · 보류 |
+| [ghost#31019](https://github.com/TryGhost/Ghost/pull/31019) | 순차 I/O | ⚪ 대기 | 1일째 / 보통 1일 |
+| [react#37699](https://github.com/facebook/react/pull/37699) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 1일째 / 보통 1일 |
+| [rollup#6534](https://github.com/rollup/rollup/pull/6534) | O(n²) | ⚪ 대기 | 1일째 / 보통 6일 |
+| [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 1일째 / 보통 1일 |
+| [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 1일째 / 보통 1일 |
 
-**열린 것 8건(보류 1건 빼면 7건).** 판정 난 40건 중 머지 16 · 승인 2 · 닫힘 22.
+**열린 것 7건(보류 1건 빼면 6건).** 판정 난 41건 중 머지 16 · 승인 2 · 닫힘 23.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -759,7 +759,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 <!-- auto:rotation — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | 저장소 | 수락률 | 중앙 | 외부 머지 | 판정 | 메모 |
 |---|---|---|---|---|---|
-| openstatus | 100% | 1.0일 | 28/28 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
+| openstatus | 100% | 1.0일 | 28/28 | **1차 통과** | 판정 경험 있음 |
 | n8n | 100% | 1.1일 | 21/21 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
 | langfuse | 87% | 0.0일 | 13/15 | 표본 부족 | 판정 경험 있음 |
 | Ghost | 86% | 0.6일 | 37/43 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |

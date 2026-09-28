@@ -646,8 +646,11 @@
    "repoLabel": "openstatus · 9.1k★",
    "pr": 2780,
    "createdAt": "2026-09-27T11:27:24Z",
-   "status": "waiting"
+   "status": "closed",
+   "closedAt": "2026-09-28T13:32:09Z",
+   "closedReason": "메인테이너가 V1 API 폐기 예정이라고 밝혀 우리가 닫았다",
+   "closedReasonEn": "we closed it after the maintainer said the V1 API is deprecated"
   }
  ],
- "generatedAt": "2026-09-27T11:28:45.613Z"
+ "generatedAt": "2026-09-28T13:32:09Z"
 }
