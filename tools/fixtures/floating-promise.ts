@@ -37,3 +37,22 @@ export async function withVoid(): Promise<void> {
 export async function withAwait(): Promise<void> {
   await awaited();
 }
+
+// relayed: 바깥 객체 메서드와 이름이 같은 옵션 콜백을 넘겨준다. 메서드는 맨 이름으로
+// 호출될 수 없으니 이 `relayed(...)` 는 구조분해한 옵션이지 async 메서드가 아니다.
+// supabase studio mutation 템플릿 285곳이 이 모양이었다. [FP:floating-method-vs-bare-call]
+export function useRelay({ relayed }: { relayed: (e: Error) => void }) {
+  return {
+    async relayed(error: Error): Promise<void> {
+      relayed(error);
+    },
+  };
+}
+
+// flushed: 클래스 메서드를 this 로 await 없이 부른다 — 이건 여전히 잡아야 한다.
+export class Queue {
+  async flushed(): Promise<void> {}
+  async close(): Promise<void> {
+    this.flushed();
+  }
+}

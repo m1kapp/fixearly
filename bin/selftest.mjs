@@ -341,10 +341,11 @@ if (generatedSrc) {
       file: "floating-promise.ts",
       key: "floatingPromise",
       label: "floating promise",
-      hit: ["drained"],
+      hit: ["drained", "flushed"],
       // guarded 는 async 밖이라 await 를 못 붙이고, chained 는 .catch() 로 처리했고,
       // voided 는 void 로 의도를 밝혔고, awaited 는 정상적으로 기다린다.
-      miss: ["guarded", "chained", "voided", "awaited"],
+      // relayed 는 바깥 메서드와 이름만 같은 옵션 콜백이다(supabase 285곳).
+      miss: ["guarded", "chained", "voided", "awaited", "relayed"],
       // 출력 줄: `    drained() — src/...:15`
       namePattern: /^\s{4}([A-Za-z_$][\w$]*)\(\) — /gm,
     },
