@@ -32,9 +32,10 @@
 | [ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 머지 | 메인테이너가 병렬화 변경을 승인한 뒤 머지 |
 | [ghost#29831](https://github.com/TryGhost/Ghost/pull/29831) | 머지 | — |
 | [n8n#34899](https://github.com/n8n-io/n8n/pull/34899) | 머지 | 봇이 요구한 changeset prefix 만 고치고 통과 |
+| [react#37699](https://github.com/facebook/react/pull/37699) | 머지 | — |
 | [angular#70690](https://github.com/angular/angular/pull/70690) | 머지 | — |
+| [angular#70977](https://github.com/angular/angular/pull/70977) | 머지 | — |
 | [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 승인 | — |
-| [angular#70977](https://github.com/angular/angular/pull/70977) | 승인 | — |
 | [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 닫힘 | 상위 #2751 의존성 업데이트로 Hono 4.13.8·node-server 2.1.1이 반영돼 보안 목표가 충족됐다. 이 PR은 미병합 |
 | [openstatus#2780](https://github.com/openstatusHQ/openstatus/pull/2780) | 닫힘 | 메인테이너가 V1 API 폐기 예정이라고 밝혀 우리가 닫았다 |
 | [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 닫힘 | 우리가 접었다 — 중앙 1일인 곳에서 34일째 사람 반응 0. 이 저장소 외부 PR 수락률 18% |
@@ -326,15 +327,13 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [angular#70977](https://github.com/angular/angular/pull/70977) | 쓰기만 하는 컬렉션 | 🔵 승인 · 머지 대기 | 1일째 / 보통 2일 |
-| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 33일째 / 보통 1일 · 보류 |
-| [ghost#31019](https://github.com/TryGhost/Ghost/pull/31019) | 순차 I/O | ⚪ 대기 | 1일째 / 보통 1일 |
-| [react#37699](https://github.com/facebook/react/pull/37699) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 1일째 / 보통 1일 |
-| [rollup#6534](https://github.com/rollup/rollup/pull/6534) | O(n²) | ⚪ 대기 | 1일째 / 보통 6일 |
-| [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 1일째 / 보통 1일 |
-| [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 1일째 / 보통 1일 |
+| [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 버려진 Promise | 🔵 승인 · 머지 대기 | 36일째 / 보통 1일 · 보류 |
+| [ghost#31019](https://github.com/TryGhost/Ghost/pull/31019) | 순차 I/O | ⚪ 대기 | 4일째 / 보통 1일 |
+| [rollup#6534](https://github.com/rollup/rollup/pull/6534) | O(n²) | ⚪ 대기 | 4일째 / 보통 6일 |
+| [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 4일째 / 보통 1일 |
+| [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 4일째 / 보통 1일 |
 
-**열린 것 7건(보류 1건 빼면 6건).** 판정 난 41건 중 머지 16 · 승인 2 · 닫힘 23.
+**열린 것 5건(보류 1건 빼면 4건).** 판정 난 42건 중 머지 18 · 승인 1 · 닫힘 23.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -413,7 +412,7 @@ directus 를 닫은 것 같은 영역 판단이 끼어들 여지가 없다. 리�
 | ~~angular~~ | `slot_allocation.ts:25` · `temporary_variables.ts:57` | **머지됨 → #70690** |
 | ~~angular~~ | `migration.ts:261` | **[제출됨 → #70977](https://github.com/angular/angular/pull/70977)** · 2026-09-27 `main` `319a3c4`에서 `skippedInputs` 읽기 0 확인 · 마이그레이션 Bazel 테스트·Prettier 통과 · #70690 머지로 저장소당 1건 제한 해소 |
 | react | `renderer.js:817` | 읽는 코드가 `/* DISABLED: …/pull/28417 */` 주석 안에 있다 |
-| ~~react~~ | `CollectHoistablePropertyLoads.ts:499` · `AlignReactiveScopesToBlockScopesHIR.ts:78` | **[제출됨 → #37699](https://github.com/react/react/pull/37699)** · #37698은 잘못된 계정으로 제출해 닫음 · 최신 `main` `d083ec1`에서 읽기 0 확인 · 미사용 Set·Map 및 기록 9줄 제거 · 컴파일러 스냅샷 1,827/1,827·Prettier 통과 · **irontaek Meta CLA 통과(2026-09-27)** |
+| ~~react~~ | `CollectHoistablePropertyLoads.ts:499` · `AlignReactiveScopesToBlockScopesHIR.ts:78` | **[머지됨 → #37699](https://github.com/react/react/pull/37699) (2026-09-29, javache)** · #37698은 잘못된 계정으로 제출해 닫음 · 최신 `main` `d083ec1`에서 읽기 0 확인 · 미사용 Set·Map 및 기록 9줄 제거 · 컴파일러 스냅샷 1,827/1,827·Prettier 통과 · **irontaek Meta CLA 통과(2026-09-27)** |
 | ~~vscode~~ | `chatToolPicker.ts:261` | **제출됨 → #334230** |
 | ~~next.js~~ | `export/index.ts:292` · `:316` | **탈락** — 진짜 dead state지만 현재 기여 가이드가 사소한 정리 PR을 명시적으로 거른다 |
 | ~~astro~~ | `core/build/static-build.ts:91` | **제출됨 → #17987** · 보류 사유(T1 버그 선행)는 그 건(#17665)이 회수되며 해소됐다 |
@@ -763,7 +762,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | n8n | 100% | 1.1일 | 21/21 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
 | langfuse | 87% | 0.0일 | 13/15 | 표본 부족 | 판정 경험 있음 |
 | Ghost | 86% | 0.6일 | 37/43 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
-| angular | 83% | 2.1일 | 34/41 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
+| angular | 83% | 2.1일 | 34/41 | **1차 통과** | 판정 경험 있음 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
 | postcss | 81% | 0.2일 | 42/52 | **1차 통과** | — |
 | novu | 77% | 0.1일 | 24/31 | 컷 | 판정 경험 있음 |
 | rollup | 77% | 5.6일 | 10/13 | 컷 | 열린 PR 있음 — 저장소당 1건 · 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요 |
@@ -789,7 +788,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | prettier | 29% | 1.1일 | 7/24 | 컷 | — |
 | typebot.io | 29% | 16.9일 | 5/17 | 컷 | 판정 경험 있음 |
 | immich | 26% | 0.5일 | 6/23 | 컷 | 판정 경험 있음 · 게이트 0 — `changelog:*` 라벨이 메인테이너 전용 |
-| react | 26% | 0.9일 | 9/35 | 컷 | 열린 PR 있음 — 저장소당 1건 · 후보가 `/* DISABLED */` 주석 건이라 PR 보다 이슈가 맞다 |
+| react | 26% | 0.9일 | 9/35 | 컷 | 판정 경험 있음 · 후보가 `/* DISABLED */` 주석 건이라 PR 보다 이슈가 맞다 |
 | next.js | 22% | 16.1일 | 9/41 | 컷 | 커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시 · PR 템플릿: 외부 기여자 PR 설명은 사람이 직접 써야 함 |
 | webpack | 20% | 0.6일 | 1/5 | 컷 | 게이트 0 — AGENTS.md 가 PR 본문 양식(Use of AI 섹션 필수, governance AI_POLICY: human-in-the-loop·질문에 답할 수 있어야 함)과 Co-authored-by 금지, 커밋 author 는 사람만을 REQUIRED 로 둔다 |
 | cal.diy | 17% | 3.1일 | 10/60 | 컷 | 판정 경험 있음 · 게이트 0 — 외부 PR 에서 `required` 잡이 항상 실패 |
