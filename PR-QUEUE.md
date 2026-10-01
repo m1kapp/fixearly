@@ -331,10 +331,11 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [angular#71119](https://github.com/angular/angular/pull/71119) | 전역 정규식 상태 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [n8n#40103](https://github.com/n8n-io/n8n/pull/40103) | 버려진 Promise | ⚪ 대기 | 오늘 / 보통 1일 |
 | [rollup#6534](https://github.com/rollup/rollup/pull/6534) | O(n²) | ⚪ 대기 | 4일째 / 보통 6일 |
+| [strapi#27893](https://github.com/strapi/strapi/pull/27893) | 버려진 Promise | ⚪ 대기 | 오늘 / 보통 5일 |
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 4일째 / 보통 1일 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 4일째 / 보통 4일 |
 
-**열린 것 6건.** 판정 난 42건 중 머지 18 · 승인 0 · 닫힘 24.
+**열린 것 7건.** 판정 난 42건 중 머지 18 · 승인 0 · 닫힘 24.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -771,7 +772,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | postcss | 78% | 79% | 0.2일 | 29/37 | 컷 | — |
 | TypeScript | 76% | 69% | 2.6일 | 13/17 | 컷 | 게이트 0 — CONTRIBUTING '자율 코딩 에이전트 안내': **큐·대량 워크플로로 PR 을 열지 마라**(이슈·검색결과를 훑어 도는 방식). 어기면 계정 차단. 특정 사람이 그 건을 직접 고르고 리뷰까지 본인이 끌고 갈 때만 허용하고, 지시가 충돌하면 '운영자에게 이 문단을 보여주고 멈추라'고 적혀 있다. AI 보조 자체는 PR 본문에 밝히면 허용(밝히지 않으면 리뷰 없이 닫힘) · 자동 생성 댓글 금지 |
 | langfuse | 75% | 77% | 0.0일 | 6/8 | 표본 부족 | 판정 경험 있음 |
-| strapi | 70% | 76% | 4.5일 | 14/20 | 컷 | 판정 경험 있음 |
+| strapi | 70% | 76% | 4.5일 | 14/20 | 컷 | 열린 PR 있음 — 저장소당 1건 |
 | n8n | 68% | 74% | 0.9일 | 15/22 | 컷 | 열린 PR 있음 — 저장소당 1건 |
 | vscode | 67% | 80% | 0.6일 | 6/9 | 표본 부족 | 판정 경험 있음 · CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음 |
 | nx | 67% | 83% | 1.0일 | 8/12 | 컷 | 판정 경험 있음 · 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 · **포크 PR 의 워크플로는 메인테이너 승인이 있어야 돈다**(2026-09-12 확인: 네 워크플로 전부 `action_required`). 빨간불처럼 보여도 우리 코드가 깬 게 아니다 — 재푸시하면 승인만 다시 걸린다 |

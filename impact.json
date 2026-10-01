@@ -133,6 +133,16 @@
    "closedReasonEn": "we closed it — 14 days with no response in a repo whose median is 2 days"
   },
   {
+   "title": "try/catch 안 릴리즈 정리를 await 안 함",
+   "titleEn": "release cleanup not awaited inside its try/catch",
+   "type": "버려진 Promise (try/catch 로 감싼 async 호출에 await 가 없어 catch 가 안 돈다 — 로그 대신 unhandled rejection)",
+   "repo": "strapi/strapi",
+   "repoLabel": "strapi · 73.3k★",
+   "pr": 27893,
+   "status": "waiting",
+   "createdAt": "2026-10-01T15:10:54Z"
+  },
+  {
    "title": "parse-fields dedup O(n²)",
    "type": "O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1))",
    "repo": "directus/directus",
@@ -241,7 +251,7 @@
    "titleEn": "in-depth analytics serial awaits",
    "type": "독립 순차 await (독립 groupBy 3개 직렬 → Promise.all, 합→최댓값)",
    "repo": "baptisteArno/typebot.io",
-   "repoLabel": "typebot · 10.4k★",
+   "repoLabel": "typebot · 10.5k★",
    "pr": 2572,
    "createdAt": "2026-07-29T15:06:43Z",
    "status": "merged",
@@ -683,5 +693,5 @@
    "closedReasonEn": "we closed it after the maintainer said the V1 API is deprecated"
   }
  ],
- "generatedAt": "2026-10-01T14:03:55.523Z"
+ "generatedAt": "2026-10-01T15:12:00.480Z"
 }
