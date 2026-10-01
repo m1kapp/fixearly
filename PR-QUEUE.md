@@ -328,12 +328,13 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
 | [ghost#31019](https://github.com/TryGhost/Ghost/pull/31019) | 순차 I/O | ⚪ 대기 | 4일째 / 보통 1일 |
+| [angular#71119](https://github.com/angular/angular/pull/71119) | 전역 정규식 상태 | ⚪ 대기 | 오늘 / 보통 2일 |
 | [n8n#40103](https://github.com/n8n-io/n8n/pull/40103) | 버려진 Promise | ⚪ 대기 | 오늘 / 보통 1일 |
 | [rollup#6534](https://github.com/rollup/rollup/pull/6534) | O(n²) | ⚪ 대기 | 4일째 / 보통 6일 |
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 4일째 / 보통 1일 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 4일째 / 보통 1일 |
 
-**열린 것 5건.** 판정 난 42건 중 머지 18 · 승인 0 · 닫힘 24.
+**열린 것 6건.** 판정 난 42건 중 머지 18 · 승인 0 · 닫힘 24.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -762,7 +763,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | n8n | 100% | 1.1일 | 21/21 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
 | langfuse | 87% | 0.0일 | 13/15 | 표본 부족 | 판정 경험 있음 |
 | Ghost | 86% | 0.6일 | 37/43 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
-| angular | 83% | 2.1일 | 34/41 | **1차 통과** | 판정 경험 있음 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
+| angular | 83% | 2.1일 | 34/41 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
 | postcss | 81% | 0.2일 | 42/52 | **1차 통과** | — |
 | novu | 77% | 0.1일 | 24/31 | 컷 | 판정 경험 있음 |
 | rollup | 77% | 5.6일 | 10/13 | 컷 | 열린 PR 있음 — 저장소당 1건 · 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요 |
