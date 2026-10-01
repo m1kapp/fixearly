@@ -68,7 +68,9 @@ class ImpactCardTimeTest(unittest.TestCase):
         self.assertIn("건 PR 머지 성공 · 목표 100건", html)
         self.assertNotIn('id="impact-prs"', html)
         self.assertNotIn('id="impact-pending"', html)
-        self.assertIn("PR 머지 · 승인 후 장기 대기", grid)
+        # 승인 대기 건이 있을 때만 본다 — n8n#37047 이 닫히자 승인 건이 0 이 됐다.
+        if any(f["status"] == "approved" for f in findings):
+            self.assertIn("PR 머지 · 승인 후 장기 대기", grid)
 
 
 if __name__ == "__main__":
