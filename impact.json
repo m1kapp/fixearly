@@ -310,7 +310,7 @@
    "titleEn": "unused Map in resize handler",
    "type": "쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제)",
    "repo": "excalidraw/excalidraw",
-   "repoLabel": "excalidraw · 133.3k★",
+   "repoLabel": "excalidraw · 133.4k★",
    "pr": 11805,
    "createdAt": "2026-08-01T14:22:45Z",
    "status": "closed",
@@ -590,6 +590,16 @@
    }
   },
   {
+   "title": "::ng-deep 감지 정규식 lastIndex 누수",
+   "titleEn": "::ng-deep detection leaks regex lastIndex",
+   "type": "전역 정규식 상태 (/g 정규식을 .test() 해 lastIndex 가 다음 규칙·스타일시트로 새어 ::ng-deep 를 놓침 → 비전역 사본)",
+   "repo": "angular/angular",
+   "repoLabel": "angular · 101k★",
+   "pr": 71119,
+   "status": "waiting",
+   "createdAt": "2026-10-01T14:02:45Z"
+  },
+  {
    "title": "React 컴파일러 패스의 쓰기만 하는 컬렉션",
    "titleEn": "write-only collections in React Compiler passes",
    "type": "쓰기만 하는 컬렉션 (propagateNonNull 의 terminalPreds Set · alignReactiveScopesToBlockScopesHIR 의 placeScopes Map — 기록만 하고 읽지 않음)",
@@ -673,5 +683,5 @@
    "closedReasonEn": "we closed it after the maintainer said the V1 API is deprecated"
   }
  ],
- "generatedAt": "2026-10-01T13:46:07.294Z"
+ "generatedAt": "2026-10-01T14:03:55.523Z"
 }
