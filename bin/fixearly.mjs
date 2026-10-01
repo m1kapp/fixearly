@@ -1622,19 +1622,24 @@ function analyzeTextbookIssues(ts, fileContents) {
 
     // ── A) floating promise 준비: 이 파일에서 선언된 async 함수 이름 수집.
     // 로컬 선언만 본다 — 타입 정보 없이 "프라미스를 반환한다"를 확신할 수 있는 유일한 범위다.
+    // 가드 [FP:floating-method-vs-bare-call]: 메서드·클래스 필드는 맨 이름으로 호출될 수 없다.
+    // 맨 이름 호출은 함수 선언·변수 대입 함수와만, `this.x()` 는 메서드·필드와만 맞춘다.
+    // supabase studio 의 mutation 템플릿 285곳 — `async onError() { onError(...) }` 안의 호출은
+    // 구조분해한 옵션 콜백인데 바깥 메서드 이름과 같아서 잡혔다(2026-10-01).
     const asyncNames = new Set();
+    const asyncMemberNames = new Set();
     {
       const collect = (n) => {
         const isAsync = (node) =>
           node.modifiers?.some((m) => m.kind === ts.SyntaxKind.AsyncKeyword);
         if (ts.isFunctionDeclaration(n) && isAsync(n) && n.name) asyncNames.add(n.name.getText(sf));
-        if (ts.isMethodDeclaration(n) && isAsync(n) && n.name) asyncNames.add(n.name.getText(sf));
+        if (ts.isMethodDeclaration(n) && isAsync(n) && n.name) asyncMemberNames.add(n.name.getText(sf));
         if (ts.isVariableDeclaration(n) && n.initializer && ts.isIdentifier(n.name) &&
             (ts.isArrowFunction(n.initializer) || ts.isFunctionExpression(n.initializer)) && isAsync(n.initializer))
           asyncNames.add(n.name.getText(sf));
         if (ts.isPropertyDeclaration(n) && n.initializer && n.name &&
             (ts.isArrowFunction(n.initializer) || ts.isFunctionExpression(n.initializer)) && isAsync(n.initializer))
-          asyncNames.add(n.name.getText(sf));
+          asyncMemberNames.add(n.name.getText(sf));
         ts.forEachChild(n, collect);
       };
       ts.forEachChild(sf, collect);
@@ -1855,7 +1860,8 @@ function analyzeTextbookIssues(ts, fileContents) {
         const name = ts.isIdentifier(callee) ? callee.getText(sf)
           : (ts.isPropertyAccessExpression(callee) && callee.expression.kind === ts.SyntaxKind.ThisKeyword)
             ? callee.name.getText(sf) : null;
-        if (name && asyncNames.has(name)) {
+        const names = ts.isIdentifier(callee) ? asyncNames : asyncMemberNames;
+        if (name && names.has(name)) {
           floatingPromise.push({ file, line: lineOf(node), name });
         }
       }
