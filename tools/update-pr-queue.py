@@ -156,16 +156,18 @@ if os.path.exists(_gates_path):
     GATES = json.load(open(_gates_path, encoding="utf-8")).get("gates", {})
 
 ACCEPT_CUT = 80      # 1차 저장소 필터. 개별 PR 의 병합 확률은 아니다.
-MIN_CLOSED = 20      # 작은 표본의 높은 수락률은 근거로 쓰지 않는다.
+# 판정은 '지나가는 기여자'(표본 안 PR 2건 이하 저자) 수락률로 한다. 비멤버 단골이
+# 표본을 채우면 전체 외부 수락률이 부풀려진다 — prisma 90% 가 지나가는 기여자로는 50%.
+MIN_CLOSED = 10      # 지나가는 기여자 닫힌 PR 이 이보다 적으면 근거로 쓰지 않는다.
 SLOW_MEDIAN = 3      # 중앙 머지일이 이보다 크면 후순위
 
 def verdict(rate, middle, closed):
     if rate is None:
         return "표본 없음"
-    if rate < ACCEPT_CUT:
-        return "컷"
     if closed is None or closed < MIN_CLOSED:
         return "표본 부족"
+    if rate < ACCEPT_CUT:
+        return "컷"
     if middle is None:
         return "1차 통과"
     return "1차 통과 · 후순위(느림)" if middle > SLOW_MEDIAN else "**1차 통과**"
@@ -174,22 +176,25 @@ open_repos = {f["repo"] for f in findings if f.get("status") in OPEN}
 done_repos = {f["repo"] for f in findings if f.get("status") in ("merged", "closed")}
 rot = []
 for repo, m in MERGE_TIMES.items():
-    rate, middle = m.get("acceptancePct"), m.get("medianDays")
+    rate, middle = m.get("driveByAcceptancePct"), m.get("medianDays")
     note = GATES.get(repo, "")
     if repo in open_repos:
         note = ("열린 PR 있음 — 저장소당 1건" + (" · " + note if note else ""))
     elif repo in done_repos:
         note = ("판정 경험 있음" + (" · " + note if note else ""))
     rot.append((rate is None, -(rate or 0), middle if middle is not None else 1e9,
-                repo, rate, middle, m.get("mergedExternal"), m.get("closedExternal"), note))
+                repo, rate, middle, m.get("driveByMerged"), m.get("driveByClosed"), note,
+                m.get("acceptancePct")))
 rot.sort()
-rbody = ["| 저장소 | 수락률 | 중앙 | 외부 머지 | 판정 | 메모 |", "|---|---|---|---|---|---|"]
-for _, _, _, repo, rate, middle, mg, cl, note in rot:
+rbody = ["| 저장소 | 지나가는 기여자 수락률 | 전체 외부 | 중앙 | 지나가는 머지 | 판정 | 메모 |",
+         "|---|---|---|---|---|---|---|"]
+for _, _, _, repo, rate, middle, mg, cl, note, all_rate in rot:
     short = repo.split("/")[-1]
     # 외부 PR 이 아직 안 닫힌 저장소는 중앙값이 없다(nocodb 0/3). 그때도 표는 나와야 한다 —
     # 여기서 죽으면 "새 후보를 큐에 넣었더니 생성기가 멈추는" 모양이 된다.
     mid = f"{middle:.1f}일" if middle is not None else "표본 없음"
     rbody.append(f"| {short} | {rate if rate is not None else '—'}% | "
+                 f"{all_rate if all_rate is not None else '—'}% | "
                  f"{mid} | {mg}/{cl} | {verdict(rate, middle, cl)} | {note or '—'} |")
 rblock = R_BEGIN + "\n" + "\n".join(rbody) + "\n" + R_END
 
