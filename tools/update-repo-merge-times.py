@@ -22,6 +22,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = f"{ROOT}/data/repo-merge-times.json"
 SAMPLE_SIZE = 60
 INTERNAL = {"OWNER", "MEMBER", "COLLABORATOR"}
+DRIVE_BY_MAX = 2
 
 
 def parse_time(value):
@@ -94,6 +95,16 @@ def main():
                 continue
             merged.append((parse_time(pr["merged_at"]) - parse_time(pr["created_at"])).total_seconds() / 86400)
 
+        # 지나가는 외부 기여자 — 표본 안에서 PR 이 2건 이하인 저자. 우리가 이 자리다.
+        # 비멤버여도 표본을 독차지하는 저자는 사실상 내부다: prisma 의 "외부 54/60" 중
+        # 44건이 한 계정이었고, 그들을 빼면 3/6 이었다(2026-10-01). 판정은 이 값으로 한다.
+        per_author = {}
+        for pr in external:
+            login = pr["user"]["login"]
+            per_author[login] = per_author.get(login, 0) + 1
+        drive_by = [pr for pr in external if per_author[pr["user"]["login"]] <= DRIVE_BY_MAX]
+        drive_by_merged = sum(1 for pr in drive_by if pr.get("merged_at"))
+
         result[repo] = {
             "medianDays": median(merged),
             "averageDays": round(sum(merged) / len(merged), 1) if merged else None,
@@ -103,12 +114,16 @@ def main():
             # 원래 대부분 거절인지(typeorm 8%). 다음에 어디를 고를지가 여기서 갈린다.
             "acceptancePct": round(100 * len(merged) / len(external)) if external else None,
             "closedExternal": len(external),
+            "driveByAcceptancePct": round(100 * drive_by_merged / len(drive_by)) if drive_by else None,
+            "driveByMerged": drive_by_merged,
+            "driveByClosed": len(drive_by),
             "sampledClosed": len(pulls),
         }
         mid = result[repo]["medianDays"]
         rate = result[repo]["acceptancePct"]
         shown = f"중앙 {mid:.1f}일" if mid is not None else "표본 없음"
-        print(f"  {repo}: {shown} · 수락률 {rate}% (외부 {len(merged)}/{len(external)})")
+        print(f"  {repo}: {shown} · 수락률 {rate}% (외부 {len(merged)}/{len(external)})"
+              f" · 지나가는 기여자 {drive_by_merged}/{len(drive_by)}")
 
     payload = {
         "generatedAt": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),

@@ -113,6 +113,22 @@
     {
       "repo": "baptisteArno/typebot.io",
       "note": "2026-09-13 재훑음 · 같이자람 0건"
+    },
+    {
+      "repo": "supabase/supabase",
+      "note": "2026-10-01 140곳 측정에서 지나가는 기여자 16/18 · 훑음: MFA forEach(async) 는 #48942 가 선점"
+    },
+    {
+      "repo": "react-hook-form/react-hook-form",
+      "note": "2026-10-01 지나가는 기여자 12/14 · 훑음: 후보 0"
+    },
+    {
+      "repo": "nestjs/nest",
+      "note": "2026-10-01 지나가는 기여자 10/12 · CLA · 훑음: 후보 0"
+    },
+    {
+      "repo": "prisma/prisma",
+      "note": "2026-10-01 전체 외부 90% 가 단골 2명 몫 — 지나가는 기여자 3/6 · 쓰기만 하는 컬렉션 3곳 보유"
     }
   ]
 }
