@@ -293,6 +293,7 @@ BLURB = {
     "calcom/cal.diy": ("일정 예약", "scheduling"),
     "payloadcms/payload": ("헤드리스 CMS · Next.js", "headless CMS"),
     "strapi/strapi": ("헤드리스 CMS", "headless CMS"),
+    "grafana/grafana": ("관측·대시보드", "observability dashboards"),
     "baptisteArno/typebot.io": ("챗봇 빌더", "chatbot builder"),
     "typeorm/typeorm": ("TypeScript ORM", "TypeScript ORM"),
     "TryGhost/Ghost": ("퍼블리싱·뉴스레터", "publishing & newsletters"),

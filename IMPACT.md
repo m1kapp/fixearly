@@ -60,6 +60,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `Vite 입력 CSS 의존성 기록 경합` | [tailwindcss · 97.8k★](https://github.com/tailwindlabs/tailwindcss) | 버려진 Promise (입력 CSS 파일 시각 기록을 기다리지 않아 재빌드 누락) | [#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | ⚪ awaiting review | — |
 | `ES 청크 재내보내기 이름 반복 검색` | [rollup · 26.3k★](https://github.com/rollup/rollup) | O(n²) 배열 조회 (재내보내기마다 렌더된 export 배열 탐색 → Set) | [#6534](https://github.com/rollup/rollup/pull/6534) | ⚪ awaiting review | — |
 | `알림 목록의 모니터 관계 반복 검색` | [openstatus · 9.2k★](https://github.com/openstatusHQ/openstatus) | O(n²) 배열 조회 (알림마다 전체 모니터 관계 재검색 → Map 그룹화) | [#2780](https://github.com/openstatusHQ/openstatus/pull/2780) | ❌ closed | — |
+| `히트맵 버킷 증분의 쓰기만 하는 Map` | [grafana · 77k★](https://github.com/grafana/grafana) | 쓰기만 하는 컬렉션 (uPlot 에서 옮겨온 fixedDec — 채우기만 하고 읽지 않는다) | [#133985](https://github.com/grafana/grafana/pull/133985) | ❌ closed | — |
 
 ## 규칙
 

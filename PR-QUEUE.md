@@ -58,6 +58,7 @@
 | [nx#36633](https://github.com/nrwl/nx/pull/36633) | 닫힘 | 우리가 접었다 — 34일째 사람 리뷰 0(반응은 봇뿐), 09-12 핑에도 무응답. 슬롯을 회수했다 |
 | [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 닫힘 | 승인 뒤 merge queue 의 CLA 검사가 PR 을 연 계정(yoominho91)을 미서명으로 잡았다. 같은 커밋으로 irontaek 이 #40103 을 다시 열었다 |
 | [react#37698](https://github.com/facebook/react/pull/37698) | 닫힘 | 잘못된 GitHub 계정(yoominho91)으로 제출해 닫고 irontaek의 #37699로 교체했다 |
+| [grafana#133985](https://github.com/grafana/grafana/pull/133985) | 닫힘 | 우리가 접었다 — 게이트 0 을 안 읽었다: 모든 커밋 서명 필수인데 서명 키가 없었다. 브랜치를 되돌리자 GitHub 가 자동으로 닫았다 |
 | [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 닫힘 | 우리가 접었다 — 12일째 사람 리뷰 0(반응은 봇뿐), 09-12 핑에도 무응답. 슬롯을 회수했다 |
 <!-- /auto:decided -->
 
@@ -335,7 +336,7 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 4일째 / 보통 1일 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 4일째 / 보통 4일 |
 
-**열린 것 7건.** 판정 난 42건 중 머지 18 · 승인 0 · 닫힘 24.
+**열린 것 7건.** 판정 난 43건 중 머지 18 · 승인 0 · 닫힘 25.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
