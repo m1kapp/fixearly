@@ -691,7 +691,20 @@
    "closedAt": "2026-09-28T13:32:09Z",
    "closedReason": "메인테이너가 V1 API 폐기 예정이라고 밝혀 우리가 닫았다",
    "closedReasonEn": "we closed it after the maintainer said the V1 API is deprecated"
+  },
+  {
+   "title": "히트맵 버킷 증분의 쓰기만 하는 Map",
+   "titleEn": "write-only decimals map in heatmap bucket increments",
+   "type": "쓰기만 하는 컬렉션 (uPlot 에서 옮겨온 fixedDec — 채우기만 하고 읽지 않는다)",
+   "repo": "grafana/grafana",
+   "repoLabel": "grafana · 77k★",
+   "pr": 133985,
+   "status": "closed",
+   "createdAt": "2026-10-01T15:19:50Z",
+   "closedAt": "2026-10-01T15:20:35Z",
+   "closedReason": "우리가 접었다 — 게이트 0 을 안 읽었다: 모든 커밋 서명 필수인데 서명 키가 없었다. 브랜치를 되돌리자 GitHub 가 자동으로 닫았다",
+   "closedReasonEn": "we closed it — missed gate 0: every commit must be signed and we had no signing key; resetting the branch auto-closed the PR"
   }
  ],
- "generatedAt": "2026-10-01T15:12:00.480Z"
+ "generatedAt": "2026-10-01T15:22:47.515Z"
 }
