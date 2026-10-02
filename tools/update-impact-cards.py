@@ -245,6 +245,17 @@ def delivery_timeline(f, key, pr_url, age_html):
         )
     release = f.get("release") or {}
     merged = f.get("mergedAt")
+    if release.get("channel") == "pending" and created and merged:
+        return (
+            f'<span class="iship pending">'
+            f'<span class="iship-step"><a {pr_link}><time>{created_month}</time>'
+            f'<span class="ko">PR 생성</span><span class="en">PR opened</span></a>{age_html}</span>'
+            f'<span class="iship-step now"><a {pr_link}><time>{month(merged)}</time>'
+            f'<span class="ko">PR 머지 <b>#{f["pr"]}</b></span>'
+            f'<span class="en">PR merged <b>#{f["pr"]}</b></span></a></span>'
+            f'<span class="iship-step todo"><span class="ko">릴리즈 대기</span>'
+            f'<span class="en">awaiting release</span></span></span>'
+        )
     version, released, release_url = (release.get("version"),
                                       release.get("releasedAt"),
                                       release.get("url"))
@@ -557,6 +568,7 @@ for r in noreason:
 missing = missing + noicon + nocount + notranslated + noreason
 missing_release = sorted(f"#{f['pr']}" for f in findings
                          if state_by_pr.get(str(f["pr"])) == "merged"
+                         and f.get("release", {}).get("channel") != "pending"
                          and not (f.get("release", {}).get("channel") in ("stable", "nightly")
                                   and f.get("release", {}).get("version")
                                   and f.get("release", {}).get("releasedAt")
