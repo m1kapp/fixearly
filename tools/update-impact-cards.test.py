@@ -21,6 +21,19 @@ class ImpactCardTimeTest(unittest.TestCase):
         self.assertEqual(grid.count("기여자 약 "), len(findings))
         self.assertIn(f'기여자 약 {counts["facebook/react"]:,}명', grid)
 
+    def test_merged_pr_can_await_release(self):
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        findings = json.loads((ROOT / "impact.json").read_text(encoding="utf-8"))["findings"]
+        for finding in findings:
+            if finding.get("release", {}).get("channel") != "pending":
+                continue
+            with self.subTest(pr=finding["pr"]):
+                card = next(card for card in re.findall(r'<article\b.*?</article>', html, re.S)
+                            if f'{finding["repo"]}/pull/{finding["pr"]}"' in card)
+                self.assertIn(f'PR merged <b>#{finding["pr"]}</b>', card)
+                self.assertIn('awaiting release', card)
+                self.assertNotIn('/releases/tag/', card)
+
     def test_elapsed_time_uses_registry_snapshot(self):
         result = subprocess.run(
             [sys.executable, ROOT / "tools/update-impact-cards.py", "--selftest"],

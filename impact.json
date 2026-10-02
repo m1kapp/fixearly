@@ -505,8 +505,12 @@
    "repo": "n8n-io/n8n",
    "repoLabel": "n8n · 206.4k★",
    "pr": 40103,
-   "status": "waiting",
-   "createdAt": "2026-10-01T13:44:30Z"
+   "status": "merged",
+   "createdAt": "2026-10-01T13:44:30Z",
+   "mergedAt": "2026-10-02T12:48:03Z",
+   "release": {
+    "channel": "pending"
+   }
   },
   {
    "title": "post relation 연결 반복 조회",
