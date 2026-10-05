@@ -734,8 +734,12 @@
    "repo": "orval-labs/orval",
    "repoLabel": "orval · 6.5k★",
    "pr": 4254,
-   "status": "waiting",
-   "createdAt": "2026-10-05T09:06:08Z"
+   "status": "merged",
+   "createdAt": "2026-10-05T09:06:08Z",
+   "mergedAt": "2026-10-05T13:10:11Z",
+   "release": {
+    "channel": "pending"
+   }
   },
   {
    "title": "M:N 소유 측 populate 가 부모마다 자식 전체를 다시 훑고 indexOf 로 정렬",
@@ -748,5 +752,5 @@
    "createdAt": "2026-10-05T12:30:43Z"
   }
  ],
- "generatedAt": "2026-10-05T12:31:47.679Z"
+ "generatedAt": "2026-10-05T13:12:55.856Z"
 }
