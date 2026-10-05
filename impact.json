@@ -762,9 +762,12 @@
    "repo": "mikro-orm/mikro-orm",
    "repoLabel": "mikro-orm · 9.2k★",
    "pr": 8393,
-   "status": "reviewing",
+   "status": "merged",
    "createdAt": "2026-10-05T13:28:33Z",
-   "engagedAt": "2026-10-05T13:38:22Z"
+   "mergedAt": "2026-10-05T14:49:17Z",
+   "release": {
+    "channel": "pending"
+   }
   },
   {
    "title": "표현식 unique·차집합이 원시값 배열도 깊은 비교로 이중 순회",
@@ -777,5 +780,5 @@
    "createdAt": "2026-10-05T13:39:05Z"
   }
  ],
- "generatedAt": "2026-10-05T13:40:20.560Z"
+ "generatedAt": "2026-10-05T14:52:07.810Z"
 }
