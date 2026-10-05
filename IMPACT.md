@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 21**
+> **fixearly 임팩트 점수: 22**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -63,7 +63,8 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `히트맵 버킷 증분의 쓰기만 하는 Map` | [grafana · 77.1k★](https://github.com/grafana/grafana) | 쓰기만 하는 컬렉션 (uPlot 에서 옮겨온 fixedDec — 채우기만 하고 읽지 않는다) | [#133985](https://github.com/grafana/grafana/pull/133985) | ❌ closed | — |
 | `M:N 역방향 populate 가 부모마다 자식 전체를 다시 훑음` | [mikro-orm · 9.2k★](https://github.com/mikro-orm/mikro-orm) | O(n²) 배열 조회 (부모 × 자식 filter — 한 번 훑어 Map 으로 묶으면 O(n+m)) | [#8391](https://github.com/mikro-orm/mikro-orm/pull/8391) | ✅ merged | +1 |
 | `읽지 않는 Set 이 리팩터 뒤에 남음` | [orval · 6.5k★](https://github.com/orval-labs/orval) | 쓰기만 하는 컬렉션 (add 만 하고 읽는 곳 0 — has() 를 쓰던 코드가 find() 로 바뀐 뒤 남은 흔적) | [#4254](https://github.com/orval-labs/orval/pull/4254) | ✅ merged | +1 |
-| `M:N 소유 측 populate 가 부모마다 자식 전체를 다시 훑고 indexOf 로 정렬` | [mikro-orm · 9.2k★](https://github.com/mikro-orm/mikro-orm) | O(n²) 배열 조회 (부모 × 자식 filter + indexOf 정렬 — 자식 위치를 Map 으로 한 번 색인) | [#8392](https://github.com/mikro-orm/mikro-orm/pull/8392) | ⚪ awaiting review | — |
+| `M:N 소유 측 populate 가 부모마다 자식 전체를 다시 훑고 indexOf 로 정렬` | [mikro-orm · 9.2k★](https://github.com/mikro-orm/mikro-orm) | O(n²) 배열 조회 (부모 × 자식 filter + indexOf 정렬 — 자식 위치를 Map 으로 한 번 색인) | [#8392](https://github.com/mikro-orm/mikro-orm/pull/8392) | ✅ merged | +1 |
+| `upsertMany 재조회 행을 엔티티마다 전부 비교` | [mikro-orm · 9.2k★](https://github.com/mikro-orm/mikro-orm) | O(n²) 배열 조회 (배치 × 재조회 행 comparator.matching — 엄격 비교 키 값으로 행을 한 번 묶어 같은 묶음만 비교) | [#8393](https://github.com/mikro-orm/mikro-orm/pull/8393) | ⚪ awaiting review | — |
 
 ## 규칙
 
