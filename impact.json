@@ -736,7 +736,17 @@
    "pr": 4254,
    "status": "waiting",
    "createdAt": "2026-10-05T09:06:08Z"
+  },
+  {
+   "title": "M:N 소유 측 populate 가 부모마다 자식 전체를 다시 훑고 indexOf 로 정렬",
+   "titleEn": "owning-side M:N populate rescans all children per owner and sorts with indexOf",
+   "type": "O(n²) 배열 조회 (부모 × 자식 filter + indexOf 정렬 — 자식 위치를 Map 으로 한 번 색인)",
+   "repo": "mikro-orm/mikro-orm",
+   "repoLabel": "mikro-orm · 9.2k★",
+   "pr": 8392,
+   "status": "waiting",
+   "createdAt": "2026-10-05T12:30:43Z"
   }
  ],
- "generatedAt": "2026-10-05T12:07:18.482Z"
+ "generatedAt": "2026-10-05T12:31:47.679Z"
 }
