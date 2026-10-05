@@ -860,6 +860,10 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | TanStack/virtual | O(n²) 3 | **전부 탈락**(2026-10-05). 안쪽이 lane 수(2~6)라 상수다. 단일 lane 은 이미 typed array 빠른 경로가 있다 |
 | happy-dom | O(n²)·스프레드 누적 14 | **전부 탈락**(2026-10-05). 리스너 수·조상 깊이·클래스 토큰 수라 작다. AI 보조는 PR 본문에 도구를 밝혀야 한다 |
 | mobx-state-tree | 스프레드 누적 1 | **탈락**(2026-10-05). 타입 검사 오류 누적이라 n 이 오류 개수다 |
+| vuejs/language-tools | O(n²) 12 | **전부 탈락**(2026-10-05). n 이 컴포넌트 확장자 목록·md 안 모호 구간 수·props 수라 작다 |
+| vuejs/router | O(n²) 2 | **탈락**(2026-10-05). 내비게이션 가드의 `matched` 는 중첩 라우트 깊이(1~4)다 |
+| nuxt/content | O(n²) 15 | **전부 탈락**(2026-10-05). `preview/files.ts` 의 `splice(findIndex(...), 1)` 은 못 찾으면 -1 로 마지막 항목을 지우는 진짜 결함 형태지만, 레거시 Studio 미리보기 코드라 "다음 버전들에서 모두 제거한다"고 공지돼 있다(docs/content/blog/studio-oss.md) |
+| konva · fastify-swagger · unplugin | O(n²) 14 | **전부 탈락**(2026-10-05). 레이어 수·상태 코드 수·플러그인 수라 작다. konva Transformer 는 노드 destroy 마다 `setNodes` 를 다시 걸지만 선택 노드 수가 보통 몇 개다. unplugin esbuild 파일 읽기는 이미 캐시된다 |
 
 ## 게이트 0 에서 막힌 곳
 
@@ -872,6 +876,8 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | immich | `changelog:*` 라벨 필수 — 메인테이너만 붙일 수 있다 |
 | cal.com 계열 | 외부 PR 에서 `required` 잡이 항상 실패 |
 | tiptap | 외부 PR 은 **작성자에게 배정된 이슈**에 연결돼야 한다 (사소한 오타 수정만 예외) — budibase 와 같은 구조 |
+| nuxt-modules/i18n | CONTRIBUTING "Never let an LLM speak for you" — PR 설명·댓글을 사람이 직접 써야 한다 (storybook·vite 와 같은 계열) |
+| vuejs/core · next.js | 지나가는 기여자 수락률 22% · 23% (2026-10-05 실측). next.js 는 커밋 서명 필수·사소한 정리 PR 거절 명시·PR 설명 사람 작성까지 겹친다 |
 
 ## 아직 안 훑은 곳
 
