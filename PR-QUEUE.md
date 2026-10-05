@@ -334,14 +334,15 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
 | [angular#71119](https://github.com/angular/angular/pull/71119) | 전역 정규식 상태 | 🔵 승인 · 머지 대기 | 3일째 / 보통 1일 |
+| [mikro-orm#8393](https://github.com/mikro-orm/mikro-orm/pull/8393) | O(n²) | 🟢 리뷰 진행 | 오늘 / 보통 1일 |
 | [ghost#31019](https://github.com/TryGhost/Ghost/pull/31019) | 순차 I/O | ⚪ 대기 | 8일째 / 보통 1일 · 보류 |
-| [mikro-orm#8393](https://github.com/mikro-orm/mikro-orm/pull/8393) | O(n²) | ⚪ 대기 | 오늘 / 보통 1일 |
+| [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 오늘 / 보통 3일 |
 | [rollup#6534](https://github.com/rollup/rollup/pull/6534) | O(n²) | ⚪ 대기 | 8일째 / 보통 3일 |
 | [strapi#27893](https://github.com/strapi/strapi/pull/27893) | 버려진 Promise | ⚪ 대기 | 3일째 / 보통 4일 |
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 8일째 / 보통 1일 · 보류 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 8일째 / 보통 2일 |
 
-**열린 것 7건(보류 2건 빼면 5건).** 판정 난 48건 중 머지 22 · 승인 1 · 닫힘 25.
+**열린 것 8건(보류 2건 빼면 6건).** 판정 난 48건 중 머지 22 · 승인 1 · 닫힘 25.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -779,7 +780,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | postcss | 78% | 78% | 0.2일 | 28/36 | 컷 | — |
 | rollup | 76% | 76% | 2.6일 | 13/17 | 컷 | 열린 PR 있음 — 저장소당 1건 · 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요 |
 | mongoose | 75% | 77% | 1.8일 | 12/16 | 컷 | 판정 경험 있음 |
-| n8n | 71% | 81% | 3.0일 | 10/14 | 컷 | 판정 경험 있음 |
+| n8n | 71% | 81% | 3.0일 | 10/14 | 컷 | 열린 PR 있음 — 저장소당 1건 |
 | pnpm | 67% | 92% | 0.4일 | 4/6 | 표본 부족 | 판정 경험 있음 · AI 작성 PR 본문에 agent disclosure 필수 · 전체 저장소 대신 영향 패키지 테스트 실행 |
 | angular | 67% | 71% | 0.8일 | 4/6 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
 | payload | 67% | 86% | 1.5일 | 4/6 | 표본 부족 | 판정 경험 있음 |

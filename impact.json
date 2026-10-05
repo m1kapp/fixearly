@@ -762,9 +762,20 @@
    "repo": "mikro-orm/mikro-orm",
    "repoLabel": "mikro-orm · 9.2k★",
    "pr": 8393,
+   "status": "reviewing",
+   "createdAt": "2026-10-05T13:28:33Z",
+   "engagedAt": "2026-10-05T13:38:22Z"
+  },
+  {
+   "title": "표현식 unique·차집합이 원시값 배열도 깊은 비교로 이중 순회",
+   "titleEn": "expression unique and set operations deep-compare even primitive arrays pairwise",
+   "type": "O(n²) 배열 조회 (lodash isEqual 쌍 비교 — 원시값만 있으면 Set 이 같은 답을 낸다)",
+   "repo": "n8n-io/n8n",
+   "repoLabel": "n8n · 206.7k★",
+   "pr": 40311,
    "status": "waiting",
-   "createdAt": "2026-10-05T13:28:33Z"
+   "createdAt": "2026-10-05T13:39:05Z"
   }
  ],
- "generatedAt": "2026-10-05T13:29:44.595Z"
+ "generatedAt": "2026-10-05T13:40:20.560Z"
 }
