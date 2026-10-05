@@ -866,6 +866,10 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | vuejs/router | O(n²) 2 | **탈락**(2026-10-05). 내비게이션 가드의 `matched` 는 중첩 라우트 깊이(1~4)다 |
 | nuxt/content | O(n²) 15 | **전부 탈락**(2026-10-05). `preview/files.ts` 의 `splice(findIndex(...), 1)` 은 못 찾으면 -1 로 마지막 항목을 지우는 진짜 결함 형태지만, 레거시 Studio 미리보기 코드라 "다음 버전들에서 모두 제거한다"고 공지돼 있다(docs/content/blog/studio-oss.md) |
 | konva · fastify-swagger · unplugin | O(n²) 14 | **전부 탈락**(2026-10-05). 레이어 수·상태 코드 수·플러그인 수라 작다. konva Transformer 는 노드 destroy 마다 `setNodes` 를 다시 걸지만 선택 노드 수가 보통 몇 개다. unplugin esbuild 파일 읽기는 이미 캐시된다 |
+| ant-design | O(n²)·스프레드 누적 8 | **전부 탈락**(2026-10-05). Masonry 위치 계산의 n 은 열 수(2~5)다. 나머지는 스타일 토큰 |
+| dify (web) | 순차 await 2 · O(n²) 111 | **탈락**(2026-10-05). 채팅 훅의 순차 await 2곳은 URL 파라미터를 로컬에서 푸는 계산이라 병렬화 이득이 없다. O(n²) 상위는 도구 목록·커서 수 |
+| supabase (pg-meta·docs·ui·www) | O(n²)·순차 await 40 | **전부 탈락**(2026-10-05). pg-meta 는 컬럼 수, docs 문제 해결 페이지의 순차 await 는 빌드 때 정적 생성, docs generator 는 빌드 스크립트다 |
+| three.js | O(n²) 8 | **전부 탈락**(2026-10-05). `makeClipAdditive` 는 클립 변환 1회(트랙 수백), 타임스탬프 쿼리 풀은 프레임 수다 |
 
 ## 게이트 0 에서 막힌 곳
 
@@ -879,6 +883,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | cal.com 계열 | 외부 PR 에서 `required` 잡이 항상 실패 |
 | tiptap | 외부 PR 은 **작성자에게 배정된 이슈**에 연결돼야 한다 (사소한 오타 수정만 예외) — budibase 와 같은 구조 |
 | nuxt-modules/i18n | CONTRIBUTING "Never let an LLM speak for you" — PR 설명·댓글을 사람이 직접 써야 한다 (storybook·vite 와 같은 계열) |
+| dify | CONTRIBUTING: PR 에 이슈 연결(`Fixes #`) 필수 · "문제·해결·테스트 결과를 본인 말로" — PR 설명을 사람이 써야 하는 계열에 가깝다 |
 | vuejs/core · next.js | 지나가는 기여자 수락률 22% · 23% (2026-10-05 실측). next.js 는 커밋 서명 필수·사소한 정리 PR 거절 명시·PR 설명 사람 작성까지 겹친다 |
 
 ## 아직 안 훑은 곳
