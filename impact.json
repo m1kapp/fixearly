@@ -748,9 +748,23 @@
    "repo": "mikro-orm/mikro-orm",
    "repoLabel": "mikro-orm · 9.2k★",
    "pr": 8392,
+   "status": "merged",
+   "createdAt": "2026-10-05T12:30:43Z",
+   "mergedAt": "2026-10-05T13:15:28Z",
+   "release": {
+    "channel": "pending"
+   }
+  },
+  {
+   "title": "upsertMany 재조회 행을 엔티티마다 전부 비교",
+   "titleEn": "upsertMany compares every reloaded row for every entity",
+   "type": "O(n²) 배열 조회 (배치 × 재조회 행 comparator.matching — 엄격 비교 키 값으로 행을 한 번 묶어 같은 묶음만 비교)",
+   "repo": "mikro-orm/mikro-orm",
+   "repoLabel": "mikro-orm · 9.2k★",
+   "pr": 8393,
    "status": "waiting",
-   "createdAt": "2026-10-05T12:30:43Z"
+   "createdAt": "2026-10-05T13:28:33Z"
   }
  ],
- "generatedAt": "2026-10-05T13:12:55.856Z"
+ "generatedAt": "2026-10-05T13:29:44.595Z"
 }

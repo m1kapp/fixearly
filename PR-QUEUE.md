@@ -23,6 +23,7 @@
 | [rollup#6482](https://github.com/rollup/rollup/pull/6482) | 머지 | — |
 | [rollup#6506](https://github.com/rollup/rollup/pull/6506) | 머지 | — |
 | [mikro-orm#8391](https://github.com/mikro-orm/mikro-orm/pull/8391) | 머지 | — |
+| [mikro-orm#8392](https://github.com/mikro-orm/mikro-orm/pull/8392) | 머지 | — |
 | [outline#13117](https://github.com/outline/outline/pull/13117) | 머지 | 질문 없이 머지 |
 | [pnpm#14032](https://github.com/pnpm/pnpm/pull/14032) | 머지 | — |
 | [nocodb#14309](https://github.com/nocodb/nocodb/pull/14309) | 머지 | 질문 없이 머지 |
@@ -334,13 +335,13 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 |---|---|---|---|
 | [angular#71119](https://github.com/angular/angular/pull/71119) | 전역 정규식 상태 | 🔵 승인 · 머지 대기 | 3일째 / 보통 1일 |
 | [ghost#31019](https://github.com/TryGhost/Ghost/pull/31019) | 순차 I/O | ⚪ 대기 | 8일째 / 보통 1일 · 보류 |
-| [mikro-orm#8392](https://github.com/mikro-orm/mikro-orm/pull/8392) | O(n²) | ⚪ 대기 | 오늘 / 보통 1일 |
+| [mikro-orm#8393](https://github.com/mikro-orm/mikro-orm/pull/8393) | O(n²) | ⚪ 대기 | 오늘 / 보통 1일 |
 | [rollup#6534](https://github.com/rollup/rollup/pull/6534) | O(n²) | ⚪ 대기 | 8일째 / 보통 3일 |
 | [strapi#27893](https://github.com/strapi/strapi/pull/27893) | 버려진 Promise | ⚪ 대기 | 3일째 / 보통 4일 |
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 8일째 / 보통 1일 · 보류 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 8일째 / 보통 2일 |
 
-**열린 것 7건(보류 2건 빼면 5건).** 판정 난 47건 중 머지 21 · 승인 1 · 닫힘 25.
+**열린 것 7건(보류 2건 빼면 5건).** 판정 난 48건 중 머지 22 · 승인 1 · 닫힘 25.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
