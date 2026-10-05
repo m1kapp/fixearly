@@ -884,6 +884,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | tiptap | 외부 PR 은 **작성자에게 배정된 이슈**에 연결돼야 한다 (사소한 오타 수정만 예외) — budibase 와 같은 구조 |
 | nuxt-modules/i18n | CONTRIBUTING "Never let an LLM speak for you" — PR 설명·댓글을 사람이 직접 써야 한다 (storybook·vite 와 같은 계열) |
 | dify | CONTRIBUTING: PR 에 이슈 연결(`Fixes #`) 필수 · "문제·해결·테스트 결과를 본인 말로" — PR 설명을 사람이 써야 하는 계열에 가깝다 |
+| node-red | 지나가는 기여자 12/13 · 중앙 1.1일로 통과하지만, PR 템플릿이 버그 수정이 아닌 PR 은 포럼·슬랙 논의를 먼저 요구한다("may well get rejected"). OpenJS CLA 서명도 필요. 에디터 플로우 가져오기의 `n.links.filter`(노드마다) 류 O(n²) 36곳은 이 문을 통과해야 낼 수 있다 (2026-10-05) |
 | vuejs/core · next.js | 지나가는 기여자 수락률 22% · 23% (2026-10-05 실측). next.js 는 커밋 서명 필수·사소한 정리 PR 거절 명시·PR 설명 사람 작성까지 겹친다 |
 
 ## 아직 안 훑은 곳
