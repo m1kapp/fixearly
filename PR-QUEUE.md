@@ -21,6 +21,7 @@
 | [openstatus#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | 머지 | — |
 | [rollup#6482](https://github.com/rollup/rollup/pull/6482) | 머지 | — |
 | [rollup#6506](https://github.com/rollup/rollup/pull/6506) | 머지 | — |
+| [mikro-orm#8391](https://github.com/mikro-orm/mikro-orm/pull/8391) | 머지 | — |
 | [outline#13117](https://github.com/outline/outline/pull/13117) | 머지 | 질문 없이 머지 |
 | [pnpm#14032](https://github.com/pnpm/pnpm/pull/14032) | 머지 | — |
 | [nocodb#14309](https://github.com/nocodb/nocodb/pull/14309) | 머지 | 질문 없이 머지 |
@@ -331,15 +332,14 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
 | [angular#71119](https://github.com/angular/angular/pull/71119) | 전역 정규식 상태 | 🔵 승인 · 머지 대기 | 3일째 / 보통 1일 |
-| [ghost#31019](https://github.com/TryGhost/Ghost/pull/31019) | 순차 I/O | ⚪ 대기 | 7일째 / 보통 1일 |
-| [mikro-orm#8391](https://github.com/mikro-orm/mikro-orm/pull/8391) | O(n²) | ⚪ 대기 | 오늘 / 보통 1일 |
+| [ghost#31019](https://github.com/TryGhost/Ghost/pull/31019) | 순차 I/O | ⚪ 대기 | 8일째 / 보통 1일 · 보류 |
 | [orval#4254](https://github.com/orval-labs/orval/pull/4254) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
-| [rollup#6534](https://github.com/rollup/rollup/pull/6534) | O(n²) | ⚪ 대기 | 7일째 / 보통 3일 |
+| [rollup#6534](https://github.com/rollup/rollup/pull/6534) | O(n²) | ⚪ 대기 | 8일째 / 보통 3일 |
 | [strapi#27893](https://github.com/strapi/strapi/pull/27893) | 버려진 Promise | ⚪ 대기 | 3일째 / 보통 4일 |
-| [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 7일째 / 보통 1일 |
-| [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 7일째 / 보통 2일 |
+| [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 8일째 / 보통 1일 · 보류 |
+| [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 8일째 / 보통 2일 |
 
-**열린 것 8건.** 판정 난 45건 중 머지 19 · 승인 1 · 닫힘 25.
+**열린 것 7건(보류 2건 빼면 5건).** 판정 난 46건 중 머지 20 · 승인 1 · 닫힘 25.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -767,7 +767,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | 저장소 | 지나가는 기여자 수락률 | 전체 외부 | 중앙 | 지나가는 머지 | 판정 | 메모 |
 |---|---|---|---|---|---|---|
 | orval | 100% | 97% | 0.1일 | 9/9 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
-| mikro-orm | 100% | 100% | 0.2일 | 9/9 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
+| mikro-orm | 100% | 100% | 0.2일 | 9/9 | 표본 부족 | 판정 경험 있음 |
 | Ghost | 100% | 91% | 0.4일 | 2/2 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
 | nx | 100% | 83% | 1.0일 | 10/10 | **1차 통과** | 판정 경험 있음 · 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 · **포크 PR 의 워크플로는 메인테이너 승인이 있어야 돈다**(2026-09-12 확인: 네 워크플로 전부 `action_required`). 빨간불처럼 보여도 우리 코드가 깬 게 아니다 — 재푸시하면 승인만 다시 걸린다 |
 | vscode | 100% | 96% | 1.5일 | 7/7 | 표본 부족 | 판정 경험 있음 · CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음 |
