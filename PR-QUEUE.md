@@ -853,6 +853,12 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | nest | O(n²) 10 (후보 9) | **전부 탈락**(2026-10-05). 모듈 프로바이더·버전 목록·데코레이터 속성처럼 n 이 작고 부트스트랩 1회다. `route-conflict-detector` 가 쌍마다 경로를 다시 토큰화하지만 `routeConflictPolicy` 를 켠 앱의 기동 시 1회라 중앙에서 이득이 없다 |
 | react-hook-form | O(n²) 1 · floating promise 2 | **전부 탈락**(2026-10-05). `createFormControl.ts:1018` 의 n 은 한 체크박스 그룹의 박스 수다. `_setValid()` 는 호출 11곳 중 대부분이 await 없이 부르는 의도된 fire-and-forget 이고 `callId` 로 늦은 결과를 버린다 |
 | supabase | studio 깊게 검증 2 · 순차 await | **전부 탈락**(2026-10-05). MFA `factors.ts:31` 의 forEach(async) 는 진짜 버그지만 남의 #48942 가 이미 열려 있다 · `storage-explorer.tsx:1137` 의 공유 참조 `fill` 은 원소를 인덱스 대입으로 통째로 바꿔 무해하다 · content folders 의 순차 await 2개는 self-hosted 로컬 파일 읽기다 |
+| pino · Inquirer.js | — | **낼 것 없음**(2026-10-05). 스윕 후보가 빈 catch 1건씩뿐이다 |
+| apexcharts | O(n²) 18 | **전부 탈락**(2026-10-05). n 이 시리즈 수·제외 인덱스·y축 수라 작다 |
+| recharts | O(n²)·스프레드 누적 9 | **전부 탈락**(2026-10-05). tick 수·막대 수·폴리곤 꼭짓점이라 작다 |
+| TanStack/virtual | O(n²) 3 | **전부 탈락**(2026-10-05). 안쪽이 lane 수(2~6)라 상수다. 단일 lane 은 이미 typed array 빠른 경로가 있다 |
+| happy-dom | O(n²)·스프레드 누적 14 | **전부 탈락**(2026-10-05). 리스너 수·조상 깊이·클래스 토큰 수라 작다. AI 보조는 PR 본문에 도구를 밝혀야 한다 |
+| mobx-state-tree | 스프레드 누적 1 | **탈락**(2026-10-05). 타입 검사 오류 누적이라 n 이 오류 개수다 |
 
 ## 게이트 0 에서 막힌 곳
 
@@ -864,6 +870,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | activepieces | `close-external-prs.yml` 이 외부 PR 을 자동으로 닫음 |
 | immich | `changelog:*` 라벨 필수 — 메인테이너만 붙일 수 있다 |
 | cal.com 계열 | 외부 PR 에서 `required` 잡이 항상 실패 |
+| tiptap | 외부 PR 은 **작성자에게 배정된 이슈**에 연결돼야 한다 (사소한 오타 수정만 예외) — budibase 와 같은 구조 |
 
 ## 아직 안 훑은 곳
 
