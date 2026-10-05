@@ -845,6 +845,9 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | payload | O(n²) 56 (후보 37) · 순차 await 6 | **전부 탈락**(2026-09-09). `runJSONJob:114` 은 워크플로 스텝 수(한 자릿수) · `find.ts:290` 은 진짜 O(docs×locks) 지만 n 이 페이지 크기(기본 10)라 중앙에서 이득이 없다 · `dataloader.ts:152` 는 우리가 접은 #17469 자리 그대로다 |
 | mongoose | O(n²) 13 | **전부 탈락**(2026-09-05). n 이 전부 스키마·프로젝션 크기라 유계다 — `document.js:2386`·`updateValidators.js:129` 는 `startsWith` 접두 매칭이라 Set 으로 안 바뀌고, `model.js:1505` 는 컬렉션 인덱스 수(수십), `schema.js:2776·2794` 는 모델 정의 시 1회, `queryHelpers.js:360` 은 경로 깊이(≈3) 다 |
 | mongoose | 루프 불변 인덱스 5 · 배열 for...in 2 | **오탐이었다.** 5건은 전부 오탐이라 가드 3계열을 넣었고(nx 4건도 같은 형태였다), for...in 2건 중 1건은 동명 변수 충돌이었다 — 남은 `model.js:1954` 는 진짜지만 관측 가능한 오동작이 없어 '요청받지 않은 정리'라 안 낸다 |
+| nest | O(n²) 10 (후보 9) | **전부 탈락**(2026-10-05). 모듈 프로바이더·버전 목록·데코레이터 속성처럼 n 이 작고 부트스트랩 1회다. `route-conflict-detector` 가 쌍마다 경로를 다시 토큰화하지만 `routeConflictPolicy` 를 켠 앱의 기동 시 1회라 중앙에서 이득이 없다 |
+| react-hook-form | O(n²) 1 · floating promise 2 | **전부 탈락**(2026-10-05). `createFormControl.ts:1018` 의 n 은 한 체크박스 그룹의 박스 수다. `_setValid()` 는 호출 11곳 중 대부분이 await 없이 부르는 의도된 fire-and-forget 이고 `callId` 로 늦은 결과를 버린다 |
+| supabase | studio 깊게 검증 2 · 순차 await | **전부 탈락**(2026-10-05). MFA `factors.ts:31` 의 forEach(async) 는 진짜 버그지만 남의 #48942 가 이미 열려 있다 · `storage-explorer.tsx:1137` 의 공유 참조 `fill` 은 원소를 인덱스 대입으로 통째로 바꿔 무해하다 · content folders 의 순차 await 2개는 self-hosted 로컬 파일 읽기다 |
 
 ## 게이트 0 에서 막힌 곳
 
