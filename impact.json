@@ -709,6 +709,16 @@
    "closedAt": "2026-10-01T15:20:35Z",
    "closedReason": "우리가 접었다 — 게이트 0 을 안 읽었다: 모든 커밋 서명 필수인데 서명 키가 없었다. 브랜치를 되돌리자 GitHub 가 자동으로 닫았다",
    "closedReasonEn": "we closed it — missed gate 0: every commit must be signed and we had no signing key; resetting the branch auto-closed the PR"
+  },
+  {
+   "title": "M:N 역방향 populate 가 부모마다 자식 전체를 다시 훑음",
+   "titleEn": "inverse M:N populate rescans all children per owner",
+   "type": "O(n²) 배열 조회 (부모 × 자식 filter — 한 번 훑어 Map 으로 묶으면 O(n+m))",
+   "repo": "mikro-orm/mikro-orm",
+   "repoLabel": "mikro-orm · 9.2k★",
+   "pr": 8391,
+   "status": "waiting",
+   "createdAt": "2026-10-05T08:51:08Z"
   }
  ],
  "generatedAt": "2026-10-01T15:22:47.515Z"

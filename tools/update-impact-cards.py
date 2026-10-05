@@ -293,6 +293,7 @@ BLURB = {
     "facebook/react": ("UI 라이브러리 · 컴파일러", "UI library and compiler"),
     "eslint/eslint": ("자바스크립트 린터", "JavaScript linter"),
     "angular/angular": ("웹 프레임워크", "web framework"),
+    "mikro-orm/mikro-orm": ("TypeScript ORM", "TypeScript ORM"),
     "outline/outline": ("팀 위키·문서", "team knowledge base"),
     "nocodb/nocodb": ("노코드 DB · Airtable 대안", "no-code database"),
     "novuhq/novu": ("알림 인프라", "notification infrastructure"),
