@@ -719,6 +719,16 @@
    "pr": 8391,
    "status": "waiting",
    "createdAt": "2026-10-05T08:51:08Z"
+  },
+  {
+   "title": "읽지 않는 Set 이 리팩터 뒤에 남음",
+   "titleEn": "write-only Set left behind after a refactor",
+   "type": "쓰기만 하는 컬렉션 (add 만 하고 읽는 곳 0 — has() 를 쓰던 코드가 find() 로 바뀐 뒤 남은 흔적)",
+   "repo": "orval-labs/orval",
+   "repoLabel": "orval · 6.5k★",
+   "pr": 4254,
+   "status": "waiting",
+   "createdAt": "2026-10-05T09:06:08Z"
   }
  ],
  "generatedAt": "2026-10-01T15:22:47.515Z"

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-05T08:53:36Z",
+  "generatedAt": "2026-10-05T09:07:51Z",
   "method": "latest 60 closed PRs; merged non-bot external contributors; medianDays is the one we judge by",
   "repos": {
     "Automattic/mongoose": {
@@ -151,9 +151,9 @@
       "mergedExternal": 33,
       "acceptancePct": 60,
       "closedExternal": 55,
-      "driveByAcceptancePct": 47,
-      "driveByMerged": 18,
-      "driveByClosed": 38,
+      "driveByAcceptancePct": 46,
+      "driveByMerged": 17,
+      "driveByClosed": 37,
       "sampledClosed": 60
     },
     "immich-app/immich": {
@@ -234,8 +234,8 @@
       "sampledClosed": 60
     },
     "n8n-io/n8n": {
-      "medianDays": 2.8,
-      "averageDays": 5.5,
+      "medianDays": 3.0,
+      "averageDays": 5.7,
       "mergedExternal": 17,
       "acceptancePct": 81,
       "closedExternal": 21,
@@ -308,6 +308,17 @@
       "driveByAcceptancePct": 60,
       "driveByMerged": 3,
       "driveByClosed": 5,
+      "sampledClosed": 60
+    },
+    "orval-labs/orval": {
+      "medianDays": 0.1,
+      "averageDays": 0.4,
+      "mergedExternal": 28,
+      "acceptancePct": 97,
+      "closedExternal": 29,
+      "driveByAcceptancePct": 100,
+      "driveByMerged": 9,
+      "driveByClosed": 9,
       "sampledClosed": 60
     },
     "outline/outline": {
@@ -411,7 +422,7 @@
     },
     "storybookjs/storybook": {
       "medianDays": 1.0,
-      "averageDays": 3.5,
+      "averageDays": 3.3,
       "mergedExternal": 29,
       "acceptancePct": 71,
       "closedExternal": 41,
@@ -476,14 +487,14 @@
       "sampledClosed": 60
     },
     "twentyhq/twenty": {
-      "medianDays": 0.0,
-      "averageDays": 1.4,
-      "mergedExternal": 9,
-      "acceptancePct": 69,
-      "closedExternal": 13,
-      "driveByAcceptancePct": 57,
-      "driveByMerged": 4,
-      "driveByClosed": 7,
+      "medianDays": 0.8,
+      "averageDays": 1.6,
+      "mergedExternal": 11,
+      "acceptancePct": 73,
+      "closedExternal": 15,
+      "driveByAcceptancePct": 62,
+      "driveByMerged": 5,
+      "driveByClosed": 8,
       "sampledClosed": 60
     },
     "typeorm/typeorm": {
