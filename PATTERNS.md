@@ -97,6 +97,13 @@ fixearly가 잡는 패턴들의 정본. **점수는 흐릿한 집계, 이 카탈
 - **고침**: 루프 밖에서 한 번 읽어 캐시
 - **오탐 가드**: 모듈 캐시(`Map` get/set, 메모 변수)를 거치면 제외
 
+#### 깊은 비교 집합 연산 (`uniqWith`·`differenceWith`… + `isEqual`)
+- **탐지**: lodash `uniqWith`·`differenceWith`·`intersectionWith`·`unionWith`·`xorWith`·`pullAllWith` 에 비교자로 `isEqual` 을 넘김 (그대로, `_.isEqual`, 또는 `isEqual(...)` 하나를 돌려주는 함수)
+- **왜 느린가**: 모든 쌍을 깊게 비교한다 — O(n·m) × 깊은 비교 비용. 명시적 루프가 없어서 O(n²) 배열 조회 축이 못 잡는다
+- **고침**: 원소가 원시값뿐이면 `Set` 이 같은 답을 낸다(SameValueZero = `isEqual` 의 원시값 규칙). 단 `[...new Set()]` 은 `-0` 을 `0` 으로 바꾸므로 `filter` 로 원소를 그대로 돌려준다. 객체 원소면 비교 키를 정해야 해서 저장소마다 다르다
+- **오탐 가드**: 키 비교자(`(a, b) => a.id === b.id`)는 저자가 이미 비용을 정한 것이라 제외한다
+- **실적**: [n8n #40311](https://github.com/n8n-io/n8n/pull/40311) — 표현식 `unique()`·`difference()` 등, 이메일 2만 개 중복 제거 885ms → 1.3ms. 이 PR 을 낸 뒤 엔진에 넣었다(2026-10-06)
+
 #### O(n²) 배열 조회
 - **탐지**: 루프 안에서 **루프 밖에 선언된 배열**에 `find`/`findIndex`/`some`(조회) 또는 `filter`(그룹핑)
 - **고침**: 루프 앞에서 1회 인덱싱 → O(1). 조회는 `Map<key, T>`, **`filter`는 `Map<key, T[]>` 그룹핑**
