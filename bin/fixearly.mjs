@@ -1552,6 +1552,23 @@ function analyzeSerialAwaits(ts, fileContents) {
 //  ① await in .forEach(): forEach는 콜백의 프라미스를 무시한다 → 기다리지 않는 "진짜 버그".
 //  ② 스프레드 누적: 루프/reduce에서 acc = [...acc, x] → 매 회 전체 복사 = O(n²).
 //  ③ 루프 안 new RegExp(): 매 회 정규식 재컴파일 → 루프 밖으로 호이스팅.
+const DEEP_EQUAL_SET_OPS = new Set(["uniqWith", "differenceWith", "intersectionWith", "unionWith", "xorWith", "pullAllWith"]);
+
+/** 비교자가 isEqual 자체이거나, isEqual(...) 한 번을 돌려주는 함수인가. */
+function isIsEqualComparator(ts, sf, cmp) {
+  const isIsEqualName = (e) =>
+    (ts.isIdentifier(e) && e.getText(sf) === "isEqual") ||
+    (ts.isPropertyAccessExpression(e) && e.name.getText(sf) === "isEqual");
+  if (isIsEqualName(cmp)) return true;
+  if (!ts.isArrowFunction(cmp) && !ts.isFunctionExpression(cmp)) return false;
+  let body = cmp.body;
+  if (ts.isBlock(body)) {
+    if (body.statements.length !== 1 || !ts.isReturnStatement(body.statements[0])) return false;
+    body = body.statements[0].expression;
+  }
+  return !!body && ts.isCallExpression(body) && isIsEqualName(body.expression);
+}
+
 function analyzeTextbookIssues(ts, fileContents) {
   const awaitInForEach = [];
   const spreadAccumulator = [];
@@ -1559,6 +1576,7 @@ function analyzeTextbookIssues(ts, fileContents) {
   const floatingPromise = [];
   const loopInvariantIndex = [];
   const sharedRefFill = [];
+  const deepEqualSetOp = [];
   const numericSortNoComparator = [];
   const emptyCatch = [];
   const statefulRegex = [];
@@ -1812,6 +1830,17 @@ function analyzeTextbookIssues(ts, fileContents) {
         }
       }
 
+      // ── 깊은 비교 집합 연산: lodash uniqWith/differenceWith/… 에 isEqual 을 넘기면 모든 쌍을 깊게 비교한다(O(n·m)).
+      // 명시적 루프가 없어서 O(n²) 배열 조회 축이 못 잡는 자리다. 원소가 원시값뿐이면 Set 이 같은 답을 낸다
+      // (n8n#40311: 이메일 2만 개 중복 제거 885ms → 1.3ms). 객체 원소면 키를 정해야 해서 고침이 저장소마다 다르다.
+      if (ts.isCallExpression(node) && node.arguments.length >= 2) {
+        const callee = ts.isPropertyAccessExpression(node.expression) ? node.expression.name.getText(sf)
+          : ts.isIdentifier(node.expression) ? node.expression.getText(sf) : "";
+        if (DEEP_EQUAL_SET_OPS.has(callee) && isIsEqualComparator(ts, sf, node.arguments[node.arguments.length - 1])) {
+          deepEqualSetOp.push({ file, line: lineOf(node), name: callee });
+        }
+      }
+
       // ── 숫자 배열을 .sort() 비교자 없이: 문자열 사전순 정렬이라 [10,2,1] -> [1,10,2].
       // 배열이 숫자라는 증거(요소가 전부 숫자 리터럴, 또는 .length/.map(Number) 흔적)가 있을 때만.
       if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression) &&
@@ -1943,6 +1972,7 @@ function analyzeTextbookIssues(ts, fileContents) {
     floatingPromise: { count: floatingPromise.length, worst: floatingPromise.slice(0, 6) },
     loopInvariantIndex: { count: loopInvariantIndex.length, worst: loopInvariantIndex.slice(0, 6) },
     sharedRefFill: { count: sharedRefFill.length, worst: sharedRefFill.slice(0, 6) },
+    deepEqualSetOp: { count: deepEqualSetOp.length, worst: deepEqualSetOp.slice(0, 6) },
     numericSortNoComparator: { count: numericSortNoComparator.length, worst: numericSortNoComparator.slice(0, 6) },
     emptyCatch: { count: emptyCatch.length, worst: emptyCatch.slice(0, 8) },
     statefulRegex: { count: statefulRegex.length, worst: statefulRegex.slice(0, 6) },
@@ -2918,6 +2948,10 @@ if (textbook) {
   if (t.sharedRefFill.count > 0) {
     console.log(`  ⚠ 공유 참조 fill: ${t.sharedRefFill.count}곳 — Array(n).fill([]/{}) 는 참조 하나를 모든 칸이 공유합니다 (한 칸 수정 = 전부 수정, 조용한 버그)`);
     for (const w of t.sharedRefFill.worst) console.log(`    .fill(${w.what}) — ${w.file}:${w.line}`);
+  }
+  if (t.deepEqualSetOp.count > 0) {
+    console.log(`  깊은 비교 집합 연산: ${t.deepEqualSetOp.count}곳 — uniqWith/differenceWith 등에 isEqual = 모든 쌍을 깊게 비교 (원시값 배열이면 Set 으로 O(n))`);
+    for (const w of t.deepEqualSetOp.worst) console.log(`    ${w.name}(…, isEqual) — ${w.file}:${w.line}`);
   }
   if (t.numericSortNoComparator.count > 0) {
     console.log(`  ⚠ 숫자 정렬 버그: ${t.numericSortNoComparator.count}곳 — 숫자 배열을 sort() 비교자 없이 = 사전순 ([10,2,1]→[1,10,2])`);

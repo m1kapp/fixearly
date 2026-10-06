@@ -326,6 +326,16 @@ if (generatedSrc) {
       namePattern: /^\s{4}\.fill\((.+?)\) — /gm,
     },
     {
+      file: "deep-equal-set-op.ts",
+      key: "deepEqualSetOp",
+      label: "깊은 비교 집합 연산",
+      // 출력 줄은 호출한 연산 이름이다. 키 비교자(a.id === b.id)를 넘긴 uniqWith 는 깊은 비교가 아니라서
+      // 잡히면 총량이 4가 되어 깨진다 — 이름이 hit 과 겹쳐 miss 로는 못 적는다.
+      hit: ["uniqWith", "differenceWith", "intersectionWith"],
+      miss: [],
+      namePattern: /^\s{4}(\w+)\(…, isEqual\) — /gm,
+    },
+    {
       file: "io-in-loop.ts",
       key: "io",
       label: "루프 안 파일읽기",
@@ -586,7 +596,7 @@ if (generatedSrc) {
   };
   const emptyTextbook = Object.fromEntries([
     "awaitInForEach", "spreadAccumulator", "regexInLoop", "floatingPromise",
-    "loopInvariantIndex", "sharedRefFill", "numericSortNoComparator", "emptyCatch",
+    "loopInvariantIndex", "sharedRefFill", "deepEqualSetOp", "numericSortNoComparator", "emptyCatch",
     "statefulRegex", "forInArray", "writeOnlyCollection",
   ].map((key) => [key, { count: 0, worst: [] }]));
   const quality = {
