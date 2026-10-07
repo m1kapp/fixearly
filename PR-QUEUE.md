@@ -875,6 +875,9 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | openlayers | O(n²) 4 · 공유 참조 fill 1 | **탈락**(2026-10-07). Modify 는 드래그한 꼭짓점의 세그먼트(보통 2개), Select 는 클릭 한 번에 맞은 피처 수다. GeoZarr `fill({row, col})` 은 구조분해로만 읽어서 공유돼도 무해하다 |
 | compromise | O(n²) 3 · 상태 정규식 1 | **탈락**(2026-10-07). 괄호 선택지 수·질문 단어 수가 작고 coordinate 는 도치 의문문에서만 돈다. statefulRegex 는 같은 반복 앞쪽의 `match` 가 lastIndex 를 0 으로 되돌리는 오탐이다 |
 | Babylon.js | 쓰기 전용 1 · O(n²) 3 · 상태 정규식 1 | **#18980 제출**(blockMap). O(n²) 는 트리거 수·스켈레톤 수·생성 시 1회라 탈락. spriteManager 정규식은 lastIndex 를 일부러 읽는 루프라 오탐이다 |
+| vant | O(n²) 13 · 공유 참조 fill 1 | **탈락**(2026-10-07). O(n²) 는 전부 vant-cli 빌드 스크립트다. 캘린더 `fill({ type: 'placeholder' })` 는 type 만 읽는 자리라 공유돼도 무해하다 |
+| crawlee | forEach await 1 · O(n²) 3 | **탈락**(2026-10-07). `await this.forEach(async …)` 는 Dataset 자체 async forEach 라 오탐(엔진 가드 `awaited-custom-foreach` 추가). O(n²) 는 에러 종류·링크 패턴 수다 |
+| cherry-studio | 쓰기만 하는 컬렉션 3 | **다음 슬롯**(2026-10-07 준비). `depthMap`·`toolCallIdToName` ×2 가 생긴 뒤 한 번도 읽힌 적 없다. 브랜치 `remove-unused-maps` 로컬 커밋까지 — 하루 1건·열린 5건 규칙 때문에 내일 낸다. CLA 없음 · AI 정책 없음 |
 
 ## 게이트 0 에서 막힌 곳
 

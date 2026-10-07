@@ -1921,9 +1921,14 @@ function analyzeTextbookIssues(ts, fileContents) {
       if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) {
         const method = node.expression.name.getText(sf);
 
-        if (method === "forEach") {
+        // 가드 [FP:awaited-custom-foreach]: `await x.forEach(async …)` 는 forEach 가 프라미스를 돌려준다는 뜻 —
+        // Array.prototype.forEach 가 아니라 기다려주는 자체 구현이다. crawlee Dataset.forEach 가 이 모양이었다(2026-10-07).
+        if (method === "forEach" && !ts.isAwaitExpression(node.parent)) {
           for (const arg of node.arguments) {
-            if (isFnLike(arg) && hasDirectAwait(arg)) { awaitInForEach.push({ file, line: lineOf(node) }); break; }
+            if (isFnLike(arg) && hasDirectAwait(arg)) {
+              awaitInForEach.push({ file, line: lineOf(node), name: node.expression.expression.getText(sf) });
+              break;
+            }
           }
         }
 
@@ -2950,7 +2955,7 @@ if (textbook) {
   const t = textbook;
   if (t.awaitInForEach.count > 0) {
     console.log(`  ⚠ await in forEach: ${t.awaitInForEach.count}곳 — forEach는 프라미스를 무시합니다 (기다리지 않는 버그, for...of 또는 Promise.all)`);
-    for (const w of t.awaitInForEach.worst) console.log(`    ${w.file}:${w.line}`);
+    for (const w of t.awaitInForEach.worst) console.log(`    ${w.name}.forEach(async) — ${w.file}:${w.line}`);
   }
   if (t.spreadAccumulator.count > 0) {
     console.log(`  스프레드 누적: ${t.spreadAccumulator.count}곳 — acc = [...acc, x] 는 매 회 전체 복사 O(n²) (push/직접 대입)`);
