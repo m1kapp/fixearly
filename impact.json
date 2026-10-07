@@ -812,7 +812,17 @@
    "pr": 21363,
    "status": "waiting",
    "createdAt": "2026-10-07T11:05:27Z"
+  },
+  {
+   "title": "검증 에러가 dev 서버를 죽임",
+   "titleEn": "export validation error kills the dev server",
+   "type": "버려진 Promise (throw 하는 async 검증을 await 없이 불러 unhandled rejection 으로 프로세스 종료)",
+   "repo": "remix-run/react-router",
+   "repoLabel": "react-router · 56.6k★",
+   "pr": 15591,
+   "status": "waiting",
+   "createdAt": "2026-10-07T12:38:07Z"
   }
  ],
- "generatedAt": "2026-10-07T11:08:21.685Z"
+ "generatedAt": "2026-10-07T12:40:59.508Z"
 }
