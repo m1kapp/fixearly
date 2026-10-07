@@ -74,3 +74,34 @@ export function walkMatches(input: string): string[] {
   }
   return found;
 }
+
+// peeked: test() 뒤 lastIndex 를 읽어 다음 위치로 쓴다 — 상태를 일부러 쓰는 자리다(Babylon spriteManager).
+const peeked = /cell/g;
+export function nextCells(inputs: string[]): number[] {
+  const ends: number[] = [];
+  for (const input of inputs) {
+    if (peeked.test(input)) ends.push(peeked.lastIndex);
+  }
+  return ends;
+}
+
+// matched: 같은 반복 앞쪽의 match() 가 /g 정규식의 lastIndex 를 0 으로 되돌린다(compromise parens-merge).
+const matched = /\(/g;
+export function openParens(inputs: string[]): string[] {
+  const hits: string[] = [];
+  for (const input of inputs) {
+    const all = input.match(matched);
+    if (all && matched.test(input)) hits.push(input);
+  }
+  return hits;
+}
+
+// outsideMatch: match() 가 루프 밖에서 한 번 돌 뿐이라 반복 사이 lastIndex 는 그대로 샌다 — 여전히 잡는다.
+const outsideMatch = /x/g;
+export function outsideMatches(head: string, inputs: string[]): number {
+  let n = head.match(outsideMatch) ? 1 : 0;
+  for (const input of inputs) {
+    if (outsideMatch.test(input)) n += 1;
+  }
+  return n;
+}
