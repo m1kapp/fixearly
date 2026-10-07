@@ -71,6 +71,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `검증 에러가 dev 서버를 죽임` | [react-router · 56.6k★](https://github.com/remix-run/react-router) | 버려진 Promise (throw 하는 async 검증을 await 없이 불러 unhandled rejection 으로 프로세스 종료) | [#15591](https://github.com/remix-run/react-router/pull/15591) | ⚪ awaiting review | — |
 | `리팩터 뒤 남은 조상 Set` | [pdf.js · 54k★](https://github.com/mozilla/pdf.js) | 쓰기만 하는 컬렉션 (2021 usehref 리팩터로 소비자 둘이 ancestors 로 바뀐 뒤 남은 Set) | [#22102](https://github.com/mozilla/pdf.js/pull/22102) | ⚪ awaiting review | — |
 | `중복 검사 Set 을 안 읽어 codemod 가 중복 이름을 만듦` | [turborepo · 31.2k★](https://github.com/vercel/turborepo) | 쓰기만 하는 컬렉션 (2026-03 리팩터가 has() 검사를 지워 채우기만 하는 Set 이 남았고, 그 결과 중복 이름을 생성) | [#14433](https://github.com/vercel/turborepo/pull/14433) | ⚪ awaiting review | — |
+| `cose 레이아웃이 간선마다 노드 전체를 훑음` | [cytoscape.js · 11.2k★](https://github.com/cytoscape/cytoscape.js) | O(n²) 배열 조회 (간선마다 nodes.some 두 번 — hasElementWithId 로 O(1), 3000노드 519→11ms) | [#3527](https://github.com/cytoscape/cytoscape.js/pull/3527) | ⚪ awaiting review | — |
 
 ## 규칙
 

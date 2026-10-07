@@ -300,6 +300,7 @@ BLURB = {
     "remix-run/react-router": ("React 라우터", "React router"),
     "mozilla/pdf.js": ("Mozilla 의 PDF 뷰어", "Mozilla PDF viewer"),
     "vercel/turborepo": ("Vercel 의 모노레포 빌드 도구", "Vercel monorepo build tool"),
+    "cytoscape/cytoscape.js": ("그래프 시각화·분석 라이브러리", "graph visualization and analysis library"),
     "outline/outline": ("팀 위키·문서", "team knowledge base"),
     "nocodb/nocodb": ("노코드 DB · Airtable 대안", "no-code database"),
     "novuhq/novu": ("알림 인프라", "notification infrastructure"),

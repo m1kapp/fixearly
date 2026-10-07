@@ -842,7 +842,17 @@
    "pr": 14433,
    "status": "waiting",
    "createdAt": "2026-10-07T13:09:15Z"
+  },
+  {
+   "title": "cose 레이아웃이 간선마다 노드 전체를 훑음",
+   "titleEn": "cose layout scans every node for every edge",
+   "type": "O(n²) 배열 조회 (간선마다 nodes.some 두 번 — hasElementWithId 로 O(1), 3000노드 519→11ms)",
+   "repo": "cytoscape/cytoscape.js",
+   "repoLabel": "cytoscape.js · 11.2k★",
+   "pr": 3527,
+   "status": "waiting",
+   "createdAt": "2026-10-07T13:26:06Z"
   }
  ],
- "generatedAt": "2026-10-07T13:11:40.863Z"
+ "generatedAt": "2026-10-07T13:30:03.220Z"
 }
