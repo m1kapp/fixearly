@@ -146,7 +146,7 @@
    "title": "parse-fields dedup O(n²)",
    "type": "O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1))",
    "repo": "directus/directus",
-   "repoLabel": "directus · 38.1k★",
+   "repoLabel": "directus · 38.2k★",
    "pr": 27978,
    "createdAt": "2026-07-24T13:03:10Z",
    "closedAt": "2026-07-29T19:34:55Z",
@@ -792,9 +792,13 @@
    "repo": "BabylonJS/Babylon.js",
    "repoLabel": "Babylon.js · 26.1k★",
    "pr": 18980,
-   "status": "waiting",
-   "createdAt": "2026-10-07T04:59:27Z"
+   "status": "merged",
+   "createdAt": "2026-10-07T04:59:27Z",
+   "mergedAt": "2026-10-07T09:05:40Z",
+   "release": {
+    "channel": "pending"
+   }
   }
  ],
- "generatedAt": "2026-10-07T05:03:48.068Z"
+ "generatedAt": "2026-10-07T09:18:21.303Z"
 }
