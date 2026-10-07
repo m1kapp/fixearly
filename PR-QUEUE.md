@@ -41,6 +41,7 @@
 | [angular#70690](https://github.com/angular/angular/pull/70690) | 머지 | — |
 | [angular#70977](https://github.com/angular/angular/pull/70977) | 머지 | — |
 | [angular#71119](https://github.com/angular/angular/pull/71119) | 머지 | — |
+| [rollup#6534](https://github.com/rollup/rollup/pull/6534) | 승인 | — |
 | [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 닫힘 | 상위 #2751 의존성 업데이트로 Hono 4.13.8·node-server 2.1.1이 반영돼 보안 목표가 충족됐다. 이 PR은 미병합 |
 | [openstatus#2780](https://github.com/openstatusHQ/openstatus/pull/2780) | 닫힘 | 메인테이너가 V1 API 폐기 예정이라고 밝혀 우리가 닫았다 |
 | [excalidraw#11805](https://github.com/excalidraw/excalidraw/pull/11805) | 닫힘 | 우리가 접었다 — 중앙 1일인 곳에서 34일째 사람 반응 0. 이 저장소 외부 PR 수락률 18% |
@@ -334,14 +335,14 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
+| [rollup#6534](https://github.com/rollup/rollup/pull/6534) | O(n²) | 🔵 승인 · 머지 대기 | 9일째 / 보통 3일 |
 | [ghost#31019](https://github.com/TryGhost/Ghost/pull/31019) | 순차 I/O | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
 | [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 1일째 / 보통 3일 |
-| [rollup#6534](https://github.com/rollup/rollup/pull/6534) | O(n²) | ⚪ 대기 | 9일째 / 보통 3일 |
 | [strapi#27893](https://github.com/strapi/strapi/pull/27893) | 버려진 Promise | ⚪ 대기 | 5일째 / 보통 4일 |
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 9일째 / 보통 2일 · 보류 |
 
-**열린 것 6건(보류 3건 빼면 3건).** 판정 난 49건 중 머지 24 · 승인 0 · 닫힘 25.
+**열린 것 6건(보류 3건 빼면 3건).** 판정 난 50건 중 머지 24 · 승인 1 · 닫힘 25.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라

@@ -238,7 +238,7 @@
    "titleEn": "eval dataset item re-read",
    "type": "중복 쿼리 (변수마다 동일 WHERE 로 같은 행 재조회 → 컬럼 합쳐 1회)",
    "repo": "langfuse/langfuse",
-   "repoLabel": "langfuse · 35.4k★",
+   "repoLabel": "langfuse · 35.5k★",
    "pr": 15585,
    "createdAt": "2026-07-29T14:13:47Z",
    "status": "closed",
@@ -686,7 +686,11 @@
    "repoLabel": "rollup · 26.3k★",
    "pr": 6534,
    "createdAt": "2026-09-27T11:08:27Z",
-   "status": "waiting"
+   "status": "approved",
+   "approvedAt": "2026-10-07T04:16:38Z",
+   "approvedBy": [
+    "lukastaegert"
+   ]
   },
   {
    "title": "알림 목록의 모니터 관계 반복 검색",
@@ -781,5 +785,5 @@
    "createdAt": "2026-10-05T13:39:05Z"
   }
  ],
- "generatedAt": "2026-10-07T01:48:05.287Z"
+ "generatedAt": "2026-10-07T04:22:43.445Z"
 }
