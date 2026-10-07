@@ -37,6 +37,7 @@
 | [vite#23114](https://github.com/vitejs/vite/pull/23114) | 머지 | 당일 승인, 2일 만에 머지 |
 | [ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 머지 | 메인테이너가 병렬화 변경을 승인한 뒤 머지 |
 | [ghost#29831](https://github.com/TryGhost/Ghost/pull/29831) | 머지 | — |
+| [ghost#31019](https://github.com/TryGhost/Ghost/pull/31019) | 머지 | — |
 | [n8n#34899](https://github.com/n8n-io/n8n/pull/34899) | 머지 | 봇이 요구한 changeset prefix 만 고치고 통과 |
 | [react#37699](https://github.com/facebook/react/pull/37699) | 머지 | — |
 | [n8n#40103](https://github.com/n8n-io/n8n/pull/40103) | 머지 | — |
@@ -336,13 +337,12 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [ghost#31019](https://github.com/TryGhost/Ghost/pull/31019) | 순차 I/O | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
 | [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 1일째 / 보통 2일 |
 | [strapi#27893](https://github.com/strapi/strapi/pull/27893) | 버려진 Promise | ⚪ 대기 | 5일째 / 보통 3일 |
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
-| [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 9일째 / 보통 2일 · 보류 |
+| [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 10일째 / 보통 2일 · 보류 |
 
-**열린 것 5건(보류 3건 빼면 2건).** 판정 난 51건 중 머지 26 · 승인 0 · 닫힘 25.
+**열린 것 4건(보류 2건 빼면 2건).** 판정 난 52건 중 머지 27 · 승인 0 · 닫힘 25.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -769,7 +769,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 <!-- auto:rotation — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | 저장소 | 지나가는 기여자 수락률 | 전체 외부 | 중앙 | 지나가는 머지 | 판정 | 메모 |
 |---|---|---|---|---|---|---|
-| Ghost | 100% | 79% | 0.1일 | 1/1 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
+| Ghost | 100% | 79% | 0.1일 | 1/1 | 표본 부족 | 판정 경험 있음 |
 | mikro-orm | 100% | 100% | 0.1일 | 8/8 | 표본 부족 | 판정 경험 있음 |
 | orval | 100% | 97% | 0.1일 | 10/10 | **1차 통과** | 판정 경험 있음 |
 | novu | 100% | 88% | 0.2일 | 1/1 | 표본 부족 | 판정 경험 있음 |

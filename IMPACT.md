@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 26**
+> **fixearly 임팩트 점수: 27**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -55,7 +55,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `::ng-deep 감지 정규식 lastIndex 누수` | [angular · 101k★](https://github.com/angular/angular) | 전역 정규식 상태 (/g 정규식을 .test() 해 lastIndex 가 다음 규칙·스타일시트로 새어 ::ng-deep 를 놓침 → 비전역 사본) | [#71119](https://github.com/angular/angular/pull/71119) | ✅ merged | +1 |
 | `React 컴파일러 패스의 쓰기만 하는 컬렉션` | [react · 250.9k★](https://github.com/facebook/react) | 쓰기만 하는 컬렉션 (propagateNonNull 의 terminalPreds Set · alignReactiveScopesToBlockScopesHIR 의 placeScopes Map — 기록만 하고 읽지 않음) | [#37698](https://github.com/react/react/pull/37698) | ❌ closed | — |
 | `React 컴파일러 패스의 쓰기만 하는 컬렉션` | [react · 250.9k★](https://github.com/facebook/react) | 쓰기만 하는 컬렉션 (propagateNonNull 의 terminalPreds Set · alignReactiveScopesToBlockScopesHIR 의 placeScopes Map — 기록만 하고 읽지 않음) | [#37699](https://github.com/react/react/pull/37699) | ✅ merged | +1 |
-| `댓글 신고 이메일의 조회 3회 직렬` | [ghost · 55.5k★](https://github.com/TryGhost/Ghost) | 독립 순차 await (신고 API 가 기다리는 post·member·owner 조회 3개를 병렬 시작) | [#31019](https://github.com/TryGhost/Ghost/pull/31019) | ⚪ awaiting review | — |
+| `댓글 신고 이메일의 조회 3회 직렬` | [ghost · 55.5k★](https://github.com/TryGhost/Ghost) | 독립 순차 await (신고 API 가 기다리는 post·member·owner 조회 3개를 병렬 시작) | [#31019](https://github.com/TryGhost/Ghost/pull/31019) | ✅ merged | +1 |
 | `sitemap 청크 URL 분류 O(n²)` | [astro · 63.1k★](https://github.com/withastro/astro) | O(n²) (청크별 배열 복사와 URL 포함 검사 → Set) | [#18149](https://github.com/withastro/astro/pull/18149) | ⚪ awaiting review | — |
 | `Vite 입력 CSS 의존성 기록 경합` | [tailwindcss · 97.8k★](https://github.com/tailwindlabs/tailwindcss) | 버려진 Promise (입력 CSS 파일 시각 기록을 기다리지 않아 재빌드 누락) | [#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | ⚪ awaiting review | — |
 | `ES 청크 재내보내기 이름 반복 검색` | [rollup · 26.3k★](https://github.com/rollup/rollup) | O(n²) 배열 조회 (재내보내기마다 렌더된 export 배열 탐색 → Set) | [#6534](https://github.com/rollup/rollup/pull/6534) | ✅ merged | +1 |
