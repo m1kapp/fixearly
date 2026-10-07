@@ -33,6 +33,7 @@
 | [medusa#16233](https://github.com/medusajs/medusa/pull/16233) | 머지 | 메인테이너 승인 뒤 자동 머지 |
 | [mongoose#16474](https://github.com/Automattic/mongoose/pull/16474) | 머지 | 리뷰의 변경 요청을 반영한 뒤 승인·머지 |
 | [astro#17987](https://github.com/withastro/astro/pull/17987) | 머지 | — |
+| [Babylon.js#18980](https://github.com/BabylonJS/Babylon.js/pull/18980) | 머지 | — |
 | [vite#23114](https://github.com/vitejs/vite/pull/23114) | 머지 | 당일 승인, 2일 만에 머지 |
 | [ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 머지 | 메인테이너가 병렬화 변경을 승인한 뒤 머지 |
 | [ghost#29831](https://github.com/TryGhost/Ghost/pull/29831) | 머지 | — |
@@ -335,14 +336,13 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [Babylon.js#18980](https://github.com/BabylonJS/Babylon.js/pull/18980) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [ghost#31019](https://github.com/TryGhost/Ghost/pull/31019) | 순차 I/O | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
 | [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 1일째 / 보통 2일 |
 | [strapi#27893](https://github.com/strapi/strapi/pull/27893) | 버려진 Promise | ⚪ 대기 | 5일째 / 보통 3일 |
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 9일째 / 보통 2일 · 보류 |
 
-**열린 것 6건(보류 3건 빼면 3건).** 판정 난 50건 중 머지 25 · 승인 0 · 닫힘 25.
+**열린 것 5건(보류 3건 빼면 2건).** 판정 난 51건 중 머지 26 · 승인 0 · 닫힘 25.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -776,7 +776,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | payload | 100% | 83% | 0.2일 | 3/3 | 표본 부족 | 판정 경험 있음 |
 | n8n | 96% | 93% | 2.0일 | 25/26 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
 | react-hook-form | 93% | 88% | 0.1일 | 14/15 | **1차 통과** | — |
-| Babylon.js | 93% | 82% | 0.9일 | 13/14 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
+| Babylon.js | 93% | 82% | 0.9일 | 13/14 | **1차 통과** | 판정 경험 있음 |
 | pnpm | 91% | 62% | 71.2일 | 10/11 | 1차 통과 · 후순위(느림) | 판정 경험 있음 · AI 작성 PR 본문에 agent disclosure 필수 · 전체 저장소 대신 영향 패키지 테스트 실행 |
 | babel | 90% | 62% | 0.7일 | 9/10 | **1차 통과** | 게이트 0 — AI_POLICY.md: LLM 이 쓴 PR 설명 금지(본인이 직접 써야 함), LLM 산문은 앞에 명시 표기. 어기면 조직 차단까지. 설명을 사람이 쓰지 않는 한 내지 않는다 |
 | vscode | 86% | 93% | 0.2일 | 6/7 | 표본 부족 | 판정 경험 있음 · CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음 |
