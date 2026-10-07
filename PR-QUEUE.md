@@ -897,6 +897,9 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | superset · angular/components | O(n²)·N+1 | **보류**(2026-10-07). superset 데이터셋 목록 N+1 은 페이지네이션(순차가 맞다), listbox 는 선택값×옵션(작음) |
 | cytoscape.js | O(n²) 4 | **#3527 제출**(이슈 #3526 먼저 — PR 템플릿 요구). cose 생성자가 간선마다 `nodes.some` 두 번 → `hasElementWithId`. 실측 200노드 3.5x · 1000노드 16x · 3000노드 46x, 20노드에서도 느려지지 않음 |
 | ace · ramda · aframe · milkdown · slate | O(n²)·스프레드 | **탈락**(2026-10-07). ace 마커는 보이는 줄 수, milkdown keymap 은 키 수, slate positions 는 경로 길이라 n 이 작다. ramda 는 0건 |
+| postcss · marked · puppeteer · lobe-chat | O(n²)·순차 await | **탈락**(2026-10-07). marked 는 확장 수, puppeteer 는 첫 연결의 동적 import 한 번, lobe-chat 은 Acceptance 테스트 도구 코드다 |
+| GrapesJS · learnGitBranching · tabby | O(n²)·스프레드 | **탈락**(2026-10-07). GrapesJS `matchedRules` 의 indexOf 중복 제거는 `onlyMatched` 옵트인 내보내기에서만 돌고 `el.matches` 가 더 비싸다 |
+| appsmith | forEach await 1 · fill 3 | **보류**(2026-10-07). `MultiFilePickerControl` 의 `forEach(async)` 는 진짜 버그(state 에 빈 배열이 들어감)지만 유일한 사용처(appsmithAiPlugin)가 `uploadToTrigger: true` 라 그 분기를 안 탄다. 이슈 선행 규칙도 있다 |
 
 ## 게이트 0 에서 막힌 곳
 
@@ -916,6 +919,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | p5.js | AI 정책: 전부 AI 가 만든 PR 은 받지 않음 (2026-10-07) |
 | mastodon | AI 정책: 'AI 도구로 코드베이스를 훑어 찾은 개선' PR 을 받지 않고 자율 에이전트 제출 금지 (2026-10-07) |
 | discourse · graphql-js | CLA(discourse 자체 · graphql EasyCLA) — 사용자 서명 전 보류 (2026-10-07) |
+| tldraw · lexical · Kong/insomnia | CLA(tldraw 자체 · Meta · Kong) — 사용자 서명 전 보류 (2026-10-07) |
 
 ## 아직 안 훑은 곳
 
