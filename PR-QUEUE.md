@@ -335,13 +335,14 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
+| [Babylon.js#18980](https://github.com/BabylonJS/Babylon.js/pull/18980) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 |
 | [ghost#31019](https://github.com/TryGhost/Ghost/pull/31019) | 순차 I/O | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
 | [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 1일째 / 보통 3일 |
 | [strapi#27893](https://github.com/strapi/strapi/pull/27893) | 버려진 Promise | ⚪ 대기 | 5일째 / 보통 4일 |
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 9일째 / 보통 2일 · 보류 |
 
-**열린 것 5건(보류 3건 빼면 2건).** 판정 난 50건 중 머지 25 · 승인 0 · 닫힘 25.
+**열린 것 6건(보류 3건 빼면 3건).** 판정 난 50건 중 머지 25 · 승인 0 · 닫힘 25.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -869,6 +870,10 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | dify (web) | 순차 await 2 · O(n²) 111 | **탈락**(2026-10-05). 채팅 훅의 순차 await 2곳은 URL 파라미터를 로컬에서 푸는 계산이라 병렬화 이득이 없다. O(n²) 상위는 도구 목록·커서 수 |
 | supabase (pg-meta·docs·ui·www) | O(n²)·순차 await 40 | **전부 탈락**(2026-10-05). pg-meta 는 컬럼 수, docs 문제 해결 페이지의 순차 await 는 빌드 때 정적 생성, docs generator 는 빌드 스크립트다 |
 | three.js | O(n²) 8 | **전부 탈락**(2026-10-05). `makeClipAdditive` 는 클립 변환 1회(트랙 수백), 타임스탬프 쿼리 풀은 프레임 수다 |
+| expo (cli export) | O(n²) 2 | **탈락**(2026-10-07). API 라우트 수 × 소스맵 find 는 빌드 때 한 번만 돌고, 배율 목록은 상수다 |
+| openlayers | O(n²) 4 · 공유 참조 fill 1 | **탈락**(2026-10-07). Modify 는 드래그한 꼭짓점의 세그먼트(보통 2개), Select 는 클릭 한 번에 맞은 피처 수다. GeoZarr `fill({row, col})` 은 구조분해로만 읽어서 공유돼도 무해하다 |
+| compromise | O(n²) 3 · 상태 정규식 1 | **탈락**(2026-10-07). 괄호 선택지 수·질문 단어 수가 작고 coordinate 는 도치 의문문에서만 돈다. statefulRegex 는 같은 반복 앞쪽의 `match` 가 lastIndex 를 0 으로 되돌리는 오탐이다 |
+| Babylon.js | 쓰기 전용 1 · O(n²) 3 · 상태 정규식 1 | **#18980 제출**(blockMap). O(n²) 는 트리거 수·스켈레톤 수·생성 시 1회라 탈락. spriteManager 정규식은 lastIndex 를 일부러 읽는 루프라 오탐이다 |
 
 ## 게이트 0 에서 막힌 곳
 
