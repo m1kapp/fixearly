@@ -656,7 +656,11 @@
    "repoLabel": "ghost · 55.5k★",
    "pr": 31019,
    "createdAt": "2026-09-27T09:58:36Z",
-   "status": "waiting"
+   "status": "merged",
+   "mergedAt": "2026-10-07T10:32:13Z",
+   "release": {
+    "channel": "pending"
+   }
   },
   {
    "title": "sitemap 청크 URL 분류 O(n²)",
@@ -800,5 +804,5 @@
    }
   }
  ],
- "generatedAt": "2026-10-07T09:18:21.303Z"
+ "generatedAt": "2026-10-07T10:37:56.864Z"
 }
