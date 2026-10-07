@@ -546,79 +546,117 @@ if _merged:
     h = re.sub(r'(<span id="mshape-en">).*?(</span>)', rf"\g<1>{_en}\g<2>", h, count=1, flags=re.S)
     print("머지 형태 줄:", _ko)
 
-# 축별 머지 목록 — "규칙이 남에게 머지됐다"를 축 단위로 보여준다. type 접두어로 축을 가른다.
-# 새 축이 머지됐는데 여기 없으면 조용히 빠지는 쪽이라, 모르는 접두어는 누락으로 센다.
-AXES = [
-    (("O(n²)", "O(n²) 배열 조회", "O(n²) 그룹핑/조회"), "O(n²) 조회", "O(n²) lookup",
+# 규칙 목록 — 채점축과 머지 실적을 한 표로 녹인다. "규칙이 남에게 머지됐다"를 규칙 단위로 보여준다.
+# type 접두어로 규칙을 가른다. 새 축이 머지됐는데 여기 없으면 조용히 빠지는 쪽이라, 모르는 접두어는 누락으로 센다.
+# (types, 이름 ko, en, 태그 ko, en, 설명 ko, en, 채점 메모 ko, en)
+RULES = [
+    (("O(n²)", "O(n²) 배열 조회", "O(n²) 그룹핑/조회"), "O(n²) 조회", "O(n²) lookup", "채점 06", "scored 06",
      "행마다 다른 배열을 <code>.find</code>·<code>.some</code>·<code>.includes</code> 로 처음부터 훑는 자리. "
      "한 번 Map·Set 으로 색인해두면 조회가 O(1)이 된다 — 데이터가 커질수록 차이가 제곱으로 벌어진다.",
      "Each row rescans another array with <code>.find</code>/<code>.some</code>/<code>.includes</code>. "
-     "Index it once into a Map/Set and each lookup is O(1) — the gap grows with the square of the data."),
-    (("쓰기만 하는 컬렉션",), "쓰기만 하는 컬렉션", "Write-only collection",
+     "Index it once into a Map/Set and each lookup is O(1) — the gap grows with the square of the data.",
+     "테스트·프론트 구역, 정적 외곽, n 이 잘린 자리는 세지 않고 3곳 미만은 면제. 10k줄당 유예 1.0, 캡 5 — "
+     "판정 난 초기 PR 6건 중 4건이 닫혀서, 오탐이 등급을 뒤집지 않게 낮게 잡았다.",
+     "Test/frontend zones, static outers, and capped-n sites are excluded; under three sites is free. Free below 1.0 "
+     "per 10k lines, capped at 5 — four of the first six decided PRs were closed, so a false positive must not flip a grade."),
+    (("쓰기만 하는 컬렉션",), "쓰기만 하는 컬렉션", "Write-only collection", "진단", "diagnostic",
      "채우기만 하고 아무도 읽지 않는 Set·Map·배열. 소비하던 코드가 리팩터로 사라진 흔적이라 "
      "지워도 동작이 같고, 매번 채우는 비용만 사라진다. knip 은 <code>.add</code> 도 \"사용\"으로 봐서 못 잡는다.",
      "A Set, Map, or array that is filled but never read — what a refactor left behind. Removing it changes "
-     "nothing but the cost of filling it. knip misses it because <code>.add</code> counts as a use."),
-    (("버려진 Promise",), "버려진 Promise", "Floating promise",
+     "nothing but the cost of filling it. knip misses it because <code>.add</code> counts as a use.", "", ""),
+    (("N+1", "독립 순차 await"), "불필요한 순차 I/O", "Needless sequential I/O", "채점 05", "scored 05",
+     "루프 한 바퀴마다 DB·네트워크를 부르는 N+1, 그리고 서로의 결과를 쓰지 않는 <code>await</code> 를 줄 세우는 것. "
+     "<code>IN (...)</code> 한 번이나 <code>Promise.all</code> 로 묶으면 왕복이 셈으로 줄어든다.",
+     "A DB or network call per loop pass (N+1), and awaits that never use each other's result queued one by one. "
+     "One <code>IN (...)</code> or a <code>Promise.all</code> cuts the round trips — provable by counting.",
+     "같은 결함이라 한 축. 37곳 재측정에서 기존 점수와 rho=−0.18 로 독립이고 11곳(30%)에서 발동한다. "
+     "3곳 미만은 안 센다(재시도·커서 페이지네이션은 순차가 맞다). 유예 3.0/1000파일, 캡 5.",
+     "One defect, one axis. Across 37 re-measured repos it is independent of the score (rho=−0.18) and fires in 11 (30%). "
+     "Under three sites is ignored — retries and cursor pagination are meant to be serial. Free below 3.0 per 1,000 files, capped at 5."),
+    (("버려진 Promise",), "버려진 Promise", "Floating promise", "진단", "diagnostic",
      "async 함수를 <code>await</code> 없이 부르고 결과를 버린다. 실패해도 아무도 모르고, "
      "호출한 쪽은 끝나기 전에 다음 단계로 넘어간다.",
      "An async call with no <code>await</code> and nothing holding the result. Failures vanish, "
-     "and the caller moves on before it finishes."),
-    (("독립 순차 await",), "독립 순차 await", "Independent sequential await",
-     "서로의 결과를 쓰지 않는 <code>await</code> 를 줄 세워 기다린다. "
-     "<code>Promise.all</code> 로 묶으면 지연이 합에서 최댓값으로 준다 — 호출 둘이면 이미 절반이다.",
-     "Awaits that never use each other's result, run one after another. "
-     "<code>Promise.all</code> turns the latency from a sum into a max — two calls already halve it."),
-    (("N+1",), "N+1", "N+1",
-     "루프 한 바퀴마다 DB·네트워크를 한 번씩 부른다. <code>IN (...)</code> 한 번으로 묶으면 "
-     "왕복 N+1회가 1회가 된다 — 벤치마크 없이 셈으로 증명된다.",
-     "A DB or network call per loop pass. One <code>IN (...)</code> query turns N+1 round trips into one — "
-     "provable by counting, no benchmark needed."),
-    (("전역 정규식 상태",), "전역 정규식 상태", "Stateful /g regex",
+     "and the caller moves on before it finishes.", "", ""),
+    (("전역 정규식 상태",), "전역 정규식 상태", "Stateful /g regex", "진단", "diagnostic",
      "<code>/g</code> 정규식을 공유한 채 루프에서 <code>.test()</code> 하면 <code>lastIndex</code> 가 "
      "다음 호출로 새어, 같은 입력에 참·거짓이 번갈아 나온다. 성능이 아니라 조용히 틀린 답이다.",
      "A shared <code>/g</code> regex used with <code>.test()</code> in a loop leaks <code>lastIndex</code> "
-     "into the next call, so the same input flips between true and false. Not slow — silently wrong."),
+     "into the next call, so the same input flips between true and false. Not slow — silently wrong.", "", ""),
+    ((), "함수 길이", "Function length", "채점 01", "scored 01",
+     "한 번에 읽어야 하는 양. 중첩 함수·주석을 뺀 자기 코드 줄 기준, 40줄 초과(JSX 60줄) 비율. "
+     "파일을 쪼개도 안 변한다 — 그래서 조작이 안 된다.",
+     "How much you must read at once — a function's own code lines, nested functions and comments removed. "
+     "Splitting files doesn't move it, so it can't be gamed.", "", ""),
+    ((), "인지 복잡도", "Cognitive complexity", "채점 02", "scored 02",
+     "함수를 머리로 따라가는 부담. SonarSource <code>S3776</code> 스펙과 정본값까지 일치 검증.",
+     "How hard a function is to follow. Matches SonarSource <code>S3776</code>, verified to canonical values.", "", ""),
+    ((), "중복", "Duplication", "채점 03", "scored 03",
+     "토큰 단위 복사·붙여넣기 밀도. 74개 실측에서 점수와 상관 −0.11이라 비중을 16→9로 줄였다 — "
+     "대부분에겐 0점, 소수에게만 큰 항목이다.",
+     "Token-level copy-paste density. Correlates −0.11 with score across 74 repos, so its cap was cut 16 → 9: "
+     "zero for most, heavy for a few.", "", ""),
+    ((), "파일 크기", "File size", "채점 04", "scored 04",
+     "평균 줄 수 + 대형 파일 비중. 보조 항으로 강등(27→8) — 같은 코드를 6파일로 쪼개기만 해도 옛 공식은 +27점을 줬다. "
+     "함수 길이와 상관 +0.16이라 버리진 않았다.",
+     "Average lines + oversized-file share, demoted to a minor term (27 → 8): splitting identical code into six files "
+     "used to gain +27. Kept, because it correlates only +0.16 with function length.", "", ""),
 ]
-_by_axis = {i: [] for i in range(len(AXES))}
+
+
+def _star_num(v):
+    if not v:
+        return 0
+    v = v.replace(",", "")
+    return float(v[:-1]) * 1000 if v.endswith("k") else float(v)
+
+
+_by_rule = {i: [] for i in range(len(RULES))}
 unmapped = []
 for f in sorted(findings, key=lambda f: f.get("mergedAt") or ""):
     if state_by_pr.get(str(f["pr"])) != "merged":
         continue
     prefix = f["type"].split(" (")[0]
-    i = next((i for i, a in enumerate(AXES) if prefix in a[0]), None)
+    i = next((i for i, r in enumerate(RULES) if prefix in r[0]), None)
     if i is None:
         unmapped.append(f"#{f['pr']} {prefix}")
     else:
-        _by_axis[i].append(f)
+        _by_rule[i].append(f)
 _rows = []
-for i in sorted((i for i in _by_axis if _by_axis[i]), key=lambda i: (-len(_by_axis[i]), i)):
-    _, ko, en, dko, den = AXES[i]
-    _chips, _seen = [], {}
-    for f in _by_axis[i]:
+# 머지가 많은 규칙부터, 머지 없는 채점축은 원래 번호 순으로 뒤에.
+for i in sorted(_by_rule, key=lambda i: (-len(_by_rule[i]), i)):
+    _, ko, en, tko, ten, dko, den, nko, nen = RULES[i]
+    _seen = {}
+    for f in _by_rule[i]:
         _seen.setdefault(f["repo"], []).append(f)
-    for repo, fs in _seen.items():
-        name = esc(fs[0]["repoLabel"].split(" · ")[0])
-        many = f"×{len(fs)}" if len(fs) > 1 else ""
+    _chips = []
+    for repo, fs in sorted(_seen.items(), key=lambda kv: -_star_num(split_label(kv[1][-1]["repoLabel"])[1])):
+        name, stars = split_label(fs[-1]["repoLabel"])
         src = AVATAR.get(repo)
-        fav = f'<img src="{src}" alt="" width="16" height="16" loading="lazy">' if src else ""
+        fav = f'<img src="{src}" alt="" width="18" height="18" loading="lazy">' if src else ""
+        many = f'<i>×{len(fs)}</i>' if len(fs) > 1 else ""
+        star = f'<small>{STAR}{stars}</small>' if stars else ""
         _chips.append(f'<a href="https://github.com/{repo}/pull/{fs[0]["pr"]}" target="_blank" rel="noopener"'
-                      f' title="{esc(repo)} · {", ".join("#" + str(x["pr"]) for x in fs)}">{fav}{name}'
-                      + (f'<i>{many}</i>' if many else "") + '</a>')
-    n = len(_by_axis[i])
+                      f' title="{esc(repo)} · {", ".join("#" + str(x["pr"]) for x in fs)}">{fav}'
+                      f'<span class="cn"><b>{esc(name)}</b>{star}</span>{many}</a>')
+    n = len(_by_rule[i])
+    merged = (f'<span class="axk"><span class="ko">머지 {n}건</span><span class="en">{n} merged</span></span>'
+              if n else "")
+    note = (f'<p class="axs"><span class="ko">{nko}</span><span class="en">{nen}</span></p>' if nko else "")
+    chips = f'<div class="axc">{"".join(_chips)}</div>' if _chips else ""
     _rows.append(f'<div class="axr"><div class="axn"><b><span class="ko">{ko}</span><span class="en">{en}</span></b>'
-                 f'<span class="axk"><span class="ko">머지 {n}건</span><span class="en">{n} merged</span></span></div>'
-                 f'<p><span class="ko">{dko}</span><span class="en">{den}</span></p>'
-                 f'<div class="axc">' + "".join(_chips) + "</div></div>")
-_total = sum(len(v) for v in _by_axis.values())
-_head = (f'<div class="axh"><span class="ko">남의 저장소에 머지된 규칙<small>{len(_rows)}개 축 · {_total}건</small></span>'
-         f'<span class="en">Rules merged upstream<small>{len(_rows)} axes · {_total} PRs</small></span></div>')
+                 f'<span class="axt"><span class="ko">{tko}</span><span class="en">{ten}</span></span>{merged}</div>'
+                 f'<p><span class="ko">{dko}</span><span class="en">{den}</span></p>{note}{chips}</div>')
+_total = sum(len(v) for v in _by_rule.values())
+_nmerged = sum(1 for v in _by_rule.values() if v)
+_head = (f'<div class="axh"><span class="ko">규칙 {len(RULES)}개<small>{_nmerged}개가 남의 저장소에 머지됨 · {_total}건</small></span>'
+         f'<span class="en">{len(RULES)} rules<small>{_nmerged} merged upstream · {_total} PRs</small></span></div>')
 A_BEGIN, A_END = "<!--auto:axmerged-->", "<!--/auto:axmerged-->"
-assert A_BEGIN in h and A_END in h, "축별 머지 마커가 없다"
+assert A_BEGIN in h and A_END in h, "규칙 목록 마커가 없다"
 h = re.sub(re.escape(A_BEGIN) + r".*?" + re.escape(A_END), lambda m: A_BEGIN + _head + "".join(_rows) + A_END,
            h, count=1, flags=re.S)
 for u in unmapped:
-    print(f"  ✗ 축을 모르는 머지(update-impact-cards.py 의 AXES): {u}")
+    print(f"  ✗ 축을 모르는 머지(update-impact-cards.py 의 RULES): {u}")
 
 # 새 저장소에 한 줄 설명을 안 붙이면 카드에 이름만 남는다 — 조용히 비는 쪽이라 검사한다.
 notranslated = sorted(f["title"] for f in findings
