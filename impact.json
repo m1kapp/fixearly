@@ -793,11 +793,8 @@
    "repoLabel": "Babylon.js · 26.1k★",
    "pr": 18980,
    "status": "waiting",
-   "createdAt": "2026-10-07T04:59:27Z",
-   "release": {
-    "channel": "pending"
-   }
+   "createdAt": "2026-10-07T04:59:27Z"
   }
  ],
- "generatedAt": "2026-10-07T05:01:05.873Z"
+ "generatedAt": "2026-10-07T05:03:48.068Z"
 }
