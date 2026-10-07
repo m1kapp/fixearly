@@ -832,7 +832,17 @@
    "pr": 22102,
    "status": "waiting",
    "createdAt": "2026-10-07T12:48:49Z"
+  },
+  {
+   "title": "중복 검사 Set 을 안 읽어 codemod 가 중복 이름을 만듦",
+   "titleEn": "unchecked name set lets a codemod write duplicate package names",
+   "type": "쓰기만 하는 컬렉션 (2026-03 리팩터가 has() 검사를 지워 채우기만 하는 Set 이 남았고, 그 결과 중복 이름을 생성)",
+   "repo": "vercel/turborepo",
+   "repoLabel": "turborepo · 31.2k★",
+   "pr": 14433,
+   "status": "waiting",
+   "createdAt": "2026-10-07T13:09:15Z"
   }
  ],
- "generatedAt": "2026-10-07T12:51:45.498Z"
+ "generatedAt": "2026-10-07T13:11:40.863Z"
 }
