@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-07T12:50:47Z",
+  "generatedAt": "2026-10-07T13:13:42Z",
   "method": "latest 60 closed PRs; merged non-bot external contributors; medianDays is the one we judge by",
   "repos": {
     "Automattic/mongoose": {
@@ -48,10 +48,10 @@
     },
     "TryGhost/Ghost": {
       "medianDays": 0.1,
-      "averageDays": 5.1,
-      "mergedExternal": 25,
+      "averageDays": 4.9,
+      "mergedExternal": 26,
       "acceptancePct": 76,
-      "closedExternal": 33,
+      "closedExternal": 34,
       "driveByAcceptancePct": 50,
       "driveByMerged": 8,
       "driveByClosed": 16,
@@ -69,14 +69,14 @@
       "sampledClosed": 60
     },
     "angular/angular": {
-      "medianDays": 2.8,
-      "averageDays": 10.9,
-      "mergedExternal": 37,
-      "acceptancePct": 69,
+      "medianDays": 3.0,
+      "averageDays": 11.5,
+      "mergedExternal": 35,
+      "acceptancePct": 65,
       "closedExternal": 54,
-      "driveByAcceptancePct": 85,
-      "driveByMerged": 11,
-      "driveByClosed": 13,
+      "driveByAcceptancePct": 71,
+      "driveByMerged": 10,
+      "driveByClosed": 14,
       "sampledClosed": 60
     },
     "babel/babel": {
@@ -113,13 +113,13 @@
       "sampledClosed": 60
     },
     "directus/directus": {
-      "medianDays": 4.0,
-      "averageDays": 10.5,
+      "medianDays": 4.3,
+      "averageDays": 12.5,
       "mergedExternal": 28,
-      "acceptancePct": 58,
-      "closedExternal": 48,
-      "driveByAcceptancePct": 44,
-      "driveByMerged": 11,
+      "acceptancePct": 57,
+      "closedExternal": 49,
+      "driveByAcceptancePct": 40,
+      "driveByMerged": 10,
       "driveByClosed": 25,
       "sampledClosed": 60
     },
@@ -168,14 +168,14 @@
       "sampledClosed": 60
     },
     "grafana/grafana": {
-      "medianDays": 0.8,
-      "averageDays": 9.7,
+      "medianDays": 0.7,
+      "averageDays": 9.0,
       "mergedExternal": 47,
       "acceptancePct": 90,
       "closedExternal": 52,
-      "driveByAcceptancePct": 84,
-      "driveByMerged": 21,
-      "driveByClosed": 25,
+      "driveByAcceptancePct": 85,
+      "driveByMerged": 23,
+      "driveByClosed": 27,
       "sampledClosed": 60
     },
     "immich-app/immich": {
@@ -202,9 +202,9 @@
     },
     "langfuse/langfuse": {
       "medianDays": 0.2,
-      "averageDays": 2.6,
-      "mergedExternal": 37,
-      "acceptancePct": 88,
+      "averageDays": 2.5,
+      "mergedExternal": 38,
+      "acceptancePct": 90,
       "closedExternal": 42,
       "driveByAcceptancePct": 83,
       "driveByMerged": 5,
@@ -267,14 +267,14 @@
       "sampledClosed": 60
     },
     "n8n-io/n8n": {
-      "medianDays": 1.5,
-      "averageDays": 3.9,
-      "mergedExternal": 28,
-      "acceptancePct": 76,
-      "closedExternal": 37,
-      "driveByAcceptancePct": 61,
-      "driveByMerged": 14,
-      "driveByClosed": 23,
+      "medianDays": 1.7,
+      "averageDays": 4.3,
+      "mergedExternal": 30,
+      "acceptancePct": 77,
+      "closedExternal": 39,
+      "driveByAcceptancePct": 64,
+      "driveByMerged": 16,
+      "driveByClosed": 25,
       "sampledClosed": 60
     },
     "nestjs/nest": {
@@ -421,10 +421,10 @@
       "sampledClosed": 60
     },
     "prisma/prisma": {
-      "medianDays": 1.0,
+      "medianDays": 0.9,
       "averageDays": 3.3,
-      "mergedExternal": 48,
-      "acceptancePct": 89,
+      "mergedExternal": 46,
+      "acceptancePct": 85,
       "closedExternal": 54,
       "driveByAcceptancePct": 0,
       "driveByMerged": 0,
@@ -466,7 +466,7 @@
     },
     "storybookjs/storybook": {
       "medianDays": 3.9,
-      "averageDays": 11.2,
+      "averageDays": 11.3,
       "mergedExternal": 18,
       "acceptancePct": 72,
       "closedExternal": 25,
@@ -487,14 +487,14 @@
       "sampledClosed": 60
     },
     "supabase/supabase": {
-      "medianDays": 0.9,
-      "averageDays": 5.5,
-      "mergedExternal": 34,
-      "acceptancePct": 76,
-      "closedExternal": 45,
-      "driveByAcceptancePct": 59,
-      "driveByMerged": 16,
-      "driveByClosed": 27,
+      "medianDays": 0.8,
+      "averageDays": 5.6,
+      "mergedExternal": 33,
+      "acceptancePct": 75,
+      "closedExternal": 44,
+      "driveByAcceptancePct": 58,
+      "driveByMerged": 15,
+      "driveByClosed": 26,
       "sampledClosed": 60
     },
     "sveltejs/svelte": {
@@ -531,13 +531,13 @@
       "sampledClosed": 60
     },
     "twentyhq/twenty": {
-      "medianDays": 0.7,
-      "averageDays": 1.7,
+      "medianDays": 0.8,
+      "averageDays": 1.8,
       "mergedExternal": 11,
-      "acceptancePct": 73,
-      "closedExternal": 15,
-      "driveByAcceptancePct": 67,
-      "driveByMerged": 2,
+      "acceptancePct": 69,
+      "closedExternal": 16,
+      "driveByAcceptancePct": 33,
+      "driveByMerged": 1,
       "driveByClosed": 3,
       "sampledClosed": 60
     },
@@ -553,14 +553,25 @@
       "sampledClosed": 60
     },
     "vercel/next.js": {
-      "medianDays": 3.9,
-      "averageDays": 10.2,
+      "medianDays": 3.8,
+      "averageDays": 9.3,
       "mergedExternal": 15,
       "acceptancePct": 75,
       "closedExternal": 20,
-      "driveByAcceptancePct": 67,
-      "driveByMerged": 8,
-      "driveByClosed": 12,
+      "driveByAcceptancePct": 64,
+      "driveByMerged": 7,
+      "driveByClosed": 11,
+      "sampledClosed": 60
+    },
+    "vercel/turborepo": {
+      "medianDays": 0.1,
+      "averageDays": 0.2,
+      "mergedExternal": 39,
+      "acceptancePct": 89,
+      "closedExternal": 44,
+      "driveByAcceptancePct": 60,
+      "driveByMerged": 3,
+      "driveByClosed": 5,
       "sampledClosed": 60
     },
     "vitejs/vite": {
