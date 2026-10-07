@@ -546,6 +546,59 @@ if _merged:
     h = re.sub(r'(<span id="mshape-en">).*?(</span>)', rf"\g<1>{_en}\g<2>", h, count=1, flags=re.S)
     print("머지 형태 줄:", _ko)
 
+# 축별 머지 목록 — "규칙이 남에게 머지됐다"를 축 단위로 보여준다. type 접두어로 축을 가른다.
+# 새 축이 머지됐는데 여기 없으면 조용히 빠지는 쪽이라, 모르는 접두어는 누락으로 센다.
+AXES = [
+    (("O(n²)", "O(n²) 배열 조회", "O(n²) 그룹핑/조회"), "O(n²) 조회", "O(n²) lookup",
+     "루프 안 배열 훑기를 Map·Set 조회로", "array scans in a loop, replaced with a Map/Set lookup"),
+    (("쓰기만 하는 컬렉션",), "쓰기만 하는 컬렉션", "Write-only collection",
+     "채우기만 하고 아무도 읽지 않는 Set·Map", "a Set/Map that is filled but never read"),
+    (("버려진 Promise",), "버려진 Promise", "Floating promise",
+     "await 없이 버려진 async 호출", "an async call nobody awaits"),
+    (("독립 순차 await",), "독립 순차 await", "Independent sequential await",
+     "서로 기다릴 필요 없는 await 를 동시에", "awaits that need not wait on each other, run together"),
+    (("N+1",), "N+1", "N+1",
+     "루프 안 쿼리를 한 번으로", "a query per loop pass, batched into one"),
+    (("전역 정규식 상태",), "전역 정규식 상태", "Stateful /g regex",
+     "/g 정규식 .test() 의 lastIndex 누수", "a /g regex leaking lastIndex across .test() calls"),
+]
+_by_axis = {i: [] for i in range(len(AXES))}
+unmapped = []
+for f in sorted(findings, key=lambda f: f.get("mergedAt") or ""):
+    if state_by_pr.get(str(f["pr"])) != "merged":
+        continue
+    prefix = f["type"].split(" (")[0]
+    i = next((i for i, a in enumerate(AXES) if prefix in a[0]), None)
+    if i is None:
+        unmapped.append(f"#{f['pr']} {prefix}")
+    else:
+        _by_axis[i].append(f)
+_rows = []
+for i in sorted((i for i in _by_axis if _by_axis[i]), key=lambda i: (-len(_by_axis[i]), i)):
+    _, ko, en, dko, den = AXES[i]
+    _chips, _seen = [], {}
+    for f in _by_axis[i]:
+        _seen.setdefault(f["repo"], []).append(f)
+    for repo, fs in _seen.items():
+        name = esc(fs[0]["repoLabel"].split(" · ")[0])
+        many = f"×{len(fs)}" if len(fs) > 1 else ""
+        _chips.append(f'<a href="https://github.com/{repo}/pull/{fs[0]["pr"]}" target="_blank" rel="noopener"'
+                      f' title="{esc(repo)} · {", ".join("#" + str(x["pr"]) for x in fs)}">{name}{many}</a>')
+    n = len(_by_axis[i])
+    _rows.append(f'<div class="axr"><div class="axn"><b><span class="ko">{ko}</span><span class="en">{en}</span></b>'
+                 f'<span class="ko">{dko}</span><span class="en">{den}</span></div>'
+                 f'<div class="axc"><span class="axk"><span class="ko">머지 {n}</span><span class="en">{n} merged</span></span>'
+                 + "".join(_chips) + "</div></div>")
+_total = sum(len(v) for v in _by_axis.values())
+_head = (f'<div class="axh"><span class="ko">남의 저장소에 머지된 규칙<small>{len(_rows)}개 축 · {_total}건</small></span>'
+         f'<span class="en">Rules merged upstream<small>{len(_rows)} axes · {_total} PRs</small></span></div>')
+A_BEGIN, A_END = "<!--auto:axmerged-->", "<!--/auto:axmerged-->"
+assert A_BEGIN in h and A_END in h, "축별 머지 마커가 없다"
+h = re.sub(re.escape(A_BEGIN) + r".*?" + re.escape(A_END), lambda m: A_BEGIN + _head + "".join(_rows) + A_END,
+           h, count=1, flags=re.S)
+for u in unmapped:
+    print(f"  ✗ 축을 모르는 머지(update-impact-cards.py 의 AXES): {u}")
+
 # 새 저장소에 한 줄 설명을 안 붙이면 카드에 이름만 남는다 — 조용히 비는 쪽이라 검사한다.
 notranslated = sorted(f["title"] for f in findings
                       if re.search(r"[가-힣]", f["title"]) and not f.get("titleEn"))
@@ -568,7 +621,7 @@ noreason = sorted(f"#{f['pr']}" for f in findings
                   and not (f.get("closedReason") and f.get("closedReasonEn")))
 for r in noreason:
     print(f"  ✗ 닫힌 사유 없음(impact.json 의 closedReason/closedReasonEn): {r}")
-missing = missing + noicon + nocount + notranslated + noreason
+missing = missing + noicon + nocount + notranslated + noreason + unmapped
 missing_release = sorted(f"#{f['pr']}" for f in findings
                          if state_by_pr.get(str(f["pr"])) == "merged"
                          and f.get("release", {}).get("channel") != "pending"
