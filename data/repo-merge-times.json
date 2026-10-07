@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-07T12:40:05Z",
+  "generatedAt": "2026-10-07T12:50:47Z",
   "method": "latest 60 closed PRs; merged non-bot external contributors; medianDays is the one we judge by",
   "repos": {
     "Automattic/mongoose": {
@@ -169,13 +169,13 @@
     },
     "grafana/grafana": {
       "medianDays": 0.8,
-      "averageDays": 9.9,
+      "averageDays": 9.7,
       "mergedExternal": 47,
       "acceptancePct": 90,
       "closedExternal": 52,
-      "driveByAcceptancePct": 83,
-      "driveByMerged": 20,
-      "driveByClosed": 24,
+      "driveByAcceptancePct": 84,
+      "driveByMerged": 21,
+      "driveByClosed": 25,
       "sampledClosed": 60
     },
     "immich-app/immich": {
@@ -255,6 +255,17 @@
       "driveByClosed": 8,
       "sampledClosed": 60
     },
+    "mozilla/pdf.js": {
+      "medianDays": 1.0,
+      "averageDays": 3.0,
+      "mergedExternal": 23,
+      "acceptancePct": 82,
+      "closedExternal": 28,
+      "driveByAcceptancePct": 83,
+      "driveByMerged": 5,
+      "driveByClosed": 6,
+      "sampledClosed": 60
+    },
     "n8n-io/n8n": {
       "medianDays": 1.5,
       "averageDays": 3.9,
@@ -322,14 +333,14 @@
       "sampledClosed": 60
     },
     "openstatusHQ/openstatus": {
-      "medianDays": 1.5,
-      "averageDays": 2.1,
-      "mergedExternal": 6,
-      "acceptancePct": 86,
-      "closedExternal": 7,
-      "driveByAcceptancePct": 86,
-      "driveByMerged": 6,
-      "driveByClosed": 7,
+      "medianDays": 2.5,
+      "averageDays": 2.4,
+      "mergedExternal": 5,
+      "acceptancePct": 83,
+      "closedExternal": 6,
+      "driveByAcceptancePct": 83,
+      "driveByMerged": 5,
+      "driveByClosed": 6,
       "sampledClosed": 60
     },
     "orval-labs/orval": {
@@ -521,10 +532,10 @@
     },
     "twentyhq/twenty": {
       "medianDays": 0.7,
-      "averageDays": 1.1,
-      "mergedExternal": 10,
-      "acceptancePct": 71,
-      "closedExternal": 14,
+      "averageDays": 1.7,
+      "mergedExternal": 11,
+      "acceptancePct": 73,
+      "closedExternal": 15,
       "driveByAcceptancePct": 67,
       "driveByMerged": 2,
       "driveByClosed": 3,
@@ -597,14 +608,14 @@
       "sampledClosed": 60
     },
     "withastro/astro": {
-      "medianDays": 2.2,
-      "averageDays": 21.8,
-      "mergedExternal": 14,
+      "medianDays": 2.5,
+      "averageDays": 20.8,
+      "mergedExternal": 15,
       "acceptancePct": 88,
-      "closedExternal": 16,
-      "driveByAcceptancePct": 85,
-      "driveByMerged": 11,
-      "driveByClosed": 13,
+      "closedExternal": 17,
+      "driveByAcceptancePct": 82,
+      "driveByMerged": 9,
+      "driveByClosed": 11,
       "sampledClosed": 60
     },
     "yarnpkg/berry": {
