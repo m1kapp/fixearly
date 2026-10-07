@@ -261,11 +261,11 @@ if (generatedSrc) {
       file: "stateful-regex.ts",
       key: "statefulRegex",
       label: "전역 정규식 상태",
-      hit: ["leaks", "sticky"],
+      hit: ["leaks", "sticky", "outsideMatch"],
       // guarded 는 lastIndex 를 직접 되돌린다 — 저자가 상태를 알고 관리하는 자리라
       // 버그가 아니다(nx 에서 오탐 2/2 를 낸 계열). plain 은 /g 가 없고, inner 는
       // 루프 안에서 만들어 매 회 새 객체이며, walked 는 exec 순회 관용구다.
-      miss: ["guarded", "plain", "inner", "walked"],
+      miss: ["guarded", "plain", "inner", "walked", "peeked", "matched"],
       // 출력 줄: `    leaks.test() — src/...:11`
       namePattern: /^\s{4}([A-Za-z_$][\w$]*)\.test\(\)/gm,
     },

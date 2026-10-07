@@ -1627,11 +1627,11 @@ function analyzeTextbookIssues(ts, fileContents) {
           if (ts.isCallExpression(init) && ts.isPropertyAccessExpression(init.expression) &&
               ARRAY_MAKERS.has(init.expression.name.getText(sf))) arrayVars.add(n.name.getText(sf));
         }
-        // RE.lastIndex = <무엇이든> — 손으로 상태를 관리하는 자리라는 신호로 충분하다.
-        if (ts.isBinaryExpression(n) && n.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
-            ts.isPropertyAccessExpression(n.left) && n.left.name.getText(sf) === "lastIndex" &&
-            ts.isIdentifier(n.left.expression)) {
-          lastIndexResetVars.add(n.left.expression.getText(sf));
+        // RE.lastIndex 를 쓰거나 읽는다 — 손으로 상태를 관리하는 자리라는 신호로 충분하다.
+        // 읽기도 포함한다: Babylon spriteManager 는 test() 뒤 lastIndex 를 일부러 읽어 다음 위치를 잡는다(2026-10-07).
+        if (ts.isPropertyAccessExpression(n) && n.name.getText(sf) === "lastIndex" &&
+            ts.isIdentifier(n.expression)) {
+          lastIndexResetVars.add(n.expression.getText(sf));
         }
         ts.forEachChild(n, collect);
       };
@@ -1854,6 +1854,28 @@ function analyzeTextbookIssues(ts, fileContents) {
         }
       }
 
+      // 가드 [FP:regex-match-resets]: 같은 루프 본문에서 test() 보다 앞서 str.match(RE)·str.replace(RE, …) 가 돌면
+      // /g 의 match·replace 는 lastIndex 를 0 으로 되돌리고 끝나므로 매 회 깨끗한 상태로 test() 한다.
+      // compromise 05-parens-merge.js 가 이 모양이었다(2026-10-07).
+      function resetEarlierInLoop(testCall, name) {
+        let loop = testCall.parent;
+        while (loop && !ts.isIterationStatement(loop, false) && !ts.isFunctionLike(loop)) loop = loop.parent;
+        if (!loop || ts.isFunctionLike(loop)) return false;
+        let found = false;
+        const visit = (n) => {
+          if (found || n.pos >= testCall.pos) return;
+          if (ts.isCallExpression(n) && ts.isPropertyAccessExpression(n.expression) &&
+              ["match", "replace", "replaceAll"].includes(n.expression.name.getText(sf)) &&
+              n.arguments[0] && ts.isIdentifier(n.arguments[0]) && n.arguments[0].getText(sf) === name) {
+            found = true;
+            return;
+          }
+          ts.forEachChild(n, visit);
+        };
+        ts.forEachChild(loop.statement, visit);
+        return found;
+      }
+
       // ── 전역 플래그 정규식을 루프 안에서 .test(): lastIndex가 문자열 사이로 새어
       // 같은 입력도 호출마다 결과가 뒤바뀐다. 성능이 아니라 "조용히 틀린 답"을 내는 버그.
       // 고침은 /g 제거 또는 매 회 새 정규식.
@@ -1864,7 +1886,8 @@ function analyzeTextbookIssues(ts, fileContents) {
         const recv = node.expression.expression;
         // 가드 [FP:regex-created-in-loop]: 루프 안에서 만든 정규식은 매 회 새 객체라 lastIndex가 샐 수 없다 → 제외
         if (m === "test" && ts.isIdentifier(recv) && globalRegexVars.has(recv.getText(sf)) &&
-            !loopVars.has(recv.getText(sf)) && !lastIndexResetVars.has(recv.getText(sf))) {
+            !loopVars.has(recv.getText(sf)) && !lastIndexResetVars.has(recv.getText(sf)) &&
+            !resetEarlierInLoop(node, recv.getText(sf))) {
           statefulRegex.push({ file, line: lineOf(node), name: recv.getText(sf), method: m });
         }
       }
