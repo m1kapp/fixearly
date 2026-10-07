@@ -120,7 +120,8 @@ inner = (
     + rows + RS_END)
 section = f'<div class="rulesets" id="rulesets">{inner}</div>'
 
-m3 = re.search(r'(</div>\s*</section>\s*<section class="step" id="axes">)', html)
+# 보드 섹션 자신의 끝으로 잡는다 — 뒤에 오는 섹션 이름으로 잡았더니 섹션을 옮기자 못 찾았다.
+m3 = re.search(r'<section class="step" id="board">.*?(</div>\s*</section>)', html, re.S)
 if 'id="rulesets"' in html:
     a = html.index('<div class="rulesets" id="rulesets">')
     if not m3:
