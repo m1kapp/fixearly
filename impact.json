@@ -802,7 +802,17 @@
    "release": {
     "channel": "pending"
    }
+  },
+  {
+   "title": "채우기만 하고 읽지 않는 Map 3개",
+   "titleEn": "three maps filled but never read",
+   "type": "쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — 생긴 뒤 한 번도 읽힌 적 없다)",
+   "repo": "CherryHQ/cherry-studio",
+   "repoLabel": "cherry-studio · 52.4k★",
+   "pr": 21363,
+   "status": "waiting",
+   "createdAt": "2026-10-07T11:05:27Z"
   }
  ],
- "generatedAt": "2026-10-07T10:37:56.864Z"
+ "generatedAt": "2026-10-07T11:08:21.685Z"
 }
