@@ -822,7 +822,17 @@
    "pr": 15591,
    "status": "waiting",
    "createdAt": "2026-10-07T12:38:07Z"
+  },
+  {
+   "title": "리팩터 뒤 남은 조상 Set",
+   "titleEn": "ancestor set left behind after a refactor",
+   "type": "쓰기만 하는 컬렉션 (2021 usehref 리팩터로 소비자 둘이 ancestors 로 바뀐 뒤 남은 Set)",
+   "repo": "mozilla/pdf.js",
+   "repoLabel": "pdf.js · 54k★",
+   "pr": 22102,
+   "status": "waiting",
+   "createdAt": "2026-10-07T12:48:49Z"
   }
  ],
- "generatedAt": "2026-10-07T12:40:59.508Z"
+ "generatedAt": "2026-10-07T12:51:45.498Z"
 }

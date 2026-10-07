@@ -338,13 +338,14 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
 | [cherry-studio#21363](https://github.com/CherryHQ/cherry-studio/pull/21363) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
+| [pdf.js#22102](https://github.com/mozilla/pdf.js/pull/22102) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 1일째 / 보통 2일 |
 | [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 오늘 / 보통 4일 |
 | [strapi#27893](https://github.com/strapi/strapi/pull/27893) | 버려진 Promise | ⚪ 대기 | 5일째 / 보통 3일 |
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 10일째 / 보통 1일 · 보류 |
-| [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 10일째 / 보통 2일 · 보류 |
+| [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 10일째 / 보통 3일 · 보류 |
 
-**열린 것 6건(보류 2건 빼면 4건).** 판정 난 52건 중 머지 27 · 승인 0 · 닫힘 25.
+**열린 것 7건(보류 2건 빼면 5건).** 판정 난 52건 중 머지 27 · 승인 0 · 닫힘 25.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -780,11 +781,12 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | vscode | 89% | 90% | 0.1일 | 8/9 | 표본 부족 | 판정 경험 있음 · CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음 |
 | cherry-studio | 89% | 87% | 0.2일 | 8/9 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
 | pnpm | 88% | 62% | 0.3일 | 7/8 | 표본 부족 | 판정 경험 있음 · AI 작성 PR 본문에 agent disclosure 필수 · 전체 저장소 대신 영향 패키지 테스트 실행 |
-| openstatus | 86% | 86% | 1.5일 | 6/7 | 표본 부족 | 판정 경험 있음 |
-| astro | 85% | 88% | 2.2일 | 11/13 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 · 사용자에게 보이는 변화면 changeset 필요 — 내부 전용 변경은 changeset 없이 머지된다(#17430 refactor·#16734 chore 가 changeset 0) · AI 정책 없음 · **포크 PR 워크플로가 승인 게이트가 아니다**(2026-09-13 #17987 제출 직후 CI 가 바로 돌았다 — angular·nx 와 다르다) · **`Test (Smoke)` 는 `smoke/docs` 의존성을 pkg.pr.new 커밋 핀에서 받는다** — 그 빌드가 만료되면 `ERR_PNPM_FETCH_404` 로 죽는다(2026-09-13 #17987 에서 밟음). PR 내용과 무관하다 |
 | angular | 85% | 69% | 2.8일 | 11/13 | **1차 통과** | 판정 경험 있음 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
+| grafana | 84% | 90% | 0.8일 | 21/25 | **1차 통과** | 판정 경험 있음 · 게이트 0 — 2026-06-22 부터 모든 커밋 서명 필수, 미서명 PR 은 닫는다(CONTRIBUTING, 에이전트 작성 PR 포함). CLA assistant 서명도 필요 |
 | langfuse | 83% | 88% | 0.2일 | 5/6 | 표본 부족 | 판정 경험 있음 |
-| grafana | 83% | 90% | 0.8일 | 20/24 | **1차 통과** | 판정 경험 있음 · 게이트 0 — 2026-06-22 부터 모든 커밋 서명 필수, 미서명 PR 은 닫는다(CONTRIBUTING, 에이전트 작성 PR 포함). CLA assistant 서명도 필요 |
+| pdf.js | 83% | 82% | 1.0일 | 5/6 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
+| openstatus | 83% | 83% | 2.5일 | 5/6 | 표본 부족 | 판정 경험 있음 |
+| astro | 82% | 88% | 2.5일 | 9/11 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 · 사용자에게 보이는 변화면 changeset 필요 — 내부 전용 변경은 changeset 없이 머지된다(#17430 refactor·#16734 chore 가 changeset 0) · AI 정책 없음 · **포크 PR 워크플로가 승인 게이트가 아니다**(2026-09-13 #17987 제출 직후 CI 가 바로 돌았다 — angular·nx 와 다르다) · **`Test (Smoke)` 는 `smoke/docs` 의존성을 pkg.pr.new 커밋 핀에서 받는다** — 그 빌드가 만료되면 `ERR_PNPM_FETCH_404` 로 죽는다(2026-09-13 #17987 에서 밟음). PR 내용과 무관하다 |
 | storybook | 82% | 72% | 3.9일 | 9/11 | 1차 통과 · 후순위(느림) | 판정 경험 있음 · 게이트 0 — danger 가 `ci:*`·`qa:*` 라벨을 요구하는데 메인테이너만 붙일 수 있다 (#35829 가 25일째 빨간불이라 접었다) · CONTRIBUTING 'Never let an LLM speak for you': 사람 개입 없는 PR 은 3일 뒤 자동 닫힘 |
 | terser | 79% | 72% | 5.5일 | 26/33 | 컷 | — |
 | postcss | 78% | 78% | 0.2일 | 28/36 | 컷 | — |
@@ -794,7 +796,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | immich | 75% | 44% | 1.0일 | 3/4 | 표본 부족 | 판정 경험 있음 · 게이트 0 — `changelog:*` 라벨이 메인테이너 전용 |
 | mongoose | 75% | 77% | 2.2일 | 15/20 | 컷 | 판정 경험 있음 |
 | react-router | 69% | 80% | 3.6일 | 20/29 | 컷 | 열린 PR 있음 — 저장소당 1건 |
-| twenty | 67% | 71% | 0.7일 | 2/3 | 표본 부족 | 판정 경험 있음 |
+| twenty | 67% | 73% | 0.7일 | 2/3 | 표본 부족 | 판정 경험 있음 |
 | next.js | 67% | 75% | 3.9일 | 8/12 | 컷 | 커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시 · PR 템플릿: 외부 기여자 PR 설명은 사람이 직접 써야 함 |
 | outline | 67% | 67% | 6.2일 | 2/3 | 표본 부족 | 판정 경험 있음 · AI 정책 없음 · 수락률 38%(3/8)·중앙 5.9일 로 로테이션 컷 |
 | nx | 62% | 74% | 0.5일 | 8/13 | 컷 | 판정 경험 있음 · 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 · **포크 PR 의 워크플로는 메인테이너 승인이 있어야 돈다**(2026-09-12 확인: 네 워크플로 전부 `action_required`). 빨간불처럼 보여도 우리 코드가 깬 게 아니다 — 재푸시하면 승인만 다시 걸린다 |
@@ -885,6 +887,8 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | redux · zustand | 빈 catch 각 1 | **탈락**(2026-10-07). 다듬어진 라이브러리라 후보 자체가 없다 |
 | react-router | floating 3 · O(n²) 3 · 순차 await 2 | **#15591 제출**(floating). `validateSsrFalsePrerenderExports` 가 throw 하는 async 인데 await 없이 불려 dev 서버가 죽는다 — npm 8.4.0 으로 재현, 통합 테스트 수정 전 실패·후 통과. O(n²) 는 matches 수(작음) |
 | pixijs · trpc · sequelize | O(n²)·순차 await | **보류**(2026-10-07). pixijs loadDDS 순차 await 는 포맷 감지가 캐시라 첫 호출만 이득. sequelize `belongsToMany.has` 는 targets×결과 isEqual 이차지만 보통 n 이 작다 |
+| pdf.js | 쓰기만 하는 컬렉션 1 · O(n²) 3 · for...in 1 | **#22102 제출**(newAncestors). 11573ddd1(2021-05 usehref) 이 소비자 둘을 ancestors 로 바꾼 뒤 선언만 남았다. evaluator for...in 은 glyphsWidths 가 객체라 정상 |
+| styled-components · alpine · hls.js | O(n²)·빈 catch | **보류**(2026-10-07). alpine mutation 의 removed×added `.contains` 는 큰 리스트 교체에서만 커진다. graphql-js 는 EasyCLA 라 사용자 서명 필요 |
 
 ## 게이트 0 에서 막힌 곳
 

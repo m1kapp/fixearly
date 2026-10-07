@@ -69,6 +69,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `채우기만 하고 읽지 않는 Map` | [Babylon.js · 26.1k★](https://github.com/BabylonJS/Babylon.js) | 쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — DFS 는 연결점의 소유 블록을 직접 따라간다) | [#18980](https://github.com/BabylonJS/Babylon.js/pull/18980) | ✅ merged | +1 |
 | `채우기만 하고 읽지 않는 Map 3개` | [cherry-studio · 52.4k★](https://github.com/CherryHQ/cherry-studio) | 쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — 생긴 뒤 한 번도 읽힌 적 없다) | [#21363](https://github.com/CherryHQ/cherry-studio/pull/21363) | ⚪ awaiting review | — |
 | `검증 에러가 dev 서버를 죽임` | [react-router · 56.6k★](https://github.com/remix-run/react-router) | 버려진 Promise (throw 하는 async 검증을 await 없이 불러 unhandled rejection 으로 프로세스 종료) | [#15591](https://github.com/remix-run/react-router/pull/15591) | ⚪ awaiting review | — |
+| `리팩터 뒤 남은 조상 Set` | [pdf.js · 54k★](https://github.com/mozilla/pdf.js) | 쓰기만 하는 컬렉션 (2021 usehref 리팩터로 소비자 둘이 ancestors 로 바뀐 뒤 남은 Set) | [#22102](https://github.com/mozilla/pdf.js/pull/22102) | ⚪ awaiting review | — |
 
 ## 규칙
 
