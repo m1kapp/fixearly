@@ -550,17 +550,35 @@ if _merged:
 # 새 축이 머지됐는데 여기 없으면 조용히 빠지는 쪽이라, 모르는 접두어는 누락으로 센다.
 AXES = [
     (("O(n²)", "O(n²) 배열 조회", "O(n²) 그룹핑/조회"), "O(n²) 조회", "O(n²) lookup",
-     "루프 안 배열 훑기를 Map·Set 조회로", "array scans in a loop, replaced with a Map/Set lookup"),
+     "행마다 다른 배열을 <code>.find</code>·<code>.some</code>·<code>.includes</code> 로 처음부터 훑는 자리. "
+     "한 번 Map·Set 으로 색인해두면 조회가 O(1)이 된다 — 데이터가 커질수록 차이가 제곱으로 벌어진다.",
+     "Each row rescans another array with <code>.find</code>/<code>.some</code>/<code>.includes</code>. "
+     "Index it once into a Map/Set and each lookup is O(1) — the gap grows with the square of the data."),
     (("쓰기만 하는 컬렉션",), "쓰기만 하는 컬렉션", "Write-only collection",
-     "채우기만 하고 아무도 읽지 않는 Set·Map", "a Set/Map that is filled but never read"),
+     "채우기만 하고 아무도 읽지 않는 Set·Map·배열. 소비하던 코드가 리팩터로 사라진 흔적이라 "
+     "지워도 동작이 같고, 매번 채우는 비용만 사라진다. knip 은 <code>.add</code> 도 \"사용\"으로 봐서 못 잡는다.",
+     "A Set, Map, or array that is filled but never read — what a refactor left behind. Removing it changes "
+     "nothing but the cost of filling it. knip misses it because <code>.add</code> counts as a use."),
     (("버려진 Promise",), "버려진 Promise", "Floating promise",
-     "await 없이 버려진 async 호출", "an async call nobody awaits"),
+     "async 함수를 <code>await</code> 없이 부르고 결과를 버린다. 실패해도 아무도 모르고, "
+     "호출한 쪽은 끝나기 전에 다음 단계로 넘어간다.",
+     "An async call with no <code>await</code> and nothing holding the result. Failures vanish, "
+     "and the caller moves on before it finishes."),
     (("독립 순차 await",), "독립 순차 await", "Independent sequential await",
-     "서로 기다릴 필요 없는 await 를 동시에", "awaits that need not wait on each other, run together"),
+     "서로의 결과를 쓰지 않는 <code>await</code> 를 줄 세워 기다린다. "
+     "<code>Promise.all</code> 로 묶으면 지연이 합에서 최댓값으로 준다 — 호출 둘이면 이미 절반이다.",
+     "Awaits that never use each other's result, run one after another. "
+     "<code>Promise.all</code> turns the latency from a sum into a max — two calls already halve it."),
     (("N+1",), "N+1", "N+1",
-     "루프 안 쿼리를 한 번으로", "a query per loop pass, batched into one"),
+     "루프 한 바퀴마다 DB·네트워크를 한 번씩 부른다. <code>IN (...)</code> 한 번으로 묶으면 "
+     "왕복 N+1회가 1회가 된다 — 벤치마크 없이 셈으로 증명된다.",
+     "A DB or network call per loop pass. One <code>IN (...)</code> query turns N+1 round trips into one — "
+     "provable by counting, no benchmark needed."),
     (("전역 정규식 상태",), "전역 정규식 상태", "Stateful /g regex",
-     "/g 정규식 .test() 의 lastIndex 누수", "a /g regex leaking lastIndex across .test() calls"),
+     "<code>/g</code> 정규식을 공유한 채 루프에서 <code>.test()</code> 하면 <code>lastIndex</code> 가 "
+     "다음 호출로 새어, 같은 입력에 참·거짓이 번갈아 나온다. 성능이 아니라 조용히 틀린 답이다.",
+     "A shared <code>/g</code> regex used with <code>.test()</code> in a loop leaks <code>lastIndex</code> "
+     "into the next call, so the same input flips between true and false. Not slow — silently wrong."),
 ]
 _by_axis = {i: [] for i in range(len(AXES))}
 unmapped = []
@@ -582,13 +600,16 @@ for i in sorted((i for i in _by_axis if _by_axis[i]), key=lambda i: (-len(_by_ax
     for repo, fs in _seen.items():
         name = esc(fs[0]["repoLabel"].split(" · ")[0])
         many = f"×{len(fs)}" if len(fs) > 1 else ""
+        src = AVATAR.get(repo)
+        fav = f'<img src="{src}" alt="" width="16" height="16" loading="lazy">' if src else ""
         _chips.append(f'<a href="https://github.com/{repo}/pull/{fs[0]["pr"]}" target="_blank" rel="noopener"'
-                      f' title="{esc(repo)} · {", ".join("#" + str(x["pr"]) for x in fs)}">{name}{many}</a>')
+                      f' title="{esc(repo)} · {", ".join("#" + str(x["pr"]) for x in fs)}">{fav}{name}'
+                      + (f'<i>{many}</i>' if many else "") + '</a>')
     n = len(_by_axis[i])
     _rows.append(f'<div class="axr"><div class="axn"><b><span class="ko">{ko}</span><span class="en">{en}</span></b>'
-                 f'<span class="ko">{dko}</span><span class="en">{den}</span></div>'
-                 f'<div class="axc"><span class="axk"><span class="ko">머지 {n}</span><span class="en">{n} merged</span></span>'
-                 + "".join(_chips) + "</div></div>")
+                 f'<span class="axk"><span class="ko">머지 {n}건</span><span class="en">{n} merged</span></span></div>'
+                 f'<p><span class="ko">{dko}</span><span class="en">{den}</span></p>'
+                 f'<div class="axc">' + "".join(_chips) + "</div></div>")
 _total = sum(len(v) for v in _by_axis.values())
 _head = (f'<div class="axh"><span class="ko">남의 저장소에 머지된 규칙<small>{len(_rows)}개 축 · {_total}건</small></span>'
          f'<span class="en">Rules merged upstream<small>{len(_rows)} axes · {_total} PRs</small></span></div>')
