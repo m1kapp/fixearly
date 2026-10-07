@@ -840,7 +840,7 @@
    "repo": "vercel/turborepo",
    "repoLabel": "turborepo · 31.2k★",
    "pr": 14433,
-   "status": "waiting",
+   "status": "changes",
    "createdAt": "2026-10-07T13:09:15Z"
   },
   {
@@ -852,7 +852,17 @@
    "pr": 3527,
    "status": "waiting",
    "createdAt": "2026-10-07T13:26:06Z"
+  },
+  {
+   "title": "백업 복원이 복사가 끝나기 전에 앱을 재시작",
+   "titleEn": "backup restore relaunches before the copies finish",
+   "type": "forEach 안 await (forEach(async copyFile) 뒤 곧바로 app.exit() — 복원이 안 되거나 일부만 된다)",
+   "repo": "Kong/insomnia",
+   "repoLabel": "insomnia · 40k★",
+   "pr": 10575,
+   "status": "waiting",
+   "createdAt": "2026-10-07T14:05:10Z"
   }
  ],
- "generatedAt": "2026-10-07T13:30:03.220Z"
+ "generatedAt": "2026-10-07T14:08:44.034Z"
 }
