@@ -784,7 +784,17 @@
    "pr": 40311,
    "status": "waiting",
    "createdAt": "2026-10-05T13:39:05Z"
+  },
+  {
+   "title": "채우기만 하고 읽지 않는 Map",
+   "titleEn": "Map that is filled but never read",
+   "type": "쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — DFS 는 연결점의 소유 블록을 직접 따라간다)",
+   "repo": "BabylonJS/Babylon.js",
+   "repoLabel": "Babylon.js · 26.1k★",
+   "pr": 18980,
+   "status": "waiting",
+   "createdAt": "2026-10-07T04:59:27Z"
   }
  ],
- "generatedAt": "2026-10-07T04:55:39.227Z"
+ "generatedAt": "2026-10-07T05:03:48.068Z"
 }

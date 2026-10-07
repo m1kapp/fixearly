@@ -66,6 +66,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `M:N 소유 측 populate 가 부모마다 자식 전체를 다시 훑고 indexOf 로 정렬` | [mikro-orm · 9.2k★](https://github.com/mikro-orm/mikro-orm) | O(n²) 배열 조회 (부모 × 자식 filter + indexOf 정렬 — 자식 위치를 Map 으로 한 번 색인) | [#8392](https://github.com/mikro-orm/mikro-orm/pull/8392) | ✅ merged | +1 |
 | `upsertMany 재조회 행을 엔티티마다 전부 비교` | [mikro-orm · 9.2k★](https://github.com/mikro-orm/mikro-orm) | O(n²) 배열 조회 (배치 × 재조회 행 comparator.matching — 엄격 비교 키 값으로 행을 한 번 묶어 같은 묶음만 비교) | [#8393](https://github.com/mikro-orm/mikro-orm/pull/8393) | ✅ merged | +1 |
 | `표현식 unique·차집합이 원시값 배열도 깊은 비교로 이중 순회` | [n8n · 206.8k★](https://github.com/n8n-io/n8n) | O(n²) 배열 조회 (lodash isEqual 쌍 비교 — 원시값만 있으면 Set 이 같은 답을 낸다) | [#40311](https://github.com/n8n-io/n8n/pull/40311) | ⚪ awaiting review | — |
+| `채우기만 하고 읽지 않는 Map` | [Babylon.js · 26.1k★](https://github.com/BabylonJS/Babylon.js) | 쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — DFS 는 연결점의 소유 블록을 직접 따라간다) | [#18980](https://github.com/BabylonJS/Babylon.js/pull/18980) | ⚪ awaiting review | — |
 
 ## 규칙
 
