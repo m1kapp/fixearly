@@ -296,6 +296,7 @@ BLURB = {
     "mikro-orm/mikro-orm": ("TypeScript ORM", "TypeScript ORM"),
     "orval-labs/orval": ("OpenAPI 클라이언트 생성기", "OpenAPI client generator"),
     "BabylonJS/Babylon.js": ("웹 3D 엔진", "web 3D engine"),
+    "CherryHQ/cherry-studio": ("데스크톱 AI 클라이언트", "desktop AI client"),
     "outline/outline": ("팀 위키·문서", "team knowledge base"),
     "nocodb/nocodb": ("노코드 DB · Airtable 대안", "no-code database"),
     "novuhq/novu": ("알림 인프라", "notification infrastructure"),
