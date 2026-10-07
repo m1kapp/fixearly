@@ -258,6 +258,16 @@ if (generatedSrc) {
       namePattern: /^\s{4}([A-Za-z_$][\w$]*) = new (?:Map|Set)\(\)/gm,
     },
     {
+      file: "await-in-foreach.ts",
+      key: "awaitInForEach",
+      label: "await in forEach",
+      hit: ["rows"],
+      // dataset 은 forEach 자체를 await 하는 자체 구현이고, plain 은 콜백에 await 가 없다.
+      miss: ["dataset", "plain"],
+      // 출력 줄: `    rows.forEach(async) — src/...:9`
+      namePattern: /^\s{4}([A-Za-z_$][\w$.]*)\.forEach\(async\) — /gm,
+    },
+    {
       file: "stateful-regex.ts",
       key: "statefulRegex",
       label: "전역 정규식 상태",
