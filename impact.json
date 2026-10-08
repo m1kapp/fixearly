@@ -40,7 +40,7 @@
    "title": "view-widget-upsert O(n²)",
    "type": "O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map)",
    "repo": "twentyhq/twenty",
-   "repoLabel": "twenty · 58k★",
+   "repoLabel": "twenty · 58.1k★",
    "pr": 23231,
    "createdAt": "2026-07-24T01:00:49Z",
    "closedAt": "2026-07-24T07:31:11Z",
@@ -52,7 +52,7 @@
    "title": "nested relations hydration O(n²)",
    "type": "O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map)",
    "repo": "twentyhq/twenty",
-   "repoLabel": "twenty · 58k★",
+   "repoLabel": "twenty · 58.1k★",
    "pr": 23232,
    "createdAt": "2026-07-24T01:48:53Z",
    "closedAt": "2026-07-24T16:25:37Z",
@@ -301,7 +301,7 @@
    "titleEn": "pure CSS chunk linear lookup",
    "type": "O(n²) (청크 x import 마다 pureCssChunkNames 전량 스캔 — Set으로 O(1))",
    "repo": "vitejs/vite",
-   "repoLabel": "vite · 83.2k★",
+   "repoLabel": "vite · 83.3k★",
    "pr": 23114,
    "createdAt": "2026-07-31T06:36:11Z",
    "status": "merged",
@@ -320,7 +320,7 @@
    "titleEn": "unused Map in resize handler",
    "type": "쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제)",
    "repo": "excalidraw/excalidraw",
-   "repoLabel": "excalidraw · 133.6k★",
+   "repoLabel": "excalidraw · 133.7k★",
    "pr": 11805,
    "createdAt": "2026-08-01T14:22:45Z",
    "status": "closed",
@@ -862,7 +862,17 @@
    "pr": 10575,
    "status": "waiting",
    "createdAt": "2026-10-07T14:05:10Z"
+  },
+  {
+   "title": "불리언 라벨 저장을 기다리지 않음",
+   "titleEn": "boolean label toggle resolves before the write",
+   "type": "버려진 Promise (async setBooleanWithInheritance 가 setLabel 을 await 안 함 — 보드가 기다려도 저장 전에 넘어가고 실패는 사라진다)",
+   "repo": "TriliumNext/Trilium",
+   "repoLabel": "Trilium · 38.2k★",
+   "pr": 11949,
+   "status": "waiting",
+   "createdAt": "2026-10-08T02:29:17Z"
   }
  ],
- "generatedAt": "2026-10-07T14:08:44.034Z"
+ "generatedAt": "2026-10-08T02:33:35.600Z"
 }
