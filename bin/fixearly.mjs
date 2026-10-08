@@ -28,7 +28,12 @@ const getFlag = (name) => {
   return found ? found.split("=")[1] : undefined;
 };
 
-const srcDir = path.resolve(process.cwd(), getFlag("dir") || "src");
+// 실경로로 푼다. git 은 루트를 실경로로 돌려주므로(macOS /var → /private/var) 심볼릭 링크
+// 경로를 그대로 두면 git 루트 기준 상대경로가 전부 ".." 가 되어 핫스팟·churn 이 빈다.
+const srcDir = (() => {
+  const p = path.resolve(process.cwd(), getFlag("dir") || "src");
+  try { return fs.realpathSync(p); } catch { return p; }
+})();
 const outDir = path.resolve(process.cwd(), getFlag("out") || "public");
 
 // 파일 경로 표시 기준. 저장소 안에서 돌리면 cwd 가 맞지만, --dir 이 cwd 밖을
@@ -3173,11 +3178,12 @@ let repoActivity = { commits6mo: null, lastCommitAt: null, tracked: false };
 // churn 원본(1회 변경도 포함). hotspotRanked 는 churn>=2 만 남기므로 '0회'와 '1회'를 구분 못 한다.
 let churnByFile = [];
 if ((wantHotspots || wantReport) && ts && allFns.length > 0) {
-  // per-file 최악 cog. allFns.file 은 cwd 기준이라 srcDir 기준으로 정규화해 churn 키와 맞춘다.
+  // per-file 최악 cog. allFns.file 은 DISPLAY_BASE 기준(relDisplay)이라 srcDir 기준으로 정규화해 churn 키와 맞춘다.
+  // cwd 로 풀면 분석 대상 밖에서 실행할 때 전부 ".." 로 빠져 랭킹이 빈다.
   const srcAbs = path.resolve(srcDir);
   const fileMaxCog = new Map();
   for (const f of allFns) {
-    const key = path.relative(srcAbs, path.resolve(process.cwd(), f.file));
+    const key = path.relative(srcAbs, path.resolve(DISPLAY_BASE, f.file));
     if (key.startsWith("..")) continue;
     const cur = fileMaxCog.get(key);
     if (!cur || f.cog > cur.cog) fileMaxCog.set(key, { cog: f.cog, name: f.name, line: f.line });
@@ -3255,7 +3261,7 @@ if (args.includes("--llm") && cognitive) {
     console.log(`  LLM 자문 요청 중... (claude haiku)`);
     // cognitive 최악 3개 함수 소스 발췌 (각 최대 60줄)
     const snippets = cognitive.worst.slice(0, 3).map((w) => {
-      const abs = path.resolve(process.cwd(), w.file);
+      const abs = path.resolve(DISPLAY_BASE, w.file);
       const src = fs.readFileSync(abs, "utf-8").split("\n");
       const from = Math.max(0, w.line - 1);
       return `// ${w.file}:${w.line} — ${w.name} (cognitive ${w.cog})\n` + src.slice(from, from + 60).join("\n");
