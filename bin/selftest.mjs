@@ -528,6 +528,39 @@ if (generatedSrc) {
   fs.rmSync(root, { recursive: true, force: true });
 }
 
+// ── 핫스팟: 분석 대상 밖에서 실행해도 랭킹이 비지 않는다 ─────────────────────
+// 2026-10-08 repattern 실측: 스크래치 디렉터리에서 --hotspots 를 돌리니 랭킹이 통째로 비었다.
+// 함수 경로는 DISPLAY_BASE(대상 git 루트) 기준인데 핫스팟이 cwd 기준으로 풀어 전부 ".." 로 빠졌다.
+// 조용히 "고칠 파일 없음"을 보여주는 오답이라, 대상 밖 cwd 에서 한 줄이라도 나오는지 고정한다.
+{
+  console.log("\n핫스팟 (대상 밖 cwd):");
+  const check = (name, ok) => {
+    if (!ok) fail++;
+    console.log(`  ${ok ? "✓" : "✗"} ${name}`);
+  };
+  const repo = fs.mkdtempSync(path.join(os.tmpdir(), "fixearly-hot-"));
+  const away = fs.mkdtempSync(path.join(os.tmpdir(), "fixearly-hot-cwd-"));
+  const git = (cmd) => spawnSync("git", cmd, { cwd: repo, encoding: "utf8" });
+  git(["init", "-q", "-b", "main"]);
+  git(["config", "user.email", "t@example.com"]);
+  git(["config", "user.name", "t"]);
+  fs.mkdirSync(path.join(repo, "src"));
+  const branchy = (n) => `export function churny(xs: number[]): number {\n  let t = 0;\n`
+    + `  for (const x of xs) {\n    if (x > ${n}) { if (x % 2) { t += x; } else { t -= x; } }\n  }\n  return t;\n}\n`;
+  for (const n of [1, 2]) {
+    fs.writeFileSync(path.join(repo, "src", "churny.ts"), branchy(n));
+    git(["add", "-A"]);
+    git(["commit", "-qm", `c${n}`]);
+  }
+  const r = spawnSync(process.execPath,
+    [path.join(ROOT, "bin", "fixearly.mjs"), `--dir=${path.join(repo, "src")}`, "--hotspots"],
+    { cwd: away, encoding: "utf8" });
+  const text = (r.stdout || "") + (r.stderr || "");
+  check("대상 밖 cwd 에서도 churn>=2 파일이 랭킹에 나온다", /churny\(\):1\s+churny\.ts/.test(text));
+  fs.rmSync(repo, { recursive: true, force: true });
+  fs.rmSync(away, { recursive: true, force: true });
+}
+
 // ── pre-pr 검사기: 남의 저장소 관례를 실제로 잡는가 ────────────────────────
 // 2026-08-11 astro#17665 의 Lint 가 테스트 파일 확장자 하나 때문에 깨졌다(.js 인데
 // 그 디렉터리는 전부 .ts, tsconfig include 도 *.ts 뿐). 손으로 "관례를 봐라"는 다음에도
