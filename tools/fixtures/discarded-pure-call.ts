@@ -55,3 +55,11 @@ export function restyle(sheet: { replace(sel: string, decl: object): void }): vo
 export function swap(node: { replace(v: string): void }): void {
   node.replace('@carbon/icons-react');
 }
+
+// acc: 수신자를 재귀 호출에 같이 넘긴다 — 호출된 쪽이 acc 에 직접 push 한다(semi cascader). [FP:discard-receiver-passed-along]
+function fill(depth: number, acc: string[] = []): string[] {
+  acc.push(String(depth));
+  if (depth > 0) acc.concat(fill(depth - 1, acc));
+  return acc;
+}
+export { fill };
