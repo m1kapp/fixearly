@@ -880,12 +880,13 @@
    "repo": "promptfoo/promptfoo",
    "repoLabel": "promptfoo · 25.8k★",
    "pr": 11464,
-   "status": "approved",
+   "status": "merged",
    "createdAt": "2026-10-08T03:00:51Z",
    "approvedAt": "2026-10-08T06:39:42Z",
-   "approvedBy": [
-    "mldangelo"
-   ]
+   "mergedAt": "2026-10-08T07:00:37Z",
+   "release": {
+    "channel": "pending"
+   }
   },
   {
    "title": "모델 변경 후 QA 재학습이 옛 모델로 돈다",
@@ -898,5 +899,5 @@
    "createdAt": "2026-10-08T06:50:56Z"
   }
  ],
- "generatedAt": "2026-10-08T06:54:50.893Z"
+ "generatedAt": "2026-10-08T07:15:04.445Z"
 }
