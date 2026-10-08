@@ -350,7 +350,7 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 3일째 / 보통 2일 |
 | [nx#37332](https://github.com/nrwl/nx/pull/37332) | 버린 반환값 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 1일째 / 보통 4일 |
-| [strapi#27893](https://github.com/strapi/strapi/pull/27893) | 버려진 Promise | ⚪ 대기 | 6일째 / 보통 5일 |
+| [strapi#27893](https://github.com/strapi/strapi/pull/27893) | 버려진 Promise | ⚪ 대기 | 7일째 / 보통 5일 |
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 11일째 / 보통 2일 · 보류 |
 
