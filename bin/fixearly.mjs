@@ -1913,7 +1913,20 @@ function analyzeTextbookIssues(ts, fileContents) {
           : (ts.isPropertyAccessExpression(callee) && callee.expression.kind === ts.SyntaxKind.ThisKeyword)
             ? callee.name.getText(sf) : null;
         const names = ts.isIdentifier(callee) ? asyncNames : asyncMemberNames;
-        if (name && names.has(name)) {
+        // 가드 [FP:floating-other-class-member]: `this.x()` 는 감싸는 클래스가 x 를 직접 선언했으면 그 선언으로 판정한다.
+        // 이름만 보면 같은 파일 다른 클래스의 async x 와 섞인다 — mastra session.ts 의 동기 `set` 5곳이
+        // SessionState 의 async `set` 때문에 잡혔다(2026-10-08).
+        let ownAsync = null;
+        if (name && !ts.isIdentifier(callee)) {
+          let c = node.parent;
+          while (c && !ts.isClassLike(c)) c = c.parent;
+          const own = c?.members.filter((m) => m.name?.getText(sf) === name) ?? [];
+          if (own.length) ownAsync = own.some((m) => {
+            const fn = ts.isPropertyDeclaration(m) ? m.initializer : m;
+            return fn?.modifiers?.some((k) => k.kind === ts.SyntaxKind.AsyncKeyword);
+          });
+        }
+        if (name && (ownAsync ?? names.has(name))) {
           floatingPromise.push({ file, line: lineOf(node), name });
         }
       }
