@@ -1646,18 +1646,42 @@ function analyzeTextbookIssues(ts, fileContents) {
     // 구조분해한 옵션 콜백인데 바깥 메서드 이름과 같아서 잡혔다(2026-10-01).
     const asyncNames = new Set();
     const asyncMemberNames = new Set();
+    // 가드 [FP:floating-benign-callee]: 버려도 잃는 게 없는 async 함수 — 자기 본문(중첩 함수 제외)에 await 가
+    // 없거나(동기로 끝나 기다릴 게 없다), 본문 전체가 catch 있는 try 하나다(실패를 스스로 처리하는 백그라운드 작업).
+    // 같은 이름이 여럿이면 전부 무해할 때만 뺀다. slidev saveSnapshot · Trilium openInWindowCommand ·
+    // serverless #streamContainerLogs · kilocode optimizeTable 가 이 모양이었다(2026-10-08).
+    const benignAsync = new Map();
     {
+      const hasOwnAwait = (body) => {
+        let found = false;
+        const g = (n) => {
+          if (found || ts.isFunctionLike(n)) return;
+          if (ts.isAwaitExpression(n) || (ts.isForOfStatement(n) && n.awaitModifier)) { found = true; return; }
+          ts.forEachChild(n, g);
+        };
+        ts.forEachChild(body, g);
+        return found;
+      };
+      const isBenign = (fn) => {
+        const body = fn.body;
+        if (!body || !ts.isBlock(body)) return false;
+        if (!hasOwnAwait(body)) return true;
+        return body.statements.length === 1 && ts.isTryStatement(body.statements[0]) && !!body.statements[0].catchClause;
+      };
+      const note = (name, fn) => benignAsync.set(name, (benignAsync.get(name) ?? true) && isBenign(fn));
       const collect = (n) => {
         const isAsync = (node) =>
           node.modifiers?.some((m) => m.kind === ts.SyntaxKind.AsyncKeyword);
-        if (ts.isFunctionDeclaration(n) && isAsync(n) && n.name) asyncNames.add(n.name.getText(sf));
-        if (ts.isMethodDeclaration(n) && isAsync(n) && n.name) asyncMemberNames.add(n.name.getText(sf));
+        if (ts.isFunctionDeclaration(n) && isAsync(n) && n.name) { asyncNames.add(n.name.getText(sf)); note(n.name.getText(sf), n); }
+        if (ts.isMethodDeclaration(n) && isAsync(n) && n.name) { asyncMemberNames.add(n.name.getText(sf)); note(n.name.getText(sf), n); }
         if (ts.isVariableDeclaration(n) && n.initializer && ts.isIdentifier(n.name) &&
-            (ts.isArrowFunction(n.initializer) || ts.isFunctionExpression(n.initializer)) && isAsync(n.initializer))
-          asyncNames.add(n.name.getText(sf));
+            (ts.isArrowFunction(n.initializer) || ts.isFunctionExpression(n.initializer)) && isAsync(n.initializer)) {
+          asyncNames.add(n.name.getText(sf)); note(n.name.getText(sf), n.initializer);
+        }
         if (ts.isPropertyDeclaration(n) && n.initializer && n.name &&
-            (ts.isArrowFunction(n.initializer) || ts.isFunctionExpression(n.initializer)) && isAsync(n.initializer))
-          asyncMemberNames.add(n.name.getText(sf));
+            (ts.isArrowFunction(n.initializer) || ts.isFunctionExpression(n.initializer)) && isAsync(n.initializer)) {
+          asyncMemberNames.add(n.name.getText(sf)); note(n.name.getText(sf), n.initializer);
+        }
         ts.forEachChild(n, collect);
       };
       ts.forEachChild(sf, collect);
@@ -1926,7 +1950,7 @@ function analyzeTextbookIssues(ts, fileContents) {
             return fn?.modifiers?.some((k) => k.kind === ts.SyntaxKind.AsyncKeyword);
           });
         }
-        if (name && (ownAsync ?? names.has(name))) {
+        if (name && (ownAsync ?? names.has(name)) && !benignAsync.get(name)) {
           floatingPromise.push({ file, line: lineOf(node), name });
         }
       }

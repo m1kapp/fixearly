@@ -1,7 +1,7 @@
 // 버려진 Promise 축 픽스처. 잡아야 할 것과 잡으면 안 되는 것을 한 파일에 둔다.
 // 호출되는 함수 이름을 전부 다르게 둬서 그 이름만 보고 판정할 수 있게 한다.
 
-async function drained(): Promise<void> {}
+async function drained(): Promise<void> { await Promise.resolve(); }
 async function guarded(): Promise<void> {}
 async function chained(): Promise<void> {}
 async function voided(): Promise<void> {}
@@ -51,7 +51,7 @@ export function useRelay({ relayed }: { relayed: (e: Error) => void }) {
 
 // flushed: 클래스 메서드를 this 로 await 없이 부른다 — 이건 여전히 잡아야 한다.
 export class Queue {
-  async flushed(): Promise<void> {}
+  async flushed(): Promise<void> { await Promise.resolve(); }
   async close(): Promise<void> {
     this.flushed();
   }
@@ -69,3 +69,15 @@ class Thread {
   }
 }
 export { Store, Thread };
+
+// quiet: 본문에 await 가 없어 동기로 끝난다 — 버려도 기다릴 게 없다(slidev saveSnapshot).
+// tried: 본문 전체가 catch 있는 try 다 — 실패를 스스로 처리하는 백그라운드 작업(kilocode optimizeTable).
+// [FP:floating-benign-callee]
+async function quiet(): Promise<void> { void 0; }
+async function tried(): Promise<void> {
+  try { await Promise.resolve(); } catch { /* logged */ }
+}
+export async function background(): Promise<void> {
+  quiet();
+  tried();
+}
