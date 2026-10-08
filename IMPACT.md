@@ -11,7 +11,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 
 | 발견 | repo | 유형 | PR | 상태 | 점수 |
 |------|------|------|----|------|------|
-| `deleteBulkMetadata N+1` | [immich · 115.7k★](https://github.com/immich-app/immich) | N+1 (루프 안 순차 DELETE, item당 왕복 1회) | [#30163](https://github.com/immich-app/immich/pull/30163) | ❌ closed | — |
+| `deleteBulkMetadata N+1` | [immich · 115.8k★](https://github.com/immich-app/immich) | N+1 (루프 안 순차 DELETE, item당 왕복 1회) | [#30163](https://github.com/immich-app/immich/pull/30163) | ❌ closed | — |
 | `sync-agent findOne N+1` | [novu · 40.1k★](https://github.com/novuhq/novu) | N+1 (for 루프 안 findOne, 소스 통합당 쿼리 1회) | [#12074](https://github.com/novuhq/novu/pull/12074) | ❌ closed | — |
 | `booking member diff O(n²)` | [cal.com · 48.9k★](https://github.com/calcom/cal.diy) | O(n²) 배열 조회 (루프 안 .some() 선형스캔 4회 → Set) | [#29828](https://github.com/calcom/cal.diy/pull/29828) | ❌ closed | — |
 | `view-widget-upsert O(n²)` | [twenty · 58.1k★](https://github.com/twentyhq/twenty) | O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map) | [#23231](https://github.com/twentyhq/twenty/pull/23231) | ❌ closed | — |
@@ -22,8 +22,8 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `markdown import merge O(n²)` | [outline · 40.8k★](https://github.com/outline/outline) | O(n²) (형제 out.find title 스캔 — Map으로 O(1)) | [#13117](https://github.com/outline/outline/pull/13117) | ✅ merged | +1 |
 | `doc-metadata localization O(n²)` | [strapi · 73.3k★](https://github.com/strapi/strapi) | O(n²) (localization별 versions.find — 복합키 Map으로 O(1)) | [#27125](https://github.com/strapi/strapi/pull/27125) | ❌ closed | — |
 | `try/catch 안 릴리즈 정리를 await 안 함` | [strapi · 73.3k★](https://github.com/strapi/strapi) | 버려진 Promise (try/catch 로 감싼 async 호출에 await 가 없어 catch 가 안 돈다 — 로그 대신 unhandled rejection) | [#27893](https://github.com/strapi/strapi/pull/27893) | ⚪ awaiting review | — |
-| `parse-fields dedup O(n²)` | [directus · 38.2k★](https://github.com/directus/directus) | O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1)) | [#27978](https://github.com/directus/directus/pull/27978) | ❌ closed | — |
-| `resource-mapper schema validation O(n²)` | [n8n · 206.8k★](https://github.com/n8n-io/n8n) | O(n²) (value별 schema.find — id Map으로 O(1)) | [#34899](https://github.com/n8n-io/n8n/pull/34899) | ✅ merged | +1 |
+| `parse-fields dedup O(n²)` | [directus · 38.3k★](https://github.com/directus/directus) | O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1)) | [#27978](https://github.com/directus/directus/pull/27978) | ❌ closed | — |
+| `resource-mapper schema validation O(n²)` | [n8n · 206.9k★](https://github.com/n8n-io/n8n) | O(n²) (value별 schema.find — id Map으로 O(1)) | [#34899](https://github.com/n8n-io/n8n/pull/34899) | ✅ merged | +1 |
 | `user field validation O(n²)` | [nocodb · 65.2k★](https://github.com/nocodb/nocodb) | O(n²) (value별 baseUsers.find ×4 — id·email Map으로 O(1)) | [#14309](https://github.com/nocodb/nocodb/pull/14309) | ✅ merged | +1 |
 | `ExternalRequest field lookup O(n²)` | [budibase · 28.3k★](https://github.com/Budibase/budibase) | O(n²) (행 필드별 fieldNames.find — Set으로 O(1)) | [#19320](https://github.com/Budibase/budibase/pull/19320) | ❌ closed | — |
 | `static formula 갱신 enriched row 조회 O(n²)` | [budibase · 28.3k★](https://github.com/Budibase/budibase) | O(n²) (행마다 enrichedRows.find — id Map으로 O(1), 100건에서 5,050→100) | [#19555](https://github.com/Budibase/budibase/pull/19555) | ❌ closed | — |
@@ -44,8 +44,8 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `watch 재실행 결과를 안 기다림` | [rollup · 26.3k★](https://github.com/rollup/rollup) | 버려진 Promise (재실행을 await 하지 않아 리스너 실패가 catch 를 지나쳐 ERROR·END 이벤트가 사라진다) | [#6506](https://github.com/rollup/rollup/pull/6506) | ✅ merged | +1 |
 | `의존성 분할 안 미사용 Set` | [pnpm · 36.8k★](https://github.com/pnpm/pnpm) | 쓰기만 하는 컬렉션 (함수 호출마다 Set 생성, 링크 의존성마다 .add(), 읽기 없음 — 삭제) | [#14032](https://github.com/pnpm/pnpm/pull/14032) | ✅ merged | +1 |
 | `bulkSave 오류 문서 반복 매칭` | [mongoose · 27.5k★](https://github.com/Automattic/mongoose) | O(n²) 배열 조회 (문서마다 writeErrors.find 전체 스캔 → 실패 id Set으로 O(1)) | [#16474](https://github.com/Automattic/mongoose/pull/16474) | ✅ merged | +1 |
-| `credential 삭제 완료 전 명령 종료` | [n8n · 206.8k★](https://github.com/n8n-io/n8n) | 버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all) | [#37047](https://github.com/n8n-io/n8n/pull/37047) | ❌ closed | — |
-| `credential 삭제 완료 전 명령 종료` | [n8n · 206.8k★](https://github.com/n8n-io/n8n) | 버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all) | [#40103](https://github.com/n8n-io/n8n/pull/40103) | ✅ merged | +1 |
+| `credential 삭제 완료 전 명령 종료` | [n8n · 206.9k★](https://github.com/n8n-io/n8n) | 버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all) | [#37047](https://github.com/n8n-io/n8n/pull/37047) | ❌ closed | — |
+| `credential 삭제 완료 전 명령 종료` | [n8n · 206.9k★](https://github.com/n8n-io/n8n) | 버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all) | [#40103](https://github.com/n8n-io/n8n/pull/40103) | ✅ merged | +1 |
 | `post relation 연결 반복 조회` | [ghost · 55.5k★](https://github.com/TryGhost/Ghost) | O(n²) (relation마다 전체 posts.find → id Map으로 O(1), 100건에서 id 조회 5,050→100) | [#30284](https://github.com/TryGhost/Ghost/pull/30284) | ❌ closed | — |
 | `툴 피커 안 미사용 Map` | [vscode · 193.6k★](https://github.com/microsoft/vscode) | 쓰기만 하는 컬렉션 (MCP 툴마다 .set(), 읽기 없음 — #249448 이후 15개월째 · 삭제) | [#334230](https://github.com/microsoft/vscode/pull/334230) | ❌ closed | — |
 | `no-duplicate-case 이전 case 재스캔` | [eslint · 27.6k★](https://github.com/eslint/eslint) | O(n²) (case 마다 이전 case 전량 비교, 비교마다 토큰 전수 — 토큰 키 Set 으로 O(n)) | [#21317](https://github.com/eslint/eslint/pull/21317) | ❌ closed | — |
@@ -65,7 +65,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `읽지 않는 Set 이 리팩터 뒤에 남음` | [orval · 6.5k★](https://github.com/orval-labs/orval) | 쓰기만 하는 컬렉션 (add 만 하고 읽는 곳 0 — has() 를 쓰던 코드가 find() 로 바뀐 뒤 남은 흔적) | [#4254](https://github.com/orval-labs/orval/pull/4254) | ✅ merged | +1 |
 | `M:N 소유 측 populate 가 부모마다 자식 전체를 다시 훑고 indexOf 로 정렬` | [mikro-orm · 9.2k★](https://github.com/mikro-orm/mikro-orm) | O(n²) 배열 조회 (부모 × 자식 filter + indexOf 정렬 — 자식 위치를 Map 으로 한 번 색인) | [#8392](https://github.com/mikro-orm/mikro-orm/pull/8392) | ✅ merged | +1 |
 | `upsertMany 재조회 행을 엔티티마다 전부 비교` | [mikro-orm · 9.2k★](https://github.com/mikro-orm/mikro-orm) | O(n²) 배열 조회 (배치 × 재조회 행 comparator.matching — 엄격 비교 키 값으로 행을 한 번 묶어 같은 묶음만 비교) | [#8393](https://github.com/mikro-orm/mikro-orm/pull/8393) | ✅ merged | +1 |
-| `표현식 unique·차집합이 원시값 배열도 깊은 비교로 이중 순회` | [n8n · 206.8k★](https://github.com/n8n-io/n8n) | O(n²) 배열 조회 (lodash isEqual 쌍 비교 — 원시값만 있으면 Set 이 같은 답을 낸다) | [#40311](https://github.com/n8n-io/n8n/pull/40311) | ⚪ awaiting review | — |
+| `표현식 unique·차집합이 원시값 배열도 깊은 비교로 이중 순회` | [n8n · 206.9k★](https://github.com/n8n-io/n8n) | O(n²) 배열 조회 (lodash isEqual 쌍 비교 — 원시값만 있으면 Set 이 같은 답을 낸다) | [#40311](https://github.com/n8n-io/n8n/pull/40311) | ⚪ awaiting review | — |
 | `채우기만 하고 읽지 않는 Map` | [Babylon.js · 26.1k★](https://github.com/BabylonJS/Babylon.js) | 쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — DFS 는 연결점의 소유 블록을 직접 따라간다) | [#18980](https://github.com/BabylonJS/Babylon.js/pull/18980) | ✅ merged | +1 |
 | `채우기만 하고 읽지 않는 Map 3개` | [cherry-studio · 52.4k★](https://github.com/CherryHQ/cherry-studio) | 쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — 생긴 뒤 한 번도 읽힌 적 없다) | [#21363](https://github.com/CherryHQ/cherry-studio/pull/21363) | ⚪ awaiting review | — |
 | `검증 에러가 dev 서버를 죽임` | [react-router · 56.6k★](https://github.com/remix-run/react-router) | 버려진 Promise (throw 하는 async 검증을 await 없이 불러 unhandled rejection 으로 프로세스 종료) | [#15591](https://github.com/remix-run/react-router/pull/15591) | ⚪ awaiting review | — |
@@ -74,7 +74,8 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `cose 레이아웃이 간선마다 노드 전체를 훑음` | [cytoscape.js · 11.2k★](https://github.com/cytoscape/cytoscape.js) | O(n²) 배열 조회 (간선마다 nodes.some 두 번 — hasElementWithId 로 O(1), 3000노드 519→11ms) | [#3527](https://github.com/cytoscape/cytoscape.js/pull/3527) | ⚪ awaiting review | — |
 | `백업 복원이 복사가 끝나기 전에 앱을 재시작` | [insomnia · 40k★](https://github.com/Kong/insomnia) | forEach 안 await (forEach(async copyFile) 뒤 곧바로 app.exit() — 복원이 안 되거나 일부만 된다) | [#10575](https://github.com/Kong/insomnia/pull/10575) | ⚪ awaiting review | — |
 | `불리언 라벨 저장을 기다리지 않음` | [Trilium · 38.2k★](https://github.com/TriliumNext/Trilium) | 버려진 Promise (async setBooleanWithInheritance 가 setLabel 을 await 안 함 — 보드가 기다려도 저장 전에 넘어가고 실패는 사라진다) | [#11949](https://github.com/TriliumNext/Trilium/pull/11949) | ⚪ awaiting review | — |
-| `실패 테스트 재실행이 추출 테스트마다 전부 다시 직렬화` | [promptfoo · 25.8k★](https://github.com/promptfoo/promptfoo) | O(n²) 배열 조회 (extractedTests.some(JSON.stringify(...)) — 미매칭 결과 5,000건에서 4.2초 → 21ms) | [#11464](https://github.com/promptfoo/promptfoo/pull/11464) | ⚪ awaiting review | — |
+| `실패 테스트 재실행이 추출 테스트마다 전부 다시 직렬화` | [promptfoo · 25.8k★](https://github.com/promptfoo/promptfoo) | O(n²) 배열 조회 (extractedTests.some(JSON.stringify(...)) — 미매칭 결과 5,000건에서 4.2초 → 21ms) | [#11464](https://github.com/promptfoo/promptfoo/pull/11464) | 🔵 approved · 머지 대기 | — |
+| `모델 변경 후 QA 재학습이 옛 모델로 돈다` | [FastGPT · 29.8k★](https://github.com/labring/FastGPT) | 버려진 Promise (updateTraining 을 await 없이 트랜잭션 커밋 전에 호출 — 워커가 옛 에이전트 모델로 작업을 집고 실패는 사라진다) | [#7918](https://github.com/labring/FastGPT/pull/7918) | ⚪ awaiting review | — |
 
 ## 규칙
 

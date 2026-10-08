@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-08T03:02:17+00:00",
+  "generatedAt": "2026-10-08T06:52:24+00:00",
   "method": "GitHub REST contributors?per_page=1&anon=true; last-page count; commit authors, not unique humans",
   "repos": {
     "Automattic/mongoose": 1090,
@@ -19,6 +19,7 @@
     "facebook/react": 2020,
     "grafana/grafana": 3142,
     "immich-app/immich": 1019,
+    "labring/FastGPT": 194,
     "langfuse/langfuse": 219,
     "medusajs/medusa": 586,
     "microsoft/vscode": 3258,
@@ -42,7 +43,7 @@
     "twentyhq/twenty": 768,
     "typeorm/typeorm": 1258,
     "vercel/turborepo": 717,
-    "vitejs/vite": 1365,
+    "vitejs/vite": 1368,
     "withastro/astro": 1245
   }
 }
