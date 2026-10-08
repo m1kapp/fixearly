@@ -930,6 +930,9 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | jupyterlab | 버린 반환값 3 · forEach 4 | **#20008 제출**(2026-10-08, 이슈 #20007 선행 · AI 사용 YES 표기). `pluginlist.tsx:581` 설정 검색이 중첩 속성을 버린다 — 테스트로 재현. **다음 슬롯**: `metadataform-extension/src/index.ts:86·98` 여러 플러그인의 `required`·`allOf` 병합이 `concat` 결과를 버린다 |
 | compiler-explorer | 버린 반환값 2 · 정규식 1 · for-in 4 | **#9241 제출**(2026-10-08). `clang-query-tool.ts:62` TS 전환(#7018) 회귀 — 운영 설정엔 options 가 없어 영향은 작다고 본문에 밝혔다. `spirv.ts:187` `newOptions.concat('-S')` 는 cc1 모드에서 `-emit-llvm` 과 충돌할 수 있어 고치면 위험 — 손대지 않는다 |
 | dnd-kit · reselect · capacitor · Dexie · mitosis · reactotron | floating·정규식 | **탈락**(2026-10-08). 경고 0 또는 capacitor floating 3(CLI 꼬리 호출) |
+| LaTeX-Workshop | forEach await 1 | **보류 · 설계 판단 필요**(2026-10-08). `outline/structure.ts:20` 은 `forEach(async parse.args)` 뒤 곧바로 `reconstruct()` 하지만, 더 깊은 문제는 `parse.args` 자체다 — worker 스레드에서 구조화 복제된 AST 에 `attachMacroArgs` 를 하고 아무것도 돌려주지 않아 메인 AST 가 안 바뀐다. 고침은 worker API 변경 + VS Code 하네스 재현이라 이슈부터가 맞다 |
+| bokeh · carbon · semi-design · Checkmate · instant · vditor · ext-saladict | 버린 반환값·fill·forEach | **탈락**(2026-10-08) — 버린 반환값 오탐 3계열을 엔진 가드로 막았다: 객체 인자 `replace`(bokeh `InlineStyleSheet`), 인자 1개 `replace`(carbon jscodeshift `NodePath`), 수신자를 재귀 호출에 넘기는 `concat`(semi cascader). Checkmate fill 은 읽기 전용 플레이스홀더, forEach(async) 는 의도된 병렬 렌더·알림 |
+| react-scan · faker · botpress · Tone.js · fresh · browserless · blockly · nango · knip · G6 · es-toolkit · nitro · base-ui · vanilla-extract · wavesurfer · electric · atproto · amplify-js · starlight · ghostfolio · i18next · hyperdx · swagger-editor · gitlens · sinon · react-i18next · meshery · LogicFlow · spectacle · crystal · emdash · OpenMetadata | 버그 축 | **탈락**(2026-10-08). 버그 축 경고 0 (meshery for-in 1 은 객체) |
 
 ## 게이트 0 에서 막힌 곳
 
