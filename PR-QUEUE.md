@@ -902,6 +902,8 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | postcss · marked · puppeteer · lobe-chat | O(n²)·순차 await | **탈락**(2026-10-07). marked 는 확장 수, puppeteer 는 첫 연결의 동적 import 한 번, lobe-chat 은 Acceptance 테스트 도구 코드다 |
 | GrapesJS · learnGitBranching · tabby | O(n²)·스프레드 | **탈락**(2026-10-07). GrapesJS `matchedRules` 의 indexOf 중복 제거는 `onlyMatched` 옵트인 내보내기에서만 돌고 `el.matches` 가 더 비싸다 |
 | appsmith | forEach await 1 · fill 3 | **보류**(2026-10-07). `MultiFilePickerControl` 의 `forEach(async)` 는 진짜 버그(state 에 빈 배열이 들어감)지만 유일한 사용처(appsmithAiPlugin)가 `uploadToTrigger: true` 라 그 분기를 안 탄다. 이슈 선행 규칙도 있다 |
+| insomnia | forEach await 4 · floating 34 | **#10575 제출**(restoreBackup: 복사 전에 app.exit). **다음 슬롯**: `insomnia-data/node-src/services/environment.ts:55` 볼트 비밀값 정리가 `forEach(async update)` 라 함수가 업데이트 전에 끝난다 — #10575 판정 뒤 |
+| lexical · tldraw · graphql-js · mattermost · discourse | O(n²)·floating·정규식 | **탈락/보류**(2026-10-08). lexical 은 서식 태그 수, tldraw `deselect` 는 단일 도형 호출뿐이고 `createShapes` 는 수천 개 붙여넣기에서만, `createShapesForAssets` floating 은 함수 안에 await 가 없어 무해. graphql-js `separateOperations` 는 빌드 도구. mattermost 는 최근 이모지·초대 인원(작음). discourse `SCOPED_ABBR_RE` 는 텍스트 아닌 자식에 (tm) 이 있을 때만 새는 좁은 버그 |
 
 ## 게이트 0 에서 막힌 곳
 
