@@ -681,20 +681,19 @@ _lm, _lc = _st.count("merged"), _st.count("closed")
 _lo = len(_st) - _lm - _lc
 _fp = len(set(re.findall(r"\[FP:[a-z0-9-]+\]", open(f"{ROOT}/bin/fixearly.mjs", encoding="utf-8").read())))
 _lr = len({f["repo"] for f in findings if f.get("status") == "merged"})
-def _loop_row(n, ko, en, val, sko, sen):
-    return (f'<div class="mbr"><span class="mbn"><i class="lpn">{n}</i><span class="ko">{ko}</span><span class="en">{en}</span></span>'
-            f'<span class="mbs"><span class="ko">{sko}</span><span class="en">{sen}</span></span><b>{val}</b></div>')
+def _chip(pos, n, ko, en, val=""):
+    v = f"<b>{val}</b>" if val != "" else ""
+    return (f'<span class="lc {pos}"><i class="lpn">{n}</i><span class="ko">{ko}</span><span class="en">{en}</span>{v}</span>')
 _loop = (
-    '<div class="mbh"><span class="ko">규칙이 검증되는 루프</span><span class="en">How a rule gets verified</span></div>'
-    + _loop_row(1, "찾는다", "Find", "", "엔진이 남의 코드를 훑는다", "engine scans strangers' code")
-    + _loop_row(2, "거른다", "Filter", _fp, "오탐은 가드로 엔진에", "false positives become guards")
-    + _loop_row(3, "낸다", "Submit", len(_st), "PR 제출", "PRs opened")
-    + _loop_row(4, "판정", "Verdict", _lm, f"머지 · 저장소 {_lr}곳", f"merged · {_lr} projects")
-    + f'<div class="mbdist" aria-hidden="true"><i class="gS" style="flex:{_lm}" title="merged {_lm}"></i>'
-      f'<i class="gD" style="flex:{_lc}" title="closed {_lc}"></i><i class="gB" style="flex:{_lo}" title="open {_lo}"></i></div>'
-    + f'<div class="mbl"><span class="ko">머지 {_lm} · 거절 {_lc} · 대기 {_lo} — 거절 사유와 오탐이 다시 ①로</span>'
-      f'<span class="en">merged {_lm} · closed {_lc} · open {_lo} — rejections and false positives feed back into ①</span></div>'
-    + '<a class="mba" href="#impact"><span class="ko">거절까지 전부 공개된 기록 보기 →</span><span class="en">See the full record, rejections included →</span></a>'
+    '<img src="loop.jpg" width="900" height="900" alt="" loading="eager">'
+    + _chip("c1", 1, "찾는다", "Find")
+    + _chip("c2", 2, "거른다 · 오탐 가드", "Filter · FP guards", _fp)
+    + _chip("c3", 3, "낸다 · PR", "Submit · PRs", len(_st))
+    + _chip("c4", 4, "판정 · 머지", "Verdict · merged", _lm)
+    + f'<div class="lcen"><b>{_lm}</b><span class="ko">머지됨</span><span class="en">merged</span></div>'
+    + f'<p class="lcap"><span class="ko">남의 저장소 {_lr}곳에 머지 · 거절 {_lc} · 대기 {_lo}. 거절 사유와 오탐은 다시 ①의 규칙을 고친다. </span>'
+      f'<span class="en">Merged in {_lr} projects · closed {_lc} · open {_lo}. Rejections and false positives go back into ①. </span>'
+      '<a href="#impact"><span class="ko">전체 기록 →</span><span class="en">Full record →</span></a></p>'
 )
 L_BEGIN, L_END = "<!--auto:loop-->", "<!--/auto:loop-->"
 assert L_BEGIN in h and L_END in h, "히어로 루프 마커가 없다"

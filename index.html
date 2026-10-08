@@ -404,7 +404,19 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
 .mbn{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--ink)}
 .mbg{font-size:10px;padding:2px 6px;border-radius:4px}
 .mbr b{font-size:13px;color:var(--ink-2);min-width:28px;text-align:right}
-.mbs{font-size:11.5px;color:var(--ink-3);text-align:right}
+.heroart:has(.loopfig){height:auto}
+.loopfig{position:relative;width:min(100%,480px);aspect-ratio:1;margin:0 auto 48px}
+.loopfig img{width:100%;height:100%;display:block;mix-blend-mode:multiply}
+.lc{position:absolute;display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 6px;background:var(--paper);border:1px solid var(--line);border-radius:999px;font-size:12px;color:var(--ink-2);white-space:nowrap;box-shadow:0 2px 8px rgba(15,23,35,.06)}
+.lc b{color:var(--ink);font-size:12.5px}
+.lc .lpn{margin-right:0}
+.c1{left:6%;top:44%}.c2{right:2%;top:48%}.c3{right:6%;bottom:3%}.c4{left:6%;bottom:3%}
+.lcen{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:grid;justify-items:center;text-align:center}
+.lcen b{font-size:52px;line-height:1;color:var(--gS);letter-spacing:-.02em}
+.lcen span{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.lcap{position:absolute;top:100%;left:0;right:0;margin:10px 0 0;font-size:12px;line-height:1.5;color:var(--ink-3);text-align:center}
+.lcap a{color:var(--accent);text-decoration:none;white-space:nowrap}
+.lcap a:hover{text-decoration:underline}
 .lpn{font-style:normal;display:inline-block;width:18px;height:18px;line-height:18px;margin-right:8px;border-radius:50%;background:var(--line);color:var(--ink-2);font-size:10.5px;text-align:center}
 .mbdist{display:flex;gap:2px;height:6px;margin-top:6px}
 .mbdist i{border-radius:2px;min-width:4px}
@@ -569,7 +581,7 @@ body{counter-reset:step}
    </div>
    <div class="heroart">
      <div class="glow"></div>
-     <div class="mboard"><!--auto:loop--><div class="mbh"><span class="ko">규칙이 검증되는 루프</span><span class="en">How a rule gets verified</span></div><div class="mbr"><span class="mbn"><i class="lpn">1</i><span class="ko">찾는다</span><span class="en">Find</span></span><span class="mbs"><span class="ko">엔진이 남의 코드를 훑는다</span><span class="en">engine scans strangers' code</span></span><b></b></div><div class="mbr"><span class="mbn"><i class="lpn">2</i><span class="ko">거른다</span><span class="en">Filter</span></span><span class="mbs"><span class="ko">오탐은 가드로 엔진에</span><span class="en">false positives become guards</span></span><b>34</b></div><div class="mbr"><span class="mbn"><i class="lpn">3</i><span class="ko">낸다</span><span class="en">Submit</span></span><span class="mbs"><span class="ko">PR 제출</span><span class="en">PRs opened</span></span><b>68</b></div><div class="mbr"><span class="mbn"><i class="lpn">4</i><span class="ko">판정</span><span class="en">Verdict</span></span><span class="mbs"><span class="ko">머지 · 저장소 19곳</span><span class="en">merged · 19 projects</span></span><b>29</b></div><div class="mbdist" aria-hidden="true"><i class="gS" style="flex:29" title="merged 29"></i><i class="gD" style="flex:25" title="closed 25"></i><i class="gB" style="flex:14" title="open 14"></i></div><div class="mbl"><span class="ko">머지 29 · 거절 25 · 대기 14 — 거절 사유와 오탐이 다시 ①로</span><span class="en">merged 29 · closed 25 · open 14 — rejections and false positives feed back into ①</span></div><a class="mba" href="#impact"><span class="ko">거절까지 전부 공개된 기록 보기 →</span><span class="en">See the full record, rejections included →</span></a><!--/auto:loop--></div>
+     <div class="loopfig"><!--auto:loop--><img src="loop.jpg" width="900" height="900" alt="" loading="eager"><span class="lc c1"><i class="lpn">1</i><span class="ko">찾는다</span><span class="en">Find</span></span><span class="lc c2"><i class="lpn">2</i><span class="ko">거른다 · 오탐 가드</span><span class="en">Filter · FP guards</span><b>34</b></span><span class="lc c3"><i class="lpn">3</i><span class="ko">낸다 · PR</span><span class="en">Submit · PRs</span><b>68</b></span><span class="lc c4"><i class="lpn">4</i><span class="ko">판정 · 머지</span><span class="en">Verdict · merged</span><b>29</b></span><div class="lcen"><b>29</b><span class="ko">머지됨</span><span class="en">merged</span></div><p class="lcap"><span class="ko">남의 저장소 19곳에 머지 · 거절 25 · 대기 14. 거절 사유와 오탐은 다시 ①의 규칙을 고친다. </span><span class="en">Merged in 19 projects · closed 25 · open 14. Rejections and false positives go back into ①. </span><a href="#impact"><span class="ko">전체 기록 →</span><span class="en">Full record →</span></a></p><!--/auto:loop--></div>
    </div>
   </div>
 </header>
