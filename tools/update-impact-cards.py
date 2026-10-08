@@ -303,6 +303,7 @@ BLURB = {
     "cytoscape/cytoscape.js": ("그래프 시각화·분석 라이브러리", "graph visualization and analysis library"),
     "Kong/insomnia": ("API 클라이언트", "API client"),
     "TriliumNext/Trilium": ("계층형 개인 지식 노트", "hierarchical personal knowledge base"),
+    "promptfoo/promptfoo": ("LLM 앱 평가·레드팀 도구", "LLM eval and red-teaming tool"),
     "outline/outline": ("팀 위키·문서", "team knowledge base"),
     "nocodb/nocodb": ("노코드 DB · Airtable 대안", "no-code database"),
     "novuhq/novu": ("알림 인프라", "notification infrastructure"),
