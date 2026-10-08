@@ -530,7 +530,7 @@
    "titleEn": "unused MCP server map in the tools picker",
    "type": "쓰기만 하는 컬렉션 (MCP 툴마다 .set(), 읽기 없음 — #249448 이후 15개월째 · 삭제)",
    "repo": "microsoft/vscode",
-   "repoLabel": "vscode · 193.6k★",
+   "repoLabel": "vscode · 193.7k★",
    "pr": 334230,
    "status": "closed",
    "createdAt": "2026-09-03T11:03:48Z",
@@ -897,7 +897,17 @@
    "pr": 7918,
    "status": "waiting",
    "createdAt": "2026-10-08T06:50:56Z"
+  },
+  {
+   "title": "SCAM 변환이 spec 의 declarations 를 못 지운다",
+   "titleEn": "scam-to-standalone leaves the component in spec declarations",
+   "type": "버린 반환값 (spec.replace(/declarations: \\[.+/, '') 결과를 대입 안 함 — standalone 컴포넌트가 declarations 에 남아 테스트가 깨진다)",
+   "repo": "nrwl/nx",
+   "repoLabel": "nx · 29.4k★",
+   "pr": 37332,
+   "status": "waiting",
+   "createdAt": "2026-10-08T08:07:26Z"
   }
  ],
- "generatedAt": "2026-10-08T07:15:04.445Z"
+ "generatedAt": "2026-10-08T08:22:30.750Z"
 }

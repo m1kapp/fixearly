@@ -47,7 +47,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `credential 삭제 완료 전 명령 종료` | [n8n · 206.9k★](https://github.com/n8n-io/n8n) | 버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all) | [#37047](https://github.com/n8n-io/n8n/pull/37047) | ❌ closed | — |
 | `credential 삭제 완료 전 명령 종료` | [n8n · 206.9k★](https://github.com/n8n-io/n8n) | 버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all) | [#40103](https://github.com/n8n-io/n8n/pull/40103) | ✅ merged | +1 |
 | `post relation 연결 반복 조회` | [ghost · 55.5k★](https://github.com/TryGhost/Ghost) | O(n²) (relation마다 전체 posts.find → id Map으로 O(1), 100건에서 id 조회 5,050→100) | [#30284](https://github.com/TryGhost/Ghost/pull/30284) | ❌ closed | — |
-| `툴 피커 안 미사용 Map` | [vscode · 193.6k★](https://github.com/microsoft/vscode) | 쓰기만 하는 컬렉션 (MCP 툴마다 .set(), 읽기 없음 — #249448 이후 15개월째 · 삭제) | [#334230](https://github.com/microsoft/vscode/pull/334230) | ❌ closed | — |
+| `툴 피커 안 미사용 Map` | [vscode · 193.7k★](https://github.com/microsoft/vscode) | 쓰기만 하는 컬렉션 (MCP 툴마다 .set(), 읽기 없음 — #249448 이후 15개월째 · 삭제) | [#334230](https://github.com/microsoft/vscode/pull/334230) | ❌ closed | — |
 | `no-duplicate-case 이전 case 재스캔` | [eslint · 27.6k★](https://github.com/eslint/eslint) | O(n²) (case 마다 이전 case 전량 비교, 비교마다 토큰 전수 — 토큰 키 Set 으로 O(n)) | [#21317](https://github.com/eslint/eslint/pull/21317) | ❌ closed | — |
 | `템플릿 파이프라인의 쓰기만 하는 컬렉션` | [angular · 101k★](https://github.com/angular/angular) | 쓰기만 하는 컬렉션 (allocateSlots 의 slotMap, generateTemporaries 의 released — 채우기만 하고 읽지 않음, slotMap 은 주석이 '다음 순회에서 쓴다'고 잘못 설명) | [#70690](https://github.com/angular/angular/pull/70690) | ✅ merged | +1 |
 | `빌드에서 쓰기만 하는 페이지 입력 집합` | [astro · 63.1k★](https://github.com/withastro/astro) | 쓰기만 하는 컬렉션 (viteBuild 가 pageInput 을 채우기만 하고 읽지 않는다 — 소비자 ssrBuild 인자가 #14306 Environment API 에서 사라졌다) | [#17987](https://github.com/withastro/astro/pull/17987) | ✅ merged | +1 |
@@ -76,6 +76,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `불리언 라벨 저장을 기다리지 않음` | [Trilium · 38.2k★](https://github.com/TriliumNext/Trilium) | 버려진 Promise (async setBooleanWithInheritance 가 setLabel 을 await 안 함 — 보드가 기다려도 저장 전에 넘어가고 실패는 사라진다) | [#11949](https://github.com/TriliumNext/Trilium/pull/11949) | ⚪ awaiting review | — |
 | `실패 테스트 재실행이 추출 테스트마다 전부 다시 직렬화` | [promptfoo · 25.8k★](https://github.com/promptfoo/promptfoo) | O(n²) 배열 조회 (extractedTests.some(JSON.stringify(...)) — 미매칭 결과 5,000건에서 4.2초 → 21ms) | [#11464](https://github.com/promptfoo/promptfoo/pull/11464) | ✅ merged | +1 |
 | `모델 변경 후 QA 재학습이 옛 모델로 돈다` | [FastGPT · 29.8k★](https://github.com/labring/FastGPT) | 버려진 Promise (updateTraining 을 await 없이 트랜잭션 커밋 전에 호출 — 워커가 옛 에이전트 모델로 작업을 집고 실패는 사라진다) | [#7918](https://github.com/labring/FastGPT/pull/7918) | ⚪ awaiting review | — |
+| `SCAM 변환이 spec 의 declarations 를 못 지운다` | [nx · 29.4k★](https://github.com/nrwl/nx) | 버린 반환값 (spec.replace(/declarations: \[.+/, '') 결과를 대입 안 함 — standalone 컴포넌트가 declarations 에 남아 테스트가 깨진다) | [#37332](https://github.com/nrwl/nx/pull/37332) | ⚪ awaiting review | — |
 
 ## 규칙
 

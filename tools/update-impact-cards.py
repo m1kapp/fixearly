@@ -587,6 +587,11 @@ RULES = [
      "호출한 쪽은 끝나기 전에 다음 단계로 넘어간다.",
      "An async call with no <code>await</code> and nothing holding the result. Failures vanish, "
      "and the caller moves on before it finishes.", "", ""),
+    (("버린 반환값",), "버린 반환값", "Discarded pure call", "진단", "diagnostic",
+     "<code>s.replace(…)</code>·<code>arr.concat(…)</code> 를 부르고 결과를 대입하지 않는다. 문자열은 불변이라 "
+     "그 줄은 아무것도 안 한다 — 지우려던 줄이 남고, 붙이려던 말이 빠진다.",
+     "Calls <code>s.replace(…)</code> or <code>arr.concat(…)</code> and drops the result. Strings are immutable, "
+     "so the line does nothing — what it meant to remove stays, what it meant to append is lost.", "", ""),
     (("전역 정규식 상태",), "전역 정규식 상태", "Stateful /g regex", "진단", "diagnostic",
      "<code>/g</code> 정규식을 공유한 채 루프에서 <code>.test()</code> 하면 <code>lastIndex</code> 가 "
      "다음 호출로 새어, 같은 입력에 참·거짓이 번갈아 나온다. 성능이 아니라 조용히 틀린 답이다.",
