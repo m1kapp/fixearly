@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 28**
+> **fixearly 임팩트 점수: 29**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -18,7 +18,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `nested relations hydration O(n²)` | [twenty · 58.1k★](https://github.com/twentyhq/twenty) | O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map) | [#23232](https://github.com/twentyhq/twenty/pull/23232) | ❌ closed | — |
 | `lucky-user set rebuild in loop` | [cal.com · 48.9k★](https://github.com/calcom/cal.diy) | 루프 불변 인덱스 재구축 (while마다 new Set 재구축 → 호이스팅) | [#29832](https://github.com/calcom/cal.diy/pull/29832) | ❌ closed | — |
 | `dataloader doc placement O(n²)` | [payload · 45.1k★](https://github.com/payloadcms/payload) | O(n²) (배치당 keys.findIndex 전체 스캔 — Map으로 O(1)) | [#17469](https://github.com/payloadcms/payload/pull/17469) | ❌ closed | — |
-| `translations batch match O(n²)` | [medusa · 36.6k★](https://github.com/medusajs/medusa) | O(n²) (batch당 filter+some 전체 스캔 — Set으로 O(1)) | [#16188](https://github.com/medusajs/medusa/pull/16188) | ✅ merged | +1 |
+| `translations batch match O(n²)` | [medusa · 36.7k★](https://github.com/medusajs/medusa) | O(n²) (batch당 filter+some 전체 스캔 — Set으로 O(1)) | [#16188](https://github.com/medusajs/medusa/pull/16188) | ✅ merged | +1 |
 | `markdown import merge O(n²)` | [outline · 40.8k★](https://github.com/outline/outline) | O(n²) (형제 out.find title 스캔 — Map으로 O(1)) | [#13117](https://github.com/outline/outline/pull/13117) | ✅ merged | +1 |
 | `doc-metadata localization O(n²)` | [strapi · 73.3k★](https://github.com/strapi/strapi) | O(n²) (localization별 versions.find — 복합키 Map으로 O(1)) | [#27125](https://github.com/strapi/strapi/pull/27125) | ❌ closed | — |
 | `try/catch 안 릴리즈 정리를 await 안 함` | [strapi · 73.3k★](https://github.com/strapi/strapi) | 버려진 Promise (try/catch 로 감싼 async 호출에 await 가 없어 catch 가 안 돈다 — 로그 대신 unhandled rejection) | [#27893](https://github.com/strapi/strapi/pull/27893) | ⚪ awaiting review | — |
@@ -27,7 +27,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `user field validation O(n²)` | [nocodb · 65.2k★](https://github.com/nocodb/nocodb) | O(n²) (value별 baseUsers.find ×4 — id·email Map으로 O(1)) | [#14309](https://github.com/nocodb/nocodb/pull/14309) | ✅ merged | +1 |
 | `ExternalRequest field lookup O(n²)` | [budibase · 28.3k★](https://github.com/Budibase/budibase) | O(n²) (행 필드별 fieldNames.find — Set으로 O(1)) | [#19320](https://github.com/Budibase/budibase/pull/19320) | ❌ closed | — |
 | `static formula 갱신 enriched row 조회 O(n²)` | [budibase · 28.3k★](https://github.com/Budibase/budibase) | O(n²) (행마다 enrichedRows.find — id Map으로 O(1), 100건에서 5,050→100) | [#19555](https://github.com/Budibase/budibase/pull/19555) | ❌ closed | — |
-| `cart variant lookup O(n²)` | [medusa · 36.6k★](https://github.com/medusajs/medusa) | O(n²) 배열 조회 (장바구니 아이템마다 variants 선형 스캔 → Map) | [#16233](https://github.com/medusajs/medusa/pull/16233) | ✅ merged | +1 |
+| `cart variant lookup O(n²)` | [medusa · 36.7k★](https://github.com/medusajs/medusa) | O(n²) 배열 조회 (장바구니 아이템마다 variants 선형 스캔 → Map) | [#16233](https://github.com/medusajs/medusa/pull/16233) | ✅ merged | +1 |
 | `eval dataset item 반복 조회` | [langfuse · 35.5k★](https://github.com/langfuse/langfuse) | 중복 쿼리 (변수마다 동일 WHERE 로 같은 행 재조회 → 컬럼 합쳐 1회) | [#15585](https://github.com/langfuse/langfuse/pull/15585) | ❌ closed | — |
 | `in-depth analytics 순차 await` | [typebot · 10.5k★](https://github.com/baptisteArno/typebot.io) | 독립 순차 await (독립 groupBy 3개 직렬 → Promise.all, 합→최댓값) | [#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | ✅ merged | +1 |
 | `loadTables 카탈로그 전량 재스캔` | [typeorm · 36.7k★](https://github.com/typeorm/typeorm) | O(n²) (테이블마다 columns·constraints·fks·indices 전량 스캔 — Map 그룹핑으로 O(1)) | [#12746](https://github.com/typeorm/typeorm/pull/12746) | ❌ closed | — |
@@ -67,10 +67,10 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `upsertMany 재조회 행을 엔티티마다 전부 비교` | [mikro-orm · 9.2k★](https://github.com/mikro-orm/mikro-orm) | O(n²) 배열 조회 (배치 × 재조회 행 comparator.matching — 엄격 비교 키 값으로 행을 한 번 묶어 같은 묶음만 비교) | [#8393](https://github.com/mikro-orm/mikro-orm/pull/8393) | ✅ merged | +1 |
 | `표현식 unique·차집합이 원시값 배열도 깊은 비교로 이중 순회` | [n8n · 206.9k★](https://github.com/n8n-io/n8n) | O(n²) 배열 조회 (lodash isEqual 쌍 비교 — 원시값만 있으면 Set 이 같은 답을 낸다) | [#40311](https://github.com/n8n-io/n8n/pull/40311) | ⚪ awaiting review | — |
 | `채우기만 하고 읽지 않는 Map` | [Babylon.js · 26.1k★](https://github.com/BabylonJS/Babylon.js) | 쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — DFS 는 연결점의 소유 블록을 직접 따라간다) | [#18980](https://github.com/BabylonJS/Babylon.js/pull/18980) | ✅ merged | +1 |
-| `채우기만 하고 읽지 않는 Map 3개` | [cherry-studio · 52.4k★](https://github.com/CherryHQ/cherry-studio) | 쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — 생긴 뒤 한 번도 읽힌 적 없다) | [#21363](https://github.com/CherryHQ/cherry-studio/pull/21363) | ⚪ awaiting review | — |
+| `채우기만 하고 읽지 않는 Map 3개` | [cherry-studio · 52.5k★](https://github.com/CherryHQ/cherry-studio) | 쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — 생긴 뒤 한 번도 읽힌 적 없다) | [#21363](https://github.com/CherryHQ/cherry-studio/pull/21363) | ⚪ awaiting review | — |
 | `검증 에러가 dev 서버를 죽임` | [react-router · 56.6k★](https://github.com/remix-run/react-router) | 버려진 Promise (throw 하는 async 검증을 await 없이 불러 unhandled rejection 으로 프로세스 종료) | [#15591](https://github.com/remix-run/react-router/pull/15591) | ⚪ awaiting review | — |
 | `리팩터 뒤 남은 조상 Set` | [pdf.js · 54k★](https://github.com/mozilla/pdf.js) | 쓰기만 하는 컬렉션 (2021 usehref 리팩터로 소비자 둘이 ancestors 로 바뀐 뒤 남은 Set) | [#22102](https://github.com/mozilla/pdf.js/pull/22102) | ⚪ awaiting review | — |
-| `중복 검사 Set 을 안 읽어 codemod 가 중복 이름을 만듦` | [turborepo · 31.2k★](https://github.com/vercel/turborepo) | 쓰기만 하는 컬렉션 (2026-03 리팩터가 has() 검사를 지워 채우기만 하는 Set 이 남았고, 그 결과 중복 이름을 생성) | [#14433](https://github.com/vercel/turborepo/pull/14433) | 🟠 changes requested | — |
+| `중복 검사 Set 을 안 읽어 codemod 가 중복 이름을 만듦` | [turborepo · 31.2k★](https://github.com/vercel/turborepo) | 쓰기만 하는 컬렉션 (2026-03 리팩터가 has() 검사를 지워 채우기만 하는 Set 이 남았고, 그 결과 중복 이름을 생성) | [#14433](https://github.com/vercel/turborepo/pull/14433) | ✅ merged | +1 |
 | `cose 레이아웃이 간선마다 노드 전체를 훑음` | [cytoscape.js · 11.2k★](https://github.com/cytoscape/cytoscape.js) | O(n²) 배열 조회 (간선마다 nodes.some 두 번 — hasElementWithId 로 O(1), 3000노드 519→11ms) | [#3527](https://github.com/cytoscape/cytoscape.js/pull/3527) | ⚪ awaiting review | — |
 | `백업 복원이 복사가 끝나기 전에 앱을 재시작` | [insomnia · 40k★](https://github.com/Kong/insomnia) | forEach 안 await (forEach(async copyFile) 뒤 곧바로 app.exit() — 복원이 안 되거나 일부만 된다) | [#10575](https://github.com/Kong/insomnia/pull/10575) | ⚪ awaiting review | — |
 | `불리언 라벨 저장을 기다리지 않음` | [Trilium · 38.2k★](https://github.com/TriliumNext/Trilium) | 버려진 Promise (async setBooleanWithInheritance 가 setLabel 을 await 안 함 — 보드가 기다려도 저장 전에 넘어가고 실패는 사라진다) | [#11949](https://github.com/TriliumNext/Trilium/pull/11949) | ⚪ awaiting review | — |

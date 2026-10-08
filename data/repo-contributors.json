@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-08T08:47:23+00:00",
+  "generatedAt": "2026-10-08T14:28:41+00:00",
   "method": "GitHub REST contributors?per_page=1&anon=true; last-page count; commit authors, not unique humans",
   "repos": {
     "Automattic/mongoose": 1090,
@@ -19,13 +19,13 @@
     "excalidraw/excalidraw": 378,
     "facebook/react": 2020,
     "grafana/grafana": 3142,
-    "immich-app/immich": 1019,
+    "immich-app/immich": 1020,
     "jupyterlab/jupyterlab": 737,
     "labring/FastGPT": 194,
     "langfuse/langfuse": 219,
     "medusajs/medusa": 587,
     "microsoft/vscode": 3258,
-    "mikro-orm/mikro-orm": 348,
+    "mikro-orm/mikro-orm": 350,
     "mozilla/pdf.js": 536,
     "n8n-io/n8n": 811,
     "nocodb/nocodb": 355,
@@ -36,16 +36,16 @@
     "outline/outline": 263,
     "payloadcms/payload": 584,
     "pnpm/pnpm": 696,
-    "promptfoo/promptfoo": 369,
+    "promptfoo/promptfoo": 370,
     "remix-run/react-router": 1318,
     "rollup/rollup": 472,
-    "storybookjs/storybook": 2797,
+    "storybookjs/storybook": 2798,
     "strapi/strapi": 1398,
     "tailwindlabs/tailwindcss": 376,
     "twentyhq/twenty": 768,
     "typeorm/typeorm": 1258,
     "vercel/turborepo": 717,
-    "vitejs/vite": 1370,
+    "vitejs/vite": 1372,
     "withastro/astro": 1245
   }
 }

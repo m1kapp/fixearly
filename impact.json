@@ -88,7 +88,7 @@
    "title": "translations batch match O(n²)",
    "type": "O(n²) (batch당 filter+some 전체 스캔 — Set으로 O(1))",
    "repo": "medusajs/medusa",
-   "repoLabel": "medusa · 36.6k★",
+   "repoLabel": "medusa · 36.7k★",
    "pr": 16188,
    "createdAt": "2026-07-24T12:46:08Z",
    "status": "merged",
@@ -219,7 +219,7 @@
    "title": "cart variant lookup O(n²)",
    "type": "O(n²) 배열 조회 (장바구니 아이템마다 variants 선형 스캔 → Map)",
    "repo": "medusajs/medusa",
-   "repoLabel": "medusa · 36.6k★",
+   "repoLabel": "medusa · 36.7k★",
    "pr": 16233,
    "createdAt": "2026-07-29T05:16:25Z",
    "status": "merged",
@@ -808,7 +808,7 @@
    "titleEn": "three maps filled but never read",
    "type": "쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — 생긴 뒤 한 번도 읽힌 적 없다)",
    "repo": "CherryHQ/cherry-studio",
-   "repoLabel": "cherry-studio · 52.4k★",
+   "repoLabel": "cherry-studio · 52.5k★",
    "pr": 21363,
    "status": "waiting",
    "createdAt": "2026-10-07T11:05:27Z"
@@ -840,8 +840,13 @@
    "repo": "vercel/turborepo",
    "repoLabel": "turborepo · 31.2k★",
    "pr": 14433,
-   "status": "changes",
-   "createdAt": "2026-10-07T13:09:15Z"
+   "status": "merged",
+   "createdAt": "2026-10-07T13:09:15Z",
+   "approvedAt": "2026-10-08T13:33:40Z",
+   "mergedAt": "2026-10-08T14:26:00Z",
+   "release": {
+    "channel": "pending"
+   }
   },
   {
    "title": "cose 레이아웃이 간선마다 노드 전체를 훑음",
@@ -929,5 +934,5 @@
    "createdAt": "2026-10-08T08:45:53Z"
   }
  ],
- "generatedAt": "2026-10-08T08:50:12.806Z"
+ "generatedAt": "2026-10-08T14:31:47.957Z"
 }
