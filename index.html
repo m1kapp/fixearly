@@ -405,15 +405,27 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
 .mbg{font-size:10px;padding:2px 6px;border-radius:4px}
 .mbr b{font-size:13px;color:var(--ink-2);min-width:28px;text-align:right}
 .heroart:has(.loopfig){height:auto}
-.loopfig{position:relative;width:min(100%,480px);aspect-ratio:1;margin:0 auto 48px}
+.loopfig{position:relative;width:min(100%,480px);aspect-ratio:1;margin:0 auto 84px}
 .loopfig img{width:100%;height:100%;display:block;mix-blend-mode:multiply}
-.lc{position:absolute;display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 6px;background:var(--paper);border:1px solid var(--line);border-radius:999px;font-size:12px;color:var(--ink-2);white-space:nowrap;box-shadow:0 2px 8px rgba(15,23,35,.06)}
+.lc{position:absolute;z-index:2;display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 6px;background:var(--paper);border:1px solid var(--line);border-radius:999px;font-size:12px;color:var(--ink-2);white-space:nowrap;box-shadow:0 2px 8px rgba(15,23,35,.06)}
 .lc b{color:var(--ink);font-size:12.5px}
 .lc .lpn{margin-right:0}
 .c1{left:6%;top:44%}.c2{right:3%;top:44%}.c3{right:4%;bottom:2%}.c4{left:4%;bottom:2%}
-.lcen{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:grid;justify-items:center;text-align:center}
-.lcen b{font-size:52px;line-height:1;color:var(--gS);letter-spacing:-.02em}
-.lcen span{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.lcen{position:absolute;left:50%;top:50%;width:31%;aspect-ratio:1;transform:translate(-50%,-50%)}
+.lcen svg{width:100%;height:100%;transform:rotate(-90deg);filter:drop-shadow(0 6px 14px rgba(37,99,235,.14))}
+.lcen circle{fill:none;stroke-width:13;stroke-linecap:butt}
+.lcen circle.trk{stroke:var(--paper);stroke-width:20}
+.lcen circle:not(.trk){animation:arcin .9s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--d)}
+@keyframes arcin{from{stroke-dasharray:0 377}}
+@media (prefers-reduced-motion:reduce){.lcen circle:not(.trk){animation:none}}
+.lnum{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;text-align:center;line-height:1.15}
+.lnum b{font-size:42px;line-height:1;color:var(--ink);letter-spacing:-.03em}
+.lnum>span{font-size:11.5px;color:var(--ink-2);margin-top:3px}
+.lnum em{font-style:normal;font-size:10.5px;color:var(--gS);font-weight:600;margin-top:4px;padding-top:4px;border-top:1px solid var(--line)}
+.lleg{display:block;margin:0 0 8px}
+.lleg>.ko,:root[data-lang="en"] .lleg>.en{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;font-size:12px;color:var(--ink-2)}
+.lleg>span>span{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.lleg i{width:8px;height:8px;border-radius:50%;display:inline-block}
 .lcap{position:absolute;top:100%;left:0;right:0;margin:10px 0 0;font-size:12px;line-height:1.5;color:var(--ink-3);text-align:center}
 .lcap a{color:var(--accent);text-decoration:none;white-space:nowrap}
 .lcap a:hover{text-decoration:underline}
@@ -581,7 +593,7 @@ body{counter-reset:step}
    </div>
    <div class="heroart">
      <div class="glow"></div>
-     <div class="loopfig"><!--auto:loop--><img src="loop.jpg" width="900" height="900" alt="" loading="eager"><span class="lc c1"><i class="lpn">1</i><span class="ko">배운다 · 고칠 규칙</span><span class="en">Learn · fix rules</span><b>6</b></span><span class="lc c2"><i class="lpn">2</i><span class="ko">고친다 · PR</span><span class="en">Fix · PRs</span><b>68</b></span><span class="lc c3"><i class="lpn">3</i><span class="ko">판정 · 머지</span><span class="en">Verdict · merged</span><b>29</b></span><span class="lc c4"><i class="lpn">4</i><span class="ko">다진다 · 오탐 가드</span><span class="en">Sharpen · FP guards</span><b>34</b></span><div class="lcen"><b>29</b><span class="ko">머지됨</span><span class="en">merged</span></div><p class="lcap"><span class="ko">남의 저장소에서 머지된 PR 과 남의 코드에서 고칠 규칙을 뽑고, 그 규칙으로 다른 저장소를 고쳐 PR 을 낸다. 머지·거절이 다시 규칙을 다듬는다 — 규칙 6개 중 5개가 머지로 검증 · 저장소 19곳 · 거절 25 · 대기 14. </span><span class="en">Fix rules come from PRs strangers merged and from strangers' code; we apply them to other repos as PRs, and merges and rejections sharpen them again — 5 of 6 rules verified by a merge · 19 projects · closed 25 · open 14. </span><a href="#impact"><span class="ko">전체 기록 →</span><span class="en">Full record →</span></a></p><!--/auto:loop--></div>
+     <div class="loopfig"><!--auto:loop--><img src="loop.jpg" width="900" height="900" alt="" loading="eager"><span class="lc c1"><i class="lpn">1</i><span class="ko">배운다 · 고칠 규칙</span><span class="en">Learn · fix rules</span><b>6</b></span><span class="lc c2"><i class="lpn">2</i><span class="ko">고친다 · PR</span><span class="en">Fix · PRs</span><b>68</b></span><span class="lc c3"><i class="lpn">3</i><span class="ko">판정 · 머지</span><span class="en">Verdict · merged</span><b>29</b></span><span class="lc c4"><i class="lpn">4</i><span class="ko">다진다 · 오탐 가드</span><span class="en">Sharpen · FP guards</span><b>34</b></span><div class="lcen"><svg viewBox="0 0 140 140" aria-hidden="true"><circle r="60" cx="70" cy="70" class="trk"/><circle r="60" cx="70" cy="70" stroke="#2563eb" stroke-dasharray="153.00 376.99" stroke-dashoffset="-0.00" style="--d:0.00s"><title>O(n²) 조회 12</title></circle><circle r="60" cx="70" cy="70" stroke="#0f7a63" stroke-dasharray="127.00 376.99" stroke-dashoffset="-156.00" style="--d:0.12s"><title>쓰기만 하는 컬렉션 10</title></circle><circle r="60" cx="70" cy="70" stroke="#60a5fa" stroke-dasharray="49.00 376.99" stroke-dashoffset="-285.99" style="--d:0.24s"><title>불필요한 순차 I/O 4</title></circle><circle r="60" cx="70" cy="70" stroke="#d97706" stroke-dasharray="23.00 376.99" stroke-dashoffset="-337.99" style="--d:0.36s"><title>버려진 Promise 2</title></circle><circle r="60" cx="70" cy="70" stroke="#7c8899" stroke-dasharray="10.00 376.99" stroke-dashoffset="-363.99" style="--d:0.48s"><title>전역 정규식 상태 1</title></circle></svg><div class="lnum"><b>29</b><span class="ko">PR 머지됨</span><span class="en">PRs merged</span><em><span class="ko">규칙 5개가 찾아냄</span><span class="en">found by 5 rules</span></em></div></div><p class="lcap"><span class="lleg"><span class="ko"><span><i style="background:#2563eb"></i>O(n²) 조회 12</span><span><i style="background:#0f7a63"></i>쓰기만 하는 컬렉션 10</span><span><i style="background:#60a5fa"></i>불필요한 순차 I/O 4</span><span><i style="background:#d97706"></i>버려진 Promise 2</span><span><i style="background:#7c8899"></i>전역 정규식 상태 1</span></span><span class="en"><span><i style="background:#2563eb"></i>O(n²) lookup 12</span><span><i style="background:#0f7a63"></i>Write-only collection 10</span><span><i style="background:#60a5fa"></i>Needless sequential I/O 4</span><span><i style="background:#d97706"></i>Floating promise 2</span><span><i style="background:#7c8899"></i>Stateful /g regex 1</span></span></span><span class="ko">남의 저장소에서 머지된 PR 과 남의 코드에서 고칠 규칙을 뽑고, 그 규칙으로 다른 저장소를 고쳐 PR 을 낸다. 머지·거절이 다시 규칙을 다듬는다 — 규칙 6개 중 5개가 머지로 검증 · 저장소 19곳 · 거절 25 · 대기 14. </span><span class="en">Fix rules come from PRs strangers merged and from strangers' code; we apply them to other repos as PRs, and merges and rejections sharpen them again — 5 of 6 rules verified by a merge · 19 projects · closed 25 · open 14. </span><a href="#impact"><span class="ko">전체 기록 →</span><span class="en">Full record →</span></a></p><!--/auto:loop--></div>
    </div>
   </div>
 </header>

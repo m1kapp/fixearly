@@ -686,14 +686,33 @@ _rp = sum(1 for r in RULES if r[0])
 def _chip(pos, n, ko, en, val=""):
     v = f"<b>{val}</b>" if val != "" else ""
     return (f'<span class="lc {pos}"><i class="lpn">{n}</i><span class="ko">{ko}</span><span class="en">{en}</span>{v}</span>')
+# 가운데 도넛 — 머지 수를 찾아낸 규칙별로 가른다. 조각 색은 머지 많은 순서로 고정 팔레트에서 꺼낸다.
+_DONUT_COLORS = ["#2563eb", "#0f7a63", "#60a5fa", "#d97706", "#7c8899", "#a78bfa"]
+_seg = sorted(((len(v), RULES[i][1], RULES[i][2]) for i, v in _by_rule.items() if v), key=lambda t: -t[0])
+_C, _gap, _off, _arcs, _legend_ko, _legend_en = 2 * 3.14159265 * 60, 3, 0.0, [], [], []
+for _k, (_n, _ko, _en) in enumerate(_seg):
+    _len = _C * _n / max(_lm, 1)
+    _col = _DONUT_COLORS[_k % len(_DONUT_COLORS)]
+    _arcs.append(f'<circle r="60" cx="70" cy="70" stroke="{_col}" stroke-dasharray="{max(_len - _gap, 1):.2f} {_C:.2f}" '
+                 f'stroke-dashoffset="{-_off:.2f}" style="--d:{_k * .12:.2f}s"><title>{_ko} {_n}</title></circle>')
+    _legend_ko.append(f'<i style="background:{_col}"></i>{_ko} {_n}')
+    _legend_en.append(f'<i style="background:{_col}"></i>{_en} {_n}')
+    _off += _len
+_donut = (
+    f'<div class="lcen"><svg viewBox="0 0 140 140" aria-hidden="true"><circle r="60" cx="70" cy="70" class="trk"/>{"".join(_arcs)}</svg>'
+    f'<div class="lnum"><b>{_lm}</b><span class="ko">PR 머지됨</span><span class="en">PRs merged</span>'
+    f'<em><span class="ko">규칙 {len(_seg)}개가 찾아냄</span><span class="en">found by {len(_seg)} rules</span></em></div></div>'
+)
+_legend = (f'<span class="lleg"><span class="ko">{"".join(f"<span>{x}</span>" for x in _legend_ko)}</span>'
+           f'<span class="en">{"".join(f"<span>{x}</span>" for x in _legend_en)}</span></span>')
 _loop = (
     '<img src="loop.jpg" width="900" height="900" alt="" loading="eager">'
     + _chip("c1", 1, "배운다 · 고칠 규칙", "Learn · fix rules", _rp)
     + _chip("c2", 2, "고친다 · PR", "Fix · PRs", len(_st))
     + _chip("c3", 3, "판정 · 머지", "Verdict · merged", _lm)
     + _chip("c4", 4, "다진다 · 오탐 가드", "Sharpen · FP guards", _fp)
-    + f'<div class="lcen"><b>{_lm}</b><span class="ko">머지됨</span><span class="en">merged</span></div>'
-    + f'<p class="lcap"><span class="ko">남의 저장소에서 머지된 PR 과 남의 코드에서 고칠 규칙을 뽑고, 그 규칙으로 다른 저장소를 고쳐 PR 을 낸다. 머지·거절이 다시 규칙을 다듬는다 — 규칙 {_rp}개 중 {_nmerged}개가 머지로 검증 · 저장소 {_lr}곳 · 거절 {_lc} · 대기 {_lo}. </span>'
+    + _donut
+    + f'<p class="lcap">{_legend}<span class="ko">남의 저장소에서 머지된 PR 과 남의 코드에서 고칠 규칙을 뽑고, 그 규칙으로 다른 저장소를 고쳐 PR 을 낸다. 머지·거절이 다시 규칙을 다듬는다 — 규칙 {_rp}개 중 {_nmerged}개가 머지로 검증 · 저장소 {_lr}곳 · 거절 {_lc} · 대기 {_lo}. </span>'
       f'<span class="en">Fix rules come from PRs strangers merged and from strangers\' code; we apply them to other repos as PRs, and merges and rejections sharpen them again — {_nmerged} of {_rp} rules verified by a merge · {_lr} projects · closed {_lc} · open {_lo}. </span>'
       '<a href="#impact"><span class="ko">전체 기록 →</span><span class="en">Full record →</span></a></p>'
 )
