@@ -4,7 +4,7 @@ make-og — 공유 카드(og.png) 를 굽는다. 1200x630.
 
 트위터·슬랙·디스코드에 링크를 붙이면 이 이미지가 먼저 읽힌다. 히어로 카피보다
 먼저 보이는 문구라서 손으로 관리하면 금방 본문과 갈린다. 그래서 숫자는 전부
-실제 데이터에서 읽는다 — 등급 분포는 data/corpus.json, PR 성과는 IMPACT.md.
+실제 데이터에서 읽는다 — index.html 의 루프 영역(생성됨)과 같은 숫자다.
 
 SVG 를 qlmanage 로 굽는 길은 버렸다. viewBox 를 무시하고 제멋대로 스케일해서
 오른쪽이 잘렸다. Pillow 로 픽셀을 직접 놓으면 좌표가 곧 결과다.
@@ -14,7 +14,6 @@ SVG 를 qlmanage 로 굽는 길은 버렸다. viewBox 를 무시하고 제멋대
 import json
 import os
 import re
-from collections import Counter
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -27,11 +26,6 @@ INK = (15, 23, 35)
 INK2 = (74, 87, 105)
 INK3 = (124, 136, 153)
 ACCENT = (37, 99, 235)
-GRADE_COLOR = {
-    "S": (15, 122, 99), "A": (47, 143, 91), "B": (125, 138, 44),
-    "C": (192, 134, 46), "D": (191, 74, 56), "E": (143, 47, 36),
-}
-GRADE_ORDER = ["S", "A", "B", "C", "D", "E"]
 
 KO = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
 MONO = "/System/Library/Fonts/Menlo.ttc"
@@ -55,10 +49,17 @@ def tracked(d, xy, text, font, fill, track=0.0):
     return x
 
 
-def load_distribution():
-    corpus = json.load(open(f"{ROOT}/data/corpus.json", encoding="utf-8"))
-    counts = Counter(r["grade"] for r in corpus["repos"])
-    return counts, corpus["n"]
+def load_loop():
+    """히어로 루프 영역에서 숫자를 읽는다 — 페이지와 공유 카드가 같은 출처를 쓴다."""
+    h = open(f"{ROOT}/index.html", encoding="utf-8").read()
+    m = re.search(r"<!--auto:loop-->(.*?)<!--/auto:loop-->", h, re.S)
+    if not m:
+        raise SystemExit("index.html 에서 루프 영역을 못 찾았다")
+    loop = m.group(1)
+    seg = [(c, t, int(n)) for c, t, n in
+           re.findall(r'stroke="(#[0-9a-f]{6})"[^>]*><title>(.+?) (\d+)</title>', loop)]
+    chips = [int(n) for n in re.findall(r'<span class="lc c\d">.*?<b>(\d+)</b>', loop)]
+    return seg, chips
 
 
 def load_headline():
@@ -71,19 +72,32 @@ def load_headline():
     return [ln for ln in lines if ln]
 
 
-def load_impact():
-    """IMPACT.md 의 상태 아이콘을 센다 — 카드 생성기와 같은 출처를 쓴다."""
-    md = open(f"{ROOT}/IMPACT.md", encoding="utf-8").read()
-    rows = [m.group(1) for m in re.finditer(r"/pull/\d+\)\s*\|\s*([^|]+)\|", md)]
-    return sum("✅" in r for r in rows), sum("🔵" in r for r in rows)
+def hexrgb(c):
+    return tuple(int(c[i:i + 2], 16) for i in (1, 3, 5))
 
 
 def main():
-    counts, total = load_distribution()
-    merged, approved = load_impact()
+    seg, (rules, prs, merged, guards) = load_loop()
 
     img = Image.new("RGB", (W, H), PAPER)
     d = ImageDraw.Draw(img)
+
+    # 오른쪽: 랜딩과 같은 루프 그림, 가운데에 규칙별 머지 도넛.
+    S, X0, Y0 = 520, W - 520 - 30, (H - 520) // 2 + 6
+    art = Image.open(f"{ROOT}/loop.jpg").convert("RGB").resize((S, S), Image.LANCZOS)
+    img.paste(art, (X0, Y0))
+    cx, cy, r, sw = X0 + S / 2, Y0 + S / 2, 84, 18
+    d.ellipse([cx - r - 6, cy - r - 6, cx + r + 6, cy + r + 6], fill=PAPER)
+    total, a = sum(n for _, _, n in seg) or 1, -90.0
+    for col, _, n in seg:
+        sweep = 360 * n / total
+        d.arc([cx - r, cy - r, cx + r, cy + r], a, a + sweep - 1.5, fill=hexrgb(col), width=sw)
+        a += sweep
+    f_num, f_sub = ko(58, "bold"), ko(17, "medium")
+    num = str(merged)
+    d.text((cx - d.textlength(num, font=f_num) / 2, cy - 48), num, font=f_num, fill=INK)
+    sub = "PR 머지됨"
+    d.text((cx - d.textlength(sub, font=f_sub) / 2, cy + 18), sub, font=f_sub, fill=INK2)
 
     d.rectangle([0, 0, W, 6], fill=ACCENT)
 
@@ -94,47 +108,40 @@ def main():
 
     tracked(d, (M, 130), "JS / TS · CLI · 설치 없이", ko(18, "semibold"), INK3, track=1.4)
 
-    # 줄이 길면 폭에 맞춰 크기를 줄인다 — 카피가 바뀌어도 안 삐져나가게.
+    # 줄이 길면 왼쪽 칸 폭에 맞춰 크기를 줄인다 — 카피가 바뀌어도 그림을 안 덮게.
+    col_w = X0 - M - 10
     headline = load_headline()
-    size = 78
-    while size > 40 and max(d.textlength(ln, font=ko(size, "bold")) for ln in headline) > W - 2 * M:
+    size = 64
+    while size > 36 and max(d.textlength(ln, font=ko(size, "bold")) for ln in headline) > col_w:
         size -= 2
     f_h1 = ko(size, "bold")
-    top = 186 + (78 - size)  # 작아질수록 위쪽 여백을 조금 내려 균형 유지
     for i, ln in enumerate(headline):
-        d.text((M - 4, top + i * int(size * 1.18)), ln, font=f_h1, fill=INK)
+        d.text((M - 3, 196 + i * int(size * 1.22)), ln, font=f_h1, fill=INK)
 
-    d.text((M, 396), f"유명 오픈소스 {total}개를 같은 자로, 체급을 나눠 재서 만든 기준선.",
-           font=ko(25), fill=INK2)
+    f_body = ko(23)
+    d.text((M, 372), "규칙은 남의 저장소에 PR 로 내서 검증한다.", font=f_body, fill=INK2)
+    d.text((M, 406), f"규칙 {len(seg)}개가 찾아 머지된 PR {merged}건.", font=f_body, fill=INK2)
 
-    # 등급 분포 막대 — 폭이 곧 개수다.
-    bar_y, bar_h, bar_w = 466, 24, W - 2 * M
-    x = float(M)
-    f_lab = ko(18, "semibold")
-    for g in GRADE_ORDER:
-        n = counts.get(g, 0)
-        if not n:
-            continue
-        w = bar_w * n / total
-        d.rectangle([x, bar_y, x + w, bar_y + bar_h], fill=GRADE_COLOR[g])
-        label = f"{g} {n}"
-        lw = d.textlength(label, font=f_lab)
-        # 칸보다 글자가 넓으면 뭉개진다 — 그럴 땐 라벨을 생략한다.
-        if lw + 8 <= w:
-            d.text((x + (w - lw) / 2, bar_y + bar_h + 10), label, font=f_lab, fill=INK3)
+    # 규칙별 머지 막대 — 폭이 곧 건수, 색은 도넛과 같다.
+    bar_y, bar_h, x = 462, 14, float(M)
+    for col, _, n in seg:
+        w = col_w * n / total
+        d.rectangle([x, bar_y, x + w - 3, bar_y + bar_h], fill=hexrgb(col))
         x += w
+    f_lab = ko(16, "medium")
+    lx = M
+    for col, title, n in seg[:3]:
+        d.ellipse([lx, bar_y + 30, lx + 10, bar_y + 40], fill=hexrgb(col))
+        lab = f"{title} {n}"
+        d.text((lx + 16, bar_y + 25), lab, font=f_lab, fill=INK3)
+        lx += 16 + d.textlength(lab, font=f_lab) + 18
 
-    # 바닥줄 — 실행 명령과, 그 진단이 실제로 통과했다는 증거.
     f_cmd = mono(23)
-    cmd = "npx fixearly --dir=src"
-    d.text((M, 552), cmd, font=f_cmd, fill=INK)
-    proof = f"   ·   같은 진단으로 낸 PR — 머지 {merged} · 승인 {approved}"
-    d.text((M + d.textlength(cmd, font=f_cmd), 553), proof, font=ko(22), fill=INK3)
+    d.text((M, 552), "npx fixearly --dir=src", font=f_cmd, fill=INK)
 
     out = f"{ROOT}/og.png"
     img.save(out, "PNG", optimize=True)
-    print(f"og.png {W}x{H} · 분포 {dict(counts)} · 머지 {merged} 승인 {approved} "
-          f"· {os.path.getsize(out) // 1024}KB")
+    print(f"og.png {W}x{H} · 머지 {merged} · PR {prs} · 규칙 {len(seg)} · {os.path.getsize(out) // 1024}KB")
 
 
 if __name__ == "__main__":

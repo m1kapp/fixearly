@@ -16,14 +16,14 @@
 <meta property="og:locale" content="ko_KR">
 <meta property="og:url" content="https://fixearly.m1k.app/">
 <meta property="og:title" content="남이 머지해준 규칙으로, 내 코드의 고칠 줄을. — fixearly">
-<meta property="og:description" content="유명 오픈소스 74개를 같은 자로, 체급을 나눠 재서 만든 기준선. 네 저장소가 그 안에서 어디쯤인지, 어느 줄을 고치면 올라가는지 알려준다.">
+<meta property="og:description" content="남의 저장소에 PR 로 내서 머지된 규칙으로 내 JS·TS 코드의 고칠 줄을 짚는다. 머지·거절이 다시 규칙을 다듬는다.">
 <meta property="og:image" content="https://fixearly.m1k.app/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="fixearly — 등급 하나, 그리고 고칠 줄 번호. 오픈소스 74개의 등급 분포 막대.">
+<meta property="og:image:alt" content="fixearly — 배운다·고친다·판정·다진다 루프 그림과 가운데 규칙별 머지 도넛.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="등급 하나, 그리고 고칠 줄 번호. — fixearly">
-<meta name="twitter:description" content="유명 오픈소스 74개를 같은 자로, 체급을 나눠 재서 만든 기준선. 네 저장소의 등급과 고칠 줄 번호를 준다.">
+<meta name="twitter:title" content="남이 머지해준 규칙으로, 내 코드의 고칠 줄을. — fixearly">
+<meta name="twitter:description" content="남의 저장소에 PR 로 내서 머지된 규칙으로 내 JS·TS 코드의 고칠 줄을 짚는다. 머지·거절이 다시 규칙을 다듬는다.">
 <meta name="twitter:image" content="https://fixearly.m1k.app/og.png">
 <style>
 /* Hallmark · pre-emit critique: P5 H5 E4 S5 R4 V5
@@ -405,13 +405,14 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
 .mbg{font-size:10px;padding:2px 6px;border-radius:4px}
 .mbr b{font-size:13px;color:var(--ink-2);min-width:28px;text-align:right}
 .heroart:has(.loopfig){height:auto}
-.loopfig{position:relative;width:min(100%,480px);aspect-ratio:1;margin:0 auto 84px}
+.loopfig{position:relative;container-type:inline-size;width:min(100%,480px);aspect-ratio:1;margin:0 auto 84px}
+@media (max-width:400px){.loopfig{margin-bottom:124px}}
 .loopfig img{width:100%;height:100%;display:block;mix-blend-mode:multiply}
-.lc{position:absolute;z-index:2;display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 6px;background:var(--paper);border:1px solid var(--line);border-radius:999px;font-size:12px;color:var(--ink-2);white-space:nowrap;box-shadow:0 2px 8px rgba(15,23,35,.06)}
-.lc b{color:var(--ink);font-size:12.5px}
+.lc{position:absolute;z-index:2;display:inline-flex;align-items:center;gap:min(6px,1.2cqw);padding:5px min(10px,2cqw) 5px 6px;background:var(--paper);border:1px solid var(--line);border-radius:999px;font-size:min(12px,2.6cqw);color:var(--ink-2);white-space:nowrap;box-shadow:0 2px 8px rgba(15,23,35,.06)}
+.lc b{color:var(--ink);font-size:min(12.5px,2.8cqw)}
 .lc .lpn{margin-right:0}
 .c1{left:6%;top:44%}.c2{right:3%;top:44%}.c3{right:4%;bottom:2%}.c4{left:4%;bottom:2%}
-.lcen{position:absolute;left:50%;top:50%;width:31%;aspect-ratio:1;transform:translate(-50%,-50%)}
+.lcen{position:absolute;left:50%;top:50%;width:max(31%,130px);aspect-ratio:1;transform:translate(-50%,-50%)}
 .lcen svg{width:100%;height:100%;transform:rotate(-90deg);filter:drop-shadow(0 6px 14px rgba(37,99,235,.14))}
 .lcen circle{fill:none;stroke-width:13;stroke-linecap:butt}
 .lcen circle.trk{stroke:var(--paper);stroke-width:20}
@@ -419,9 +420,9 @@ footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,
 @keyframes arcin{from{stroke-dasharray:0 377}}
 @media (prefers-reduced-motion:reduce){.lcen circle:not(.trk){animation:none}}
 .lnum{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;text-align:center;line-height:1.15}
-.lnum b{font-size:42px;line-height:1;color:var(--ink);letter-spacing:-.03em}
-.lnum>span{font-size:11.5px;color:var(--ink-2);margin-top:3px}
-.lnum em{font-style:normal;font-size:10.5px;color:var(--gS);font-weight:600;margin-top:4px;padding-top:4px;border-top:1px solid var(--line)}
+.lnum b{font-size:min(42px,9cqw);line-height:1;color:var(--ink);letter-spacing:-.03em}
+.lnum>span{font-size:min(11.5px,2.6cqw);color:var(--ink-2);margin-top:3px}
+.lnum em{font-style:normal;font-size:min(10.5px,2.4cqw);color:var(--gS);font-weight:600;margin-top:4px;padding-top:4px;border-top:1px solid var(--line)}
 .lleg{display:block;margin:0 0 8px}
 .lleg>.ko,:root[data-lang="en"] .lleg>.en{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;font-size:12px;color:var(--ink-2)}
 .lleg>span>span{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
