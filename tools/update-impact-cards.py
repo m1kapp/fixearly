@@ -681,18 +681,20 @@ _lm, _lc = _st.count("merged"), _st.count("closed")
 _lo = len(_st) - _lm - _lc
 _fp = len(set(re.findall(r"\[FP:[a-z0-9-]+\]", open(f"{ROOT}/bin/fixearly.mjs", encoding="utf-8").read())))
 _lr = len({f["repo"] for f in findings if f.get("status") == "merged"})
+# 구조 채점축(함수 길이·복잡도·중복·파일 크기)은 PR 로 내지 않는다 — PR 을 낼 수 있는 규칙만 센다.
+_rp = sum(1 for r in RULES if r[0])
 def _chip(pos, n, ko, en, val=""):
     v = f"<b>{val}</b>" if val != "" else ""
     return (f'<span class="lc {pos}"><i class="lpn">{n}</i><span class="ko">{ko}</span><span class="en">{en}</span>{v}</span>')
 _loop = (
     '<img src="loop.jpg" width="900" height="900" alt="" loading="eager">'
-    + _chip("c1", 1, "배운다 · 규칙", "Learn · rules", len(RULES))
+    + _chip("c1", 1, "배운다 · 고칠 규칙", "Learn · fix rules", _rp)
     + _chip("c2", 2, "고친다 · PR", "Fix · PRs", len(_st))
     + _chip("c3", 3, "판정 · 머지", "Verdict · merged", _lm)
     + _chip("c4", 4, "다진다 · 오탐 가드", "Sharpen · FP guards", _fp)
     + f'<div class="lcen"><b>{_lm}</b><span class="ko">머지됨</span><span class="en">merged</span></div>'
-    + f'<p class="lcap"><span class="ko">남의 저장소에서 머지된 성능 PR로 축을 정하고, 그 축으로 다른 저장소를 고쳐 PR 을 낸다. 머지·거절이 다시 축을 다듬는다 — 저장소 {_lr}곳 머지 · 거절 {_lc} · 대기 {_lo}. </span>'
-      f'<span class="en">Axes come from performance PRs strangers merged; we use them to fix other repos and open PRs. Merges and rejections sharpen the axes again — merged in {_lr} projects · closed {_lc} · open {_lo}. </span>'
+    + f'<p class="lcap"><span class="ko">남의 저장소에서 머지된 PR 과 남의 코드에서 고칠 규칙을 뽑고, 그 규칙으로 다른 저장소를 고쳐 PR 을 낸다. 머지·거절이 다시 규칙을 다듬는다 — 규칙 {_rp}개 중 {_nmerged}개가 머지로 검증 · 저장소 {_lr}곳 · 거절 {_lc} · 대기 {_lo}. </span>'
+      f'<span class="en">Fix rules come from PRs strangers merged and from strangers\' code; we apply them to other repos as PRs, and merges and rejections sharpen them again — {_nmerged} of {_rp} rules verified by a merge · {_lr} projects · closed {_lc} · open {_lo}. </span>'
       '<a href="#impact"><span class="ko">전체 기록 →</span><span class="en">Full record →</span></a></p>'
 )
 L_BEGIN, L_END = "<!--auto:loop-->", "<!--/auto:loop-->"
