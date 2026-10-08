@@ -907,7 +907,27 @@
    "pr": 37332,
    "status": "waiting",
    "createdAt": "2026-10-08T08:07:26Z"
+  },
+  {
+   "title": "설정 검색이 중첩 속성을 못 찾는다",
+   "titleEn": "settings search drops properties nested in object settings",
+   "type": "버린 반환값 (acc.concat(재귀 결과) 를 대입 안 함 — 객체 설정 안의 속성 이름·제목이 검색에서 빠진다)",
+   "repo": "jupyterlab/jupyterlab",
+   "repoLabel": "jupyterlab · 15.3k★",
+   "pr": 20008,
+   "status": "waiting",
+   "createdAt": "2026-10-08T08:42:59Z"
+  },
+  {
+   "title": "clang-query 도구 옵션이 compile_flags.txt 에 안 들어간다",
+   "titleEn": "clang-query tool options never reach compile_flags.txt",
+   "type": "버린 반환값 (compileFlags.concat(this.tool.options) 결과를 대입 안 함 — TS 전환 때 push 가 concat 으로 바뀐 회귀)",
+   "repo": "compiler-explorer/compiler-explorer",
+   "repoLabel": "compiler-explorer · 19.1k★",
+   "pr": 9241,
+   "status": "waiting",
+   "createdAt": "2026-10-08T08:45:53Z"
   }
  ],
- "generatedAt": "2026-10-08T08:22:30.750Z"
+ "generatedAt": "2026-10-08T08:50:12.806Z"
 }
