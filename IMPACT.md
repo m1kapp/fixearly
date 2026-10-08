@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 27**
+> **fixearly 임팩트 점수: 28**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -74,7 +74,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `cose 레이아웃이 간선마다 노드 전체를 훑음` | [cytoscape.js · 11.2k★](https://github.com/cytoscape/cytoscape.js) | O(n²) 배열 조회 (간선마다 nodes.some 두 번 — hasElementWithId 로 O(1), 3000노드 519→11ms) | [#3527](https://github.com/cytoscape/cytoscape.js/pull/3527) | ⚪ awaiting review | — |
 | `백업 복원이 복사가 끝나기 전에 앱을 재시작` | [insomnia · 40k★](https://github.com/Kong/insomnia) | forEach 안 await (forEach(async copyFile) 뒤 곧바로 app.exit() — 복원이 안 되거나 일부만 된다) | [#10575](https://github.com/Kong/insomnia/pull/10575) | ⚪ awaiting review | — |
 | `불리언 라벨 저장을 기다리지 않음` | [Trilium · 38.2k★](https://github.com/TriliumNext/Trilium) | 버려진 Promise (async setBooleanWithInheritance 가 setLabel 을 await 안 함 — 보드가 기다려도 저장 전에 넘어가고 실패는 사라진다) | [#11949](https://github.com/TriliumNext/Trilium/pull/11949) | ⚪ awaiting review | — |
-| `실패 테스트 재실행이 추출 테스트마다 전부 다시 직렬화` | [promptfoo · 25.8k★](https://github.com/promptfoo/promptfoo) | O(n²) 배열 조회 (extractedTests.some(JSON.stringify(...)) — 미매칭 결과 5,000건에서 4.2초 → 21ms) | [#11464](https://github.com/promptfoo/promptfoo/pull/11464) | 🔵 approved · 머지 대기 | — |
+| `실패 테스트 재실행이 추출 테스트마다 전부 다시 직렬화` | [promptfoo · 25.8k★](https://github.com/promptfoo/promptfoo) | O(n²) 배열 조회 (extractedTests.some(JSON.stringify(...)) — 미매칭 결과 5,000건에서 4.2초 → 21ms) | [#11464](https://github.com/promptfoo/promptfoo/pull/11464) | ✅ merged | +1 |
 | `모델 변경 후 QA 재학습이 옛 모델로 돈다` | [FastGPT · 29.8k★](https://github.com/labring/FastGPT) | 버려진 Promise (updateTraining 을 await 없이 트랜잭션 커밋 전에 호출 — 워커가 옛 에이전트 모델로 작업을 집고 실패는 사라진다) | [#7918](https://github.com/labring/FastGPT/pull/7918) | ⚪ awaiting review | — |
 
 ## 규칙

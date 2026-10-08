@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-08T06:53:42Z",
+  "generatedAt": "2026-10-08T07:13:58Z",
   "method": "latest 60 closed PRs; merged non-bot external contributors; medianDays is the one we judge by",
   "repos": {
     "Automattic/mongoose": {
@@ -59,10 +59,10 @@
     },
     "TriliumNext/Trilium": {
       "medianDays": 0.0,
-      "averageDays": 3.1,
-      "mergedExternal": 19,
-      "acceptancePct": 86,
-      "closedExternal": 22,
+      "averageDays": 2.9,
+      "mergedExternal": 20,
+      "acceptancePct": 87,
+      "closedExternal": 23,
       "driveByAcceptancePct": 50,
       "driveByMerged": 3,
       "driveByClosed": 6,
@@ -71,12 +71,12 @@
     "TryGhost/Ghost": {
       "medianDays": 0.1,
       "averageDays": 3.9,
-      "mergedExternal": 29,
+      "mergedExternal": 28,
       "acceptancePct": 78,
-      "closedExternal": 37,
-      "driveByAcceptancePct": 60,
-      "driveByMerged": 12,
-      "driveByClosed": 20,
+      "closedExternal": 36,
+      "driveByAcceptancePct": 58,
+      "driveByMerged": 11,
+      "driveByClosed": 19,
       "sampledClosed": 60
     },
     "acornjs/acorn": {
@@ -312,13 +312,13 @@
     },
     "n8n-io/n8n": {
       "medianDays": 0.9,
-      "averageDays": 25.1,
-      "mergedExternal": 27,
-      "acceptancePct": 59,
-      "closedExternal": 46,
-      "driveByAcceptancePct": 85,
-      "driveByMerged": 17,
-      "driveByClosed": 20,
+      "averageDays": 27.1,
+      "mergedExternal": 25,
+      "acceptancePct": 57,
+      "closedExternal": 44,
+      "driveByAcceptancePct": 84,
+      "driveByMerged": 16,
+      "driveByClosed": 19,
       "sampledClosed": 60
     },
     "nestjs/nest": {
@@ -477,13 +477,13 @@
     },
     "promptfoo/promptfoo": {
       "medianDays": 0.3,
-      "averageDays": 1.4,
-      "mergedExternal": 23,
-      "acceptancePct": 85,
-      "closedExternal": 27,
-      "driveByAcceptancePct": 67,
-      "driveByMerged": 2,
-      "driveByClosed": 3,
+      "averageDays": 1.3,
+      "mergedExternal": 24,
+      "acceptancePct": 86,
+      "closedExternal": 28,
+      "driveByAcceptancePct": 75,
+      "driveByMerged": 3,
+      "driveByClosed": 4,
       "sampledClosed": 60
     },
     "react-hook-form/react-hook-form": {
@@ -652,10 +652,10 @@
       "sampledClosed": 60
     },
     "vuejs/core": {
-      "medianDays": 0.3,
-      "averageDays": 1.2,
-      "mergedExternal": 26,
-      "acceptancePct": 63,
+      "medianDays": 0.4,
+      "averageDays": 1.5,
+      "mergedExternal": 25,
+      "acceptancePct": 61,
       "closedExternal": 41,
       "driveByAcceptancePct": 11,
       "driveByMerged": 1,
