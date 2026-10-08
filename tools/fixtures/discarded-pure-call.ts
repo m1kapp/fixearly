@@ -45,3 +45,8 @@ export function lower(token: Ident): Ident {
   token.toLowerCase();
   return token;
 }
+
+// sheet: 둘째 인자가 객체 — 스타일시트의 제자리 교체다(bokeh InlineStyleSheet). [FP:replace-non-string-arg]
+export function restyle(sheet: { replace(sel: string, decl: object): void }): void {
+  sheet.replace(':host', { left: '0px' });
+}

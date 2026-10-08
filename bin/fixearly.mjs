@@ -1965,6 +1965,9 @@ function analyzeTextbookIssues(ts, fileContents) {
           const [a0, a1] = call.arguments;
           hit = !!a0 && (ts.isStringLiteral(a0) || ts.isNoSubstitutionTemplateLiteral(a0) || ts.isRegularExpressionLiteral(a0)) &&
             !(a1 && (ts.isArrowFunction(a1) || ts.isFunctionExpression(a1))) &&
+            // 가드 [FP:replace-non-string-arg]: 둘째 인자가 객체·배열 리터럴이면 String#replace 가 아니다
+            // (bokeh InlineStyleSheet.replace(":host", {…}), 2026-10-08).
+            !(a1 && (ts.isObjectLiteralExpression(a1) || ts.isArrayLiteralExpression(a1))) &&
             !/(^|\.)(location|router|history|navigation|navigate)$/i.test(recvText);
         }
         if (hit && recv.kind !== ts.SyntaxKind.ThisKeyword && !ownMemberNames.has(m)) {
