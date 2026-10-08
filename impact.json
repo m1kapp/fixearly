@@ -4,7 +4,7 @@
    "title": "deleteBulkMetadata N+1",
    "type": "N+1 (루프 안 순차 DELETE, item당 왕복 1회)",
    "repo": "immich-app/immich",
-   "repoLabel": "immich · 115.7k★",
+   "repoLabel": "immich · 115.8k★",
    "pr": 30163,
    "createdAt": "2026-07-23T15:26:09Z",
    "status": "closed",
@@ -146,7 +146,7 @@
    "title": "parse-fields dedup O(n²)",
    "type": "O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1))",
    "repo": "directus/directus",
-   "repoLabel": "directus · 38.2k★",
+   "repoLabel": "directus · 38.3k★",
    "pr": 27978,
    "createdAt": "2026-07-24T13:03:10Z",
    "closedAt": "2026-07-29T19:34:55Z",
@@ -158,7 +158,7 @@
    "title": "resource-mapper schema validation O(n²)",
    "type": "O(n²) (value별 schema.find — id Map으로 O(1))",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 206.8k★",
+   "repoLabel": "n8n · 206.9k★",
    "pr": 34899,
    "createdAt": "2026-07-24T13:05:42Z",
    "status": "merged",
@@ -489,7 +489,7 @@
    "titleEn": "credential uninstall exits before deletions finish",
    "type": "버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all)",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 206.8k★",
+   "repoLabel": "n8n · 206.9k★",
    "pr": 37047,
    "status": "closed",
    "createdAt": "2026-08-25T15:17:47Z",
@@ -503,7 +503,7 @@
    "titleEn": "credential uninstall exits before deletions finish",
    "type": "버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all)",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 206.8k★",
+   "repoLabel": "n8n · 206.9k★",
    "pr": 40103,
    "status": "merged",
    "createdAt": "2026-10-01T13:44:30Z",
@@ -784,7 +784,7 @@
    "titleEn": "expression unique and set operations deep-compare even primitive arrays pairwise",
    "type": "O(n²) 배열 조회 (lodash isEqual 쌍 비교 — 원시값만 있으면 Set 이 같은 답을 낸다)",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 206.8k★",
+   "repoLabel": "n8n · 206.9k★",
    "pr": 40311,
    "status": "waiting",
    "createdAt": "2026-10-05T13:39:05Z"
@@ -880,9 +880,23 @@
    "repo": "promptfoo/promptfoo",
    "repoLabel": "promptfoo · 25.8k★",
    "pr": 11464,
+   "status": "approved",
+   "createdAt": "2026-10-08T03:00:51Z",
+   "approvedAt": "2026-10-08T06:39:42Z",
+   "approvedBy": [
+    "mldangelo"
+   ]
+  },
+  {
+   "title": "모델 변경 후 QA 재학습이 옛 모델로 돈다",
+   "titleEn": "QA jobs released before the new agent model is saved",
+   "type": "버려진 Promise (updateTraining 을 await 없이 트랜잭션 커밋 전에 호출 — 워커가 옛 에이전트 모델로 작업을 집고 실패는 사라진다)",
+   "repo": "labring/FastGPT",
+   "repoLabel": "FastGPT · 29.8k★",
+   "pr": 7918,
    "status": "waiting",
-   "createdAt": "2026-10-08T03:00:51Z"
+   "createdAt": "2026-10-08T06:50:56Z"
   }
  ],
- "generatedAt": "2026-10-08T03:04:55.877Z"
+ "generatedAt": "2026-10-08T06:54:50.893Z"
 }
