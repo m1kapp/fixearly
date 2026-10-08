@@ -248,6 +248,17 @@ if (generatedSrc) {
   };
   const FIXTURES = [
     {
+      file: "discarded-pure-call.ts",
+      key: "discardedPureCall",
+      label: "버린 반환값",
+      hit: ["spec", "label"],
+      // assigned 는 대입했고, collector 는 콜백 순회 관용구, location 은 이동,
+      // token 은 같은 파일이 같은 이름을 선언한 자체 메서드다.
+      miss: ["assigned", "out", "collector", "location", "token"],
+      // 출력 줄: `    spec.replace() — src/...:7`
+      namePattern: /^\s{4}([A-Za-z_$][\w$]*)\.\w+\(\) — \S*discarded-pure-call\.ts:/gm,
+    },
+    {
       file: "write-only-collection.ts",
       // analyzeTextbookIssues 가 돌려주는 키
       key: "writeOnlyCollection",
@@ -609,7 +620,7 @@ if (generatedSrc) {
   const emptyTextbook = Object.fromEntries([
     "awaitInForEach", "spreadAccumulator", "regexInLoop", "floatingPromise",
     "loopInvariantIndex", "sharedRefFill", "deepEqualSetOp", "numericSortNoComparator", "emptyCatch",
-    "statefulRegex", "forInArray", "writeOnlyCollection",
+    "statefulRegex", "forInArray", "writeOnlyCollection", "discardedPureCall",
   ].map((key) => [key, { count: 0, worst: [] }]));
   const quality = {
     quadratic: { candidateList: [{ file: "src/perf.ts", line: 3, recv: "rows", method: "find" }] },

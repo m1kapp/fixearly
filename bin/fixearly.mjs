@@ -1582,6 +1582,7 @@ function analyzeTextbookIssues(ts, fileContents) {
   const statefulRegex = [];
   const forInArray = [];
   const writeOnlyCollection = [];
+  const discardedPureCall = [];
 
   for (const { file, content } of fileContents) {
     const kind = /\.(tsx|jsx)$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS;
@@ -1644,6 +1645,20 @@ function analyzeTextbookIssues(ts, fileContents) {
     // 맨 이름 호출은 함수 선언·변수 대입 함수와만, `this.x()` 는 메서드·필드와만 맞춘다.
     // supabase studio 의 mutation 템플릿 285곳 — `async onError() { onError(...) }` 안의 호출은
     // 구조분해한 옵션 콜백인데 바깥 메서드 이름과 같아서 잡혔다(2026-10-01).
+    // ── 버린 반환값 준비: 이 파일이 직접 선언한 메서드·필드 이름. 같은 이름의 자체 메서드(pdf.js
+    // AstIdentifier.toLowerCase 처럼 제자리 변경)는 String/Array 의 순수 메서드가 아니다.
+    const ownMemberNames = new Set();
+    {
+      const g = (n) => {
+        // 클래스 몸체의 선언만 — 타입 리터럴의 시그니처(`{ replace(url): void }`)까지 세면 파일 전체가 빠진다.
+        if ((ts.isMethodDeclaration(n) || ts.isPropertyDeclaration(n)) && n.name && ts.isClassLike(n.parent))
+          ownMemberNames.add(n.name.getText(sf));
+        ts.forEachChild(n, g);
+      };
+      ts.forEachChild(sf, g);
+    }
+    // 가드 [FP:magic-string-file]: magic-string 의 replace·trim 은 제자리 변경이다(rollup·storybook).
+    const usesMagicString = /from\s+['"]magic-string['"]|require\(\s*['"]magic-string['"]\s*\)/.test(content);
     const asyncNames = new Set();
     const asyncMemberNames = new Set();
     // 가드 [FP:floating-benign-callee]: 버려도 잃는 게 없는 async 함수 — 자기 본문(중첩 함수 제외)에 await 가
@@ -1931,6 +1946,32 @@ function analyzeTextbookIssues(ts, fileContents) {
       // 로컬 async 함수를 await 없이 호출. 고침은 await 한 단어라 완전히 기계적.
       // 가드 [FP:floating-needs-async-context]: async 컨텍스트 안에서만(밖이면 await를 못 붙여 기계적 수정이 아님),
       //       void/then/catch로 감싼 의도적 fire-and-forget은 구조상 여기 안 걸린다.
+      // ── 버린 반환값: 문자열·배열의 순수 메서드를 부르고 결과를 버린다. 문자열은 불변이라
+      // `s.replace(…)` 한 줄은 아무것도 안 한다 — 대입을 빠뜨린 자리다. 고침은 대입 한 번.
+      // nx scam-to-standalone `spec.replace(/declarations: \[.+/, '')` · theia `messages[i].concat(…)` (2026-10-08).
+      // 가드 [FP:discard-needs-pure-method]: 제자리 변경과 이름이 겹치는 메서드는 뺀다 — DOM `normalize()`,
+      //   `location.replace()`·`router.replace()`(이동), 자체 클래스가 같은 이름을 선언한 경우.
+      // 가드 [FP:replace-as-iterator]: replace 는 첫 인자가 문자열·정규식 리터럴이고 둘째 인자가 함수가
+      //   아닐 때만 — 콜백으로 매치를 모으는 `str.replaceAll(re, fn)` 은 의도된 순회다(pdf.js util).
+      if (ts.isExpressionStatement(node) && ts.isCallExpression(node.expression) &&
+          ts.isPropertyAccessExpression(node.expression.expression) && !usesMagicString) {
+        const call = node.expression;
+        const m = call.expression.name.getText(sf);
+        const recv = call.expression.expression;
+        const recvText = recv.getText(sf);
+        const PURE = DISCARD_PURE_METHODS;
+        let hit = PURE.has(m);
+        if (m === "replace" || m === "replaceAll") {
+          const [a0, a1] = call.arguments;
+          hit = !!a0 && (ts.isStringLiteral(a0) || ts.isNoSubstitutionTemplateLiteral(a0) || ts.isRegularExpressionLiteral(a0)) &&
+            !(a1 && (ts.isArrowFunction(a1) || ts.isFunctionExpression(a1))) &&
+            !/(^|\.)(location|router|history|navigation|navigate)$/i.test(recvText);
+        }
+        if (hit && recv.kind !== ts.SyntaxKind.ThisKeyword && !ownMemberNames.has(m)) {
+          discardedPureCall.push({ file, line: lineOf(node), name: recvText.slice(0, 40), method: m });
+        }
+      }
+
       if (inAsyncFn && ts.isExpressionStatement(node) && ts.isCallExpression(node.expression)) {
         const callee = node.expression.expression;
         const name = ts.isIdentifier(callee) ? callee.getText(sf)
@@ -2043,8 +2084,16 @@ function analyzeTextbookIssues(ts, fileContents) {
     statefulRegex: { count: statefulRegex.length, worst: statefulRegex.slice(0, 6) },
     forInArray: { count: forInArray.length, worst: forInArray.slice(0, 6) },
     writeOnlyCollection: { count: writeOnlyCollection.length, worst: writeOnlyCollection.slice(0, 6) },
+    discardedPureCall: { count: discardedPureCall.length, worst: discardedPureCall.slice(0, 6) },
   };
 }
+
+// 버린 반환값 축이 보는 순수 메서드. 결과를 버리면 아무 일도 안 일어나는 것만 — 이름이 같은 제자리 변경
+// (Array#reverse·sort·splice, DOM normalize)은 넣지 않는다.
+const DISCARD_PURE_METHODS = new Set([
+  "concat", "toLowerCase", "toUpperCase", "toLocaleLowerCase", "toLocaleUpperCase", "trim", "trimStart", "trimEnd",
+  "padStart", "padEnd", "toSorted", "toReversed", "toSpliced", "substring", "substr", "repeat",
+]);
 
 /** 쓰기만 하는 Map/Set 을 한 파일에서 찾는다. analyzeTextbookIssues 가 파일마다 부른다. */
 function collectWriteOnly(ts, sf, file, lineOf, out) {
@@ -3001,6 +3050,10 @@ if (textbook) {
   if (t.statefulRegex.count > 0) {
     console.log(`  ⚠ 전역 정규식 상태: ${t.statefulRegex.count}곳 — /g 정규식을 루프에서 .test() 하면 lastIndex가 문자열 사이로 새어 결과가 번갈아 틀립니다`);
     for (const w of t.statefulRegex.worst) console.log(`    ${w.name}.${w.method}() — ${w.file}:${w.line}`);
+  }
+  if (t.discardedPureCall?.count > 0) {
+    console.log(`  ⚠ 버린 반환값: ${t.discardedPureCall.count}곳 — 문자열·배열의 순수 메서드 결과를 버립니다 (문자열은 불변이라 그 줄은 아무것도 안 합니다)`);
+    for (const w of t.discardedPureCall.worst) console.log(`    ${w.name}.${w.method}() — ${w.file}:${w.line}`);
   }
   if (t.forInArray.count > 0) {
     console.log(`  ⚠ 배열에 for...in: ${t.forInArray.count}곳 — 인덱스가 문자열이고 상속 속성까지 돕니다 (for...of 권장)`);

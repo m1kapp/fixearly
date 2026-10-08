@@ -12,6 +12,7 @@ const RULES = {
   coupling: { label: "순환 의존", confidence: 2, severity: 2, fixability: 1, next: "런타임 간선과 변경 시 함께 깨지는 모듈 범위를 확인" },
   awaitInForEach: { label: "forEach 안 await", confidence: 3, severity: 3, fixability: 3, next: "수정 전 실패·수정 후 같은 입력 통과 테스트를 추가" },
   statefulRegex: { label: "전역 정규식 상태", confidence: 3, severity: 3, fixability: 3, next: "같은 입력을 연속 호출해 결과가 흔들리는지 재현" },
+  discardedPureCall: { label: "버린 반환값", confidence: 3, severity: 3, fixability: 3, next: "그 줄이 하려던 변환을 테스트로 고정해 수정 전 실패를 재현" },
   sharedRefFill: { label: "공유 참조 fill", confidence: 3, severity: 3, fixability: 3, next: "한 원소 변경이 다른 원소까지 바꾸는지 재현" },
   deepEqualSetOp: { label: "깊은 비교 집합 연산", confidence: 2, severity: 2, fixability: 2, next: "원소가 원시값뿐인지와 실제 배열 크기를 확인" },
   numericSortNoComparator: { label: "숫자 sort 비교자 누락", confidence: 3, severity: 2, fixability: 3, next: "두 자릿수 이상 숫자 입력으로 정렬 결과를 재현" },
@@ -25,7 +26,7 @@ const RULES = {
 };
 
 const textbookAxes = [
-  "awaitInForEach", "statefulRegex", "sharedRefFill", "deepEqualSetOp", "numericSortNoComparator",
+  "awaitInForEach", "statefulRegex", "discardedPureCall", "sharedRefFill", "deepEqualSetOp", "numericSortNoComparator",
   "writeOnlyCollection", "forInArray", "loopInvariantIndex", "spreadAccumulator",
   "regexInLoop", "floatingPromise", "emptyCatch",
 ];
