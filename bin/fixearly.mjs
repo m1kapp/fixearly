@@ -1961,6 +1961,14 @@ function analyzeTextbookIssues(ts, fileContents) {
         const recvText = recv.getText(sf);
         const PURE = DISCARD_PURE_METHODS;
         let hit = PURE.has(m);
+        // 가드 [FP:discard-receiver-passed-along]: 수신자를 인자 안에서 다시 넘기면(`content.concat(render(x, content))`)
+        // 호출된 쪽이 수신자에 직접 push 한다 — 버린 concat 은 군더더기일 뿐 버그가 아니다(semi cascader, 2026-10-08).
+        if (hit && ts.isIdentifier(recv) && call.arguments.some((a) => {
+          let found = false;
+          const g = (n) => { if (found) return; if (ts.isIdentifier(n) && n.text === recv.text) { found = true; return; } ts.forEachChild(n, g); };
+          g(a);
+          return found;
+        })) hit = false;
         if (m === "replace" || m === "replaceAll") {
           const [a0, a1] = call.arguments;
           // 가드 [FP:replace-needs-two-args]: String#replace 는 늘 인자 2개다 — 1개짜리는 NodePath·location·router 의
