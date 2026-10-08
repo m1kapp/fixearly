@@ -56,3 +56,16 @@ export class Queue {
     this.flushed();
   }
 }
+
+// 같은 파일 다른 클래스에 async `persisted` 가 있어도, 이 클래스의 `persisted` 는 동기다
+// (mastra session.ts SessionThread.set vs SessionState.set).
+class Store {
+  async persisted(v: number): Promise<void> { await Promise.resolve(v); }
+}
+class Thread {
+  persisted(v: number): void { void v; }
+  async run(): Promise<void> {
+    this.persisted(1);
+  }
+}
+export { Store, Thread };

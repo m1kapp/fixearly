@@ -24,6 +24,7 @@
 | `write-return-value-is-read` | 쓰기만 하는 컬렉션 | `if (skipExit.delete(node)) return` — `delete` 는 있었는지를 돌려주고 그 불리언이 곧 조회다 | tailwind | 값이 버려지는 호출(`ExpressionStatement`)일 때만 쓰기로 센다 | `write-only-collection.ts` |
 | `same-name-twice` | 쓰기만 하는 컬렉션 | 다른 스코프의 동명 변수를 한 덩어리로 봤다 | 코퍼스 검증 | 같은 이름이 두 번 선언되면 그 이름은 통째로 포기(미탐을 산다) | `write-only-collection.ts` |
 | `awaited-custom-foreach` | forEach 안 await | `await x.forEach(async …)` 는 프라미스를 돌려주는 자체 forEach 라 기다린다 | crawlee `dataset.ts:572` `Dataset.forEach` (10-07) | forEach 호출 자체가 `await` 되면 제외 | `await-in-foreach.ts` |
+| `floating-other-class-member` | floating promise | `this.x()` 의 x 를 같은 파일 다른 클래스의 async x 로 오인 | mastra `agent-controller/session.ts:831` `SessionThread.set` (10-08) | 감싸는 클래스가 x 를 직접 선언했으면 그 선언의 async 여부로 판정 | `floating-promise.ts` |
 | `regex-exec-walk` | 전역 정규식 상태 | `while ((m = re.exec(s)) !== null)` 는 `/g` 의 정석 순회 관용구다 | twenty (거기선 `lastIndex = 0` 리셋까지 하고 있었다) | `.exec()` 는 이 축에서 제외 | `stateful-regex.ts` |
 | `regex-created-in-loop` | 전역 정규식 상태 | 루프 안에서 만든 정규식은 매 회 새 객체라 `lastIndex` 가 샐 수 없다 | 코퍼스 검증 | 루프 안 선언은 제외 | `stateful-regex.ts` |
 | `regex-lastindex-reset` | 전역 정규식 상태 | 저자가 `RE.lastIndex = 0` 으로 이미 막아둔 자리를 버그로 잡았다 | nx `update-jest-preset-angular-setup.ts:43·61` — 그 저장소 후보 **2건이 전부 오탐** | `<이름>.lastIndex` 를 파일에서 쓰거나 읽으면 그 이름 제외 — 읽기는 Babylon `spriteManager.ts:435` 에서 추가(10-07) | `stateful-regex.ts` |
