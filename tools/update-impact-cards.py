@@ -686,13 +686,13 @@ def _chip(pos, n, ko, en, val=""):
     return (f'<span class="lc {pos}"><i class="lpn">{n}</i><span class="ko">{ko}</span><span class="en">{en}</span>{v}</span>')
 _loop = (
     '<img src="loop.jpg" width="900" height="900" alt="" loading="eager">'
-    + _chip("c1", 1, "찾는다", "Find")
-    + _chip("c2", 2, "거른다 · 오탐 가드", "Filter · FP guards", _fp)
-    + _chip("c3", 3, "낸다 · PR", "Submit · PRs", len(_st))
-    + _chip("c4", 4, "판정 · 머지", "Verdict · merged", _lm)
+    + _chip("c1", 1, "배운다 · 규칙", "Learn · rules", len(RULES))
+    + _chip("c2", 2, "고친다 · PR", "Fix · PRs", len(_st))
+    + _chip("c3", 3, "판정 · 머지", "Verdict · merged", _lm)
+    + _chip("c4", 4, "다진다 · 오탐 가드", "Sharpen · FP guards", _fp)
     + f'<div class="lcen"><b>{_lm}</b><span class="ko">머지됨</span><span class="en">merged</span></div>'
-    + f'<p class="lcap"><span class="ko">남의 저장소 {_lr}곳에 머지 · 거절 {_lc} · 대기 {_lo}. 거절 사유와 오탐은 다시 ①의 규칙을 고친다. </span>'
-      f'<span class="en">Merged in {_lr} projects · closed {_lc} · open {_lo}. Rejections and false positives go back into ①. </span>'
+    + f'<p class="lcap"><span class="ko">남의 저장소에서 머지된 성능 PR로 축을 정하고, 그 축으로 다른 저장소를 고쳐 PR 을 낸다. 머지·거절이 다시 축을 다듬는다 — 저장소 {_lr}곳 머지 · 거절 {_lc} · 대기 {_lo}. </span>'
+      f'<span class="en">Axes come from performance PRs strangers merged; we use them to fix other repos and open PRs. Merges and rejections sharpen the axes again — merged in {_lr} projects · closed {_lc} · open {_lo}. </span>'
       '<a href="#impact"><span class="ko">전체 기록 →</span><span class="en">Full record →</span></a></p>'
 )
 L_BEGIN, L_END = "<!--auto:loop-->", "<!--/auto:loop-->"
