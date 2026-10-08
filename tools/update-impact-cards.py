@@ -674,6 +674,52 @@ h = re.sub(re.escape(A_BEGIN) + r".*?" + re.escape(A_END), lambda m: A_BEGIN + _
 for u in unmapped:
     print(f"  ✗ 축을 모르는 머지(update-impact-cards.py 의 RULES): {u}")
 
+# 히어로 루프 카드 — 랜딩 첫 화면이 등급이 아니라 "찾고 → 거르고 → 내고 → 판정"을 보여준다.
+# 오탐 가드 수는 엔진에 박힌 [FP:…] 태그의 종류 수다. 가드는 손검증에서 떨어진 오탐이 엔진으로 돌아간 흔적이다.
+_st = [f.get("status") for f in findings]
+_lm, _lc = _st.count("merged"), _st.count("closed")
+_lo = len(_st) - _lm - _lc
+_fp = len(set(re.findall(r"\[FP:[a-z0-9-]+\]", open(f"{ROOT}/bin/fixearly.mjs", encoding="utf-8").read())))
+_lr = len({f["repo"] for f in findings if f.get("status") == "merged"})
+# 구조 채점축(함수 길이·복잡도·중복·파일 크기)은 PR 로 내지 않는다 — PR 을 낼 수 있는 규칙만 센다.
+_rp = sum(1 for r in RULES if r[0])
+def _chip(pos, n, ko, en, val=""):
+    v = f"<b>{val}</b>" if val != "" else ""
+    return (f'<span class="lc {pos}"><i class="lpn">{n}</i><span class="ko">{ko}</span><span class="en">{en}</span>{v}</span>')
+# 가운데 도넛 — 머지 수를 찾아낸 규칙별로 가른다. 조각 색은 머지 많은 순서로 고정 팔레트에서 꺼낸다.
+_DONUT_COLORS = ["#2563eb", "#0f7a63", "#60a5fa", "#d97706", "#7c8899", "#a78bfa"]
+_seg = sorted(((len(v), RULES[i][1], RULES[i][2]) for i, v in _by_rule.items() if v), key=lambda t: -t[0])
+_C, _gap, _off, _arcs, _legend_ko, _legend_en = 2 * 3.14159265 * 60, 3, 0.0, [], [], []
+for _k, (_n, _ko, _en) in enumerate(_seg):
+    _len = _C * _n / max(_lm, 1)
+    _col = _DONUT_COLORS[_k % len(_DONUT_COLORS)]
+    _arcs.append(f'<circle r="60" cx="70" cy="70" stroke="{_col}" stroke-dasharray="{max(_len - _gap, 1):.2f} {_C:.2f}" '
+                 f'stroke-dashoffset="{-_off:.2f}" style="--d:{_k * .12:.2f}s"><title>{_ko} {_n}</title></circle>')
+    _legend_ko.append(f'<i style="background:{_col}"></i>{_ko} {_n}')
+    _legend_en.append(f'<i style="background:{_col}"></i>{_en} {_n}')
+    _off += _len
+_donut = (
+    f'<div class="lcen"><svg viewBox="0 0 140 140" aria-hidden="true"><circle r="60" cx="70" cy="70" class="trk"/>{"".join(_arcs)}</svg>'
+    f'<div class="lnum"><b>{_lm}</b><span class="ko">PR 머지됨</span><span class="en">PRs merged</span>'
+    f'<em><span class="ko">규칙 {len(_seg)}개가 찾아냄</span><span class="en">found by {len(_seg)} rules</span></em></div></div>'
+)
+_legend = (f'<span class="lleg"><span class="ko">{"".join(f"<span>{x}</span>" for x in _legend_ko)}</span>'
+           f'<span class="en">{"".join(f"<span>{x}</span>" for x in _legend_en)}</span></span>')
+_loop = (
+    '<img src="loop.jpg" width="900" height="900" alt="" loading="eager">'
+    + _chip("c1", 1, "배운다 · 고칠 규칙", "Learn · fix rules", _rp)
+    + _chip("c2", 2, "고친다 · PR", "Fix · PRs", len(_st))
+    + _chip("c3", 3, "판정 · 머지", "Verdict · merged", _lm)
+    + _chip("c4", 4, "다진다 · 오탐 가드", "Sharpen · FP guards", _fp)
+    + _donut
+    + f'<p class="lcap">{_legend}<span class="ko">남의 저장소에서 머지된 PR 과 남의 코드에서 고칠 규칙을 뽑고, 그 규칙으로 다른 저장소를 고쳐 PR 을 낸다. 머지·거절이 다시 규칙을 다듬는다 — 규칙 {_rp}개 중 {_nmerged}개가 머지로 검증 · 저장소 {_lr}곳 · 거절 {_lc} · 대기 {_lo}. </span>'
+      f'<span class="en">Fix rules come from PRs strangers merged and from strangers\' code; we apply them to other repos as PRs, and merges and rejections sharpen them again — {_nmerged} of {_rp} rules verified by a merge · {_lr} projects · closed {_lc} · open {_lo}. </span>'
+      '<a href="#impact"><span class="ko">전체 기록 →</span><span class="en">Full record →</span></a></p>'
+)
+L_BEGIN, L_END = "<!--auto:loop-->", "<!--/auto:loop-->"
+assert L_BEGIN in h and L_END in h, "히어로 루프 마커가 없다"
+h = re.sub(re.escape(L_BEGIN) + r".*?" + re.escape(L_END), lambda m: L_BEGIN + _loop + L_END, h, count=1, flags=re.S)
+
 # 새 저장소에 한 줄 설명을 안 붙이면 카드에 이름만 남는다 — 조용히 비는 쪽이라 검사한다.
 notranslated = sorted(f["title"] for f in findings
                       if re.search(r"[가-힣]", f["title"]) and not f.get("titleEn"))
