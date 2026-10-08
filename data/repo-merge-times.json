@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-08T02:32:37Z",
+  "generatedAt": "2026-10-08T03:03:57Z",
   "method": "latest 60 closed PRs; merged non-bot external contributors; medianDays is the one we judge by",
   "repos": {
     "Automattic/mongoose": {
@@ -464,6 +464,17 @@
       "driveByClosed": 3,
       "sampledClosed": 60
     },
+    "promptfoo/promptfoo": {
+      "medianDays": 0.2,
+      "averageDays": 1.4,
+      "mergedExternal": 23,
+      "acceptancePct": 85,
+      "closedExternal": 27,
+      "driveByAcceptancePct": 75,
+      "driveByMerged": 3,
+      "driveByClosed": 4,
+      "sampledClosed": 60
+    },
     "react-hook-form/react-hook-form": {
       "medianDays": 0.1,
       "averageDays": 0.2,
@@ -520,14 +531,14 @@
       "sampledClosed": 60
     },
     "supabase/supabase": {
-      "medianDays": 0.6,
-      "averageDays": 6.6,
-      "mergedExternal": 31,
-      "acceptancePct": 79,
+      "medianDays": 0.7,
+      "averageDays": 6.8,
+      "mergedExternal": 30,
+      "acceptancePct": 77,
       "closedExternal": 39,
-      "driveByAcceptancePct": 72,
-      "driveByMerged": 18,
-      "driveByClosed": 25,
+      "driveByAcceptancePct": 71,
+      "driveByMerged": 17,
+      "driveByClosed": 24,
       "sampledClosed": 60
     },
     "sveltejs/svelte": {
@@ -608,8 +619,8 @@
       "sampledClosed": 60
     },
     "vitejs/vite": {
-      "medianDays": 12.7,
-      "averageDays": 49.5,
+      "medianDays": 9.4,
+      "averageDays": 48.8,
       "mergedExternal": 13,
       "acceptancePct": 28,
       "closedExternal": 46,

@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-10-08T02:30:52+00:00",
+  "generatedAt": "2026-10-08T03:02:17+00:00",
   "method": "GitHub REST contributors?per_page=1&anon=true; last-page count; commit authors, not unique humans",
   "repos": {
     "Automattic/mongoose": 1090,
     "BabylonJS/Babylon.js": 801,
     "Budibase/budibase": 148,
-    "CherryHQ/cherry-studio": 478,
+    "CherryHQ/cherry-studio": 479,
     "Kong/insomnia": 366,
     "TriliumNext/Trilium": 468,
     "TryGhost/Ghost": 931,
@@ -33,6 +33,7 @@
     "outline/outline": 263,
     "payloadcms/payload": 584,
     "pnpm/pnpm": 696,
+    "promptfoo/promptfoo": 367,
     "remix-run/react-router": 1318,
     "rollup/rollup": 472,
     "storybookjs/storybook": 2797,

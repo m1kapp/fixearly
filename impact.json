@@ -872,7 +872,17 @@
    "pr": 11949,
    "status": "waiting",
    "createdAt": "2026-10-08T02:29:17Z"
+  },
+  {
+   "title": "실패 테스트 재실행이 추출 테스트마다 전부 다시 직렬화",
+   "titleEn": "filter-failing re-serializes every extracted test per result",
+   "type": "O(n²) 배열 조회 (extractedTests.some(JSON.stringify(...)) — 미매칭 결과 5,000건에서 4.2초 → 21ms)",
+   "repo": "promptfoo/promptfoo",
+   "repoLabel": "promptfoo · 25.8k★",
+   "pr": 11464,
+   "status": "waiting",
+   "createdAt": "2026-10-08T03:00:51Z"
   }
  ],
- "generatedAt": "2026-10-08T02:33:35.600Z"
+ "generatedAt": "2026-10-08T03:04:55.877Z"
 }

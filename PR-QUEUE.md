@@ -344,12 +344,13 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [cytoscape.js#3527](https://github.com/cytoscape/cytoscape.js/pull/3527) | O(n²) | ⚪ 대기 | 오늘 / 보통 6일 |
 | [pdf.js#22102](https://github.com/mozilla/pdf.js/pull/22102) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 2일째 / 보통 1일 |
+| [promptfoo#11464](https://github.com/promptfoo/promptfoo/pull/11464) | O(n²) | ⚪ 대기 | 오늘 / 보통 1일 |
 | [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 오늘 / 보통 4일 |
 | [strapi#27893](https://github.com/strapi/strapi/pull/27893) | 버려진 Promise | ⚪ 대기 | 6일째 / 보통 4일 |
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 10일째 / 보통 1일 · 보류 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 10일째 / 보통 2일 · 보류 |
 
-**열린 것 11건(보류 2건 빼면 9건).** 판정 난 52건 중 머지 27 · 승인 0 · 닫힘 25.
+**열린 것 12건(보류 2건 빼면 10건).** 판정 난 52건 중 머지 27 · 승인 0 · 닫힘 25.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -799,10 +800,11 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | postcss | 78% | 78% | 0.2일 | 28/36 | 컷 | — |
 | rollup | 78% | 78% | 6.0일 | 14/18 | 컷 | 판정 경험 있음 · 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요 |
 | storybook | 77% | 72% | 2.9일 | 10/13 | 컷 | 판정 경험 있음 · 게이트 0 — danger 가 `ci:*`·`qa:*` 라벨을 요구하는데 메인테이너만 붙일 수 있다 (#35829 가 25일째 빨간불이라 접었다) · CONTRIBUTING 'Never let an LLM speak for you': 사람 개입 없는 PR 은 3일 뒤 자동 닫힘 |
+| promptfoo | 75% | 85% | 0.2일 | 3/4 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
 | next.js | 75% | 81% | 1.2일 | 3/4 | 표본 부족 | 커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시 · PR 템플릿: 외부 기여자 PR 설명은 사람이 직접 써야 함 |
 | TypeScript | 75% | 67% | 1.5일 | 6/8 | 표본 부족 | 게이트 0 — CONTRIBUTING '자율 코딩 에이전트 안내': **큐·대량 워크플로로 PR 을 열지 마라**(이슈·검색결과를 훑어 도는 방식). 어기면 계정 차단. 특정 사람이 그 건을 직접 고르고 리뷰까지 본인이 끌고 갈 때만 허용하고, 지시가 충돌하면 '운영자에게 이 문단을 보여주고 멈추라'고 적혀 있다. AI 보조 자체는 PR 본문에 밝히면 허용(밝히지 않으면 리뷰 없이 닫힘) · 자동 생성 댓글 금지 |
 | mongoose | 74% | 79% | 2.5일 | 14/19 | 컷 | 판정 경험 있음 |
-| supabase | 72% | 79% | 0.6일 | 18/25 | 컷 | — |
+| supabase | 71% | 77% | 0.7일 | 17/24 | 컷 | — |
 | angular | 71% | 74% | 2.8일 | 10/14 | 컷 | 판정 경험 있음 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
 | react-router | 69% | 80% | 3.6일 | 20/29 | 컷 | 열린 PR 있음 — 저장소당 1건 |
 | outline | 67% | 67% | 6.2일 | 2/3 | 표본 부족 | 판정 경험 있음 · AI 정책 없음 · 수락률 38%(3/8)·중앙 5.9일 로 로테이션 컷 |
@@ -821,7 +823,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | parcel | 45% | 45% | 6.6일 | 9/20 | 컷 | — |
 | cli | 40% | 49% | 2.4일 | 10/25 | 컷 | — |
 | directus | 37% | 52% | 4.0일 | 10/27 | 컷 | 판정 경험 있음 |
-| vite | 33% | 28% | 12.7일 | 13/39 | 컷 | 판정 경험 있음 · 게이트 0 — CONTRIBUTING 'AI Policy': 댓글·이슈·PR 설명은 본인 말로 써야 함(LLM 이 대신 말하지 말 것). 어기면 바로 닫을 수 있음 |
+| vite | 33% | 28% | 9.4일 | 13/39 | 컷 | 판정 경험 있음 · 게이트 0 — CONTRIBUTING 'AI Policy': 댓글·이슈·PR 설명은 본인 말로 써야 함(LLM 이 대신 말하지 말 것). 어기면 바로 닫을 수 있음 |
 | typeorm | 30% | 43% | 16.0일 | 9/30 | 컷 | 판정 경험 있음 |
 | budibase | 29% | 67% | 0.8일 | 2/7 | 표본 부족 | 판정 경험 있음 · 게이트 0 — 외부 PR 은 '작성자에게 배정된' 이슈를 참조해야 하는데 배정은 메인테이너만 한다 (#19555 가 이 봇 체크로 당일 닫혔다) |
 | acorn | 29% | 55% | 0.8일 | 10/35 | 컷 | 게이트 0 — CONTRIBUTING: AI 언어모델이 (일부라도) 쓴 코드는 받지 않는다 |
@@ -909,6 +911,8 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | Trilium | floating 25 · 순차 await | **#11949 제출**(2026-10-08). `setBooleanWithInheritance` 가 async 인데 `setLabel` 을 await 안 해 보드의 `await` 가 저장 전에 풀리고 실패가 사라진다. 나머지 floating 은 await 없는 async 메서드(`openInWindowCommand` 등)라 무해 |
 | darkreader | 쓰기만 하는 컬렉션 1 | **보류**(2026-10-08). `parse.ts:114` `offsetMap` 은 1월 `Simplify config indexing` 뒤 남은 진짜 쓰기 전용. 다만 외부인 src 코드 PR 머지 실적이 거의 없다(최근 머지는 사이트 픽스뿐) |
 | mastra · serverless · slidev · remix | floating 11 · 깊은 비교 4 · 쓰기 전용 1 | **탈락**(2026-10-08). mastra floating 5곳은 같은 파일 다른 클래스의 async `set` 과 이름이 겹친 오탐(엔진 가드 `floating-other-class-member`), `node-gyp-detector.ts:5` `modulesToTrack` 쓰기 전용은 남은 후보지만 사소. serverless floating 은 에러를 잡는 의도된 로그 스트림, 깊은 비교는 객체 배열·n 작음. slidev `restartServer` 는 서버 핸들러 안 재시작이라 기다리면 안 되고 `saveSnapshot` 은 await 없는 async. remix O(n²) 는 테스트 단언·에셋 서버 |
+| promptfoo | O(n²) 54 · floating 2 | **#11464 제출**(2026-10-08). `filterTestsUtil.ts:213` 추출 테스트 dedup 이 매 결과마다 `JSON.stringify` 로 전부 재스캔 — 실제 함수 5,000건 4.2초 → 21ms. AGENTS.md 가 커밋·PR 본문에 Claude 표기를 금지해 세션 링크를 뺐다. floating 2곳은 React effect |
+| apexcharts · playcanvas · CopilotKit · handsontable | O(n²)·floating | **탈락**(2026-10-08). apexcharts 는 시리즈 수(작음). playcanvas `tags-cache` 비키 경로는 안 쓰이고(유일한 사용처가 `'id'` 키) glTF 내보내기는 1회성. CopilotKit floating 은 v1-deprecated 콜백형. handsontable 은 visual-tests·docs 예제 |
 
 ## 게이트 0 에서 막힌 곳
 
@@ -926,6 +930,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | node-red | 지나가는 기여자 12/13 · 중앙 1.1일로 통과하지만, PR 템플릿이 버그 수정이 아닌 PR 은 포럼·슬랙 논의를 먼저 요구한다("may well get rejected"). OpenJS CLA 서명도 필요. 에디터 플로우 가져오기의 `n.links.filter`(노드마다) 류 O(n²) 36곳은 이 문을 통과해야 낼 수 있다 (2026-10-05) |
 | vuejs/core · next.js | 지나가는 기여자 수락률 22% · 23% (2026-10-05 실측). next.js 는 커밋 서명 필수·사소한 정리 PR 거절 명시·PR 설명 사람 작성까지 겹친다 |
 | p5.js | AI 정책: 전부 AI 가 만든 PR 은 받지 않음 (2026-10-07) |
+| pouchdb | AI 정책: AI·LLM 이 만든 코드·문서·커밋 메시지 기여를 명시적으로 금지 (2026-10-08) |
 | mastodon | AI 정책: 'AI 도구로 코드베이스를 훑어 찾은 개선' PR 을 받지 않고 자율 에이전트 제출 금지 (2026-10-07) |
 | discourse · graphql-js | CLA(discourse 자체 · graphql EasyCLA) — 사용자 서명 전 보류 (2026-10-07) |
 | tldraw · lexical · Kong/insomnia | CLA(tldraw 자체 · Meta · Kong) — 사용자 서명 전 보류 (2026-10-07) |
