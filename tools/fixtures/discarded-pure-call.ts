@@ -50,3 +50,8 @@ export function lower(token: Ident): Ident {
 export function restyle(sheet: { replace(sel: string, decl: object): void }): void {
   sheet.replace(':host', { left: '0px' });
 }
+
+// node: 인자 1개 replace — jscodeshift NodePath 의 제자리 교체다(carbon codemod). [FP:replace-needs-two-args]
+export function swap(node: { replace(v: string): void }): void {
+  node.replace('@carbon/icons-react');
+}

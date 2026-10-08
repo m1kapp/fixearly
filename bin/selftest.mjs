@@ -254,7 +254,7 @@ if (generatedSrc) {
       hit: ["spec", "label"],
       // assigned 는 대입했고, collector 는 콜백 순회 관용구, location 은 이동,
       // token 은 같은 파일이 같은 이름을 선언한 자체 메서드다.
-      miss: ["assigned", "out", "collector", "location", "token", "sheet"],
+      miss: ["assigned", "out", "collector", "location", "token", "sheet", "node"],
       // 출력 줄: `    spec.replace() — src/...:7`
       namePattern: /^\s{4}([A-Za-z_$][\w$]*)\.\w+\(\) — \S*discarded-pure-call\.ts:/gm,
     },

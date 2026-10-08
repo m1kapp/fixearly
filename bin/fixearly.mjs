@@ -1963,7 +1963,9 @@ function analyzeTextbookIssues(ts, fileContents) {
         let hit = PURE.has(m);
         if (m === "replace" || m === "replaceAll") {
           const [a0, a1] = call.arguments;
-          hit = !!a0 && (ts.isStringLiteral(a0) || ts.isNoSubstitutionTemplateLiteral(a0) || ts.isRegularExpressionLiteral(a0)) &&
+          // 가드 [FP:replace-needs-two-args]: String#replace 는 늘 인자 2개다 — 1개짜리는 NodePath·location·router 의
+          // 제자리 교체·이동이다(carbon codemod `path.get('source').get('value').replace('…')`, 2026-10-08).
+          hit = call.arguments.length === 2 && !!a0 && (ts.isStringLiteral(a0) || ts.isNoSubstitutionTemplateLiteral(a0) || ts.isRegularExpressionLiteral(a0)) &&
             !(a1 && (ts.isArrowFunction(a1) || ts.isFunctionExpression(a1))) &&
             // 가드 [FP:replace-non-string-arg]: 둘째 인자가 객체·배열 리터럴이면 String#replace 가 아니다
             // (bokeh InlineStyleSheet.replace(":host", {…}), 2026-10-08).
