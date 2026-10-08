@@ -913,6 +913,8 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | mastra · serverless · slidev · remix | floating 11 · 깊은 비교 4 · 쓰기 전용 1 | **탈락**(2026-10-08). mastra floating 5곳은 같은 파일 다른 클래스의 async `set` 과 이름이 겹친 오탐(엔진 가드 `floating-other-class-member`), `node-gyp-detector.ts:5` `modulesToTrack` 쓰기 전용은 남은 후보지만 사소. serverless floating 은 에러를 잡는 의도된 로그 스트림, 깊은 비교는 객체 배열·n 작음. slidev `restartServer` 는 서버 핸들러 안 재시작이라 기다리면 안 되고 `saveSnapshot` 은 await 없는 async. remix O(n²) 는 테스트 단언·에셋 서버 |
 | promptfoo | O(n²) 54 · floating 2 | **#11464 제출**(2026-10-08). `filterTestsUtil.ts:213` 추출 테스트 dedup 이 매 결과마다 `JSON.stringify` 로 전부 재스캔 — 실제 함수 5,000건 4.2초 → 21ms. AGENTS.md 가 커밋·PR 본문에 Claude 표기를 금지해 세션 링크를 뺐다. floating 2곳은 React effect |
 | apexcharts · playcanvas · CopilotKit · handsontable | O(n²)·floating | **탈락**(2026-10-08). apexcharts 는 시리즈 수(작음). playcanvas `tags-cache` 비키 경로는 안 쓰이고(유일한 사용처가 `'id'` 키) glTF 내보내기는 1회성. CopilotKit floating 은 v1-deprecated 콜백형. handsontable 은 visual-tests·docs 예제 |
+| readest | forEach await 1 · 정규식 2 · floating 20 · 쓰기 전용 1 | **보류**(2026-10-08). `FoliateViewer.tsx:776` 커스텀 폰트 치환이 `await loadFont` 뒤에 `detail.url` 을 넣어 foliate 가 이미 지나간 뒤다 — 다만 폰트는 마운트 때 미리 로드돼 책 열기와 경합할 때만 터진다. RSVP `sentenceEnders` 는 1글자 문자열이라 다음 호출이 실패하며 0 으로 돌아와 사실상 무해. `ragService.ts:28` `indexingStates` 는 set/delete 만 하는 쓰기 전용 |
+| super-productivity · kilocode · NativeScript · gitbook · inferno | floating·forEach·쓰기 전용 | **탈락**(2026-10-08). floating 은 콜백을 넘기는 꼬리 호출(`_finishDayForGood`)·전체 try/catch 백그라운드(`optimizeTable`, 엔진 가드 `floating-benign-callee`)·UI 핸들러 꼬리 호출. forEach(async) 는 effect 안 URL 해석 발사. 쓰기 전용 `projectTaskMap`·`existingRtLocals` 는 남은 후보지만 사소. gitbook·inferno 는 경고 0 |
 
 ## 게이트 0 에서 막힌 곳
 
