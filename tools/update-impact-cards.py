@@ -674,6 +674,32 @@ h = re.sub(re.escape(A_BEGIN) + r".*?" + re.escape(A_END), lambda m: A_BEGIN + _
 for u in unmapped:
     print(f"  ✗ 축을 모르는 머지(update-impact-cards.py 의 RULES): {u}")
 
+# 히어로 루프 카드 — 랜딩 첫 화면이 등급이 아니라 "찾고 → 거르고 → 내고 → 판정"을 보여준다.
+# 오탐 가드 수는 엔진에 박힌 [FP:…] 태그의 종류 수다. 가드는 손검증에서 떨어진 오탐이 엔진으로 돌아간 흔적이다.
+_st = [f.get("status") for f in findings]
+_lm, _lc = _st.count("merged"), _st.count("closed")
+_lo = len(_st) - _lm - _lc
+_fp = len(set(re.findall(r"\[FP:[a-z0-9-]+\]", open(f"{ROOT}/bin/fixearly.mjs", encoding="utf-8").read())))
+_lr = len({f["repo"] for f in findings if f.get("status") == "merged"})
+def _loop_row(n, ko, en, val, sko, sen):
+    return (f'<div class="mbr"><span class="mbn"><i class="lpn">{n}</i><span class="ko">{ko}</span><span class="en">{en}</span></span>'
+            f'<span class="mbs"><span class="ko">{sko}</span><span class="en">{sen}</span></span><b>{val}</b></div>')
+_loop = (
+    '<div class="mbh"><span class="ko">규칙이 검증되는 루프</span><span class="en">How a rule gets verified</span></div>'
+    + _loop_row(1, "찾는다", "Find", "", "엔진이 남의 코드를 훑는다", "engine scans strangers' code")
+    + _loop_row(2, "거른다", "Filter", _fp, "오탐은 가드로 엔진에", "false positives become guards")
+    + _loop_row(3, "낸다", "Submit", len(_st), "PR 제출", "PRs opened")
+    + _loop_row(4, "판정", "Verdict", _lm, f"머지 · 저장소 {_lr}곳", f"merged · {_lr} projects")
+    + f'<div class="mbdist" aria-hidden="true"><i class="gS" style="flex:{_lm}" title="merged {_lm}"></i>'
+      f'<i class="gD" style="flex:{_lc}" title="closed {_lc}"></i><i class="gB" style="flex:{_lo}" title="open {_lo}"></i></div>'
+    + f'<div class="mbl"><span class="ko">머지 {_lm} · 거절 {_lc} · 대기 {_lo} — 거절 사유와 오탐이 다시 ①로</span>'
+      f'<span class="en">merged {_lm} · closed {_lc} · open {_lo} — rejections and false positives feed back into ①</span></div>'
+    + '<a class="mba" href="#impact"><span class="ko">거절까지 전부 공개된 기록 보기 →</span><span class="en">See the full record, rejections included →</span></a>'
+)
+L_BEGIN, L_END = "<!--auto:loop-->", "<!--/auto:loop-->"
+assert L_BEGIN in h and L_END in h, "히어로 루프 마커가 없다"
+h = re.sub(re.escape(L_BEGIN) + r".*?" + re.escape(L_END), lambda m: L_BEGIN + _loop + L_END, h, count=1, flags=re.S)
+
 # 새 저장소에 한 줄 설명을 안 붙이면 카드에 이름만 남는다 — 조용히 비는 쪽이라 검사한다.
 notranslated = sorted(f["title"] for f in findings
                       if re.search(r"[가-힣]", f["title"]) and not f.get("titleEn"))
