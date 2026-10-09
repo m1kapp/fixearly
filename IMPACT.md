@@ -92,6 +92,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `v26 설정 이전에서 flame·claw 키 이름 변경이 버려짐` | [burn-my-windows · 3.1k★](https://github.com/Schneegans/Burn-My-Windows) | 버린 반환값 (fromVersion26 의 r.replace('flame-','fire-') · r.replace('claw-','trex-') — 대입 안 해서 사용자 설정이 옛 키로 남아 무시됨) | [#583](https://github.com/Schneegans/Burn-My-Windows/pull/583) | ⚪ awaiting review | — |
 | `손글씨 획 생성기의 쓰기만 하는 Map·Set` | [tegaki · 3.1k★](https://github.com/gkurt/tegaki) | 쓰기만 하는 컬렉션 (partitionFaces 의 twinOf · assembleStrokes 의 consumedEnd — 걷기는 outgoing·consumedSeg 로 한다) | [#77](https://github.com/gkurt/tegaki/pull/77) | ✅ merged | +1 |
 | `원격 확장 초기화가 설치를 안 기다리고 pre-release 를 엉뚱한 확장에서 가져옴` | [vscode · 193.5k★](https://github.com/microsoft/vscode) | return 없는 콜백 (Promise.allSettled 안 동기 map 이 installInServer 를 안 돌려줌) · 같은 파일의 find 가 가려진 e 를 자기 자신과 비교 | [#340771](https://github.com/microsoft/vscode/pull/340771) | ⚪ awaiting review | — |
+| `jdbc: 접두사를 떼는 줄이 아무것도 안 함` | [nocodb · 65.2k★](https://github.com/nocodb/nocodb) | 버린 반환값 (jdbcToXcConfig·jdbcToXcUrl 의 url.replace(/^jdbc:/, '') — jdbc:mysql://… 가 driver jdbc·host mysql 로 파싱됨) | [#14812](https://github.com/nocodb/nocodb/pull/14812) | ⚪ awaiting review | — |
 
 ## 규칙
 

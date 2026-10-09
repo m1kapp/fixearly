@@ -359,6 +359,7 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [vscode#340771](https://github.com/microsoft/vscode/pull/340771) | return 없는 콜백 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [pdf.js#22102](https://github.com/mozilla/pdf.js/pull/22102) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 2일째 / 보통 1일 |
 | [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 4일째 / 보통 1일 |
+| [nocodb#14812](https://github.com/nocodb/nocodb/pull/14812) | 버린 반환값 | ⚪ 대기 | 오늘 |
 | [nx#37332](https://github.com/nrwl/nx/pull/37332) | 버린 반환값 | ⚪ 대기 | 1일째 / 보통 1일 |
 | [opensumi#4776](https://github.com/opensumi/core/pull/4776) | 버린 반환값 | ⚪ 대기 | 오늘 / 보통 4일 |
 | [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 2일째 / 보통 4일 |
@@ -367,7 +368,7 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [affine#15692](https://github.com/toeverything/AFFiNE/pull/15692) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 3일 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 12일째 / 보통 1일 · 보류 |
 
-**열린 것 20건(보류 2건 빼면 18건).** 판정 난 61건 중 머지 35 · 승인 0 · 닫힘 26.
+**열린 것 21건(보류 2건 빼면 19건).** 판정 난 61건 중 머지 35 · 승인 0 · 닫힘 26.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -859,10 +860,10 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | strapi | 42% | 50% | 4.6일 | 8/19 | 컷 | 열린 PR 있음 — 저장소당 1건 |
 | astro | 40% | 77% | 1.1일 | 2/5 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 · 사용자에게 보이는 변화면 changeset 필요 — 내부 전용 변경은 changeset 없이 머지된다(#17430 refactor·#16734 chore 가 changeset 0) · AI 정책 없음 · **포크 PR 워크플로가 승인 게이트가 아니다**(2026-09-13 #17987 제출 직후 CI 가 바로 돌았다 — angular·nx 와 다르다) · **`Test (Smoke)` 는 `smoke/docs` 의존성을 pkg.pr.new 커밋 핀에서 받는다** — 그 빌드가 만료되면 `ERR_PNPM_FETCH_404` 로 죽는다(2026-09-13 #17987 에서 밟음). PR 내용과 무관하다 |
 | directus | 39% | 47% | 5.2일 | 12/31 | 컷 | 판정 경험 있음 |
-| cli | 35% | 45% | 2.5일 | 9/26 | 컷 | — |
 | typeorm | 35% | 44% | 16.0일 | 11/31 | 컷 | 판정 경험 있음 |
 | vite | 32% | 32% | 3.9일 | 10/31 | 컷 | 판정 경험 있음 · 게이트 0 — CONTRIBUTING 'AI Policy': 댓글·이슈·PR 설명은 본인 말로 써야 함(LLM 이 대신 말하지 말 것). 어기면 바로 닫을 수 있음 |
 | core | 29% | 64% | 0.3일 | 2/7 | 표본 부족 | — |
+| cli | 29% | 45% | 2.9일 | 7/24 | 컷 | — |
 | prettier | 27% | 21% | 9.0일 | 4/15 | 컷 | — |
 | acorn | 26% | 53% | 0.8일 | 9/35 | 컷 | 게이트 0 — CONTRIBUTING: AI 언어모델이 (일부라도) 쓴 코드는 받지 않는다 |
 | prisma | 25% | 84% | 0.5일 | 1/4 | 표본 부족 | — |
@@ -873,7 +874,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | drizzle-orm | 10% | 8% | 5.7일 | 4/40 | 컷 | drizzle-kit 의 snapshotsDiffer 는 beta(v1 재작성)에서 사라졌다 — main 쪽 수정은 곧 버려질 코드 |
 | Trilium | 0% | 96% | 0.0일 | 0/1 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
 | excalidraw | 0% | 0% | 표본 없음 | 0/53 | 컷 | 판정 경험 있음 |
-| nocodb | 0% | 0% | 표본 없음 | 0/2 | 표본 부족 | 판정 경험 있음 |
+| nocodb | 0% | 0% | 표본 없음 | 0/2 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
 | webpack | —% | —% | 표본 없음 | 0/0 | 표본 없음 | 게이트 0 — AGENTS.md 가 PR 본문 양식(Use of AI 섹션 필수, governance AI_POLICY: human-in-the-loop·질문에 답할 수 있어야 함)과 Co-authored-by 금지, 커밋 author 는 사람만을 REQUIRED 로 둔다 |
 <!-- /auto:rotation -->
 
