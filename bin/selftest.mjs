@@ -269,6 +269,25 @@ if (generatedSrc) {
       namePattern: /^\s{4}(\S+?)\.\w+\(\) — \S*discarded-pure-call-jsx\.js:/gm,
     },
     {
+      file: "index-of-as-bool.ts",
+      key: "indexOfAsBool",
+      label: "위치를 진리값으로",
+      hit: ["msg", "names", "out"],
+      // head 는 !s.indexOf 관용구, tail 은 비교, dot·label·list 는 값 자리다.
+      miss: ["head", "tail", "dot", "label", "list"],
+      namePattern: /^\s{4}([A-Za-z_$][\w$]*)\.\w+\(\) — \S*index-of-as-bool\.ts:/gm,
+    },
+    {
+      file: "callback-no-return.ts",
+      key: "callbackNoReturn",
+      label: "return 없는 콜백",
+      hit: ["props", "mods", "appenders"],
+      // keys 는 결과를 버린 filter, rows 는 return 이 있고, jobs 는 async, items 는 Promise.all 밖, tasks 는 throw 뿐.
+      // tags 는 forEach 본문의 filter, crons 는 동기 push 로 끝나는 map 이다.
+      miss: ["keys", "rows", "jobs", "items", "tasks", "tags", "crons"],
+      namePattern: /^\s{4}([A-Za-z_$][\w$]*)\.\w+\(\) — \S*callback-no-return\.ts:/gm,
+    },
+    {
       file: "write-only-collection.ts",
       // analyzeTextbookIssues 가 돌려주는 키
       key: "writeOnlyCollection",
@@ -672,7 +691,7 @@ if (generatedSrc) {
   const emptyTextbook = Object.fromEntries([
     "awaitInForEach", "spreadAccumulator", "regexInLoop", "floatingPromise",
     "loopInvariantIndex", "sharedRefFill", "deepEqualSetOp", "numericSortNoComparator", "emptyCatch",
-    "statefulRegex", "forInArray", "writeOnlyCollection", "discardedPureCall",
+    "statefulRegex", "forInArray", "writeOnlyCollection", "discardedPureCall", "indexOfAsBool", "callbackNoReturn",
   ].map((key) => [key, { count: 0, worst: [] }]));
   const quality = {
     quadratic: { candidateList: [{ file: "src/perf.ts", line: 3, recv: "rows", method: "find" }] },

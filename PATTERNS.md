@@ -88,6 +88,20 @@ fixearly가 잡는 패턴들의 정본. **점수는 흐릿한 집계, 이 카탈
 - **오탐 가드**: `this.x()`·같은 파일이 같은 이름을 선언한 자체 메서드(pdf.js `AstIdentifier.toLowerCase`)·magic-string 을 쓰는 파일(rollup·storybook 의 제자리 `replace`/`trim`)·`location`/`router` 의 `replace`(이동)·둘째 인자가 함수인 `replace`(매치를 모으는 순회 관용구)는 뺀다. DOM `normalize()` 와 배열 `reverse`/`sort`/`splice` 는 제자리 변경이라 목록에 없다
 - **실적**: [nx #37332](https://github.com/nrwl/nx/pull/37332) — `scam-to-standalone` 이 spec 의 `declarations` 줄을 지우는 `replace` 결과를 버렸다. 24곳 저장소에서 원형을 돌려 걸린 진짜 버그 2건(nx·theia) 중 하나다(2026-10-08)
 
+#### 위치를 진리값으로 (`if (s.indexOf(x))`)
+- **탐지**: `indexOf`·`lastIndexOf`·`findIndex`·`search` 결과가 비교 없이 조건(if·while·삼항·`&&`/`||`·술어 콜백의 식 본문)에 쓰임
+- **왜 버그인가**: 없으면 `-1`(참), 맨 앞이면 `0`(거짓)이다 — "있나"를 묻는 코드가 거의 정반대로 동작한다
+- **고침**: `includes(x)` 또는 `!== -1`. 접두사를 물은 거면 `startsWith`
+- **오탐 가드**: `!s.indexOf(x)`(startsWith 관용구)와 값 자리(대입·반환·비교·`!!(…)`)는 뺀다 — echarts `isNameSpecified` 는 -1·양수를 일부러 참으로 쓴다
+- **실측**: 코퍼스 75곳에서 5건, 그중 진짜 4건(Ghost Stripe 오류 분기 · vscode 노트북 복사 버튼 · nx outDir 접두사 · nx 확장자 판정). 나머지 1건(lodash `truncate`)은 -1 이어도 뒤 루프가 아무것도 못 찾아 결과가 같다(2026-10-10)
+
+#### return 없는 콜백 (`find((x) => { x.id === id; })`)
+- **탐지**: 블록 본문이 값을 안 돌려주는 `find`·`filter`·`some`·`every`·`findIndex` 콜백(결과를 쓸 때), 그리고 `Promise.all` 류 안의 동기 `map`
+- **왜 버그인가**: 콜백이 늘 `undefined` 를 돌려준다 — `find` 는 아무것도 못 찾고, `Promise.all` 은 아무것도 안 기다린다
+- **고침**: `return` 한 단어, 또는 식 본문 화살표로
+- **오탐 가드**: 결과를 버리는 `filter`·`some`(forEach 대용 — forEach 화살표의 식 본문 포함), async 콜백, 마지막 문장이 push·set·log 류 동기 호출인 map(payload cron 등록)은 뺀다
+- **실측**: 코퍼스 75곳에서 6건(가드 뒤 5건), 전부 진짜 — n8n displayOptions `find` · medusa docs 접근자 판정 · vscode CLI 텔레메트리 flush · vscode 원격 확장 설치(2026-10-10)
+
 ### T2 — 성능, n 무한
 
 #### 루프 안 DB/HTTP 순차 `await` (N+1)
