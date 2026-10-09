@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T08:22:09Z",
+  "generatedAt": "2026-10-09T08:37:24Z",
   "method": "latest 60 closed PRs; merged non-bot external contributors; medianDays is the one we judge by",
   "repos": {
     "Automattic/mongoose": {
@@ -278,14 +278,14 @@
       "sampledClosed": 60
     },
     "grafana/grafana": {
-      "medianDays": 0.1,
-      "averageDays": 0.2,
-      "mergedExternal": 9,
-      "acceptancePct": 47,
-      "closedExternal": 19,
-      "driveByAcceptancePct": 64,
-      "driveByMerged": 9,
-      "driveByClosed": 14,
+      "medianDays": 0.0,
+      "averageDays": 0.3,
+      "mergedExternal": 11,
+      "acceptancePct": 55,
+      "closedExternal": 20,
+      "driveByAcceptancePct": 60,
+      "driveByMerged": 6,
+      "driveByClosed": 10,
       "sampledClosed": 60
     },
     "immich-app/immich": {
@@ -313,12 +313,12 @@
     "jupyterlab/jupyterlab": {
       "medianDays": 0.1,
       "averageDays": 1.6,
-      "mergedExternal": 20,
+      "mergedExternal": 21,
       "acceptancePct": 91,
-      "closedExternal": 22,
-      "driveByAcceptancePct": 67,
-      "driveByMerged": 4,
-      "driveByClosed": 6,
+      "closedExternal": 23,
+      "driveByAcceptancePct": 71,
+      "driveByMerged": 5,
+      "driveByClosed": 7,
       "sampledClosed": 60
     },
     "labring/FastGPT": {
@@ -412,12 +412,12 @@
     "mikro-orm/mikro-orm": {
       "medianDays": 0.2,
       "averageDays": 0.3,
-      "mergedExternal": 15,
+      "mergedExternal": 17,
       "acceptancePct": 100,
-      "closedExternal": 15,
+      "closedExternal": 17,
       "driveByAcceptancePct": 100,
-      "driveByMerged": 12,
-      "driveByClosed": 12,
+      "driveByMerged": 14,
+      "driveByClosed": 14,
       "sampledClosed": 60
     },
     "mozilla/pdf.js": {
@@ -554,13 +554,13 @@
     },
     "pnpm/pnpm": {
       "medianDays": 0.3,
-      "averageDays": 1.4,
-      "mergedExternal": 12,
-      "acceptancePct": 92,
-      "closedExternal": 13,
+      "averageDays": 1.3,
+      "mergedExternal": 14,
+      "acceptancePct": 93,
+      "closedExternal": 15,
       "driveByAcceptancePct": 92,
-      "driveByMerged": 12,
-      "driveByClosed": 13,
+      "driveByMerged": 11,
+      "driveByClosed": 12,
       "sampledClosed": 60
     },
     "postcss/postcss": {
@@ -663,24 +663,24 @@
       "sampledClosed": 60
     },
     "storybookjs/storybook": {
-      "medianDays": 2.2,
-      "averageDays": 16.8,
-      "mergedExternal": 27,
-      "acceptancePct": 75,
-      "closedExternal": 36,
-      "driveByAcceptancePct": 82,
+      "medianDays": 3.1,
+      "averageDays": 15.9,
+      "mergedExternal": 30,
+      "acceptancePct": 79,
+      "closedExternal": 38,
+      "driveByAcceptancePct": 90,
       "driveByMerged": 9,
-      "driveByClosed": 11,
+      "driveByClosed": 10,
       "sampledClosed": 60
     },
     "strapi/strapi": {
-      "medianDays": 5.1,
+      "medianDays": 6.0,
       "averageDays": 18.6,
-      "mergedExternal": 21,
-      "acceptancePct": 48,
+      "mergedExternal": 22,
+      "acceptancePct": 50,
       "closedExternal": 44,
-      "driveByAcceptancePct": 33,
-      "driveByMerged": 6,
+      "driveByAcceptancePct": 39,
+      "driveByMerged": 7,
       "driveByClosed": 18,
       "sampledClosed": 60
     },
@@ -688,11 +688,11 @@
       "medianDays": 0.9,
       "averageDays": 11.4,
       "mergedExternal": 25,
-      "acceptancePct": 61,
-      "closedExternal": 41,
-      "driveByAcceptancePct": 71,
+      "acceptancePct": 62,
+      "closedExternal": 40,
+      "driveByAcceptancePct": 75,
       "driveByMerged": 15,
-      "driveByClosed": 21,
+      "driveByClosed": 20,
       "sampledClosed": 60
     },
     "super-productivity/super-productivity": {
