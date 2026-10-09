@@ -87,6 +87,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `output 마이그레이션 ID 의 .d.ts 정규화 결과를 버림` | [angular · 101k★](https://github.com/angular/angular) | 버린 반환값 (id.replace(/\.d\.ts$/, '.ts') 결과 미대입 — 형제 마이그레이션 둘은 대입) | [#71267](https://github.com/angular/angular/pull/71267) | ⚪ awaiting review | — |
 | `댓글 스레드 그래프의 깊이 Map 쓰기만 함` | [ghost · 55.5k★](https://github.com/TryGhost/Ghost) | 쓰기만 하는 컬렉션 (buildThreadGraph 의 depthById — 깊이는 reply.depth 로 이미 읽힌다) | [#31677](https://github.com/TryGhost/Ghost/pull/31677) | ⚪ awaiting review | — |
 | `ER 다이어그램·dagre 그래프의 쓰기만 하는 Map` | [mermaid · 90.6k★](https://github.com/mermaid-js/mermaid) | 쓰기만 하는 컬렉션 (ErDB.getData 의 subGraphDB — flowDb 에서 복사, parentDB 만 읽힘 · mermaid-graphlib 의 parents — set·clear 만) | [#8413](https://github.com/mermaid-js/mermaid/pull/8413) | ⚪ awaiting review | — |
+| `AI 마크다운 diff 의 쓰기만 하는 Set` | [affine · 73.3k★](https://github.com/toeverything/AFFiNE) | 쓰기만 하는 컬렉션 (diffBlockLists 의 handledOld — 삭제 판정은 newMap.has 로 이미 한다) | [#15692](https://github.com/toeverything/AFFiNE/pull/15692) | ⚪ awaiting review | — |
 
 ## 규칙
 

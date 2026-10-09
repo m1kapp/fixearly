@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T14:14:43+00:00",
+  "generatedAt": "2026-10-09T14:25:30+00:00",
   "method": "GitHub REST contributors?per_page=1&anon=true; last-page count; commit authors, not unique humans",
   "repos": {
     "Automattic/mongoose": 1090,
@@ -21,7 +21,7 @@
     "excalidraw/excalidraw": 378,
     "facebook/react": 2020,
     "grafana/grafana": 3142,
-    "immich-app/immich": 1023,
+    "immich-app/immich": 1024,
     "jupyterlab/jupyterlab": 739,
     "labring/FastGPT": 196,
     "langfuse/langfuse": 221,
@@ -35,7 +35,7 @@
     "novuhq/novu": 537,
     "nrwl/nx": 1310,
     "openstatusHQ/openstatus": 126,
-    "orval-labs/orval": 405,
+    "orval-labs/orval": 406,
     "outline/outline": 265,
     "payloadcms/payload": 587,
     "pnpm/pnpm": 698,
@@ -47,6 +47,7 @@
     "strapi/strapi": 1398,
     "super-productivity/super-productivity": 528,
     "tailwindlabs/tailwindcss": 376,
+    "toeverything/AFFiNE": 270,
     "twentyhq/twenty": 771,
     "typeorm/typeorm": 1258,
     "vercel/turborepo": 719,
