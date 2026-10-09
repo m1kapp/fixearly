@@ -1989,12 +1989,15 @@ function analyzeTextbookIssues(ts, fileContents) {
         // 자체 객체다 — compromise `vb.replace('did', 'will')` 옆엔 `vb.match`·`vb.remove` 가, super-productivity
         // `tracked.trim()` 옆엔 `tracked.rawRanges`·`tracked.text` 가 있었다. 둘 다 제자리 변경 메서드였다(2026-10-09, 7건).
         let foreign = false;
-        if (ts.isIdentifier(recv) && (PURE.has(m) || m === "replace" || m === "replaceAll")) {
+        // 수신자가 `this._buf`·`a.b` 같은 속성 체인이어도 같은 텍스트로 본다 — Babylon `this._selectionContent.concat()`
+        // 옆엔 `this._selectionContent.reset()` 이 있었다(SmartArray 의 제자리 concat, 2026-10-09).
+        const chain = ts.isIdentifier(recv) || (ts.isPropertyAccessExpression(recv) && /^[\w$.]+$/.test(recvText));
+        if (chain && (PURE.has(m) || m === "replace" || m === "replaceAll")) {
           let scope = node.parent;
           while (scope && !ts.isFunctionLike(scope) && !ts.isSourceFile(scope)) scope = scope.parent;
           const g = (n) => {
             if (foreign) return;
-            if (ts.isPropertyAccessExpression(n) && ts.isIdentifier(n.expression) && n.expression.text === recv.text &&
+            if (ts.isPropertyAccessExpression(n) && n.expression.getText(sf) === recvText &&
                 !STRING_ARRAY_MEMBERS.has(n.name.text)) { foreign = true; return; }
             ts.forEachChild(n, g);
           };

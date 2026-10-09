@@ -76,3 +76,16 @@ export function consume(tracked: { text: string; remove(a: number, b: number): v
   tracked.remove(0, tracked.text.indexOf(' '));
   tracked.trim();
 }
+
+// _selection: this._selection 에 reset()·concatWithNoDuplicate() 도 쓴다 — Babylon SmartArray 의 제자리 concat. [FP:discard-receiver-not-string]
+declare function makeSmartArray(): any;
+export class Octree {
+  // 타입은 다른 모듈에서 온다 — 이 파일이 concat 을 선언하면 ownMemberNames 가드가 먼저 걸러 가드 검증이 안 된다.
+  private _selection: any = makeSmartArray();
+  select(dynamic: unknown[], dup: boolean) {
+    this._selection.reset();
+    if (dup) this._selection.concat(dynamic);
+    else this._selection.concatWithNoDuplicate(dynamic);
+    return this._selection;
+  }
+}
