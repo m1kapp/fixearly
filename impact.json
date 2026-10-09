@@ -158,7 +158,7 @@
    "title": "resource-mapper schema validation O(n²)",
    "type": "O(n²) (value별 schema.find — id Map으로 O(1))",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 206.7k★",
+   "repoLabel": "n8n · 206.8k★",
    "pr": 34899,
    "createdAt": "2026-07-24T13:05:42Z",
    "status": "merged",
@@ -489,7 +489,7 @@
    "titleEn": "credential uninstall exits before deletions finish",
    "type": "버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all)",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 206.7k★",
+   "repoLabel": "n8n · 206.8k★",
    "pr": 37047,
    "status": "closed",
    "createdAt": "2026-08-25T15:17:47Z",
@@ -503,7 +503,7 @@
    "titleEn": "credential uninstall exits before deletions finish",
    "type": "버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all)",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 206.7k★",
+   "repoLabel": "n8n · 206.8k★",
    "pr": 40103,
    "status": "merged",
    "createdAt": "2026-10-01T13:44:30Z",
@@ -530,7 +530,7 @@
    "titleEn": "unused MCP server map in the tools picker",
    "type": "쓰기만 하는 컬렉션 (MCP 툴마다 .set(), 읽기 없음 — #249448 이후 15개월째 · 삭제)",
    "repo": "microsoft/vscode",
-   "repoLabel": "vscode · 193.4k★",
+   "repoLabel": "vscode · 193.5k★",
    "pr": 334230,
    "status": "closed",
    "createdAt": "2026-09-03T11:03:48Z",
@@ -805,7 +805,7 @@
    "titleEn": "expression unique and set operations deep-compare even primitive arrays pairwise",
    "type": "O(n²) 배열 조회 (lodash isEqual 쌍 비교 — 원시값만 있으면 Set 이 같은 답을 낸다)",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 206.7k★",
+   "repoLabel": "n8n · 206.8k★",
    "pr": 40311,
    "status": "waiting",
    "createdAt": "2026-10-05T13:39:05Z"
@@ -834,8 +834,12 @@
    "repo": "CherryHQ/cherry-studio",
    "repoLabel": "cherry-studio · 52.5k★",
    "pr": 21363,
-   "status": "waiting",
-   "createdAt": "2026-10-07T11:05:27Z"
+   "status": "merged",
+   "createdAt": "2026-10-07T11:05:27Z",
+   "mergedAt": "2026-10-09T05:00:38Z",
+   "release": {
+    "channel": "pending"
+   }
   },
   {
    "title": "검증 에러가 dev 서버를 죽임",
@@ -974,5 +978,5 @@
    "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T04:05:03.879Z"
+ "generatedAt": "2026-10-09T05:06:09.701Z"
 }
