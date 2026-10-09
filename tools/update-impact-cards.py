@@ -200,7 +200,7 @@ def delivery_timeline(f, key, pr_url, age_html):
     카드 전체를 PR 링크로 두면 릴리즈 링크를 중첩할 수 없다. 머지 카드의 본문과
     계보를 분리하고, 앞의 두 사건은 PR로, 마지막 사건은 실제 배포 경계로 잇는다.
     아직 머지되지 않은 카드도 같은 세 칸을 유지하되 남은 경계를 사실대로 적는다.
-    nightly 는 안정판으로 과장하지 않는다.
+    nightly·프리릴리즈(next·canary·beta)는 안정판으로 과장하지 않는다.
     """
     if key == "closed":
         return ""
@@ -267,6 +267,10 @@ def delivery_timeline(f, key, pr_url, age_html):
         cls = "iship nightly"
         release_ko = 'nightly 배포 · 안정판 대기'
         release_en = 'nightly shipped · stable pending'
+    elif release.get("channel") == "prerelease":
+        cls = "iship nightly"
+        release_ko = f'프리릴리즈 <b>{esc(version)}</b> · 안정판 대기'
+        release_en = f'prerelease <b>{esc(version)}</b> · stable pending'
     else:
         cls = "iship"
         release_ko = f'릴리즈 <b>{esc(version)}</b>'
@@ -746,7 +750,7 @@ missing = missing + noicon + nocount + notranslated + noreason + unmapped
 missing_release = sorted(f"#{f['pr']}" for f in findings
                          if state_by_pr.get(str(f["pr"])) == "merged"
                          and f.get("release", {}).get("channel") != "pending"
-                         and not (f.get("release", {}).get("channel") in ("stable", "nightly")
+                         and not (f.get("release", {}).get("channel") in ("stable", "nightly", "prerelease")
                                   and f.get("release", {}).get("version")
                                   and f.get("release", {}).get("releasedAt")
                                   and f.get("release", {}).get("url")))
