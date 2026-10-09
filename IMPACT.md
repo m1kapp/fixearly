@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 33**
+> **fixearly 임팩트 점수: 34**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -33,7 +33,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `loadTables 카탈로그 전량 재스캔` | [typeorm · 36.7k★](https://github.com/typeorm/typeorm) | O(n²) (테이블마다 columns·constraints·fks·indices 전량 스캔 — Map 그룹핑으로 O(1)) | [#12746](https://github.com/typeorm/typeorm/pull/12746) | ❌ closed | — |
 | `growth stats 집계 3회 직렬` | [ghost · 55.5k★](https://github.com/TryGhost/Ghost) | 독립 순차 await (postId 하나로만 매개되는 집계 3개 직렬 → Promise.all, 합→최댓값) | [#29704](https://github.com/TryGhost/Ghost/pull/29704) | ✅ merged | +1 |
 | `pure CSS 청크 선형 조회` | [vite · 83.3k★](https://github.com/vitejs/vite) | O(n²) (청크 x import 마다 pureCssChunkNames 전량 스캔 — Set으로 O(1)) | [#23114](https://github.com/vitejs/vite/pull/23114) | ✅ merged | +1 |
-| `resize 핸들러 안 미사용 Map` | [excalidraw · 133.5k★](https://github.com/excalidraw/excalidraw) | 쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제) | [#11805](https://github.com/excalidraw/excalidraw/pull/11805) | ❌ closed | — |
+| `resize 핸들러 안 미사용 Map` | [excalidraw · 133.6k★](https://github.com/excalidraw/excalidraw) | 쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제) | [#11805](https://github.com/excalidraw/excalidraw/pull/11805) | ❌ closed | — |
 | `member 통계 안 미사용 Map` | [ghost · 55.5k★](https://github.com/TryGhost/Ghost) | 쓰기만 하는 컬렉션 (날짜별 Map 을 채우고 아무도 안 읽음 — 삭제) | [#29831](https://github.com/TryGhost/Ghost/pull/29831) | ✅ merged | +1 |
 | `invalidate() 안 미사용 Set` | [storybook · 91.2k★](https://github.com/storybookjs/storybook) | 쓰기만 하는 컬렉션 (파일 변경마다 채우고 아무도 안 읽음 — 소비자는 2022-11 에 이미 삭제됨) | [#35829](https://github.com/storybookjs/storybook/pull/35829) | ❌ closed | — |
 | `스택 트레이스 절반 유실` | [astro · 63.1k★](https://github.com/withastro/astro) | 전역 정규식 상태 (/g 정규식을 filter 안에서 .test() — lastIndex 가 새어 프레임이 하나 걸러 사라진다) | [#17665](https://github.com/withastro/astro/pull/17665) | ❌ closed | — |
@@ -90,7 +90,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `AI 마크다운 diff 의 쓰기만 하는 Set` | [affine · 73.3k★](https://github.com/toeverything/AFFiNE) | 쓰기만 하는 컬렉션 (diffBlockLists 의 handledOld — 삭제 판정은 newMap.has 로 이미 한다) | [#15692](https://github.com/toeverything/AFFiNE/pull/15692) | ⚪ awaiting review | — |
 | `키맵 검색에서 연속 키 사이 공백이 사라짐` | [opensumi · 3.7k★](https://github.com/opensumi/core) | 버린 반환값 (searchKeybindings 의 chordRenderedResult.concat — 결과를 버리고, 인덱스는 spaceIndexArr[-1] 로 NaN, 끝에 join('+') 로 덮어씀) | [#4776](https://github.com/opensumi/core/pull/4776) | ⚪ awaiting review | — |
 | `v26 설정 이전에서 flame·claw 키 이름 변경이 버려짐` | [burn-my-windows · 3.1k★](https://github.com/Schneegans/Burn-My-Windows) | 버린 반환값 (fromVersion26 의 r.replace('flame-','fire-') · r.replace('claw-','trex-') — 대입 안 해서 사용자 설정이 옛 키로 남아 무시됨) | [#583](https://github.com/Schneegans/Burn-My-Windows/pull/583) | ⚪ awaiting review | — |
-| `손글씨 획 생성기의 쓰기만 하는 Map·Set` | [tegaki · 3.1k★](https://github.com/gkurt/tegaki) | 쓰기만 하는 컬렉션 (partitionFaces 의 twinOf · assembleStrokes 의 consumedEnd — 걷기는 outgoing·consumedSeg 로 한다) | [#77](https://github.com/gkurt/tegaki/pull/77) | ⚪ awaiting review | — |
+| `손글씨 획 생성기의 쓰기만 하는 Map·Set` | [tegaki · 3.1k★](https://github.com/gkurt/tegaki) | 쓰기만 하는 컬렉션 (partitionFaces 의 twinOf · assembleStrokes 의 consumedEnd — 걷기는 outgoing·consumedSeg 로 한다) | [#77](https://github.com/gkurt/tegaki/pull/77) | ✅ merged | +1 |
 
 ## 규칙
 
