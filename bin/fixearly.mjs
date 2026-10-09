@@ -1974,6 +1974,21 @@ function analyzeTextbookIssues(ts, fileContents) {
           g(a);
           return found;
         })) hit = false;
+        // 가드 [FP:discard-receiver-not-string]: 같은 함수 안에서 수신자에 문자열·배열에 없는 멤버를 쓰면
+        // 자체 객체다 — compromise `vb.replace('did', 'will')` 옆엔 `vb.match`·`vb.remove` 가, super-productivity
+        // `tracked.trim()` 옆엔 `tracked.rawRanges`·`tracked.text` 가 있었다. 둘 다 제자리 변경 메서드였다(2026-10-09, 7건).
+        let foreign = false;
+        if (ts.isIdentifier(recv) && (PURE.has(m) || m === "replace" || m === "replaceAll")) {
+          let scope = node.parent;
+          while (scope && !ts.isFunctionLike(scope) && !ts.isSourceFile(scope)) scope = scope.parent;
+          const g = (n) => {
+            if (foreign) return;
+            if (ts.isPropertyAccessExpression(n) && ts.isIdentifier(n.expression) && n.expression.text === recv.text &&
+                !STRING_ARRAY_MEMBERS.has(n.name.text)) { foreign = true; return; }
+            ts.forEachChild(n, g);
+          };
+          if (scope) g(scope);
+        }
         if (m === "replace" || m === "replaceAll") {
           const [a0, a1] = call.arguments;
           // 가드 [FP:replace-needs-two-args]: String#replace 는 늘 인자 2개다 — 1개짜리는 NodePath·location·router 의
@@ -1985,7 +2000,7 @@ function analyzeTextbookIssues(ts, fileContents) {
             !(a1 && (ts.isObjectLiteralExpression(a1) || ts.isArrayLiteralExpression(a1))) &&
             !/(^|\.)(location|router|history|navigation|navigate)$/i.test(recvText);
         }
-        if (hit && recv.kind !== ts.SyntaxKind.ThisKeyword && !ownMemberNames.has(m)) {
+        if (hit && !foreign && recv.kind !== ts.SyntaxKind.ThisKeyword && !ownMemberNames.has(m)) {
           discardedPureCall.push({ file, line: lineOf(node), name: recvText.slice(0, 40), method: m });
         }
       }
@@ -2108,6 +2123,10 @@ function analyzeTextbookIssues(ts, fileContents) {
 
 // 버린 반환값 축이 보는 순수 메서드. 결과를 버리면 아무 일도 안 일어나는 것만 — 이름이 같은 제자리 변경
 // (Array#reverse·sort·splice, DOM normalize)은 넣지 않는다.
+// 수신자 판별(문자열이 아닌 자체 객체 가드)이 쓰는 허용 목록 — 수신자가 문자열·배열이면 이 이름만 나온다.
+const STRING_ARRAY_MEMBERS = new Set([
+  ...Object.getOwnPropertyNames(String.prototype), ...Object.getOwnPropertyNames(Array.prototype),
+]);
 const DISCARD_PURE_METHODS = new Set([
   "concat", "toLowerCase", "toUpperCase", "toLocaleLowerCase", "toLocaleUpperCase", "trim", "trimStart", "trimEnd",
   "padStart", "padEnd", "toSorted", "toReversed", "toSpliced", "substring", "substr", "repeat",

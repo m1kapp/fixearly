@@ -31,6 +31,7 @@
 | `replace-non-string-arg` | 버린 반환값 | 둘째 인자가 객체·배열 리터럴인 `replace` 는 String#replace 가 아니다 | bokeh `ui/dialog.ts:127` `InlineStyleSheet.replace(":host", {…})` (10-08) | 둘째 인자가 객체·배열 리터럴이면 제외 | `discarded-pure-call.ts` |
 | `replace-needs-two-args` | 버린 반환값 | 인자 1개 `replace` 는 NodePath·location·router 의 제자리 교체·이동이다 | carbon `upgrade/transforms/icons-react-size-prop.js:43` (10-08) | String#replace 는 늘 인자 2개 — 2개일 때만 본다 | `discarded-pure-call.ts` |
 | `discard-receiver-passed-along` | 버린 반환값 | 수신자를 인자 안에서 다시 넘기면 호출된 쪽이 수신자에 직접 push 한다 — 버린 concat 은 군더더기 | semi-design `cascader/item.tsx:384` (10-08) | 인자 안에 수신자 이름이 다시 나오면 제외 | `discarded-pure-call.ts` |
+| `discard-receiver-not-string` | 버린 반환값 | 같은 함수가 수신자에 문자열·배열에 없는 멤버를 쓰면 자체 객체의 제자리 변경 메서드다 | compromise `verbs/api/conjugate/toFuture.js:48` · super-productivity `tasks/short-syntax.ts:607` (10-09, 7건) | 함수 안에서 수신자.X 의 X 가 String·Array 프로토타입에 없으면 제외 | `discarded-pure-call.ts` |
 | `magic-string-file` | 버린 반환값 | magic-string 의 `replace`·`trim` 은 제자리 변경이다 | rollup `Module.ts:831` · storybook `strip-story-hmr-boundaries.ts:25` (10-08) | magic-string 을 import 하는 파일은 이 축에서 제외 | — |
 | `regex-exec-walk` | 전역 정규식 상태 | `while ((m = re.exec(s)) !== null)` 는 `/g` 의 정석 순회 관용구다 | twenty (거기선 `lastIndex = 0` 리셋까지 하고 있었다) | `.exec()` 는 이 축에서 제외 | `stateful-regex.ts` |
 | `regex-created-in-loop` | 전역 정규식 상태 | 루프 안에서 만든 정규식은 매 회 새 객체라 `lastIndex` 가 샐 수 없다 | 코퍼스 검증 | 루프 안 선언은 제외 | `stateful-regex.ts` |

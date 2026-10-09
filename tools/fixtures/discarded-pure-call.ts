@@ -63,3 +63,16 @@ function fill(depth: number, acc: string[] = []): string[] {
   return acc;
 }
 export { fill };
+
+// vb: 같은 함수가 vb.match·vb.remove 를 쓴다 — compromise View 의 제자리 replace 다. [FP:discard-receiver-not-string]
+export function toFuture(vb: { replace(a: string, b: string): unknown; match(s: string): unknown; remove(s: string): unknown }) {
+  vb.match('used');
+  vb.replace('did', 'will');
+  return vb.remove('to');
+}
+
+// tracked: 같은 함수가 tracked.text·tracked.remove 를 쓴다 — super-productivity TrackedTitle.trim(): void. [FP:discard-receiver-not-string]
+export function consume(tracked: { text: string; remove(a: number, b: number): void; trim(): void }) {
+  tracked.remove(0, tracked.text.indexOf(' '));
+  tracked.trim();
+}
