@@ -17,6 +17,8 @@ const RULES = {
   deepEqualSetOp: { label: "깊은 비교 집합 연산", confidence: 2, severity: 2, fixability: 2, next: "원소가 원시값뿐인지와 실제 배열 크기를 확인" },
   numericSortNoComparator: { label: "숫자 sort 비교자 누락", confidence: 3, severity: 2, fixability: 3, next: "두 자릿수 이상 숫자 입력으로 정렬 결과를 재현" },
   writeOnlyCollection: { label: "쓰기만 하는 컬렉션", confidence: 3, severity: 2, fixability: 3, next: "생성 뒤 소비자 0건과 제거 시 부작용 없음을 확인" },
+  indexOfAsBool: { label: "위치를 진리값으로", confidence: 3, severity: 3, fixability: 3, next: "찾는 값이 맨 앞(0)일 때와 없을 때(-1) 두 입력으로 분기가 뒤집히는지 재현" },
+  callbackNoReturn: { label: "return 없는 콜백", confidence: 3, severity: 3, fixability: 3, next: "콜백이 값을 돌려주게 고치고 결과(찾은 원소·기다린 작업)가 바뀌는 입력을 재현" },
   forInArray: { label: "배열 for...in", confidence: 3, severity: 2, fixability: 2, next: "확장 프로퍼티가 섞인 배열 입력으로 동작을 확인" },
   loopInvariantIndex: { label: "루프 불변 인덱스", confidence: 2, severity: 2, fixability: 3, next: "루프 밖 계산과 결과가 같고 호출 수가 줄었는지 확인" },
   spreadAccumulator: { label: "스프레드 누적 O(n²)", confidence: 2, severity: 2, fixability: 2, next: "실제 입력 n과 수정 전후 할당량·시간을 확인" },
@@ -27,7 +29,7 @@ const RULES = {
 
 const textbookAxes = [
   "awaitInForEach", "statefulRegex", "discardedPureCall", "sharedRefFill", "deepEqualSetOp", "numericSortNoComparator",
-  "writeOnlyCollection", "forInArray", "loopInvariantIndex", "spreadAccumulator",
+  "writeOnlyCollection", "indexOfAsBool", "callbackNoReturn", "forInArray", "loopInvariantIndex", "spreadAccumulator",
   "regexInLoop", "floatingPromise", "emptyCatch",
 ];
 

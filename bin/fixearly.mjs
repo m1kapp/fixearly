@@ -1606,6 +1606,8 @@ function analyzeTextbookIssues(ts, fileContents) {
   const forInArray = [];
   const writeOnlyCollection = [];
   const discardedPureCall = [];
+  const indexOfAsBool = [];
+  const callbackNoReturn = [];
 
   for (const { file, content } of fileContents) {
     const kind = scriptKindOf(ts, file);
@@ -2123,6 +2125,7 @@ function analyzeTextbookIssues(ts, fileContents) {
     // 그래서 오탐이 나오려면 '읽기가 정적으로 안 보이는 경로'여야 하는데, 그건
     // eval 이나 with 뿐이다. 재할당되는 이름도 뺀다(다른 값이 들어올 수 있다).
     collectWriteOnly(ts, sf, file, lineOf, writeOnlyCollection);
+    collectBoolMisuse(ts, sf, file, lineOf, indexOfAsBool, callbackNoReturn);
   }
 
   return {
@@ -2139,6 +2142,8 @@ function analyzeTextbookIssues(ts, fileContents) {
     forInArray: { count: forInArray.length, worst: forInArray.slice(0, 6) },
     writeOnlyCollection: { count: writeOnlyCollection.length, worst: writeOnlyCollection.slice(0, 6) },
     discardedPureCall: { count: discardedPureCall.length, worst: discardedPureCall.slice(0, 6) },
+    indexOfAsBool: { count: indexOfAsBool.length, worst: indexOfAsBool.slice(0, 6) },
+    callbackNoReturn: { count: callbackNoReturn.length, worst: callbackNoReturn.slice(0, 6) },
   };
 }
 
@@ -2152,6 +2157,91 @@ const DISCARD_PURE_METHODS = new Set([
   "concat", "toLowerCase", "toUpperCase", "toLocaleLowerCase", "toLocaleUpperCase", "trim", "trimStart", "trimEnd",
   "padStart", "padEnd", "toSorted", "toReversed", "toSpliced", "substring", "substr", "repeat",
 ]);
+
+/**
+ * 위치가 진리값으로 쓰이는 자리와, 값을 돌려줘야 하는 콜백이 아무것도 안 돌려주는 자리.
+ * 둘 다 고치면 한 줄이고 동작이 실제로 바뀐다 — 2026-10-10 코퍼스 75곳에서 원형으로 잰 결과:
+ *   indexOfAsBool: 조건 자리 8건 중 진짜 4건(Ghost Stripe 오류 분기 · vscode 노트북 복사 버튼 ·
+ *     nx outDir 접두사 판정이 뒤집힘 · nx `search()` 를 확장자 판정에) — 나머지 4건은 값 자리라 아래에서 뺀다.
+ *   callbackNoReturn: 결과를 쓰는 find 2건(n8n displayOptions · medusa docs 접근자 판정) 전부 진짜,
+ *     Promise.all 안 동기 map 2건(vscode CLI flush · 원격 확장 설치) 전부 진짜.
+ */
+function collectBoolMisuse(ts, sf, file, lineOf, idxOut, cbOut) {
+  const PREDICATE = new Set(["filter", "find", "findIndex", "findLast", "findLastIndex", "some", "every"]);
+  const POSITION = new Set(["indexOf", "lastIndexOf", "findIndex", "search"]);
+  const PROMISE_COMBINATOR = /^Promise\.(all|allSettled|any|race)$/;
+  const SYNC_TAIL = new Set(["push", "unshift", "set", "add", "delete", "splice", "assign", "log", "warn", "error", "info", "debug"]);
+  const fnOfPredicate = (fn) => {
+    const call = fn.parent;
+    return call && ts.isCallExpression(call) && call.arguments[0] === fn &&
+      ts.isPropertyAccessExpression(call.expression) && PREDICATE.has(call.expression.name.text);
+  };
+  // 위치 값이 진리값으로 소비되는가. 괄호와 &&·|| 는 타고 올라가고, 그 밖의 자리(비교·대입·반환·인자)는 값이다.
+  const inCondition = (node) => {
+    let n = node;
+    for (;;) {
+      const p = n.parent;
+      if (!p) return false;
+      if (ts.isParenthesizedExpression(p)) { n = p; continue; }
+      if (ts.isBinaryExpression(p) && (p.operatorToken.kind === ts.SyntaxKind.AmpersandAmpersandToken ||
+          p.operatorToken.kind === ts.SyntaxKind.BarBarToken)) { n = p; continue; }
+      if ((ts.isIfStatement(p) || ts.isWhileStatement(p) || ts.isDoStatement(p)) && p.expression === n) return true;
+      if (ts.isForStatement(p) && p.condition === n) return true;
+      if (ts.isConditionalExpression(p) && p.condition === n) return true;
+      // `list.find((m) => TYPES.indexOf(m) || …)` — 술어 콜백의 식 본문은 진리값 자리다.
+      if (ts.isArrowFunction(p) && p.body === n && fnOfPredicate(p)) return true;
+      // 가드 [FP:index-bang-startswith]: `!s.indexOf(x)` 는 "0번 자리에 있다"(startsWith) 관용구다.
+      // `!!(name && name.indexOf(P))` 처럼 일부러 -1·양수를 참으로 쓰는 자리도 여기서 빠진다(echarts isNameSpecified).
+      return false;
+    }
+  };
+  const hasValueReturn = (body) => {
+    let found = false;
+    const g = (n) => {
+      if (found || ts.isFunctionLike(n)) return;
+      if ((ts.isReturnStatement(n) && n.expression) || ts.isThrowStatement(n)) { found = true; return; }
+      ts.forEachChild(n, g);
+    };
+    ts.forEachChild(body, g);
+    return found;
+  };
+  const visit = (node) => {
+    if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) {
+      const m = node.expression.name.text;
+      const recv = node.expression.expression.getText(sf).replace(/\s+/g, " ").slice(0, 40);
+      if (POSITION.has(m) && node.arguments.length >= 1 && inCondition(node)) {
+        idxOut.push({ file, line: lineOf(node), name: recv, method: m });
+      }
+      const cb = node.arguments[0];
+      if (cb && (ts.isArrowFunction(cb) || ts.isFunctionExpression(cb)) && ts.isBlock(cb.body) &&
+          cb.body.statements.length > 0 && !hasValueReturn(cb.body)) {
+        // 가드 [FP:predicate-result-discarded]: 결과를 버리는 filter·some 은 forEach 대용이다 — 콜백이 값을
+        // 안 돌려줘도 아무 일도 안 바뀐다(medusa mikro-orm-repository·cypress validateOverridableAtRunTime).
+        // forEach 화살표의 식 본문도 버린다(medusa `data.forEach(({ update }) => Object.keys(update).filter(…))`).
+        const p = node.parent;
+        const forEachBody = ts.isArrowFunction(p) && p.body === node && ts.isCallExpression(p.parent) &&
+          ts.isPropertyAccessExpression(p.parent.expression) && p.parent.expression.name.text === "forEach";
+        const used = !ts.isExpressionStatement(p) && !ts.isVoidExpression(p) && !forEachBody;
+        let hit = PREDICATE.has(m) && used;
+        // 동기 map 은 Promise.all 의 인자일 때만 — 그 밖의 "map 을 forEach 처럼"은 결과 배열을 안 쓰는 경우가 많다.
+        if ((m === "map" || m === "flatMap") && !(cb.modifiers || []).some((x) => x.kind === ts.SyntaxKind.AsyncKeyword)) {
+          const outer = node.parent;
+          // 가드 [FP:map-sync-tail]: 마지막 문장이 push·set·log 같은 동기 호출이면 기다릴 게 처음부터 없다 —
+          // payload `cronJobs.map((c) => { const cron = new Cron(…); this.crons.push(cron) })` (10-10 코퍼스).
+          const last = cb.body.statements[cb.body.statements.length - 1];
+          const tail = ts.isExpressionStatement(last) && ts.isCallExpression(last.expression) ? last.expression.expression : null;
+          const tailName = tail && (ts.isPropertyAccessExpression(tail) ? tail.name.text : ts.isIdentifier(tail) ? tail.text : "");
+          hit = ts.isCallExpression(outer) && outer.arguments[0] === node &&
+            PROMISE_COMBINATOR.test(outer.expression.getText(sf)) &&
+            !!tailName && !SYNC_TAIL.has(tailName);
+        }
+        if (hit) cbOut.push({ file, line: lineOf(node), name: recv, method: m });
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(sf);
+}
 
 /** 쓰기만 하는 Map/Set 을 한 파일에서 찾는다. analyzeTextbookIssues 가 파일마다 부른다. */
 function collectWriteOnly(ts, sf, file, lineOf, out) {
@@ -3116,6 +3206,14 @@ if (textbook) {
   if (t.discardedPureCall?.count > 0) {
     console.log(`  ⚠ 버린 반환값: ${t.discardedPureCall.count}곳 — 문자열·배열의 순수 메서드 결과를 버립니다 (문자열은 불변이라 그 줄은 아무것도 안 합니다)`);
     for (const w of t.discardedPureCall.worst) console.log(`    ${w.name}.${w.method}() — ${w.file}:${w.line}`);
+  }
+  if (t.indexOfAsBool?.count > 0) {
+    console.log(`  ⚠ 위치를 진리값으로: ${t.indexOfAsBool.count}곳 — indexOf 는 없으면 -1(참)·맨 앞이면 0(거짓)입니다 (includes 나 !== -1)`);
+    for (const w of t.indexOfAsBool.worst) console.log(`    ${w.name}.${w.method}() — ${w.file}:${w.line}`);
+  }
+  if (t.callbackNoReturn?.count > 0) {
+    console.log(`  ⚠ return 없는 콜백: ${t.callbackNoReturn.count}곳 — 블록 본문이 값을 안 돌려줘 결과가 늘 undefined 입니다 (find 는 못 찾고 Promise.all 은 안 기다림)`);
+    for (const w of t.callbackNoReturn.worst) console.log(`    ${w.name}.${w.method}() — ${w.file}:${w.line}`);
   }
   if (t.forInArray.count > 0) {
     console.log(`  ⚠ 배열에 for...in: ${t.forInArray.count}곳 — 인덱스가 문자열이고 상속 속성까지 돕니다 (for...of 권장)`);
