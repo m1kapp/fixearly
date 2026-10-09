@@ -136,7 +136,7 @@
     },
     {
       "repo": "readest/readest",
-      "note": "2026-10-09 넓히기 스윕: 엔진 후보 전역 정규식 상태 1 · 쓰기만 하는 컬렉션 1 · 버려진 Promise 6 · 외부 80%/0.5일 — 아직 손검증 전"
+      "note": "#6687 제출(쓰기만 하는 indexingStates) · 정규식 상태 1건은 버림(함수마다 새 정규식, 첫 비교가 단어 첫 글자라 결과 불변) · 버려진 Promise 6 미검증"
     },
     {
       "repo": "super-productivity/super-productivity",
@@ -148,7 +148,7 @@
     },
     {
       "repo": "spencermountain/compromise",
-      "note": "2026-10-09 넓히기 스윕: 엔진 후보 버린 반환값 6 · 외부 100%/0.2일 — 아직 손검증 전"
+      "note": "2026-10-09 손검증: 버린 반환값 6건 전부 오탐 — vb.replace 는 문자열이 아니라 compromise View 의 제자리 변경 메서드"
     },
     {
       "repo": "fishjar/kiss-translator",

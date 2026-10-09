@@ -79,6 +79,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `SCAM 변환이 spec 의 declarations 를 못 지운다` | [nx · 29.4k★](https://github.com/nrwl/nx) | 버린 반환값 (spec.replace(/declarations: \[.+/, '') 결과를 대입 안 함 — standalone 컴포넌트가 declarations 에 남아 테스트가 깨진다) | [#37332](https://github.com/nrwl/nx/pull/37332) | ⚪ awaiting review | — |
 | `설정 검색이 중첩 속성을 못 찾는다` | [jupyterlab · 15.3k★](https://github.com/jupyterlab/jupyterlab) | 버린 반환값 (acc.concat(재귀 결과) 를 대입 안 함 — 객체 설정 안의 속성 이름·제목이 검색에서 빠진다) | [#20008](https://github.com/jupyterlab/jupyterlab/pull/20008) | ⚪ awaiting review | — |
 | `clang-query 도구 옵션이 compile_flags.txt 에 안 들어간다` | [compiler-explorer · 19.1k★](https://github.com/compiler-explorer/compiler-explorer) | 버린 반환값 (compileFlags.concat(this.tool.options) 결과를 대입 안 함 — TS 전환 때 push 가 concat 으로 바뀐 회귀) | [#9241](https://github.com/compiler-explorer/compiler-explorer/pull/9241) | ⚪ awaiting review | — |
+| `RAG 색인 상태 Map 쓰기만 함` | [readest · 25k★](https://github.com/readest/readest) | 쓰기만 하는 컬렉션 (ragService 의 indexingStates Map · IndexingState 객체 — 기록만 하고 읽지 않음) | [#6687](https://github.com/readest/readest/pull/6687) | ⚪ awaiting review | — |
 
 ## 규칙
 
