@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 31**
+> **fixearly 임팩트 점수: 32**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -77,7 +77,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `실패 테스트 재실행이 추출 테스트마다 전부 다시 직렬화` | [promptfoo · 25.8k★](https://github.com/promptfoo/promptfoo) | O(n²) 배열 조회 (extractedTests.some(JSON.stringify(...)) — 미매칭 결과 5,000건에서 4.2초 → 21ms) | [#11464](https://github.com/promptfoo/promptfoo/pull/11464) | ✅ merged | +1 |
 | `모델 변경 후 QA 재학습이 옛 모델로 돈다` | [FastGPT · 29.8k★](https://github.com/labring/FastGPT) | 버려진 Promise (updateTraining 을 await 없이 트랜잭션 커밋 전에 호출 — 워커가 옛 에이전트 모델로 작업을 집고 실패는 사라진다) | [#7918](https://github.com/labring/FastGPT/pull/7918) | ❌ closed | — |
 | `SCAM 변환이 spec 의 declarations 를 못 지운다` | [nx · 29.4k★](https://github.com/nrwl/nx) | 버린 반환값 (spec.replace(/declarations: \[.+/, '') 결과를 대입 안 함 — standalone 컴포넌트가 declarations 에 남아 테스트가 깨진다) | [#37332](https://github.com/nrwl/nx/pull/37332) | ⚪ awaiting review | — |
-| `설정 검색이 중첩 속성을 못 찾는다` | [jupyterlab · 15.3k★](https://github.com/jupyterlab/jupyterlab) | 버린 반환값 (acc.concat(재귀 결과) 를 대입 안 함 — 객체 설정 안의 속성 이름·제목이 검색에서 빠진다) | [#20008](https://github.com/jupyterlab/jupyterlab/pull/20008) | ⚪ awaiting review | — |
+| `설정 검색이 중첩 속성을 못 찾는다` | [jupyterlab · 15.3k★](https://github.com/jupyterlab/jupyterlab) | 버린 반환값 (acc.concat(재귀 결과) 를 대입 안 함 — 객체 설정 안의 속성 이름·제목이 검색에서 빠진다) | [#20008](https://github.com/jupyterlab/jupyterlab/pull/20008) | ✅ merged | +1 |
 | `clang-query 도구 옵션이 compile_flags.txt 에 안 들어간다` | [compiler-explorer · 19.1k★](https://github.com/compiler-explorer/compiler-explorer) | 버린 반환값 (compileFlags.concat(this.tool.options) 결과를 대입 안 함 — TS 전환 때 push 가 concat 으로 바뀐 회귀) | [#9241](https://github.com/compiler-explorer/compiler-explorer/pull/9241) | ⚪ awaiting review | — |
 | `RAG 색인 상태 Map 쓰기만 함` | [readest · 25k★](https://github.com/readest/readest) | 쓰기만 하는 컬렉션 (ragService 의 indexingStates Map · IndexingState 객체 — 기록만 하고 읽지 않음) | [#6687](https://github.com/readest/readest/pull/6687) | ✅ merged | +1 |
 | `PKI 동기화 3곳의 외부 ID Map 쓰기만 함` | [infisical · 29.7k★](https://github.com/Infisical/infisical) | 쓰기만 하는 컬렉션 (ACM·Secrets Manager·Azure Key Vault 동기화의 syncRecordsByExternalId — 채우기만 하고 읽지 않음, Chef 만 씀) | [#8536](https://github.com/Infisical/infisical/pull/8536) | ⚪ awaiting review | — |

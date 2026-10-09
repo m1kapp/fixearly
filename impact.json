@@ -957,8 +957,12 @@
    "repo": "jupyterlab/jupyterlab",
    "repoLabel": "jupyterlab · 15.3k★",
    "pr": 20008,
-   "status": "waiting",
-   "createdAt": "2026-10-08T08:42:59Z"
+   "status": "merged",
+   "createdAt": "2026-10-08T08:42:59Z",
+   "mergedAt": "2026-10-09T08:35:20Z",
+   "release": {
+    "channel": "pending"
+   }
   },
   {
    "title": "clang-query 도구 옵션이 compile_flags.txt 에 안 들어간다",
@@ -1005,5 +1009,5 @@
    "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T08:23:31.889Z"
+ "generatedAt": "2026-10-09T08:38:44.917Z"
 }
