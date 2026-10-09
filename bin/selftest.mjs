@@ -325,6 +325,15 @@ if (generatedSrc) {
         .map((c) => c.recv),
     },
     {
+      file: "quadratic-sort-comparator.ts",
+      key: "quadratic",
+      label: "O(n²) 정렬 비교 함수",
+      hit: ["members", "members"],
+      // byId 는 미리 만든 Map 의 get 이다 — 선형 탐색이 아니다.
+      miss: ["byId", "people"],
+      fromJson: (j) => (j.quality?.quadratic?.candidateList || []).map((c) => c.recv),
+    },
+    {
       file: "regex-in-loop.ts",
       key: "regexInLoop",
       label: "루프 안 new RegExp",

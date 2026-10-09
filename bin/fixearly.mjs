@@ -72,7 +72,9 @@ const wantKit = args.includes("--kit"); // cog × git churn = "먼저 고칠 파
 // 생성물을 걷어낸 새 점수를 예전 점수와 나란히 놓으면 진행도가 거짓말을 한다.
 // v14(2026-10-09): .js·.mjs·.cjs 를 JS 모드로 읽어 그 안의 JSX 까지 잰다. 보드 75곳은 측정 sha 그대로
 // 옛·새 파서를 비교해 영향 0곳(.js 안 JSX 없음), .js 컴포넌트 저장소는 움직인다(kiss-translator A 83 → B+ 77).
-const SCORING_VERSION = "v14";
+// v15(2026-10-09): O(n²) 가 정렬 비교 함수(sort·toSorted) 안의 선형 탐색도 본다. 보드 75곳 실측: 점수·등급 변화 0,
+// 후보만 4곳에서 +2~8(storybook·outline·nx·vscode).
+const SCORING_VERSION = "v15";
 
 // 등급 색 (라이트 기준) — 배지·임베드 공용
 const GRADE_COLORS = { S: "#0f7a63", A: "#12915a", B: "#7d8a2c", C: "#c0862e", D: "#cb4436", E: "#8f2f24" };
@@ -681,6 +683,9 @@ const DATA_CALLS = new Set([
   "fetch", "request",
 ]);
 const ITERATING_METHODS = new Set(["map", "forEach", "flatMap", "filter", "reduce", "some", "every", "find"]);
+// O(n²) 분석만 정렬 비교 함수도 루프로 본다 — 비교 함수는 n log n 번 불리므로 그 안의 find 는 O(n² log n) 이다.
+// 최근 머지된 성능 PR(sim #5330)이 "sort 비교 함수 안의 .find 가 최악" 이라며 Map 으로 바꿨는데 엔진은 못 봤다.
+const QUAD_ITERATING_METHODS = new Set([...ITERATING_METHODS, "sort", "toSorted"]);
 // [FP:io-name-collision] 빌트인 컬렉션/프로토타입 메서드 — 타입정보 없이 이름만으로는 유저함수와 구분 불가.
 // x.push()/map.get()/set.has() 같은 메서드 호출을 동명의 최상위 함수(리더)로 오인하면
 // 코드베이스 전역에서 거대한 오탐이 난다(예: Array.push → push 리더 → 루프 IO 834개).
@@ -913,6 +918,8 @@ function quadZoneOf(file) {
 // 루프 반복대상이 배열 리터럴이면 유계(바운드), 식별자·프로퍼티·호출이면 유저데이터일 개연 → dynamic.
 function quadOuterDynamic(text) {
   if (!text) return true; // 알 수 없으면 후보 쪽으로(보수적)
+  // [...rows] 는 복사본이지 리터럴이 아니다 — 정렬 전 복사(`[...rows].sort(…)`)가 흔하다.
+  if (/^\[\s*\.\.\.[\w$.]+\s*\]$/.test(text)) return true;
   if (/^\[/.test(text)) return false; // [a,b,c] 리터럴
   return true;
 }
@@ -1165,7 +1172,7 @@ function analyzeQuadraticLookups(ts, fileContents) {
           }
         }
         // 순회 메서드(map/forEach…)에 넘긴 콜백 본문도 루프로 취급 — 반복대상은 수신자
-        if (ITERATING_METHODS.has(method)) {
+        if (QUAD_ITERATING_METHODS.has(method)) {
           const iterText = ts.isPropertyAccessExpression(node.expression)
             ? node.expression.expression.getText(sf).replace(/\s+/g, " ").slice(0, 60)
             : outerText;
@@ -1179,7 +1186,7 @@ function analyzeQuadraticLookups(ts, fileContents) {
         const alreadyWalked =
           ts.isCallExpression(node) &&
           ts.isPropertyAccessExpression(node.expression) &&
-          ITERATING_METHODS.has(node.expression.name.getText(sf)) &&
+          QUAD_ITERATING_METHODS.has(node.expression.name.getText(sf)) &&
           isFnLike(child);
         if (!alreadyWalked) walk(child, childInLoop, childLocals, childOuter, childLoop, childFn);
       });
