@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T04:03:44Z",
+  "generatedAt": "2026-10-09T05:04:50Z",
   "method": "latest 60 closed PRs; merged non-bot external contributors; medianDays is the one we judge by",
   "repos": {
     "Automattic/mongoose": {
@@ -47,11 +47,11 @@
       "sampledClosed": 60
     },
     "CherryHQ/cherry-studio": {
-      "medianDays": 0.6,
-      "averageDays": 1.4,
-      "mergedExternal": 19,
-      "acceptancePct": 86,
-      "closedExternal": 22,
+      "medianDays": 1.2,
+      "averageDays": 1.3,
+      "mergedExternal": 20,
+      "acceptancePct": 87,
+      "closedExternal": 23,
       "driveByAcceptancePct": 70,
       "driveByMerged": 7,
       "driveByClosed": 10,
@@ -69,8 +69,8 @@
       "sampledClosed": 60
     },
     "Infisical/infisical": {
-      "medianDays": 1.0,
-      "averageDays": 3.1,
+      "medianDays": 0.9,
+      "averageDays": 3.0,
       "mergedExternal": 48,
       "acceptancePct": 96,
       "closedExternal": 50,
@@ -80,33 +80,33 @@
       "sampledClosed": 60
     },
     "Kong/insomnia": {
-      "medianDays": 1.1,
-      "averageDays": 5.8,
-      "mergedExternal": 40,
+      "medianDays": 1.2,
+      "averageDays": 6.0,
+      "mergedExternal": 39,
       "acceptancePct": 98,
-      "closedExternal": 41,
-      "driveByAcceptancePct": 90,
-      "driveByMerged": 9,
-      "driveByClosed": 10,
+      "closedExternal": 40,
+      "driveByAcceptancePct": 89,
+      "driveByMerged": 8,
+      "driveByClosed": 9,
       "sampledClosed": 60
     },
     "TriliumNext/Trilium": {
       "medianDays": 0.0,
       "averageDays": 0.1,
-      "mergedExternal": 21,
-      "acceptancePct": 88,
-      "closedExternal": 24,
+      "mergedExternal": 20,
+      "acceptancePct": 95,
+      "closedExternal": 21,
       "driveByAcceptancePct": 0,
       "driveByMerged": 0,
-      "driveByClosed": 3,
+      "driveByClosed": 1,
       "sampledClosed": 60
     },
     "TryGhost/Ghost": {
       "medianDays": 0.0,
       "averageDays": 0.4,
-      "mergedExternal": 39,
-      "acceptancePct": 93,
-      "closedExternal": 42,
+      "mergedExternal": 38,
+      "acceptancePct": 95,
+      "closedExternal": 40,
       "driveByAcceptancePct": 100,
       "driveByMerged": 4,
       "driveByClosed": 4,
@@ -400,13 +400,13 @@
     },
     "microsoft/vscode": {
       "medianDays": 0.1,
-      "averageDays": 0.7,
-      "mergedExternal": 18,
+      "averageDays": 0.8,
+      "mergedExternal": 16,
       "acceptancePct": 100,
-      "closedExternal": 18,
+      "closedExternal": 16,
       "driveByAcceptancePct": 100,
-      "driveByMerged": 14,
-      "driveByClosed": 14,
+      "driveByMerged": 12,
+      "driveByClosed": 12,
       "sampledClosed": 60
     },
     "mikro-orm/mikro-orm": {
@@ -597,14 +597,14 @@
       "sampledClosed": 60
     },
     "promptfoo/promptfoo": {
-      "medianDays": 5.0,
-      "averageDays": 8.2,
-      "mergedExternal": 47,
-      "acceptancePct": 87,
+      "medianDays": 5.1,
+      "averageDays": 8.4,
+      "mergedExternal": 49,
+      "acceptancePct": 91,
       "closedExternal": 54,
-      "driveByAcceptancePct": 90,
-      "driveByMerged": 19,
-      "driveByClosed": 21,
+      "driveByAcceptancePct": 91,
+      "driveByMerged": 21,
+      "driveByClosed": 23,
       "sampledClosed": 60
     },
     "react-hook-form/react-hook-form": {
@@ -641,14 +641,14 @@
       "sampledClosed": 60
     },
     "rollup/rollup": {
-      "medianDays": 6.0,
-      "averageDays": 13.7,
-      "mergedExternal": 14,
-      "acceptancePct": 82,
-      "closedExternal": 17,
-      "driveByAcceptancePct": 82,
-      "driveByMerged": 14,
-      "driveByClosed": 17,
+      "medianDays": 9.1,
+      "averageDays": 14.6,
+      "mergedExternal": 13,
+      "acceptancePct": 87,
+      "closedExternal": 15,
+      "driveByAcceptancePct": 87,
+      "driveByMerged": 13,
+      "driveByClosed": 15,
       "sampledClosed": 60
     },
     "spencermountain/compromise": {
@@ -795,14 +795,14 @@
       "sampledClosed": 60
     },
     "vitejs/vite": {
-      "medianDays": 4.1,
-      "averageDays": 6.4,
-      "mergedExternal": 12,
-      "acceptancePct": 32,
-      "closedExternal": 37,
-      "driveByAcceptancePct": 36,
-      "driveByMerged": 12,
-      "driveByClosed": 33,
+      "medianDays": 4.4,
+      "averageDays": 6.6,
+      "mergedExternal": 11,
+      "acceptancePct": 31,
+      "closedExternal": 36,
+      "driveByAcceptancePct": 34,
+      "driveByMerged": 11,
+      "driveByClosed": 32,
       "sampledClosed": 60
     },
     "vitest-dev/vitest": {
