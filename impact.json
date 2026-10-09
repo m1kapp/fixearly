@@ -1119,7 +1119,17 @@
    "pr": 340771,
    "createdAt": "2026-10-09T17:53:48Z",
    "status": "waiting"
+  },
+  {
+   "title": "jdbc: 접두사를 떼는 줄이 아무것도 안 함",
+   "titleEn": "the line that strips the jdbc: prefix does nothing",
+   "type": "버린 반환값 (jdbcToXcConfig·jdbcToXcUrl 의 url.replace(/^jdbc:/, '') — jdbc:mysql://… 가 driver jdbc·host mysql 로 파싱됨)",
+   "repo": "nocodb/nocodb",
+   "repoLabel": "nocodb · 65.2k★",
+   "pr": 14812,
+   "createdAt": "2026-10-09T18:05:41Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T18:02:45.900Z"
+ "generatedAt": "2026-10-09T18:10:27.956Z"
 }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T18:01:03Z",
+  "generatedAt": "2026-10-09T18:08:37Z",
   "method": "latest 60 closed PRs; merged non-bot external contributors; medianDays is the one we judge by",
   "repos": {
     "Automattic/mongoose": {
@@ -498,14 +498,14 @@
       "sampledClosed": 60
     },
     "npm/cli": {
-      "medianDays": 2.5,
-      "averageDays": 7.1,
+      "medianDays": 2.9,
+      "averageDays": 8.3,
       "mergedExternal": 19,
       "acceptancePct": 45,
       "closedExternal": 42,
-      "driveByAcceptancePct": 35,
-      "driveByMerged": 9,
-      "driveByClosed": 26,
+      "driveByAcceptancePct": 29,
+      "driveByMerged": 7,
+      "driveByClosed": 24,
       "sampledClosed": 60
     },
     "nrwl/nx": {
