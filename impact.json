@@ -238,7 +238,7 @@
    "titleEn": "eval dataset item re-read",
    "type": "중복 쿼리 (변수마다 동일 WHERE 로 같은 행 재조회 → 컬럼 합쳐 1회)",
    "repo": "langfuse/langfuse",
-   "repoLabel": "langfuse · 35.5k★",
+   "repoLabel": "langfuse · 35.6k★",
    "pr": 15585,
    "createdAt": "2026-07-29T14:13:47Z",
    "status": "closed",
@@ -724,7 +724,7 @@
    "titleEn": "write-only decimals map in heatmap bucket increments",
    "type": "쓰기만 하는 컬렉션 (uPlot 에서 옮겨온 fixedDec — 채우기만 하고 읽지 않는다)",
    "repo": "grafana/grafana",
-   "repoLabel": "grafana · 77.1k★",
+   "repoLabel": "grafana · 77.2k★",
    "pr": 133985,
    "status": "closed",
    "createdAt": "2026-10-01T15:19:50Z",
@@ -986,7 +986,17 @@
    "pr": 8536,
    "createdAt": "2026-10-09T05:26:31Z",
    "status": "waiting"
+  },
+  {
+   "title": "채우기만 하고 읽지 않는 Map 3개",
+   "titleEn": "three maps filled but never read",
+   "type": "쓰기만 하는 컬렉션 (op-log 검증 projectTaskMap · sync-md mdById · doc-mode lastWrittenTitles — 주석은 echo 판별용이라는데 읽는 곳 0)",
+   "repo": "super-productivity/super-productivity",
+   "repoLabel": "super-productivity · 22.7k★",
+   "pr": 10607,
+   "createdAt": "2026-10-09T07:20:25Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T05:40:21.957Z"
+ "generatedAt": "2026-10-09T07:24:13.727Z"
 }

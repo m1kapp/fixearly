@@ -140,7 +140,7 @@
     },
     {
       "repo": "super-productivity/super-productivity",
-      "note": "2026-10-09 넓히기 스윕: 엔진 후보 버린 반환값 1 · 쓰기만 하는 컬렉션 3 · 버려진 Promise 4 · 외부 91%/6.5일 — 아직 손검증 전"
+      "note": "#10607 제출(쓰기만 하는 Map 3개) · 버린 반환값 1건은 오탐(TrackedTitle.trim(): void, 제자리 변경) · 버려진 Promise 4 미검증"
     },
     {
       "repo": "mattermost/mattermost",

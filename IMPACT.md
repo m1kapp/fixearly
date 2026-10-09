@@ -28,7 +28,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `ExternalRequest field lookup O(n²)` | [budibase · 28.3k★](https://github.com/Budibase/budibase) | O(n²) (행 필드별 fieldNames.find — Set으로 O(1)) | [#19320](https://github.com/Budibase/budibase/pull/19320) | ❌ closed | — |
 | `static formula 갱신 enriched row 조회 O(n²)` | [budibase · 28.3k★](https://github.com/Budibase/budibase) | O(n²) (행마다 enrichedRows.find — id Map으로 O(1), 100건에서 5,050→100) | [#19555](https://github.com/Budibase/budibase/pull/19555) | ❌ closed | — |
 | `cart variant lookup O(n²)` | [medusa · 36.7k★](https://github.com/medusajs/medusa) | O(n²) 배열 조회 (장바구니 아이템마다 variants 선형 스캔 → Map) | [#16233](https://github.com/medusajs/medusa/pull/16233) | ✅ merged | +1 |
-| `eval dataset item 반복 조회` | [langfuse · 35.5k★](https://github.com/langfuse/langfuse) | 중복 쿼리 (변수마다 동일 WHERE 로 같은 행 재조회 → 컬럼 합쳐 1회) | [#15585](https://github.com/langfuse/langfuse/pull/15585) | ❌ closed | — |
+| `eval dataset item 반복 조회` | [langfuse · 35.6k★](https://github.com/langfuse/langfuse) | 중복 쿼리 (변수마다 동일 WHERE 로 같은 행 재조회 → 컬럼 합쳐 1회) | [#15585](https://github.com/langfuse/langfuse/pull/15585) | ❌ closed | — |
 | `in-depth analytics 순차 await` | [typebot · 10.5k★](https://github.com/baptisteArno/typebot.io) | 독립 순차 await (독립 groupBy 3개 직렬 → Promise.all, 합→최댓값) | [#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | ✅ merged | +1 |
 | `loadTables 카탈로그 전량 재스캔` | [typeorm · 36.7k★](https://github.com/typeorm/typeorm) | O(n²) (테이블마다 columns·constraints·fks·indices 전량 스캔 — Map 그룹핑으로 O(1)) | [#12746](https://github.com/typeorm/typeorm/pull/12746) | ❌ closed | — |
 | `growth stats 집계 3회 직렬` | [ghost · 55.5k★](https://github.com/TryGhost/Ghost) | 독립 순차 await (postId 하나로만 매개되는 집계 3개 직렬 → Promise.all, 합→최댓값) | [#29704](https://github.com/TryGhost/Ghost/pull/29704) | ✅ merged | +1 |
@@ -60,7 +60,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `Vite 입력 CSS 의존성 기록 경합` | [tailwindcss · 97.8k★](https://github.com/tailwindlabs/tailwindcss) | 버려진 Promise (입력 CSS 파일 시각 기록을 기다리지 않아 재빌드 누락) | [#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | ⚪ awaiting review | — |
 | `ES 청크 재내보내기 이름 반복 검색` | [rollup · 26.3k★](https://github.com/rollup/rollup) | O(n²) 배열 조회 (재내보내기마다 렌더된 export 배열 탐색 → Set) | [#6534](https://github.com/rollup/rollup/pull/6534) | ✅ merged | +1 |
 | `알림 목록의 모니터 관계 반복 검색` | [openstatus · 9.2k★](https://github.com/openstatusHQ/openstatus) | O(n²) 배열 조회 (알림마다 전체 모니터 관계 재검색 → Map 그룹화) | [#2780](https://github.com/openstatusHQ/openstatus/pull/2780) | ❌ closed | — |
-| `히트맵 버킷 증분의 쓰기만 하는 Map` | [grafana · 77.1k★](https://github.com/grafana/grafana) | 쓰기만 하는 컬렉션 (uPlot 에서 옮겨온 fixedDec — 채우기만 하고 읽지 않는다) | [#133985](https://github.com/grafana/grafana/pull/133985) | ❌ closed | — |
+| `히트맵 버킷 증분의 쓰기만 하는 Map` | [grafana · 77.2k★](https://github.com/grafana/grafana) | 쓰기만 하는 컬렉션 (uPlot 에서 옮겨온 fixedDec — 채우기만 하고 읽지 않는다) | [#133985](https://github.com/grafana/grafana/pull/133985) | ❌ closed | — |
 | `M:N 역방향 populate 가 부모마다 자식 전체를 다시 훑음` | [mikro-orm · 9.2k★](https://github.com/mikro-orm/mikro-orm) | O(n²) 배열 조회 (부모 × 자식 filter — 한 번 훑어 Map 으로 묶으면 O(n+m)) | [#8391](https://github.com/mikro-orm/mikro-orm/pull/8391) | ✅ merged | +1 |
 | `읽지 않는 Set 이 리팩터 뒤에 남음` | [orval · 6.5k★](https://github.com/orval-labs/orval) | 쓰기만 하는 컬렉션 (add 만 하고 읽는 곳 0 — has() 를 쓰던 코드가 find() 로 바뀐 뒤 남은 흔적) | [#4254](https://github.com/orval-labs/orval/pull/4254) | ✅ merged | +1 |
 | `M:N 소유 측 populate 가 부모마다 자식 전체를 다시 훑고 indexOf 로 정렬` | [mikro-orm · 9.2k★](https://github.com/mikro-orm/mikro-orm) | O(n²) 배열 조회 (부모 × 자식 filter + indexOf 정렬 — 자식 위치를 Map 으로 한 번 색인) | [#8392](https://github.com/mikro-orm/mikro-orm/pull/8392) | ✅ merged | +1 |
@@ -81,6 +81,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `clang-query 도구 옵션이 compile_flags.txt 에 안 들어간다` | [compiler-explorer · 19.1k★](https://github.com/compiler-explorer/compiler-explorer) | 버린 반환값 (compileFlags.concat(this.tool.options) 결과를 대입 안 함 — TS 전환 때 push 가 concat 으로 바뀐 회귀) | [#9241](https://github.com/compiler-explorer/compiler-explorer/pull/9241) | ⚪ awaiting review | — |
 | `RAG 색인 상태 Map 쓰기만 함` | [readest · 25k★](https://github.com/readest/readest) | 쓰기만 하는 컬렉션 (ragService 의 indexingStates Map · IndexingState 객체 — 기록만 하고 읽지 않음) | [#6687](https://github.com/readest/readest/pull/6687) | ⚪ awaiting review | — |
 | `PKI 동기화 3곳의 외부 ID Map 쓰기만 함` | [infisical · 29.7k★](https://github.com/Infisical/infisical) | 쓰기만 하는 컬렉션 (ACM·Secrets Manager·Azure Key Vault 동기화의 syncRecordsByExternalId — 채우기만 하고 읽지 않음, Chef 만 씀) | [#8536](https://github.com/Infisical/infisical/pull/8536) | ⚪ awaiting review | — |
+| `채우기만 하고 읽지 않는 Map 3개` | [super-productivity · 22.7k★](https://github.com/super-productivity/super-productivity) | 쓰기만 하는 컬렉션 (op-log 검증 projectTaskMap · sync-md mdById · doc-mode lastWrittenTitles — 주석은 echo 판별용이라는데 읽는 곳 0) | [#10607](https://github.com/super-productivity/super-productivity/pull/10607) | ⚪ awaiting review | — |
 
 ## 규칙
 

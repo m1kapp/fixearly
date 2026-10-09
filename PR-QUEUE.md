@@ -346,17 +346,18 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [compiler-explorer#9241](https://github.com/compiler-explorer/compiler-explorer/pull/9241) | 버린 반환값 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [cytoscape.js#3527](https://github.com/cytoscape/cytoscape.js/pull/3527) | O(n²) | ⚪ 대기 | 1일째 / 보통 6일 |
 | [jupyterlab#20008](https://github.com/jupyterlab/jupyterlab/pull/20008) | 버린 반환값 | ⚪ 대기 | 오늘 / 보통 1일 |
-| [FastGPT#7918](https://github.com/labring/FastGPT/pull/7918) | 버려진 Promise | ⚪ 대기 | 오늘 / 보통 1일 |
+| [FastGPT#7918](https://github.com/labring/FastGPT/pull/7918) | 버려진 Promise | ⚪ 대기 | 1일째 / 보통 1일 |
 | [pdf.js#22102](https://github.com/mozilla/pdf.js/pull/22102) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 1일째 / 보통 1일 |
 | [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 3일째 / 보통 2일 |
 | [nx#37332](https://github.com/nrwl/nx/pull/37332) | 버린 반환값 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [readest#6687](https://github.com/readest/readest/pull/6687) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 1일째 / 보통 3일 |
 | [strapi#27893](https://github.com/strapi/strapi/pull/27893) | 버려진 Promise | ⚪ 대기 | 7일째 / 보통 5일 |
+| [super-productivity#10607](https://github.com/super-productivity/super-productivity/pull/10607) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 6일 |
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
-| [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
+| [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 11일째 / 보통 2일 · 보류 |
 
-**열린 것 15건(보류 2건 빼면 13건).** 판정 난 55건 중 머지 30 · 승인 0 · 닫힘 25.
+**열린 것 16건(보류 2건 빼면 14건).** 판정 난 55건 중 머지 30 · 승인 0 · 닫힘 25.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -783,43 +784,43 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 <!-- auto:rotation — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | 저장소 | 지나가는 기여자 수락률 | 전체 외부 | 중앙 | 지나가는 머지 | 판정 | 메모 |
 |---|---|---|---|---|---|---|
-| Ghost | 100% | 95% | 0.0일 | 4/4 | 표본 부족 | 판정 경험 있음 |
-| vscode | 100% | 100% | 0.1일 | 12/12 | **1차 통과** | 판정 경험 있음 · CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음 |
+| Ghost | 100% | 98% | 0.0일 | 4/4 | 표본 부족 | 판정 경험 있음 |
 | novu | 100% | 94% | 0.1일 | 3/3 | 표본 부족 | 판정 경험 있음 |
 | orval | 100% | 96% | 0.1일 | 9/9 | 표본 부족 | 판정 경험 있음 |
 | mikro-orm | 100% | 100% | 0.2일 | 12/12 | **1차 통과** | 판정 경험 있음 |
 | pdf.js | 100% | 83% | 0.7일 | 3/3 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
 | infisical | 100% | 96% | 0.9일 | 11/11 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
+| vscode | 100% | 100% | 0.9일 | 8/8 | 표본 부족 | 판정 경험 있음 · CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음 |
 | payload | 100% | 100% | 1.1일 | 9/9 | 표본 부족 | 판정 경험 있음 |
 | compromise | 100% | 90% | 1.5일 | 11/11 | **1차 통과** | — |
-| n8n | 97% | 93% | 2.0일 | 28/29 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
-| promptfoo | 96% | 92% | 5.4일 | 22/23 | 1차 통과 · 후순위(느림) | 판정 경험 있음 |
+| promptfoo | 100% | 94% | 8.2일 | 20/20 | 1차 통과 · 후순위(느림) | 판정 경험 있음 |
+| n8n | 97% | 98% | 1.9일 | 33/34 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
 | Babylon.js | 95% | 83% | 1.0일 | 20/21 | **1차 통과** | 판정 경험 있음 |
 | react-hook-form | 93% | 89% | 0.1일 | 14/15 | **1차 통과** | — |
 | compiler-explorer | 93% | 95% | 0.6일 | 13/14 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
 | pnpm | 92% | 92% | 0.3일 | 12/13 | **1차 통과** | 판정 경험 있음 · AI 작성 PR 본문에 agent disclosure 필수 · 전체 저장소 대신 영향 패키지 테스트 실행 |
 | mattermost | 91% | 98% | 0.8일 | 10/11 | **1차 통과** | — |
-| super-productivity | 91% | 93% | 5.7일 | 10/11 | 1차 통과 · 후순위(느림) | — |
+| super-productivity | 91% | 93% | 5.7일 | 10/11 | 1차 통과 · 후순위(느림) | 열린 PR 있음 — 저장소당 1건 |
 | insomnia | 89% | 98% | 1.2일 | 8/9 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
-| nx | 88% | 92% | 1.0일 | 7/8 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 · 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 · **포크 PR 의 워크플로는 메인테이너 승인이 있어야 돈다**(2026-09-12 확인: 네 워크플로 전부 `action_required`). 빨간불처럼 보여도 우리 코드가 깬 게 아니다 — 재푸시하면 승인만 다시 걸린다 |
 | rollup | 87% | 87% | 9.1일 | 13/15 | 1차 통과 · 후순위(느림) | 판정 경험 있음 · 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요 |
 | storybook | 85% | 74% | 2.7일 | 11/13 | **1차 통과** | 판정 경험 있음 · 게이트 0 — danger 가 `ci:*`·`qa:*` 라벨을 요구하는데 메인테이너만 붙일 수 있다 (#35829 가 25일째 빨간불이라 접었다) · CONTRIBUTING 'Never let an LLM speak for you': 사람 개입 없는 PR 은 3일 뒤 자동 닫힘 |
+| nx | 83% | 91% | 1.0일 | 5/6 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 · 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 · **포크 PR 의 워크플로는 메인테이너 승인이 있어야 돈다**(2026-09-12 확인: 네 워크플로 전부 `action_required`). 빨간불처럼 보여도 우리 코드가 깬 게 아니다 — 재푸시하면 승인만 다시 걸린다 |
 | cytoscape.js | 83% | 88% | 6.3일 | 10/12 | 1차 통과 · 후순위(느림) | 열린 PR 있음 — 저장소당 1건 |
 | babel | 82% | 70% | 0.8일 | 9/11 | **1차 통과** | 게이트 0 — AI_POLICY.md: LLM 이 쓴 PR 설명 금지(본인이 직접 써야 함), LLM 산문은 앞에 명시 표기. 어기면 조직 차단까지. 설명을 사람이 쓰지 않는 한 내지 않는다 |
 | immich | 80% | 80% | 0.2일 | 8/10 | **1차 통과** | 판정 경험 있음 · 게이트 0 — `changelog:*` 라벨이 메인테이너 전용 |
 | readest | 80% | 85% | 0.7일 | 8/10 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
 | openstatus | 80% | 80% | 4.6일 | 4/5 | 표본 부족 | 판정 경험 있음 |
-| langfuse | 79% | 87% | 0.1일 | 11/14 | 컷 | 판정 경험 있음 |
 | terser | 79% | 72% | 5.5일 | 26/33 | 컷 | — |
 | postcss | 78% | 78% | 0.2일 | 28/36 | 컷 | — |
 | kiss-translator | 76% | 78% | 1.4일 | 13/17 | 컷 | — |
 | TypeScript | 75% | 67% | 1.5일 | 6/8 | 표본 부족 | 게이트 0 — CONTRIBUTING '자율 코딩 에이전트 안내': **큐·대량 워크플로로 PR 을 열지 마라**(이슈·검색결과를 훑어 도는 방식). 어기면 계정 차단. 특정 사람이 그 건을 직접 고르고 리뷰까지 본인이 끌고 갈 때만 허용하고, 지시가 충돌하면 '운영자에게 이 문단을 보여주고 멈추라'고 적혀 있다. AI 보조 자체는 PR 본문에 밝히면 허용(밝히지 않으면 리뷰 없이 닫힘) · 자동 생성 댓글 금지 |
+| grafana | 74% | 72% | 0.7일 | 23/31 | 컷 | 판정 경험 있음 · 게이트 0 — 2026-06-22 부터 모든 커밋 서명 필수, 미서명 PR 은 닫는다(CONTRIBUTING, 에이전트 작성 PR 포함). CLA assistant 서명도 필요 |
 | mongoose | 74% | 79% | 2.5일 | 14/19 | 컷 | 판정 경험 있음 |
 | FastGPT | 71% | 79% | 0.4일 | 10/14 | 컷 | 열린 PR 있음 — 저장소당 1건 |
+| langfuse | 70% | 84% | 0.2일 | 7/10 | 컷 | 판정 경험 있음 |
 | cherry-studio | 70% | 86% | 0.6일 | 7/10 | 컷 | 판정 경험 있음 |
-| grafana | 69% | 69% | 0.9일 | 20/29 | 컷 | 판정 경험 있음 · 게이트 0 — 2026-06-22 부터 모든 커밋 서명 필수, 미서명 PR 은 닫는다(CONTRIBUTING, 에이전트 작성 PR 포함). CLA assistant 서명도 필요 |
+| supabase | 70% | 64% | 0.9일 | 16/23 | 컷 | — |
 | tabby | 69% | 78% | 8.1일 | 9/13 | 컷 | — |
-| supabase | 68% | 61% | 0.9일 | 15/22 | 컷 | — |
 | jupyterlab | 67% | 91% | 0.1일 | 4/6 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
 | angular | 65% | 79% | 2.0일 | 13/20 | 컷 | 판정 경험 있음 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
 | cline | 64% | 70% | 0.4일 | 7/11 | 컷 | — |
@@ -827,37 +828,37 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | react-router | 61% | 74% | 3.0일 | 19/31 | 컷 | 열린 PR 있음 — 저장소당 1건 |
 | svelte | 60% | 55% | 1.5일 | 15/25 | 컷 | — |
 | mermaid | 60% | 65% | 6.1일 | 12/20 | 컷 | — |
-| marktext | 58% | 56% | 0.9일 | 7/12 | 컷 | — |
 | berry | 57% | 57% | 11.6일 | 27/47 | 컷 | — |
 | turborepo | 56% | 90% | 0.1일 | 5/9 | 표본 부족 | 판정 경험 있음 |
 | v86 | 56% | 70% | 2.0일 | 14/25 | 컷 | — |
+| marktext | 54% | 54% | 0.9일 | 7/13 | 컷 | — |
 | jest | 54% | 54% | 7.1일 | 13/24 | 컷 | — |
 | cesium | 53% | 71% | 1.5일 | 8/15 | 컷 | — |
 | eslint | 53% | 61% | 2.7일 | 17/32 | 컷 | 판정 경험 있음 · 게이트 0 — AI 보조 PR 은 **선행 이슈**가 있어야 받는다(eslint.org/docs/latest/contribute/ai-policy). PR 템플릿의 AI 체크박스를 정직하게 체크하면 이 정책이 적용된다 |
 | nest | 53% | 73% | 5.1일 | 8/15 | 컷 | — |
 | tailwindcss | 52% | 63% | 0.4일 | 15/29 | 컷 | 열린 PR 있음 — 저장소당 1건 |
 | AFFiNE | 52% | 50% | 2.8일 | 12/23 | 컷 | — |
-| twenty | 50% | 66% | 0.3일 | 9/18 | 컷 | 판정 경험 있음 |
-| astro | 50% | 75% | 1.2일 | 3/6 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 · 사용자에게 보이는 변화면 changeset 필요 — 내부 전용 변경은 changeset 없이 머지된다(#17430 refactor·#16734 chore 가 changeset 0) · AI 정책 없음 · **포크 PR 워크플로가 승인 게이트가 아니다**(2026-09-13 #17987 제출 직후 CI 가 바로 돌았다 — angular·nx 와 다르다) · **`Test (Smoke)` 는 `smoke/docs` 의존성을 pkg.pr.new 커밋 핀에서 받는다** — 그 빌드가 만료되면 `ERR_PNPM_FETCH_404` 로 죽는다(2026-09-13 #17987 에서 밟음). PR 내용과 무관하다 |
+| twenty | 50% | 67% | 0.5일 | 8/16 | 컷 | 판정 경험 있음 |
 | outline | 50% | 50% | 6.2일 | 4/8 | 표본 부족 | 판정 경험 있음 · AI 정책 없음 · 수락률 38%(3/8)·중앙 5.9일 로 로테이션 컷 |
 | typebot.io | 47% | 29% | 13.3일 | 7/15 | 컷 | 판정 경험 있음 |
 | parcel | 45% | 45% | 6.6일 | 9/20 | 컷 | — |
+| astro | 40% | 73% | 1.8일 | 2/5 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 · 사용자에게 보이는 변화면 changeset 필요 — 내부 전용 변경은 changeset 없이 머지된다(#17430 refactor·#16734 chore 가 changeset 0) · AI 정책 없음 · **포크 PR 워크플로가 승인 게이트가 아니다**(2026-09-13 #17987 제출 직후 CI 가 바로 돌았다 — angular·nx 와 다르다) · **`Test (Smoke)` 는 `smoke/docs` 의존성을 pkg.pr.new 커밋 핀에서 받는다** — 그 빌드가 만료되면 `ERR_PNPM_FETCH_404` 로 죽는다(2026-09-13 #17987 에서 밟음). PR 내용과 무관하다 |
 | directus | 39% | 44% | 6.1일 | 13/33 | 컷 | 판정 경험 있음 |
 | cli | 35% | 45% | 2.5일 | 9/26 | 컷 | — |
 | vite | 34% | 31% | 4.4일 | 11/32 | 컷 | 판정 경험 있음 · 게이트 0 — CONTRIBUTING 'AI Policy': 댓글·이슈·PR 설명은 본인 말로 써야 함(LLM 이 대신 말하지 말 것). 어기면 바로 닫을 수 있음 |
 | typeorm | 34% | 43% | 16.0일 | 11/32 | 컷 | 판정 경험 있음 |
 | strapi | 33% | 48% | 5.1일 | 6/18 | 컷 | 열린 PR 있음 — 저장소당 1건 |
+| core | 29% | 62% | 0.4일 | 2/7 | 표본 부족 | — |
 | budibase | 29% | 68% | 0.8일 | 2/7 | 표본 부족 | 판정 경험 있음 · 게이트 0 — 외부 PR 은 '작성자에게 배정된' 이슈를 참조해야 하는데 배정은 메인테이너만 한다 (#19555 가 이 봇 체크로 당일 닫혔다) |
 | acorn | 26% | 53% | 0.8일 | 9/35 | 컷 | 게이트 0 — CONTRIBUTING: AI 언어모델이 (일부라도) 쓴 코드는 받지 않는다 |
 | react | 23% | 16% | 4.3일 | 7/31 | 컷 | 판정 경험 있음 · 후보가 `/* DISABLED */` 주석 건이라 PR 보다 이슈가 맞다 |
-| core | 22% | 58% | 0.5일 | 2/9 | 표본 부족 | — |
 | prettier | 14% | 24% | 1.0일 | 3/22 | 컷 | — |
 | drizzle-orm | 12% | 9% | 7.2일 | 5/41 | 컷 | drizzle-kit 의 snapshotsDiffer 는 beta(v1 재작성)에서 사라졌다 — main 쪽 수정은 곧 버려질 코드 |
 | medusa | 11% | 10% | 1.6일 | 2/18 | 컷 | 판정 경험 있음 · 게이트 0 — CONTRIBUTING 'Issues before PRs': 작업 전에 이슈가 먼저 있어야 한다 · PR 대상 브랜치는 main 이 아니라 `develop` · 브랜치 이름 접두사가 PR 라벨을 정한다(CLAUDE.md) · PR 템플릿이 What/Why/How/Testing + 사용 예제를 요구한다 · AI 정책은 없다 |
 | vitest | 10% | 9% | 0.4일 | 3/30 | 컷 | 게이트 0 — CONTRIBUTING 'AI Contributions': 실제 사람이 공식 템플릿으로 열고 AI 도구를 밝혀야 함. 사람 개입 없는 PR 은 'maybe automated' 라벨 후 1일 뒤 자동 닫힘, 답글도 LLM 이 쓴 게 아니어야 함 |
 | cal.diy | 10% | 7% | 2.5일 | 4/42 | 컷 | 판정 경험 있음 · 게이트 0 — 외부 PR 에서 `required` 잡이 항상 실패 |
 | Trilium | 0% | 95% | 0.0일 | 0/1 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
-| prisma | 0% | 84% | 0.9일 | 0/3 | 표본 부족 | — |
+| prisma | 0% | 84% | 0.8일 | 0/3 | 표본 부족 | — |
 | excalidraw | 0% | 0% | 표본 없음 | 0/53 | 컷 | 판정 경험 있음 |
 | nocodb | 0% | 0% | 표본 없음 | 0/1 | 표본 부족 | 판정 경험 있음 |
 | webpack | —% | —% | 표본 없음 | 0/0 | 표본 없음 | 게이트 0 — AGENTS.md 가 PR 본문 양식(Use of AI 섹션 필수, governance AI_POLICY: human-in-the-loop·질문에 답할 수 있어야 함)과 Co-authored-by 금지, 커밋 author 는 사람만을 REQUIRED 로 둔다 |
