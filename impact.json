@@ -976,7 +976,17 @@
    "pr": 6687,
    "createdAt": "2026-10-09T04:00:54Z",
    "status": "waiting"
+  },
+  {
+   "title": "PKI 동기화 3곳의 외부 ID Map 쓰기만 함",
+   "titleEn": "write-only external-id map in three PKI syncs",
+   "type": "쓰기만 하는 컬렉션 (ACM·Secrets Manager·Azure Key Vault 동기화의 syncRecordsByExternalId — 채우기만 하고 읽지 않음, Chef 만 씀)",
+   "repo": "Infisical/infisical",
+   "repoLabel": "infisical · 29.7k★",
+   "pr": 8536,
+   "createdAt": "2026-10-09T05:26:31Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T05:06:09.701Z"
+ "generatedAt": "2026-10-09T05:40:21.957Z"
 }

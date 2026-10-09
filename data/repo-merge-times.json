@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T05:04:50Z",
+  "generatedAt": "2026-10-09T05:39:06Z",
   "method": "latest 60 closed PRs; merged non-bot external contributors; medianDays is the one we judge by",
   "repos": {
     "Automattic/mongoose": {
@@ -47,11 +47,11 @@
       "sampledClosed": 60
     },
     "CherryHQ/cherry-studio": {
-      "medianDays": 1.2,
+      "medianDays": 0.6,
       "averageDays": 1.3,
-      "mergedExternal": 20,
-      "acceptancePct": 87,
-      "closedExternal": 23,
+      "mergedExternal": 19,
+      "acceptancePct": 86,
+      "closedExternal": 22,
       "driveByAcceptancePct": 70,
       "driveByMerged": 7,
       "driveByClosed": 10,
@@ -323,13 +323,13 @@
     },
     "labring/FastGPT": {
       "medianDays": 0.4,
-      "averageDays": 2.7,
-      "mergedExternal": 25,
-      "acceptancePct": 78,
-      "closedExternal": 32,
-      "driveByAcceptancePct": 69,
-      "driveByMerged": 9,
-      "driveByClosed": 13,
+      "averageDays": 2.6,
+      "mergedExternal": 26,
+      "acceptancePct": 79,
+      "closedExternal": 33,
+      "driveByAcceptancePct": 71,
+      "driveByMerged": 10,
+      "driveByClosed": 14,
       "sampledClosed": 60
     },
     "langfuse/langfuse": {
@@ -554,13 +554,13 @@
     },
     "pnpm/pnpm": {
       "medianDays": 0.3,
-      "averageDays": 1.3,
-      "mergedExternal": 13,
-      "acceptancePct": 93,
-      "closedExternal": 14,
-      "driveByAcceptancePct": 91,
-      "driveByMerged": 10,
-      "driveByClosed": 11,
+      "averageDays": 1.4,
+      "mergedExternal": 12,
+      "acceptancePct": 92,
+      "closedExternal": 13,
+      "driveByAcceptancePct": 92,
+      "driveByMerged": 12,
+      "driveByClosed": 13,
       "sampledClosed": 60
     },
     "postcss/postcss": {
@@ -597,13 +597,13 @@
       "sampledClosed": 60
     },
     "promptfoo/promptfoo": {
-      "medianDays": 5.1,
-      "averageDays": 8.4,
+      "medianDays": 5.4,
+      "averageDays": 8.5,
       "mergedExternal": 49,
-      "acceptancePct": 91,
-      "closedExternal": 54,
-      "driveByAcceptancePct": 91,
-      "driveByMerged": 21,
+      "acceptancePct": 92,
+      "closedExternal": 53,
+      "driveByAcceptancePct": 96,
+      "driveByMerged": 22,
       "driveByClosed": 23,
       "sampledClosed": 60
     },
@@ -688,11 +688,11 @@
       "medianDays": 0.9,
       "averageDays": 6.5,
       "mergedExternal": 23,
-      "acceptancePct": 59,
-      "closedExternal": 39,
-      "driveByAcceptancePct": 65,
+      "acceptancePct": 61,
+      "closedExternal": 38,
+      "driveByAcceptancePct": 68,
       "driveByMerged": 15,
-      "driveByClosed": 23,
+      "driveByClosed": 22,
       "sampledClosed": 60
     },
     "super-productivity/super-productivity": {
