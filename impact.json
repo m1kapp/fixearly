@@ -106,7 +106,7 @@
    "title": "markdown import merge O(n²)",
    "type": "O(n²) (형제 out.find title 스캔 — Map으로 O(1))",
    "repo": "outline/outline",
-   "repoLabel": "outline · 40.8k★",
+   "repoLabel": "outline · 40.9k★",
    "pr": 13117,
    "createdAt": "2026-07-24T12:49:22Z",
    "mergedAt": "2026-07-30T03:04:09Z",
@@ -1051,7 +1051,17 @@
    "pr": 31677,
    "createdAt": "2026-10-09T13:05:54Z",
    "status": "waiting"
+  },
+  {
+   "title": "ER 다이어그램·dagre 그래프의 쓰기만 하는 Map",
+   "titleEn": "write-only maps in ER diagram data and dagre graphlib",
+   "type": "쓰기만 하는 컬렉션 (ErDB.getData 의 subGraphDB — flowDb 에서 복사, parentDB 만 읽힘 · mermaid-graphlib 의 parents — set·clear 만)",
+   "repo": "mermaid-js/mermaid",
+   "repoLabel": "mermaid · 90.6k★",
+   "pr": 8413,
+   "createdAt": "2026-10-09T14:13:52Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T13:11:02.387Z"
+ "generatedAt": "2026-10-09T14:18:25.495Z"
 }
