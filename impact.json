@@ -1007,7 +1007,17 @@
    "pr": 10607,
    "createdAt": "2026-10-09T07:20:25Z",
    "status": "waiting"
+  },
+  {
+   "title": "보내는 쪽이 사라진 구독 스트림",
+   "titleEn": "subscription stream whose sender is gone",
+   "type": "쓰기만 하는 컬렉션 (activeRelinquishControlSubscriptions — 유일한 송신 함수가 지워져 add/delete 만 남음 · 웹뷰 콜백도 못 울림)",
+   "repo": "cline/cline",
+   "repoLabel": "cline · 70k★",
+   "pr": 14974,
+   "createdAt": "2026-10-09T10:12:15Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T08:38:44.917Z"
+ "generatedAt": "2026-10-09T10:16:19.589Z"
 }
