@@ -1109,7 +1109,17 @@
    "release": {
     "channel": "pending"
    }
+  },
+  {
+   "title": "원격 확장 초기화가 설치를 안 기다리고 pre-release 를 엉뚱한 확장에서 가져옴",
+   "titleEn": "remote extension init skips awaiting installs and reads pre-release from the wrong extension",
+   "type": "return 없는 콜백 (Promise.allSettled 안 동기 map 이 installInServer 를 안 돌려줌) · 같은 파일의 find 가 가려진 e 를 자기 자신과 비교",
+   "repo": "microsoft/vscode",
+   "repoLabel": "vscode · 193.5k★",
+   "pr": 340771,
+   "createdAt": "2026-10-09T17:53:48Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T17:28:15.886Z"
+ "generatedAt": "2026-10-09T18:02:45.900Z"
 }

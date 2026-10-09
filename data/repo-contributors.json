@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T17:24:27+00:00",
+  "generatedAt": "2026-10-09T17:57:17+00:00",
   "method": "GitHub REST contributors?per_page=1&anon=true; last-page count; commit authors, not unique humans",
   "repos": {
     "Automattic/mongoose": 1090,
