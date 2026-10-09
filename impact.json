@@ -320,7 +320,7 @@
    "titleEn": "unused Map in resize handler",
    "type": "쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제)",
    "repo": "excalidraw/excalidraw",
-   "repoLabel": "excalidraw · 133.5k★",
+   "repoLabel": "excalidraw · 133.6k★",
    "pr": 11805,
    "createdAt": "2026-08-01T14:22:45Z",
    "status": "closed",
@@ -1094,7 +1094,11 @@
    "repoLabel": "burn-my-windows · 3.1k★",
    "pr": 583,
    "createdAt": "2026-10-09T15:03:03Z",
-   "status": "waiting"
+   "status": "merged",
+   "release": {
+    "channel": "pending"
+   },
+   "mergedAt": "2026-10-09T19:08:56Z"
   },
   {
    "title": "손글씨 획 생성기의 쓰기만 하는 Map·Set",
@@ -1131,5 +1135,5 @@
    "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T18:10:27.956Z"
+ "generatedAt": "2026-10-09T19:17:07.822Z"
 }

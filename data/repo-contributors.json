@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T18:06:23+00:00",
+  "generatedAt": "2026-10-09T19:10:20+00:00",
   "method": "GitHub REST contributors?per_page=1&anon=true; last-page count; commit authors, not unique humans",
   "repos": {
     "Automattic/mongoose": 1090,
@@ -8,7 +8,7 @@
     "CherryHQ/cherry-studio": 481,
     "Infisical/infisical": 286,
     "Kong/insomnia": 366,
-    "Schneegans/Burn-My-Windows": 122,
+    "Schneegans/Burn-My-Windows": 123,
     "TriliumNext/Trilium": 468,
     "TryGhost/Ghost": 931,
     "angular/angular": 2686,
@@ -29,7 +29,7 @@
     "langfuse/langfuse": 221,
     "medusajs/medusa": 589,
     "mermaid-js/mermaid": 855,
-    "microsoft/vscode": 3262,
+    "microsoft/vscode": 3263,
     "mikro-orm/mikro-orm": 351,
     "mozilla/pdf.js": 536,
     "n8n-io/n8n": 812,
@@ -42,7 +42,7 @@
     "outline/outline": 265,
     "payloadcms/payload": 587,
     "pnpm/pnpm": 698,
-    "promptfoo/promptfoo": 380,
+    "promptfoo/promptfoo": 381,
     "readest/readest": 136,
     "remix-run/react-router": 1320,
     "rollup/rollup": 472,
