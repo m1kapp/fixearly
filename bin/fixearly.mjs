@@ -70,7 +70,9 @@ const wantKit = args.includes("--kit"); // cog × git churn = "먼저 고칠 파
 
 // 채점 규칙 버전. 유예값·기울기·캡뿐 아니라 측정 범위가 바뀌어도 올려야 한다 —
 // 생성물을 걷어낸 새 점수를 예전 점수와 나란히 놓으면 진행도가 거짓말을 한다.
-const SCORING_VERSION = "v13";
+// v14(2026-10-09): .js·.mjs·.cjs 를 JS 모드로 읽어 그 안의 JSX 까지 잰다. 보드 75곳은 측정 sha 그대로
+// 옛·새 파서를 비교해 영향 0곳(.js 안 JSX 없음), .js 컴포넌트 저장소는 움직인다(kiss-translator A 83 → B+ 77).
+const SCORING_VERSION = "v14";
 
 // 등급 색 (라이트 기준) — 배지·임베드 공용
 const GRADE_COLORS = { S: "#0f7a63", A: "#12915a", B: "#7d8a2c", C: "#c0862e", D: "#cb4436", E: "#8f2f24" };
@@ -327,15 +329,11 @@ function scriptKindOf(ts, file) {
   return ts.ScriptKind.TS;
 }
 
-const scoringKindOf = (ts, file) => (/\.(tsx|jsx)$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
-
 // AST 기반 함수별 복잡도 — cyclomatic(McCabe) + cognitive(SonarQube 근사)
 // cognitive: 중첩 깊이 가중(+1+depth), 같은 논리 연산자 연쇄(a && b && c)는 1회만,
 // ??는 카운트 제외(null 정규화는 복잡성이 아님). 중첩 함수는 별도 함수로 분리 집계
 function analyzeAstComplexity(ts, filePath, content) {
-  // ponytail: 점수에 들어가는 분석기(복잡도·O(n²)·순차 await·N+1)는 아직 옛 파서다 — .js 안 JSX 를 바로 읽으면
-  // 보드 74곳 중 그런 저장소의 등급이 움직인다(kiss-translator A 83 → B+ 77). 보드 재측정과 같이 바꾼다.
-  const kind = scoringKindOf(ts, filePath);
+  const kind = scriptKindOf(ts, filePath);
   const sf = ts.createSourceFile(filePath, content, ts.ScriptTarget.Latest, true, kind);
 
   const isFnLike = (n) =>
@@ -995,7 +993,7 @@ const QUAD_ZONE_RANK = { backend: 3, other: 2, frontend: 1, test: 0 };
 function analyzeQuadraticLookups(ts, fileContents) {
   const sites = [];
   for (const { file, content } of fileContents) {
-    const kind = scoringKindOf(ts, file);
+    const kind = scriptKindOf(ts, file);
     const sf = ts.createSourceFile(file, content, ts.ScriptTarget.Latest, true, kind);
     const lineOf = (n) => sf.getLineAndCharacterOfPosition(n.getStart(sf)).line + 1;
 
@@ -1261,7 +1259,7 @@ function analyzeNPlusOne(ts, fileContents) {
     if (!content.includes("await")) continue;
     const sf = ts.createSourceFile(
       file, content, ts.ScriptTarget.Latest, true,
-      scoringKindOf(ts, file),
+      scriptKindOf(ts, file),
     );
 
     const loopLabel = (n) => {
@@ -1516,7 +1514,7 @@ function analyzeSerialAwaits(ts, fileContents) {
     if (!content.includes("await")) continue;
     const sf = ts.createSourceFile(
       file, content, ts.ScriptTarget.Latest, true,
-      scoringKindOf(ts, file),
+      scriptKindOf(ts, file),
     );
 
     const scan = (statements) => {
