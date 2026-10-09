@@ -9,13 +9,14 @@
 "check:ai-mention" 은 문구를 사람이 읽어 판정한다 — 단순 언급과 금지가 섞여 있다.
 판정은 data/queue-repos.json(후보) · data/repo-gates.json(막힌 곳)에 남긴다.
 
-사용: python3 tools/screen-repos.py out.json   (gh 로그인 필요)
+사용: [STARS=1500..4000] python3 tools/screen-repos.py out.json   (gh 로그인 필요)
 """
 import json, os, re, subprocess, sys, base64, statistics, datetime as dt
 from concurrent.futures import ThreadPoolExecutor
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = sys.argv[1]
+STARS = os.environ.get("STARS", ">4000")  # 넓힐 때 STARS=1500..4000
 
 
 def gh(path):
@@ -41,7 +42,7 @@ def candidates():
     out = {}
     for lang in ("TypeScript", "JavaScript"):
         for page in range(1, 4):
-            q = f"search/repositories?q=language:{lang}+stars:>4000+pushed:>2026-09-15+archived:false&sort=stars&per_page=100&page={page}"
+            q = f"search/repositories?q=language:{lang}+stars:{STARS}+pushed:>2026-09-15+archived:false&sort=stars&per_page=100&page={page}"
             d = gh(q) or {}
             for it in d.get("items", []):
                 out[it["full_name"]] = it["stargazers_count"]

@@ -1071,7 +1071,17 @@
    "pr": 15692,
    "createdAt": "2026-10-09T14:24:05Z",
    "status": "waiting"
+  },
+  {
+   "title": "키맵 검색에서 연속 키 사이 공백이 사라짐",
+   "titleEn": "chord keybindings lose their space in keymap search",
+   "type": "버린 반환값 (searchKeybindings 의 chordRenderedResult.concat — 결과를 버리고, 인덱스는 spaceIndexArr[-1] 로 NaN, 끝에 join('+') 로 덮어씀)",
+   "repo": "opensumi/core",
+   "repoLabel": "opensumi · 3.7k★",
+   "pr": 4776,
+   "createdAt": "2026-10-09T14:49:21Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T14:29:26.016Z"
+ "generatedAt": "2026-10-09T14:54:32.322Z"
 }
