@@ -978,7 +978,11 @@
    "repoLabel": "readest · 25k★",
    "pr": 6687,
    "createdAt": "2026-10-09T04:00:54Z",
-   "status": "waiting"
+   "status": "merged",
+   "mergedAt": "2026-10-09T08:15:25Z",
+   "release": {
+    "channel": "pending"
+   }
   },
   {
    "title": "PKI 동기화 3곳의 외부 ID Map 쓰기만 함",
@@ -1001,5 +1005,5 @@
    "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T08:02:00.808Z"
+ "generatedAt": "2026-10-09T08:23:31.889Z"
 }
