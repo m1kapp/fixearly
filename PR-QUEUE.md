@@ -32,6 +32,7 @@
 | [pnpm#14032](https://github.com/pnpm/pnpm/pull/14032) | 머지 | — |
 | [nocodb#14309](https://github.com/nocodb/nocodb/pull/14309) | 머지 | 질문 없이 머지 |
 | [turborepo#14433](https://github.com/vercel/turborepo/pull/14433) | 머지 | — |
+| [cline#14974](https://github.com/cline/cline/pull/14974) | 머지 | — |
 | [medusa#16188](https://github.com/medusajs/medusa/pull/16188) | 머지 | 메인테이너 승인 뒤 머지 |
 | [medusa#16233](https://github.com/medusajs/medusa/pull/16233) | 머지 | 메인테이너 승인 뒤 자동 머지 |
 | [mongoose#16474](https://github.com/Automattic/mongoose/pull/16474) | 머지 | 리뷰의 변경 요청을 반영한 뒤 승인·머지 |
@@ -343,10 +344,10 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
+| [Babylon.js#18990](https://github.com/BabylonJS/Babylon.js/pull/18990) | 버린 반환값 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [infisical#8536](https://github.com/Infisical/infisical/pull/8536) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [insomnia#10575](https://github.com/Kong/insomnia/pull/10575) | forEach 안 await | ⚪ 대기 | 1일째 / 보통 1일 |
 | [Trilium#11949](https://github.com/TriliumNext/Trilium/pull/11949) | 버려진 Promise | ⚪ 대기 | 1일째 / 보통 1일 |
-| [cline#14974](https://github.com/cline/cline/pull/14974) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [compiler-explorer#9241](https://github.com/compiler-explorer/compiler-explorer/pull/9241) | 버린 반환값 | ⚪ 대기 | 1일째 / 보통 1일 |
 | [cytoscape.js#3527](https://github.com/cytoscape/cytoscape.js/pull/3527) | O(n²) | ⚪ 대기 | 1일째 / 보통 6일 |
 | [pdf.js#22102](https://github.com/mozilla/pdf.js/pull/22102) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 1일째 / 보통 1일 |
@@ -355,10 +356,10 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 1일째 / 보통 3일 |
 | [strapi#27893](https://github.com/strapi/strapi/pull/27893) | 버려진 Promise | ⚪ 대기 | 7일째 / 보통 6일 |
 | [super-productivity#10607](https://github.com/super-productivity/super-productivity/pull/10607) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 |
-| [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
-| [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 11일째 / 보통 2일 · 보류 |
+| [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 12일째 / 보통 1일 · 보류 |
+| [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 12일째 / 보통 2일 · 보류 |
 
-**열린 것 14건(보류 2건 빼면 12건).** 판정 난 58건 중 머지 32 · 승인 0 · 닫힘 26.
+**열린 것 14건(보류 2건 빼면 12건).** 판정 난 59건 중 머지 33 · 승인 0 · 닫힘 26.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -795,7 +796,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | payload | 100% | 100% | 1.1일 | 9/9 | 표본 부족 | 판정 경험 있음 |
 | compromise | 100% | 90% | 1.5일 | 11/11 | **1차 통과** | — |
 | promptfoo | 100% | 94% | 10.1일 | 15/15 | 1차 통과 · 후순위(느림) | 판정 경험 있음 |
-| Babylon.js | 95% | 83% | 1.0일 | 20/21 | **1차 통과** | 판정 경험 있음 |
+| Babylon.js | 95% | 83% | 1.0일 | 20/21 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
 | react-hook-form | 93% | 89% | 0.1일 | 14/15 | **1차 통과** | — |
 | compiler-explorer | 93% | 95% | 0.6일 | 13/14 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
 | grafana | 92% | 92% | 0.1일 | 12/13 | **1차 통과** | 판정 경험 있음 · 게이트 0 — 2026-06-22 부터 모든 커밋 서명 필수, 미서명 PR 은 닫는다(CONTRIBUTING, 에이전트 작성 PR 포함). CLA assistant 서명도 필요 |
@@ -827,7 +828,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | react-router | 61% | 74% | 3.0일 | 19/31 | 컷 | 열린 PR 있음 — 저장소당 1건 |
 | svelte | 60% | 55% | 1.5일 | 15/25 | 컷 | — |
 | mermaid | 60% | 65% | 6.1일 | 12/20 | 컷 | — |
-| cline | 58% | 69% | 0.3일 | 7/12 | 컷 | 열린 PR 있음 — 저장소당 1건 |
+| cline | 58% | 69% | 0.3일 | 7/12 | 컷 | 판정 경험 있음 |
 | FastGPT | 57% | 72% | 0.8일 | 8/14 | 컷 | 판정 경험 있음 |
 | berry | 57% | 57% | 11.6일 | 27/47 | 컷 | — |
 | turborepo | 56% | 90% | 0.1일 | 5/9 | 표본 부족 | 판정 경험 있음 |

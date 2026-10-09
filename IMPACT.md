@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 32**
+> **fixearly 임팩트 점수: 33**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -19,7 +19,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `lucky-user set rebuild in loop` | [cal.com · 48.9k★](https://github.com/calcom/cal.diy) | 루프 불변 인덱스 재구축 (while마다 new Set 재구축 → 호이스팅) | [#29832](https://github.com/calcom/cal.diy/pull/29832) | ❌ closed | — |
 | `dataloader doc placement O(n²)` | [payload · 45.2k★](https://github.com/payloadcms/payload) | O(n²) (배치당 keys.findIndex 전체 스캔 — Map으로 O(1)) | [#17469](https://github.com/payloadcms/payload/pull/17469) | ❌ closed | — |
 | `translations batch match O(n²)` | [medusa · 36.7k★](https://github.com/medusajs/medusa) | O(n²) (batch당 filter+some 전체 스캔 — Set으로 O(1)) | [#16188](https://github.com/medusajs/medusa/pull/16188) | ✅ merged | +1 |
-| `markdown import merge O(n²)` | [outline · 40.8k★](https://github.com/outline/outline) | O(n²) (형제 out.find title 스캔 — Map으로 O(1)) | [#13117](https://github.com/outline/outline/pull/13117) | ✅ merged | +1 |
+| `markdown import merge O(n²)` | [outline · 40.9k★](https://github.com/outline/outline) | O(n²) (형제 out.find title 스캔 — Map으로 O(1)) | [#13117](https://github.com/outline/outline/pull/13117) | ✅ merged | +1 |
 | `doc-metadata localization O(n²)` | [strapi · 73.3k★](https://github.com/strapi/strapi) | O(n²) (localization별 versions.find — 복합키 Map으로 O(1)) | [#27125](https://github.com/strapi/strapi/pull/27125) | ❌ closed | — |
 | `try/catch 안 릴리즈 정리를 await 안 함` | [strapi · 73.3k★](https://github.com/strapi/strapi) | 버려진 Promise (try/catch 로 감싼 async 호출에 await 가 없어 catch 가 안 돈다 — 로그 대신 unhandled rejection) | [#27893](https://github.com/strapi/strapi/pull/27893) | ⚪ awaiting review | — |
 | `parse-fields dedup O(n²)` | [directus · 38.3k★](https://github.com/directus/directus) | O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1)) | [#27978](https://github.com/directus/directus/pull/27978) | ❌ closed | — |
@@ -82,7 +82,8 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `RAG 색인 상태 Map 쓰기만 함` | [readest · 25k★](https://github.com/readest/readest) | 쓰기만 하는 컬렉션 (ragService 의 indexingStates Map · IndexingState 객체 — 기록만 하고 읽지 않음) | [#6687](https://github.com/readest/readest/pull/6687) | ✅ merged | +1 |
 | `PKI 동기화 3곳의 외부 ID Map 쓰기만 함` | [infisical · 29.7k★](https://github.com/Infisical/infisical) | 쓰기만 하는 컬렉션 (ACM·Secrets Manager·Azure Key Vault 동기화의 syncRecordsByExternalId — 채우기만 하고 읽지 않음, Chef 만 씀) | [#8536](https://github.com/Infisical/infisical/pull/8536) | ⚪ awaiting review | — |
 | `채우기만 하고 읽지 않는 Map 3개` | [super-productivity · 22.7k★](https://github.com/super-productivity/super-productivity) | 쓰기만 하는 컬렉션 (op-log 검증 projectTaskMap · sync-md mdById · doc-mode lastWrittenTitles — 주석은 echo 판별용이라는데 읽는 곳 0) | [#10607](https://github.com/super-productivity/super-productivity/pull/10607) | ⚪ awaiting review | — |
-| `보내는 쪽이 사라진 구독 스트림` | [cline · 70k★](https://github.com/cline/cline) | 쓰기만 하는 컬렉션 (activeRelinquishControlSubscriptions — 유일한 송신 함수가 지워져 add/delete 만 남음 · 웹뷰 콜백도 못 울림) | [#14974](https://github.com/cline/cline/pull/14974) | ⚪ awaiting review | — |
+| `보내는 쪽이 사라진 구독 스트림` | [cline · 70.1k★](https://github.com/cline/cline) | 쓰기만 하는 컬렉션 (activeRelinquishControlSubscriptions — 유일한 송신 함수가 지워져 add/delete 만 남음 · 웹뷰 콜백도 못 울림) | [#14974](https://github.com/cline/cline/pull/14974) | ✅ merged | +1 |
+| `인스펙터 v2 애니메이션 창이 자식 애니메이션을 버림` | [Babylon.js · 26.1k★](https://github.com/BabylonJS/Babylon.js) | 버린 반환값 (animations.concat(자식 애니메이션) 를 대입 안 함 — 자식에만 애니메이션이 있으면 'No Animations') | [#18990](https://github.com/BabylonJS/Babylon.js/pull/18990) | ⚪ awaiting review | — |
 
 ## 규칙
 
