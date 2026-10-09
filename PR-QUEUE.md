@@ -348,6 +348,7 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [infisical#8536](https://github.com/Infisical/infisical/pull/8536) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [insomnia#10575](https://github.com/Kong/insomnia/pull/10575) | forEach 안 await | ⚪ 대기 | 1일째 / 보통 1일 |
 | [Trilium#11949](https://github.com/TriliumNext/Trilium/pull/11949) | 버려진 Promise | ⚪ 대기 | 1일째 / 보통 1일 |
+| [angular#71267](https://github.com/angular/angular/pull/71267) | 버린 반환값 | ⚪ 대기 | 오늘 / 보통 2일 |
 | [compiler-explorer#9241](https://github.com/compiler-explorer/compiler-explorer/pull/9241) | 버린 반환값 | ⚪ 대기 | 1일째 / 보통 1일 |
 | [cytoscape.js#3527](https://github.com/cytoscape/cytoscape.js/pull/3527) | O(n²) | ⚪ 대기 | 1일째 / 보통 6일 |
 | [pdf.js#22102](https://github.com/mozilla/pdf.js/pull/22102) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 1일째 / 보통 1일 |
@@ -359,7 +360,7 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 12일째 / 보통 1일 · 보류 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 12일째 / 보통 2일 · 보류 |
 
-**열린 것 14건(보류 2건 빼면 12건).** 판정 난 59건 중 머지 33 · 승인 0 · 닫힘 26.
+**열린 것 15건(보류 2건 빼면 13건).** 판정 난 59건 중 머지 33 · 승인 0 · 닫힘 26.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -823,7 +824,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | cherry-studio | 73% | 86% | 1.2일 | 8/11 | 컷 | 판정 경험 있음 |
 | jupyterlab | 71% | 91% | 0.1일 | 5/7 | 표본 부족 | 판정 경험 있음 |
 | tabby | 69% | 78% | 8.1일 | 9/13 | 컷 | — |
-| angular | 65% | 79% | 2.0일 | 13/20 | 컷 | 판정 경험 있음 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
+| angular | 65% | 79% | 2.0일 | 13/20 | 컷 | 열린 PR 있음 — 저장소당 1건 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
 | next.js | 62% | 50% | 3.6일 | 8/13 | 컷 | 커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시 · PR 템플릿: 외부 기여자 PR 설명은 사람이 직접 써야 함 |
 | react-router | 61% | 74% | 3.0일 | 19/31 | 컷 | 열린 PR 있음 — 저장소당 1건 |
 | svelte | 60% | 55% | 1.5일 | 15/25 | 컷 | — |

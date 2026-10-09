@@ -1031,7 +1031,17 @@
    "pr": 18990,
    "createdAt": "2026-10-09T11:42:12Z",
    "status": "waiting"
+  },
+  {
+   "title": "output 마이그레이션 ID 의 .d.ts 정규화 결과를 버림",
+   "titleEn": "output migration drops its .d.ts → .ts ID normalization",
+   "type": "버린 반환값 (id.replace(/\\.d\\.ts$/, '.ts') 결과 미대입 — 형제 마이그레이션 둘은 대입)",
+   "repo": "angular/angular",
+   "repoLabel": "angular · 101k★",
+   "pr": 71267,
+   "createdAt": "2026-10-09T11:52:16Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T11:45:09.401Z"
+ "generatedAt": "2026-10-09T11:55:28.357Z"
 }
