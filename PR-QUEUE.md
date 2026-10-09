@@ -340,6 +340,7 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
+| [infisical#8536](https://github.com/Infisical/infisical/pull/8536) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [insomnia#10575](https://github.com/Kong/insomnia/pull/10575) | forEach 안 await | ⚪ 대기 | 1일째 / 보통 1일 |
 | [Trilium#11949](https://github.com/TriliumNext/Trilium/pull/11949) | 버려진 Promise | ⚪ 대기 | 1일째 / 보통 1일 |
 | [compiler-explorer#9241](https://github.com/compiler-explorer/compiler-explorer/pull/9241) | 버린 반환값 | ⚪ 대기 | 오늘 / 보통 1일 |
@@ -355,7 +356,7 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
 
-**열린 것 14건(보류 2건 빼면 12건).** 판정 난 55건 중 머지 30 · 승인 0 · 닫힘 25.
+**열린 것 15건(보류 2건 빼면 13건).** 판정 난 55건 중 머지 30 · 승인 0 · 닫힘 25.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -788,16 +789,16 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | orval | 100% | 96% | 0.1일 | 9/9 | 표본 부족 | 판정 경험 있음 |
 | mikro-orm | 100% | 100% | 0.2일 | 12/12 | **1차 통과** | 판정 경험 있음 |
 | pdf.js | 100% | 83% | 0.7일 | 3/3 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
-| infisical | 100% | 96% | 0.9일 | 11/11 | **1차 통과** | — |
+| infisical | 100% | 96% | 0.9일 | 11/11 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
 | payload | 100% | 100% | 1.1일 | 9/9 | 표본 부족 | 판정 경험 있음 |
 | compromise | 100% | 90% | 1.5일 | 11/11 | **1차 통과** | — |
 | n8n | 97% | 93% | 2.0일 | 28/29 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
+| promptfoo | 96% | 92% | 5.4일 | 22/23 | 1차 통과 · 후순위(느림) | 판정 경험 있음 |
 | Babylon.js | 95% | 83% | 1.0일 | 20/21 | **1차 통과** | 판정 경험 있음 |
 | react-hook-form | 93% | 89% | 0.1일 | 14/15 | **1차 통과** | — |
 | compiler-explorer | 93% | 95% | 0.6일 | 13/14 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
-| pnpm | 91% | 93% | 0.3일 | 10/11 | **1차 통과** | 판정 경험 있음 · AI 작성 PR 본문에 agent disclosure 필수 · 전체 저장소 대신 영향 패키지 테스트 실행 |
+| pnpm | 92% | 92% | 0.3일 | 12/13 | **1차 통과** | 판정 경험 있음 · AI 작성 PR 본문에 agent disclosure 필수 · 전체 저장소 대신 영향 패키지 테스트 실행 |
 | mattermost | 91% | 98% | 0.8일 | 10/11 | **1차 통과** | — |
-| promptfoo | 91% | 91% | 5.1일 | 21/23 | 1차 통과 · 후순위(느림) | 판정 경험 있음 |
 | super-productivity | 91% | 93% | 5.7일 | 10/11 | 1차 통과 · 후순위(느림) | — |
 | insomnia | 89% | 98% | 1.2일 | 8/9 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
 | nx | 88% | 92% | 1.0일 | 7/8 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 · 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 · **포크 PR 의 워크플로는 메인테이너 승인이 있어야 돈다**(2026-09-12 확인: 네 워크플로 전부 `action_required`). 빨간불처럼 보여도 우리 코드가 깬 게 아니다 — 재푸시하면 승인만 다시 걸린다 |
@@ -814,12 +815,12 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | kiss-translator | 76% | 78% | 1.4일 | 13/17 | 컷 | — |
 | TypeScript | 75% | 67% | 1.5일 | 6/8 | 표본 부족 | 게이트 0 — CONTRIBUTING '자율 코딩 에이전트 안내': **큐·대량 워크플로로 PR 을 열지 마라**(이슈·검색결과를 훑어 도는 방식). 어기면 계정 차단. 특정 사람이 그 건을 직접 고르고 리뷰까지 본인이 끌고 갈 때만 허용하고, 지시가 충돌하면 '운영자에게 이 문단을 보여주고 멈추라'고 적혀 있다. AI 보조 자체는 PR 본문에 밝히면 허용(밝히지 않으면 리뷰 없이 닫힘) · 자동 생성 댓글 금지 |
 | mongoose | 74% | 79% | 2.5일 | 14/19 | 컷 | 판정 경험 있음 |
-| cherry-studio | 70% | 87% | 1.2일 | 7/10 | 컷 | 판정 경험 있음 |
-| FastGPT | 69% | 78% | 0.4일 | 9/13 | 컷 | 열린 PR 있음 — 저장소당 1건 |
+| FastGPT | 71% | 79% | 0.4일 | 10/14 | 컷 | 열린 PR 있음 — 저장소당 1건 |
+| cherry-studio | 70% | 86% | 0.6일 | 7/10 | 컷 | 판정 경험 있음 |
 | grafana | 69% | 69% | 0.9일 | 20/29 | 컷 | 판정 경험 있음 · 게이트 0 — 2026-06-22 부터 모든 커밋 서명 필수, 미서명 PR 은 닫는다(CONTRIBUTING, 에이전트 작성 PR 포함). CLA assistant 서명도 필요 |
 | tabby | 69% | 78% | 8.1일 | 9/13 | 컷 | — |
+| supabase | 68% | 61% | 0.9일 | 15/22 | 컷 | — |
 | jupyterlab | 67% | 91% | 0.1일 | 4/6 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
-| supabase | 65% | 59% | 0.9일 | 15/23 | 컷 | — |
 | angular | 65% | 79% | 2.0일 | 13/20 | 컷 | 판정 경험 있음 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
 | cline | 64% | 70% | 0.4일 | 7/11 | 컷 | — |
 | next.js | 64% | 57% | 1.2일 | 7/11 | 컷 | 커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시 · PR 템플릿: 외부 기여자 PR 설명은 사람이 직접 써야 함 |

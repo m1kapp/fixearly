@@ -132,7 +132,7 @@
     },
     {
       "repo": "Infisical/infisical",
-      "note": "2026-10-09 넓히기 스윕: 엔진 후보 쓰기만 하는 컬렉션 3 · 버려진 Promise 2 · 외부 100%/1.6일 · CLA 있음 — 아직 손검증 전"
+      "note": "#8536 제출(PKI 동기화 3곳 쓰기만 하는 Map) · CLA 서명 필요(cla.infisical.com) · 버려진 Promise 2 미검증"
     },
     {
       "repo": "readest/readest",
