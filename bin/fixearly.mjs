@@ -2218,9 +2218,13 @@ function collectWriteOnly(ts, sf, file, lineOf, out) {
   };
   ts.forEachChild(sf, visit);
 
+  // [FP:write-only-read-commented-out] 읽는 코드를 주석으로 꺼 둔 자리다 — 지우자는 PR 은 "다시 켤 것" 으로 닫힌다.
+  // react devtools `hideElementsWithPaths` 는 `/* DISABLED: …/pull/28417 … for (… of hideElementsWithPaths) */` 였다(2026-10-09).
+  const commented = (sf.text.match(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g) || []).join("\n");
   for (const [name, d] of cand) {
     if (!d) continue;                       // 같은 이름 중복 선언 — 판단 포기
     if (reads.has(name)) continue;          // 한 군데라도 읽으면 아니다
+    if (new RegExp(`\\b${name}\\s*(\\.(size|has|get|forEach|keys|values|entries)\\b|\\))|\\bof\\s+${name}\\b`).test(commented)) continue;
     if (!writes.has(name)) continue;        // 만들기만 하고 안 건드리는 건 다른 문제(미사용 변수)
     out.push({ file, line: lineOf(d.node), name, ctor: d.ctor, writes: writes.get(name) });
   }

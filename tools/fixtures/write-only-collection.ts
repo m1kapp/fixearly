@@ -81,3 +81,15 @@ const chained = new Set<string>();
 export function chain(k: string) {
   return chained.add(k);
 }
+
+// parked: 읽는 코드를 주석으로 꺼 뒀다 — react devtools hideElementsWithPaths(DISABLED: …/pull/28417). [FP:write-only-read-commented-out]
+export function filterFibers(filters: string[]) {
+  const parked = new Set<RegExp>();
+  for (const f of filters) parked.add(new RegExp(f, 'i'));
+  /* DISABLED: see upstream PR
+  if (parked.size > 0) {
+    for (const re of parked) if (re.test('x')) return true;
+  }
+  */
+  return false;
+}
