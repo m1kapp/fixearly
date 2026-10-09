@@ -1094,7 +1094,10 @@
    "repoLabel": "burn-my-windows · 3.1k★",
    "pr": 583,
    "createdAt": "2026-10-09T15:03:03Z",
-   "status": "waiting"
+   "status": "waiting",
+   "release": {
+    "channel": "pending"
+   }
   },
   {
    "title": "손글씨 획 생성기의 쓰기만 하는 Map·Set",
