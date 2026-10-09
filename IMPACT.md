@@ -89,6 +89,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `ER 다이어그램·dagre 그래프의 쓰기만 하는 Map` | [mermaid · 90.6k★](https://github.com/mermaid-js/mermaid) | 쓰기만 하는 컬렉션 (ErDB.getData 의 subGraphDB — flowDb 에서 복사, parentDB 만 읽힘 · mermaid-graphlib 의 parents — set·clear 만) | [#8413](https://github.com/mermaid-js/mermaid/pull/8413) | ⚪ awaiting review | — |
 | `AI 마크다운 diff 의 쓰기만 하는 Set` | [affine · 73.3k★](https://github.com/toeverything/AFFiNE) | 쓰기만 하는 컬렉션 (diffBlockLists 의 handledOld — 삭제 판정은 newMap.has 로 이미 한다) | [#15692](https://github.com/toeverything/AFFiNE/pull/15692) | ⚪ awaiting review | — |
 | `키맵 검색에서 연속 키 사이 공백이 사라짐` | [opensumi · 3.7k★](https://github.com/opensumi/core) | 버린 반환값 (searchKeybindings 의 chordRenderedResult.concat — 결과를 버리고, 인덱스는 spaceIndexArr[-1] 로 NaN, 끝에 join('+') 로 덮어씀) | [#4776](https://github.com/opensumi/core/pull/4776) | ⚪ awaiting review | — |
+| `v26 설정 이전에서 flame·claw 키 이름 변경이 버려짐` | [burn-my-windows · 3.1k★](https://github.com/Schneegans/Burn-My-Windows) | 버린 반환값 (fromVersion26 의 r.replace('flame-','fire-') · r.replace('claw-','trex-') — 대입 안 해서 사용자 설정이 옛 키로 남아 무시됨) | [#583](https://github.com/Schneegans/Burn-My-Windows/pull/583) | ⚪ awaiting review | — |
 
 ## 규칙
 

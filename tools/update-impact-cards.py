@@ -333,6 +333,7 @@ BLURB = {
     "mermaid-js/mermaid": ("텍스트로 그리는 다이어그램", "diagrams from text"),
     "toeverything/AFFiNE": ("노트·화이트보드 워크스페이스", "notes & whiteboard workspace"),
     "opensumi/core": ("IDE 프레임워크", "IDE framework"),
+    "Schneegans/Burn-My-Windows": ("GNOME 창 열고 닫기 효과", "GNOME window open/close effects"),
     "twentyhq/twenty": ("오픈소스 CRM", "open-source CRM"),
     "directus/directus": ("데이터 백엔드", "data backend"),
     "Budibase/budibase": ("사내 도구 빌더", "internal tools builder"),

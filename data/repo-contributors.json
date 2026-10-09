@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T14:50:43+00:00",
+  "generatedAt": "2026-10-09T15:03:51+00:00",
   "method": "GitHub REST contributors?per_page=1&anon=true; last-page count; commit authors, not unique humans",
   "repos": {
     "Automattic/mongoose": 1090,
@@ -8,6 +8,7 @@
     "CherryHQ/cherry-studio": 481,
     "Infisical/infisical": 286,
     "Kong/insomnia": 366,
+    "Schneegans/Burn-My-Windows": 122,
     "TriliumNext/Trilium": 468,
     "TryGhost/Ghost": 931,
     "angular/angular": 2686,
