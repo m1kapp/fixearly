@@ -348,19 +348,20 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [infisical#8536](https://github.com/Infisical/infisical/pull/8536) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [insomnia#10575](https://github.com/Kong/insomnia/pull/10575) | forEach 안 await | ⚪ 대기 | 1일째 / 보통 1일 |
 | [Trilium#11949](https://github.com/TriliumNext/Trilium/pull/11949) | 버려진 Promise | ⚪ 대기 | 1일째 / 보통 1일 |
+| [ghost#31677](https://github.com/TryGhost/Ghost/pull/31677) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [angular#71267](https://github.com/angular/angular/pull/71267) | 버린 반환값 | ⚪ 대기 | 오늘 / 보통 2일 |
 | [compiler-explorer#9241](https://github.com/compiler-explorer/compiler-explorer/pull/9241) | 버린 반환값 | ⚪ 대기 | 1일째 / 보통 1일 |
 | [cytoscape.js#3527](https://github.com/cytoscape/cytoscape.js/pull/3527) | O(n²) | ⚪ 대기 | 1일째 / 보통 6일 |
-| [pdf.js#22102](https://github.com/mozilla/pdf.js/pull/22102) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 1일째 / 보통 1일 |
+| [pdf.js#22102](https://github.com/mozilla/pdf.js/pull/22102) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 2일째 / 보통 1일 |
 | [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 3일째 / 보통 2일 |
 | [nx#37332](https://github.com/nrwl/nx/pull/37332) | 버린 반환값 | ⚪ 대기 | 1일째 / 보통 1일 |
-| [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 1일째 / 보통 3일 |
+| [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 2일째 / 보통 3일 |
 | [strapi#27893](https://github.com/strapi/strapi/pull/27893) | 버려진 Promise | ⚪ 대기 | 7일째 / 보통 6일 |
 | [super-productivity#10607](https://github.com/super-productivity/super-productivity/pull/10607) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 오늘 |
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 12일째 / 보통 1일 · 보류 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 12일째 / 보통 2일 · 보류 |
 
-**열린 것 15건(보류 2건 빼면 13건).** 판정 난 59건 중 머지 33 · 승인 0 · 닫힘 26.
+**열린 것 16건(보류 2건 빼면 14건).** 판정 난 59건 중 머지 33 · 승인 0 · 닫힘 26.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -787,7 +788,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 <!-- auto:rotation — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | 저장소 | 지나가는 기여자 수락률 | 전체 외부 | 중앙 | 지나가는 머지 | 판정 | 메모 |
 |---|---|---|---|---|---|---|
-| Ghost | 100% | 98% | 0.0일 | 4/4 | 표본 부족 | 판정 경험 있음 |
+| Ghost | 100% | 98% | 0.0일 | 4/4 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
 | orval | 100% | 96% | 0.1일 | 9/9 | 표본 부족 | 판정 경험 있음 |
 | vscode | 100% | 100% | 0.2일 | 6/6 | 표본 부족 | 판정 경험 있음 · CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음 |
 | mikro-orm | 100% | 100% | 0.2일 | 14/14 | **1차 통과** | 판정 경험 있음 |

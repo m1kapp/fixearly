@@ -106,7 +106,7 @@
    "title": "markdown import merge O(n²)",
    "type": "O(n²) (형제 out.find title 스캔 — Map으로 O(1))",
    "repo": "outline/outline",
-   "repoLabel": "outline · 40.9k★",
+   "repoLabel": "outline · 40.8k★",
    "pr": 13117,
    "createdAt": "2026-07-24T12:49:22Z",
    "mergedAt": "2026-07-30T03:04:09Z",
@@ -146,7 +146,7 @@
    "title": "parse-fields dedup O(n²)",
    "type": "O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1))",
    "repo": "directus/directus",
-   "repoLabel": "directus · 38.3k★",
+   "repoLabel": "directus · 38.4k★",
    "pr": 27978,
    "createdAt": "2026-07-24T13:03:10Z",
    "closedAt": "2026-07-29T19:34:55Z",
@@ -1041,7 +1041,17 @@
    "pr": 71267,
    "createdAt": "2026-10-09T11:52:16Z",
    "status": "waiting"
+  },
+  {
+   "title": "댓글 스레드 그래프의 깊이 Map 쓰기만 함",
+   "titleEn": "write-only depth map in the comment thread graph",
+   "type": "쓰기만 하는 컬렉션 (buildThreadGraph 의 depthById — 깊이는 reply.depth 로 이미 읽힌다)",
+   "repo": "TryGhost/Ghost",
+   "repoLabel": "ghost · 55.5k★",
+   "pr": 31677,
+   "createdAt": "2026-10-09T13:05:54Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T11:55:28.357Z"
+ "generatedAt": "2026-10-09T13:11:02.387Z"
 }
