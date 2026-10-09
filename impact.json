@@ -934,8 +934,11 @@
    "repo": "labring/FastGPT",
    "repoLabel": "FastGPT · 29.8k★",
    "pr": 7918,
-   "status": "waiting",
-   "createdAt": "2026-10-08T06:50:56Z"
+   "status": "closed",
+   "createdAt": "2026-10-08T06:50:56Z",
+   "closedAt": "2026-10-09T07:56:55Z",
+   "closedReason": "메인테이너: catch-all 이라 await 없이도 기대대로 동작한다 · 새 버전에서 이 자동 갱신·재시도 자체를 없앴다",
+   "closedReasonEn": "maintainer: it is a catch-all that works as intended without awaiting, and the new version removes this auto refresh/retry entirely"
   },
   {
    "title": "SCAM 변환이 spec 의 declarations 를 못 지운다",
@@ -998,5 +1001,5 @@
    "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T07:24:13.727Z"
+ "generatedAt": "2026-10-09T08:02:00.808Z"
 }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T07:22:48Z",
+  "generatedAt": "2026-10-09T08:00:39Z",
   "method": "latest 60 closed PRs; merged non-bot external contributors; medianDays is the one we judge by",
   "repos": {
     "Automattic/mongoose": {
@@ -28,11 +28,11 @@
       "medianDays": 0.8,
       "averageDays": 2.5,
       "mergedExternal": 15,
-      "acceptancePct": 68,
-      "closedExternal": 22,
-      "driveByAcceptancePct": 29,
+      "acceptancePct": 65,
+      "closedExternal": 23,
+      "driveByAcceptancePct": 25,
       "driveByMerged": 2,
-      "driveByClosed": 7,
+      "driveByClosed": 8,
       "sampledClosed": 60
     },
     "CesiumGS/cesium": {
@@ -47,11 +47,11 @@
       "sampledClosed": 60
     },
     "CherryHQ/cherry-studio": {
-      "medianDays": 0.6,
-      "averageDays": 1.3,
-      "mergedExternal": 19,
+      "medianDays": 1.2,
+      "averageDays": 1.4,
+      "mergedExternal": 18,
       "acceptancePct": 86,
-      "closedExternal": 22,
+      "closedExternal": 21,
       "driveByAcceptancePct": 70,
       "driveByMerged": 7,
       "driveByClosed": 10,
@@ -278,14 +278,14 @@
       "sampledClosed": 60
     },
     "grafana/grafana": {
-      "medianDays": 0.7,
-      "averageDays": 3.4,
-      "mergedExternal": 34,
-      "acceptancePct": 72,
-      "closedExternal": 47,
-      "driveByAcceptancePct": 74,
-      "driveByMerged": 23,
-      "driveByClosed": 31,
+      "medianDays": 0.1,
+      "averageDays": 0.2,
+      "mergedExternal": 9,
+      "acceptancePct": 47,
+      "closedExternal": 19,
+      "driveByAcceptancePct": 64,
+      "driveByMerged": 9,
+      "driveByClosed": 14,
       "sampledClosed": 60
     },
     "immich-app/immich": {
@@ -323,24 +323,24 @@
     },
     "labring/FastGPT": {
       "medianDays": 0.4,
-      "averageDays": 2.6,
-      "mergedExternal": 27,
-      "acceptancePct": 79,
+      "averageDays": 2.7,
+      "mergedExternal": 26,
+      "acceptancePct": 76,
       "closedExternal": 34,
-      "driveByAcceptancePct": 71,
-      "driveByMerged": 10,
+      "driveByAcceptancePct": 64,
+      "driveByMerged": 9,
       "driveByClosed": 14,
       "sampledClosed": 60
     },
     "langfuse/langfuse": {
-      "medianDays": 0.2,
-      "averageDays": 1.0,
-      "mergedExternal": 41,
-      "acceptancePct": 84,
-      "closedExternal": 49,
-      "driveByAcceptancePct": 70,
-      "driveByMerged": 7,
-      "driveByClosed": 10,
+      "medianDays": 0.3,
+      "averageDays": 0.8,
+      "mergedExternal": 44,
+      "acceptancePct": 88,
+      "closedExternal": 50,
+      "driveByAcceptancePct": 83,
+      "driveByMerged": 5,
+      "driveByClosed": 6,
       "sampledClosed": 60
     },
     "marktext/marktext": {
@@ -432,25 +432,25 @@
       "sampledClosed": 60
     },
     "n8n-io/n8n": {
-      "medianDays": 1.9,
-      "averageDays": 9.6,
-      "mergedExternal": 42,
-      "acceptancePct": 98,
-      "closedExternal": 43,
-      "driveByAcceptancePct": 97,
-      "driveByMerged": 33,
-      "driveByClosed": 34,
+      "medianDays": 1.8,
+      "averageDays": 9.8,
+      "mergedExternal": 39,
+      "acceptancePct": 95,
+      "closedExternal": 41,
+      "driveByAcceptancePct": 94,
+      "driveByMerged": 30,
+      "driveByClosed": 32,
       "sampledClosed": 60
     },
     "nestjs/nest": {
       "medianDays": 5.1,
       "averageDays": 3.5,
       "mergedExternal": 22,
-      "acceptancePct": 73,
-      "closedExternal": 30,
-      "driveByAcceptancePct": 53,
-      "driveByMerged": 8,
-      "driveByClosed": 15,
+      "acceptancePct": 88,
+      "closedExternal": 25,
+      "driveByAcceptancePct": 75,
+      "driveByMerged": 9,
+      "driveByClosed": 12,
       "sampledClosed": 60
     },
     "nocodb/nocodb": {
@@ -466,10 +466,10 @@
     },
     "novuhq/novu": {
       "medianDays": 0.1,
-      "averageDays": 3.9,
-      "mergedExternal": 31,
+      "averageDays": 4.0,
+      "mergedExternal": 30,
       "acceptancePct": 94,
-      "closedExternal": 33,
+      "closedExternal": 32,
       "driveByAcceptancePct": 100,
       "driveByMerged": 3,
       "driveByClosed": 3,
@@ -586,8 +586,8 @@
       "sampledClosed": 60
     },
     "prisma/prisma": {
-      "medianDays": 0.8,
-      "averageDays": 2.4,
+      "medianDays": 0.6,
+      "averageDays": 2.3,
       "mergedExternal": 46,
       "acceptancePct": 84,
       "closedExternal": 55,
@@ -686,13 +686,13 @@
     },
     "supabase/supabase": {
       "medianDays": 0.9,
-      "averageDays": 9.7,
-      "mergedExternal": 25,
-      "acceptancePct": 64,
-      "closedExternal": 39,
-      "driveByAcceptancePct": 70,
-      "driveByMerged": 16,
-      "driveByClosed": 23,
+      "averageDays": 12.9,
+      "mergedExternal": 26,
+      "acceptancePct": 65,
+      "closedExternal": 40,
+      "driveByAcceptancePct": 68,
+      "driveByMerged": 15,
+      "driveByClosed": 22,
       "sampledClosed": 60
     },
     "super-productivity/super-productivity": {
@@ -751,11 +751,11 @@
       "sampledClosed": 60
     },
     "twentyhq/twenty": {
-      "medianDays": 0.5,
-      "averageDays": 4.3,
-      "mergedExternal": 20,
-      "acceptancePct": 67,
-      "closedExternal": 30,
+      "medianDays": 0.7,
+      "averageDays": 4.1,
+      "mergedExternal": 22,
+      "acceptancePct": 69,
+      "closedExternal": 32,
       "driveByAcceptancePct": 50,
       "driveByMerged": 8,
       "driveByClosed": 16,
@@ -799,10 +799,10 @@
       "averageDays": 6.6,
       "mergedExternal": 11,
       "acceptancePct": 31,
-      "closedExternal": 36,
-      "driveByAcceptancePct": 34,
+      "closedExternal": 35,
+      "driveByAcceptancePct": 35,
       "driveByMerged": 11,
-      "driveByClosed": 32,
+      "driveByClosed": 31,
       "sampledClosed": 60
     },
     "vitest-dev/vitest": {
