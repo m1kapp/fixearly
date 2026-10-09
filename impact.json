@@ -4,7 +4,7 @@
    "title": "deleteBulkMetadata N+1",
    "type": "N+1 (루프 안 순차 DELETE, item당 왕복 1회)",
    "repo": "immich-app/immich",
-   "repoLabel": "immich · 115.8k★",
+   "repoLabel": "immich · 115.9k★",
    "pr": 30163,
    "createdAt": "2026-07-23T15:26:09Z",
    "status": "closed",
@@ -320,7 +320,7 @@
    "titleEn": "unused Map in resize handler",
    "type": "쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제)",
    "repo": "excalidraw/excalidraw",
-   "repoLabel": "excalidraw · 133.6k★",
+   "repoLabel": "excalidraw · 133.5k★",
    "pr": 11805,
    "createdAt": "2026-08-01T14:22:45Z",
    "status": "closed",
@@ -1006,7 +1006,11 @@
    "repoLabel": "super-productivity · 22.7k★",
    "pr": 10607,
    "createdAt": "2026-10-09T07:20:25Z",
-   "status": "waiting"
+   "status": "merged",
+   "release": {
+    "channel": "pending"
+   },
+   "mergedAt": "2026-10-09T17:20:35Z"
   },
   {
    "title": "보내는 쪽이 사라진 구독 스트림",
@@ -1107,5 +1111,5 @@
    }
   }
  ],
- "generatedAt": "2026-10-09T16:06:22.506Z"
+ "generatedAt": "2026-10-09T17:28:15.886Z"
 }
