@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 34**
+> **fixearly 임팩트 점수: 35**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -11,7 +11,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 
 | 발견 | repo | 유형 | PR | 상태 | 점수 |
 |------|------|------|----|------|------|
-| `deleteBulkMetadata N+1` | [immich · 115.8k★](https://github.com/immich-app/immich) | N+1 (루프 안 순차 DELETE, item당 왕복 1회) | [#30163](https://github.com/immich-app/immich/pull/30163) | ❌ closed | — |
+| `deleteBulkMetadata N+1` | [immich · 115.9k★](https://github.com/immich-app/immich) | N+1 (루프 안 순차 DELETE, item당 왕복 1회) | [#30163](https://github.com/immich-app/immich/pull/30163) | ❌ closed | — |
 | `sync-agent findOne N+1` | [novu · 40.1k★](https://github.com/novuhq/novu) | N+1 (for 루프 안 findOne, 소스 통합당 쿼리 1회) | [#12074](https://github.com/novuhq/novu/pull/12074) | ❌ closed | — |
 | `booking member diff O(n²)` | [cal.com · 48.9k★](https://github.com/calcom/cal.diy) | O(n²) 배열 조회 (루프 안 .some() 선형스캔 4회 → Set) | [#29828](https://github.com/calcom/cal.diy/pull/29828) | ❌ closed | — |
 | `view-widget-upsert O(n²)` | [twenty · 58.1k★](https://github.com/twentyhq/twenty) | O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map) | [#23231](https://github.com/twentyhq/twenty/pull/23231) | ❌ closed | — |
@@ -33,7 +33,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `loadTables 카탈로그 전량 재스캔` | [typeorm · 36.7k★](https://github.com/typeorm/typeorm) | O(n²) (테이블마다 columns·constraints·fks·indices 전량 스캔 — Map 그룹핑으로 O(1)) | [#12746](https://github.com/typeorm/typeorm/pull/12746) | ❌ closed | — |
 | `growth stats 집계 3회 직렬` | [ghost · 55.5k★](https://github.com/TryGhost/Ghost) | 독립 순차 await (postId 하나로만 매개되는 집계 3개 직렬 → Promise.all, 합→최댓값) | [#29704](https://github.com/TryGhost/Ghost/pull/29704) | ✅ merged | +1 |
 | `pure CSS 청크 선형 조회` | [vite · 83.3k★](https://github.com/vitejs/vite) | O(n²) (청크 x import 마다 pureCssChunkNames 전량 스캔 — Set으로 O(1)) | [#23114](https://github.com/vitejs/vite/pull/23114) | ✅ merged | +1 |
-| `resize 핸들러 안 미사용 Map` | [excalidraw · 133.6k★](https://github.com/excalidraw/excalidraw) | 쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제) | [#11805](https://github.com/excalidraw/excalidraw/pull/11805) | ❌ closed | — |
+| `resize 핸들러 안 미사용 Map` | [excalidraw · 133.5k★](https://github.com/excalidraw/excalidraw) | 쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제) | [#11805](https://github.com/excalidraw/excalidraw/pull/11805) | ❌ closed | — |
 | `member 통계 안 미사용 Map` | [ghost · 55.5k★](https://github.com/TryGhost/Ghost) | 쓰기만 하는 컬렉션 (날짜별 Map 을 채우고 아무도 안 읽음 — 삭제) | [#29831](https://github.com/TryGhost/Ghost/pull/29831) | ✅ merged | +1 |
 | `invalidate() 안 미사용 Set` | [storybook · 91.2k★](https://github.com/storybookjs/storybook) | 쓰기만 하는 컬렉션 (파일 변경마다 채우고 아무도 안 읽음 — 소비자는 2022-11 에 이미 삭제됨) | [#35829](https://github.com/storybookjs/storybook/pull/35829) | ❌ closed | — |
 | `스택 트레이스 절반 유실` | [astro · 63.1k★](https://github.com/withastro/astro) | 전역 정규식 상태 (/g 정규식을 filter 안에서 .test() — lastIndex 가 새어 프레임이 하나 걸러 사라진다) | [#17665](https://github.com/withastro/astro/pull/17665) | ❌ closed | — |
@@ -81,7 +81,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `clang-query 도구 옵션이 compile_flags.txt 에 안 들어간다` | [compiler-explorer · 19.1k★](https://github.com/compiler-explorer/compiler-explorer) | 버린 반환값 (compileFlags.concat(this.tool.options) 결과를 대입 안 함 — TS 전환 때 push 가 concat 으로 바뀐 회귀) | [#9241](https://github.com/compiler-explorer/compiler-explorer/pull/9241) | ⚪ awaiting review | — |
 | `RAG 색인 상태 Map 쓰기만 함` | [readest · 25k★](https://github.com/readest/readest) | 쓰기만 하는 컬렉션 (ragService 의 indexingStates Map · IndexingState 객체 — 기록만 하고 읽지 않음) | [#6687](https://github.com/readest/readest/pull/6687) | ✅ merged | +1 |
 | `PKI 동기화 3곳의 외부 ID Map 쓰기만 함` | [infisical · 29.7k★](https://github.com/Infisical/infisical) | 쓰기만 하는 컬렉션 (ACM·Secrets Manager·Azure Key Vault 동기화의 syncRecordsByExternalId — 채우기만 하고 읽지 않음, Chef 만 씀) | [#8536](https://github.com/Infisical/infisical/pull/8536) | ⚪ awaiting review | — |
-| `채우기만 하고 읽지 않는 Map 3개` | [super-productivity · 22.7k★](https://github.com/super-productivity/super-productivity) | 쓰기만 하는 컬렉션 (op-log 검증 projectTaskMap · sync-md mdById · doc-mode lastWrittenTitles — 주석은 echo 판별용이라는데 읽는 곳 0) | [#10607](https://github.com/super-productivity/super-productivity/pull/10607) | ⚪ awaiting review | — |
+| `채우기만 하고 읽지 않는 Map 3개` | [super-productivity · 22.7k★](https://github.com/super-productivity/super-productivity) | 쓰기만 하는 컬렉션 (op-log 검증 projectTaskMap · sync-md mdById · doc-mode lastWrittenTitles — 주석은 echo 판별용이라는데 읽는 곳 0) | [#10607](https://github.com/super-productivity/super-productivity/pull/10607) | ✅ merged | +1 |
 | `보내는 쪽이 사라진 구독 스트림` | [cline · 70.1k★](https://github.com/cline/cline) | 쓰기만 하는 컬렉션 (activeRelinquishControlSubscriptions — 유일한 송신 함수가 지워져 add/delete 만 남음 · 웹뷰 콜백도 못 울림) | [#14974](https://github.com/cline/cline/pull/14974) | ✅ merged | +1 |
 | `인스펙터 v2 애니메이션 창이 자식 애니메이션을 버림` | [Babylon.js · 26.1k★](https://github.com/BabylonJS/Babylon.js) | 버린 반환값 (animations.concat(자식 애니메이션) 를 대입 안 함 — 자식에만 애니메이션이 있으면 'No Animations') | [#18990](https://github.com/BabylonJS/Babylon.js/pull/18990) | ⚪ awaiting review | — |
 | `output 마이그레이션 ID 의 .d.ts 정규화 결과를 버림` | [angular · 101k★](https://github.com/angular/angular) | 버린 반환값 (id.replace(/\.d\.ts$/, '.ts') 결과 미대입 — 형제 마이그레이션 둘은 대입) | [#71267](https://github.com/angular/angular/pull/71267) | ⚪ awaiting review | — |
