@@ -1061,7 +1061,17 @@
    "pr": 8413,
    "createdAt": "2026-10-09T14:13:52Z",
    "status": "waiting"
+  },
+  {
+   "title": "AI 마크다운 diff 의 쓰기만 하는 Set",
+   "titleEn": "write-only set in the AI markdown diff",
+   "type": "쓰기만 하는 컬렉션 (diffBlockLists 의 handledOld — 삭제 판정은 newMap.has 로 이미 한다)",
+   "repo": "toeverything/AFFiNE",
+   "repoLabel": "affine · 73.3k★",
+   "pr": 15692,
+   "createdAt": "2026-10-09T14:24:05Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T14:18:25.495Z"
+ "generatedAt": "2026-10-09T14:29:26.016Z"
 }
