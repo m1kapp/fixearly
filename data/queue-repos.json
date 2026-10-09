@@ -144,7 +144,7 @@
     },
     {
       "repo": "mattermost/mattermost",
-      "note": "2026-10-09 넓히기 스윕: 엔진 후보 버린 반환값 1 · 쓰기만 하는 컬렉션 2 · 버려진 Promise 6 · 외부 91%/6.4일 · CLA 있음 — 아직 손검증 전"
+      "note": "2026-10-09 손검증: admin_sidebar term.trim() 은 진짜 버린 반환값이나 flexsearch 0.6.32 실측 결과 차이 0 — 안 냄 · 쓰기만 2건은 build/ 스크립트"
     },
     {
       "repo": "spencermountain/compromise",
@@ -152,11 +152,11 @@
     },
     {
       "repo": "fishjar/kiss-translator",
-      "note": "2026-10-09 넓히기 스윕: 엔진 후보 버린 반환값 2 · 버려진 Promise 2 · 외부 76%/2.3일 — 아직 손검증 전"
+      "note": "2026-10-09: 버린 반환값 2건은 JSX 속성 안 .trim() — 문장이 아닌데 잡힘(엔진 확인 필요)"
     },
     {
       "repo": "cline/cline",
-      "note": "2026-10-09 넓히기 스윕: 엔진 후보 쓰기만 하는 컬렉션 1 · 외부 64%/1.0일 — 아직 손검증 전"
+      "note": "#14974 제출(송신자 지워진 relinquishControl 스트림 전체 제거)"
     },
     {
       "repo": "mermaid-js/mermaid",

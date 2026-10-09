@@ -82,6 +82,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `RAG 색인 상태 Map 쓰기만 함` | [readest · 25k★](https://github.com/readest/readest) | 쓰기만 하는 컬렉션 (ragService 의 indexingStates Map · IndexingState 객체 — 기록만 하고 읽지 않음) | [#6687](https://github.com/readest/readest/pull/6687) | ✅ merged | +1 |
 | `PKI 동기화 3곳의 외부 ID Map 쓰기만 함` | [infisical · 29.7k★](https://github.com/Infisical/infisical) | 쓰기만 하는 컬렉션 (ACM·Secrets Manager·Azure Key Vault 동기화의 syncRecordsByExternalId — 채우기만 하고 읽지 않음, Chef 만 씀) | [#8536](https://github.com/Infisical/infisical/pull/8536) | ⚪ awaiting review | — |
 | `채우기만 하고 읽지 않는 Map 3개` | [super-productivity · 22.7k★](https://github.com/super-productivity/super-productivity) | 쓰기만 하는 컬렉션 (op-log 검증 projectTaskMap · sync-md mdById · doc-mode lastWrittenTitles — 주석은 echo 판별용이라는데 읽는 곳 0) | [#10607](https://github.com/super-productivity/super-productivity/pull/10607) | ⚪ awaiting review | — |
+| `보내는 쪽이 사라진 구독 스트림` | [cline · 70k★](https://github.com/cline/cline) | 쓰기만 하는 컬렉션 (activeRelinquishControlSubscriptions — 유일한 송신 함수가 지워져 add/delete 만 남음 · 웹뷰 콜백도 못 울림) | [#14974](https://github.com/cline/cline/pull/14974) | ⚪ awaiting review | — |
 
 ## 규칙
 
