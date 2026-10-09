@@ -1091,7 +1091,17 @@
    "pr": 583,
    "createdAt": "2026-10-09T15:03:03Z",
    "status": "waiting"
+  },
+  {
+   "title": "손글씨 획 생성기의 쓰기만 하는 Map·Set",
+   "titleEn": "write-only map and set in the handwriting stroke generator",
+   "type": "쓰기만 하는 컬렉션 (partitionFaces 의 twinOf · assembleStrokes 의 consumedEnd — 걷기는 outgoing·consumedSeg 로 한다)",
+   "repo": "gkurt/tegaki",
+   "repoLabel": "tegaki · 3.1k★",
+   "pr": 77,
+   "createdAt": "2026-10-09T15:17:32Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T15:07:35.939Z"
+ "generatedAt": "2026-10-09T15:22:07.692Z"
 }
