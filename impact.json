@@ -1081,7 +1081,17 @@
    "pr": 4776,
    "createdAt": "2026-10-09T14:49:21Z",
    "status": "waiting"
+  },
+  {
+   "title": "v26 설정 이전에서 flame·claw 키 이름 변경이 버려짐",
+   "titleEn": "flame/claw key renames dropped when migrating v26 settings",
+   "type": "버린 반환값 (fromVersion26 의 r.replace('flame-','fire-') · r.replace('claw-','trex-') — 대입 안 해서 사용자 설정이 옛 키로 남아 무시됨)",
+   "repo": "Schneegans/Burn-My-Windows",
+   "repoLabel": "burn-my-windows · 3.1k★",
+   "pr": 583,
+   "createdAt": "2026-10-09T15:03:03Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T14:54:32.322Z"
+ "generatedAt": "2026-10-09T15:07:35.939Z"
 }

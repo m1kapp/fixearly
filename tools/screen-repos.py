@@ -96,7 +96,8 @@ def cla(repo):
     sha = ext[0]["head"]["sha"]
     names = [c["name"] for c in (gh(f"repos/{repo}/commits/{sha}/check-runs") or {}).get("check_runs", [])]
     names += [s["context"] for s in (gh(f"repos/{repo}/commits/{sha}/status") or {}).get("statuses", [])]
-    return any(re.search(r"cla|contributor.license", n, re.I) for n in names)
+    # \b: "Check Clang-Format" 은 CLA 가 아니다
+    return any(re.search(r"\bcla\b|contributor.license", n, re.I) for n in names)
 
 
 def one(item):

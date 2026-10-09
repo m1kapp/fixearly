@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T14:52:51Z",
+  "generatedAt": "2026-10-09T15:05:55Z",
   "method": "latest 60 closed PRs; merged non-bot external contributors; medianDays is the one we judge by",
   "repos": {
     "Automattic/mongoose": {
@@ -88,6 +88,17 @@
       "driveByAcceptancePct": 89,
       "driveByMerged": 8,
       "driveByClosed": 9,
+      "sampledClosed": 60
+    },
+    "Schneegans/Burn-My-Windows": {
+      "medianDays": 3.0,
+      "averageDays": 12.2,
+      "mergedExternal": 39,
+      "acceptancePct": 81,
+      "closedExternal": 48,
+      "driveByAcceptancePct": 75,
+      "driveByMerged": 6,
+      "driveByClosed": 8,
       "sampledClosed": 60
     },
     "TriliumNext/Trilium": {
@@ -437,9 +448,9 @@
       "mergedExternal": 41,
       "acceptancePct": 89,
       "closedExternal": 46,
-      "driveByAcceptancePct": 91,
-      "driveByMerged": 20,
-      "driveByClosed": 22,
+      "driveByAcceptancePct": 95,
+      "driveByMerged": 19,
+      "driveByClosed": 20,
       "sampledClosed": 60
     },
     "nestjs/nest": {
@@ -608,8 +619,8 @@
       "sampledClosed": 60
     },
     "promptfoo/promptfoo": {
-      "medianDays": 3.2,
-      "averageDays": 11.4,
+      "medianDays": 0.6,
+      "averageDays": 11.2,
       "mergedExternal": 53,
       "acceptancePct": 93,
       "closedExternal": 57,
@@ -763,13 +774,13 @@
     },
     "twentyhq/twenty": {
       "medianDays": 0.7,
-      "averageDays": 2.8,
+      "averageDays": 2.4,
       "mergedExternal": 21,
       "acceptancePct": 78,
       "closedExternal": 27,
-      "driveByAcceptancePct": 60,
-      "driveByMerged": 6,
-      "driveByClosed": 10,
+      "driveByAcceptancePct": 43,
+      "driveByMerged": 3,
+      "driveByClosed": 7,
       "sampledClosed": 60
     },
     "typeorm/typeorm": {
