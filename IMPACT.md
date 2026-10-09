@@ -84,6 +84,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `채우기만 하고 읽지 않는 Map 3개` | [super-productivity · 22.7k★](https://github.com/super-productivity/super-productivity) | 쓰기만 하는 컬렉션 (op-log 검증 projectTaskMap · sync-md mdById · doc-mode lastWrittenTitles — 주석은 echo 판별용이라는데 읽는 곳 0) | [#10607](https://github.com/super-productivity/super-productivity/pull/10607) | ⚪ awaiting review | — |
 | `보내는 쪽이 사라진 구독 스트림` | [cline · 70.1k★](https://github.com/cline/cline) | 쓰기만 하는 컬렉션 (activeRelinquishControlSubscriptions — 유일한 송신 함수가 지워져 add/delete 만 남음 · 웹뷰 콜백도 못 울림) | [#14974](https://github.com/cline/cline/pull/14974) | ✅ merged | +1 |
 | `인스펙터 v2 애니메이션 창이 자식 애니메이션을 버림` | [Babylon.js · 26.1k★](https://github.com/BabylonJS/Babylon.js) | 버린 반환값 (animations.concat(자식 애니메이션) 를 대입 안 함 — 자식에만 애니메이션이 있으면 'No Animations') | [#18990](https://github.com/BabylonJS/Babylon.js/pull/18990) | ⚪ awaiting review | — |
+| `output 마이그레이션 ID 의 .d.ts 정규화 결과를 버림` | [angular · 101k★](https://github.com/angular/angular) | 버린 반환값 (id.replace(/\.d\.ts$/, '.ts') 결과 미대입 — 형제 마이그레이션 둘은 대입) | [#71267](https://github.com/angular/angular/pull/71267) | ⚪ awaiting review | — |
 
 ## 규칙
 
