@@ -294,6 +294,7 @@ def delivery_timeline(f, key, pr_url, age_html):
 # 무엇을 하는 물건인지만 남긴다. 새 저장소는 여기 없으면 빈칸으로 나가고,
 # --check 가 잡는다.
 BLURB = {
+    "super-productivity/super-productivity": ("할 일·시간 기록 앱", "todo and time-tracking app"),
     "Infisical/infisical": ("시크릿·인증서 관리 플랫폼", "secrets and certificate management platform"),
     "readest/readest": ("전자책 리더 앱", "ebook reader app"),
     "facebook/react": ("UI 라이브러리 · 컴파일러", "UI library and compiler"),
