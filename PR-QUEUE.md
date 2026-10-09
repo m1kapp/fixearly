@@ -341,7 +341,7 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 |---|---|---|---|
 | [cherry-studio#21363](https://github.com/CherryHQ/cherry-studio/pull/21363) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 1일째 / 보통 1일 |
 | [insomnia#10575](https://github.com/Kong/insomnia/pull/10575) | forEach 안 await | ⚪ 대기 | 1일째 / 보통 2일 |
-| [Trilium#11949](https://github.com/TriliumNext/Trilium/pull/11949) | 버려진 Promise | ⚪ 대기 | 오늘 / 보통 1일 |
+| [Trilium#11949](https://github.com/TriliumNext/Trilium/pull/11949) | 버려진 Promise | ⚪ 대기 | 1일째 / 보통 1일 |
 | [compiler-explorer#9241](https://github.com/compiler-explorer/compiler-explorer/pull/9241) | 버린 반환값 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [cytoscape.js#3527](https://github.com/cytoscape/cytoscape.js/pull/3527) | O(n²) | ⚪ 대기 | 1일째 / 보통 6일 |
 | [jupyterlab#20008](https://github.com/jupyterlab/jupyterlab/pull/20008) | 버린 반환값 | ⚪ 대기 | 오늘 / 보통 1일 |
