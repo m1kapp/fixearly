@@ -19,7 +19,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `lucky-user set rebuild in loop` | [cal.com · 48.9k★](https://github.com/calcom/cal.diy) | 루프 불변 인덱스 재구축 (while마다 new Set 재구축 → 호이스팅) | [#29832](https://github.com/calcom/cal.diy/pull/29832) | ❌ closed | — |
 | `dataloader doc placement O(n²)` | [payload · 45.2k★](https://github.com/payloadcms/payload) | O(n²) (배치당 keys.findIndex 전체 스캔 — Map으로 O(1)) | [#17469](https://github.com/payloadcms/payload/pull/17469) | ❌ closed | — |
 | `translations batch match O(n²)` | [medusa · 36.7k★](https://github.com/medusajs/medusa) | O(n²) (batch당 filter+some 전체 스캔 — Set으로 O(1)) | [#16188](https://github.com/medusajs/medusa/pull/16188) | ✅ merged | +1 |
-| `markdown import merge O(n²)` | [outline · 40.8k★](https://github.com/outline/outline) | O(n²) (형제 out.find title 스캔 — Map으로 O(1)) | [#13117](https://github.com/outline/outline/pull/13117) | ✅ merged | +1 |
+| `markdown import merge O(n²)` | [outline · 40.9k★](https://github.com/outline/outline) | O(n²) (형제 out.find title 스캔 — Map으로 O(1)) | [#13117](https://github.com/outline/outline/pull/13117) | ✅ merged | +1 |
 | `doc-metadata localization O(n²)` | [strapi · 73.3k★](https://github.com/strapi/strapi) | O(n²) (localization별 versions.find — 복합키 Map으로 O(1)) | [#27125](https://github.com/strapi/strapi/pull/27125) | ❌ closed | — |
 | `try/catch 안 릴리즈 정리를 await 안 함` | [strapi · 73.3k★](https://github.com/strapi/strapi) | 버려진 Promise (try/catch 로 감싼 async 호출에 await 가 없어 catch 가 안 돈다 — 로그 대신 unhandled rejection) | [#27893](https://github.com/strapi/strapi/pull/27893) | ⚪ awaiting review | — |
 | `parse-fields dedup O(n²)` | [directus · 38.4k★](https://github.com/directus/directus) | O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1)) | [#27978](https://github.com/directus/directus/pull/27978) | ❌ closed | — |
@@ -86,6 +86,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `인스펙터 v2 애니메이션 창이 자식 애니메이션을 버림` | [Babylon.js · 26.1k★](https://github.com/BabylonJS/Babylon.js) | 버린 반환값 (animations.concat(자식 애니메이션) 를 대입 안 함 — 자식에만 애니메이션이 있으면 'No Animations') | [#18990](https://github.com/BabylonJS/Babylon.js/pull/18990) | ⚪ awaiting review | — |
 | `output 마이그레이션 ID 의 .d.ts 정규화 결과를 버림` | [angular · 101k★](https://github.com/angular/angular) | 버린 반환값 (id.replace(/\.d\.ts$/, '.ts') 결과 미대입 — 형제 마이그레이션 둘은 대입) | [#71267](https://github.com/angular/angular/pull/71267) | ⚪ awaiting review | — |
 | `댓글 스레드 그래프의 깊이 Map 쓰기만 함` | [ghost · 55.5k★](https://github.com/TryGhost/Ghost) | 쓰기만 하는 컬렉션 (buildThreadGraph 의 depthById — 깊이는 reply.depth 로 이미 읽힌다) | [#31677](https://github.com/TryGhost/Ghost/pull/31677) | ⚪ awaiting review | — |
+| `ER 다이어그램·dagre 그래프의 쓰기만 하는 Map` | [mermaid · 90.6k★](https://github.com/mermaid-js/mermaid) | 쓰기만 하는 컬렉션 (ErDB.getData 의 subGraphDB — flowDb 에서 복사, parentDB 만 읽힘 · mermaid-graphlib 의 parents — set·clear 만) | [#8413](https://github.com/mermaid-js/mermaid/pull/8413) | ⚪ awaiting review | — |
 
 ## 규칙
 
