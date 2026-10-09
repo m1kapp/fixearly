@@ -962,7 +962,17 @@
    "pr": 9241,
    "status": "waiting",
    "createdAt": "2026-10-08T08:45:53Z"
+  },
+  {
+   "title": "RAG 색인 상태 Map 쓰기만 함",
+   "titleEn": "write-only indexing state map in RAG service",
+   "type": "쓰기만 하는 컬렉션 (ragService 의 indexingStates Map · IndexingState 객체 — 기록만 하고 읽지 않음)",
+   "repo": "readest/readest",
+   "repoLabel": "readest · 25k★",
+   "pr": 6687,
+   "createdAt": "2026-10-09T04:00:54Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T02:38:42.222Z"
+ "generatedAt": "2026-10-09T04:05:03.879Z"
 }
