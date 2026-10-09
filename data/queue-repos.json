@@ -136,7 +136,7 @@
     },
     {
       "repo": "readest/readest",
-      "note": "#6687 제출(쓰기만 하는 indexingStates) · 정규식 상태 1건은 버림(함수마다 새 정규식, 첫 비교가 단어 첫 글자라 결과 불변) · 버려진 Promise 6 미검증"
+      "note": "#6687 머지(2026-10-09)(쓰기만 하는 indexingStates) · 정규식 상태 1건은 버림(함수마다 새 정규식, 첫 비교가 단어 첫 글자라 결과 불변) · 버려진 Promise 6 미검증"
     },
     {
       "repo": "super-productivity/super-productivity",
