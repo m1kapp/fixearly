@@ -318,11 +318,24 @@ function loadTypescript() {
   return null;
 }
 
+// .js 도 JSX 를 품는다(CRA·Vite 의 .js 컴포넌트). TS 모드로 읽으면 JSX 가 깨진 문장이 돼
+// 속성 안의 `.trim()` 이 "버린 반환값" 으로 잡혔다(kiss-translator Layout.js, 2026-10-09).
+// JS 모드는 JSX 를 같이 파싱한다.
+function scriptKindOf(ts, file) {
+  if (/\.tsx$/.test(file)) return ts.ScriptKind.TSX;
+  if (/\.(jsx|js|mjs|cjs)$/.test(file)) return ts.ScriptKind.JS;
+  return ts.ScriptKind.TS;
+}
+
+const scoringKindOf = (ts, file) => (/\.(tsx|jsx)$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
+
 // AST 기반 함수별 복잡도 — cyclomatic(McCabe) + cognitive(SonarQube 근사)
 // cognitive: 중첩 깊이 가중(+1+depth), 같은 논리 연산자 연쇄(a && b && c)는 1회만,
 // ??는 카운트 제외(null 정규화는 복잡성이 아님). 중첩 함수는 별도 함수로 분리 집계
 function analyzeAstComplexity(ts, filePath, content) {
-  const kind = /\.(tsx|jsx)$/.test(filePath) ? ts.ScriptKind.TSX : ts.ScriptKind.TS;
+  // ponytail: 점수에 들어가는 분석기(복잡도·O(n²)·순차 await·N+1)는 아직 옛 파서다 — .js 안 JSX 를 바로 읽으면
+  // 보드 74곳 중 그런 저장소의 등급이 움직인다(kiss-translator A 83 → B+ 77). 보드 재측정과 같이 바꾼다.
+  const kind = scoringKindOf(ts, filePath);
   const sf = ts.createSourceFile(filePath, content, ts.ScriptTarget.Latest, true, kind);
 
   const isFnLike = (n) =>
@@ -689,7 +702,7 @@ function analyzeIoDensity(ts, fileContents) {
       content,
       ts.ScriptTarget.Latest,
       true,
-      /\.(tsx|jsx)$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
+      scriptKindOf(ts, file),
     ),
   }));
 
@@ -982,7 +995,7 @@ const QUAD_ZONE_RANK = { backend: 3, other: 2, frontend: 1, test: 0 };
 function analyzeQuadraticLookups(ts, fileContents) {
   const sites = [];
   for (const { file, content } of fileContents) {
-    const kind = /\.(tsx|jsx)$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS;
+    const kind = scoringKindOf(ts, file);
     const sf = ts.createSourceFile(file, content, ts.ScriptTarget.Latest, true, kind);
     const lineOf = (n) => sf.getLineAndCharacterOfPosition(n.getStart(sf)).line + 1;
 
@@ -1248,7 +1261,7 @@ function analyzeNPlusOne(ts, fileContents) {
     if (!content.includes("await")) continue;
     const sf = ts.createSourceFile(
       file, content, ts.ScriptTarget.Latest, true,
-      /\.(tsx|jsx)$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
+      scoringKindOf(ts, file),
     );
 
     const loopLabel = (n) => {
@@ -1368,7 +1381,7 @@ function analyzeCoupling(ts, fileContents) {
     let sf;
     try {
       sf = ts.createSourceFile(file, content, ts.ScriptTarget.Latest, true,
-        /\.[jt]sx$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
+        scriptKindOf(ts, file));
     } catch { continue; }
     const add = (spec) => {
       const t = resolveSpec(file, spec);
@@ -1503,7 +1516,7 @@ function analyzeSerialAwaits(ts, fileContents) {
     if (!content.includes("await")) continue;
     const sf = ts.createSourceFile(
       file, content, ts.ScriptTarget.Latest, true,
-      /\.(tsx|jsx)$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
+      scoringKindOf(ts, file),
     );
 
     const scan = (statements) => {
@@ -1590,7 +1603,7 @@ function analyzeTextbookIssues(ts, fileContents) {
   const discardedPureCall = [];
 
   for (const { file, content } of fileContents) {
-    const kind = /\.(tsx|jsx)$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS;
+    const kind = scriptKindOf(ts, file);
     const sf = ts.createSourceFile(file, content, ts.ScriptTarget.Latest, true, kind);
     const lineOf = (n) => sf.getLineAndCharacterOfPosition(n.getStart(sf)).line + 1;
     const isFnLike = (n) =>
@@ -2221,7 +2234,7 @@ function analyzeTypeSafety(ts, fileContents) {
   for (const { file, content } of fileContents) {
     if (!/\.tsx?$/.test(file) || /\.d\.ts$/.test(file)) continue;
     tsFiles++;
-    const kind = /\.tsx$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS;
+    const kind = scriptKindOf(ts, file);
     const sf = ts.createSourceFile(file, content, ts.ScriptTarget.Latest, true, kind);
     const lineOf = (n) => sf.getLineAndCharacterOfPosition(n.getStart(sf)).line + 1;
 

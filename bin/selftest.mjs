@@ -259,6 +259,16 @@ if (generatedSrc) {
       namePattern: /^\s{4}([A-Za-z_$][\w$]*)\.\w+\(\) — \S*discarded-pure-call\.ts:/gm,
     },
     {
+      file: "discarded-pure-call-jsx.js",
+      key: "discardedPureCall",
+      label: "버린 반환값",
+      hit: ["slug"],
+      // 템플릿 리터럴 `….trim()` 은 JSX 속성 값이다 — TS 모드 파싱에선 깨진 문장으로 잡혔다.
+      // 그 출력은 여러 줄이라 이름으로 못 거른다 — 총 1건 검사가 지킨다.
+      miss: [],
+      namePattern: /^\s{4}(\S+?)\.\w+\(\) — \S*discarded-pure-call-jsx\.js:/gm,
+    },
+    {
       file: "write-only-collection.ts",
       // analyzeTextbookIssues 가 돌려주는 키
       key: "writeOnlyCollection",
