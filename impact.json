@@ -4,7 +4,7 @@
    "title": "deleteBulkMetadata N+1",
    "type": "N+1 (루프 안 순차 DELETE, item당 왕복 1회)",
    "repo": "immich-app/immich",
-   "repoLabel": "immich · 115.9k★",
+   "repoLabel": "immich · 116k★",
    "pr": 30163,
    "createdAt": "2026-07-23T15:26:09Z",
    "status": "closed",
@@ -363,7 +363,7 @@
    "titleEn": "printed error stacks lose every other frame",
    "type": "전역 정규식 상태 (/g 정규식을 filter 안에서 .test() — lastIndex 가 새어 프레임이 하나 걸러 사라진다)",
    "repo": "withastro/astro",
-   "repoLabel": "astro · 63.1k★",
+   "repoLabel": "astro · 63.2k★",
    "pr": 17665,
    "createdAt": "2026-08-11T12:35:43Z",
    "status": "closed",
@@ -573,7 +573,7 @@
    "titleEn": "write-only page input set in the build",
    "type": "쓰기만 하는 컬렉션 (viteBuild 가 pageInput 을 채우기만 하고 읽지 않는다 — 소비자 ssrBuild 인자가 #14306 Environment API 에서 사라졌다)",
    "repo": "withastro/astro",
-   "repoLabel": "astro · 63.1k★",
+   "repoLabel": "astro · 63.2k★",
    "pr": 17987,
    "createdAt": "2026-09-13T04:00:19Z",
    "status": "merged",
@@ -673,7 +673,7 @@
    "titleEn": "quadratic sitemap chunk URL lookups",
    "type": "O(n²) (청크별 배열 복사와 URL 포함 검사 → Set)",
    "repo": "withastro/astro",
-   "repoLabel": "astro · 63.1k★",
+   "repoLabel": "astro · 63.2k★",
    "pr": 18149,
    "createdAt": "2026-09-27T10:21:18Z",
    "status": "waiting"
@@ -815,7 +815,7 @@
    "titleEn": "Map that is filled but never read",
    "type": "쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — DFS 는 연결점의 소유 블록을 직접 따라간다)",
    "repo": "BabylonJS/Babylon.js",
-   "repoLabel": "Babylon.js · 26.1k★",
+   "repoLabel": "Babylon.js · 26.2k★",
    "pr": 18980,
    "status": "merged",
    "createdAt": "2026-10-07T04:59:27Z",
@@ -955,7 +955,7 @@
    "titleEn": "settings search drops properties nested in object settings",
    "type": "버린 반환값 (acc.concat(재귀 결과) 를 대입 안 함 — 객체 설정 안의 속성 이름·제목이 검색에서 빠진다)",
    "repo": "jupyterlab/jupyterlab",
-   "repoLabel": "jupyterlab · 15.3k★",
+   "repoLabel": "jupyterlab · 15.4k★",
    "pr": 20008,
    "status": "merged",
    "createdAt": "2026-10-08T08:42:59Z",
@@ -1031,10 +1031,13 @@
    "titleEn": "inspector v2 Animations pane drops child animatables' animations",
    "type": "버린 반환값 (animations.concat(자식 애니메이션) 를 대입 안 함 — 자식에만 애니메이션이 있으면 'No Animations')",
    "repo": "BabylonJS/Babylon.js",
-   "repoLabel": "Babylon.js · 26.1k★",
+   "repoLabel": "Babylon.js · 26.2k★",
    "pr": 18990,
    "createdAt": "2026-10-09T11:42:12Z",
-   "status": "changes"
+   "status": "approved",
+   "approvedBy": [
+    "Popov72"
+   ]
   },
   {
    "title": "output 마이그레이션 ID 의 .d.ts 정규화 결과를 버림",
@@ -1157,7 +1160,17 @@
    "pr": 13947,
    "createdAt": "2026-10-10T08:40:23Z",
    "status": "waiting"
+  },
+  {
+   "title": "벤치마크가 잘못된 type 을 받아도 실패하지 않고 엉뚱한 값을 잼",
+   "titleEn": "Benchmarks silently measure an undefined path for an invalid type",
+   "type": "버린 반환값 (fs·webstorage 벤치마크 21곳 default 분기의 new Error('Invalid type') — throw 가 빠져 아무 일도 안 함)",
+   "repo": "nodejs/node",
+   "repoLabel": "Node.js · 122.3k★",
+   "pr": 66647,
+   "createdAt": "2026-10-10T18:27:04Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-10T08:45:02.601Z"
+ "generatedAt": "2026-10-10T18:32:44.552Z"
 }
