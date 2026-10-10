@@ -314,7 +314,7 @@ if (generatedSrc) {
       key: "writeOnlyCollection",
       label: "쓰기만 하는 컬렉션",
       hit: ["seen", "audit"],
-      miss: ["known", "bag", "passed", "built", "registry", "later", "skip", "chained", "parked"],
+      miss: ["known", "bag", "passed", "built", "registry", "later", "skip", "chained", "parked", "liveNotifications"],
       // 출력 줄: `    seen = new Set() — ...`
       namePattern: /^\s{4}([A-Za-z_$][\w$]*) = new (?:Map|Set)\(\)/gm,
     },

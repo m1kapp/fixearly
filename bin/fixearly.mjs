@@ -2397,6 +2397,9 @@ function collectWriteOnly(ts, sf, file, lineOf, out) {
     if (reads.has(name)) continue;          // 한 군데라도 읽으면 아니다
     if (new RegExp(`\\b${name}\\s*(\\.(size|has|get|forEach|keys|values|entries)\\b|\\))|\\bof\\s+${name}\\b`).test(commented)) continue;
     if (!writes.has(name)) continue;        // 만들기만 하고 안 건드리는 건 다른 문제(미사용 변수)
+    // [FP:write-only-gc-retention] 객체가 수거되지 않게 참조만 들고 있는 보관용 컬렉션이다 — 읽지 않는 게 정상이다.
+    // Electron Notification 은 참조를 잃으면 수거돼 클릭 핸들러가 사라진다(cindy `liveNotifications`), oh-my-pi `retainedShells`.
+    if (/retain|alive|keepalive|^live[A-Z]|hold|pinned|strongRef/i.test(name)) continue;
     out.push({ file, line: lineOf(d.node), name, ctor: d.ctor, writes: writes.get(name) });
   }
 }
