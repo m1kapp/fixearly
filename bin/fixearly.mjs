@@ -1979,6 +1979,12 @@ function analyzeTextbookIssues(ts, fileContents) {
       //   `location.replace()`·`router.replace()`(이동), 자체 클래스가 같은 이름을 선언한 경우.
       // 가드 [FP:replace-as-iterator]: replace 는 첫 인자가 문자열·정규식 리터럴이고 둘째 인자가 함수가
       //   아닐 때만 — 콜백으로 매치를 모으는 `str.replaceAll(re, fn)` 은 의도된 순회다(pdf.js util).
+      // 같은 축: `new XError(…)` 를 만들고 throw 를 빠뜨린 문장. 에러가 아무 일도 안 하고 흐름이 계속된다.
+      // node benchmark/fs 21곳 `default: new Error('Invalid type')` — 잘못된 type 이 조용히 측정됐다(2026-10-10).
+      if (ts.isExpressionStatement(node) && ts.isNewExpression(node.expression) &&
+          ts.isIdentifier(node.expression.expression) && /(Error|Exception)$/.test(node.expression.expression.text)) {
+        discardedPureCall.push({ file, line: lineOf(node), name: node.expression.expression.text, method: "new" });
+      }
       if (ts.isExpressionStatement(node) && ts.isCallExpression(node.expression) &&
           ts.isPropertyAccessExpression(node.expression.expression) && !usesMagicString) {
         const call = node.expression;
@@ -3281,8 +3287,8 @@ if (textbook) {
     for (const w of t.statefulRegex.worst) console.log(`    ${w.name}.${w.method}() — ${w.file}:${w.line}`);
   }
   if (t.discardedPureCall?.count > 0) {
-    console.log(`  ⚠ 버린 반환값: ${t.discardedPureCall.count}곳 — 문자열·배열의 순수 메서드 결과를 버립니다 (문자열은 불변이라 그 줄은 아무것도 안 합니다)`);
-    for (const w of t.discardedPureCall.worst) console.log(`    ${w.name}.${w.method}() — ${w.file}:${w.line}`);
+    console.log(`  ⚠ 버린 반환값: ${t.discardedPureCall.count}곳 — 순수 메서드 결과나 throw 빠진 new Error 를 버립니다 (그 줄은 아무것도 안 합니다)`);
+    for (const w of t.discardedPureCall.worst) console.log(`    ${w.method === "new" ? `new ${w.name}` : `${w.name}.${w.method}`}() — ${w.file}:${w.line}`);
   }
   if (t.indexOfAsBool?.count > 0) {
     console.log(`  ⚠ 위치를 진리값으로: ${t.indexOfAsBool.count}곳 — indexOf 는 없으면 -1(참)·맨 앞이면 0(거짓)입니다 (includes 나 !== -1)`);

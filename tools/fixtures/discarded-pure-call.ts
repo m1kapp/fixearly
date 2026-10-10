@@ -89,3 +89,22 @@ export class Octree {
     return this._selection;
   }
 }
+
+// ConfigError: 에러를 만들고 throw 를 빠뜨렸다 — node benchmark 의 `default: new Error('Invalid type')`.
+class ConfigError extends Error {}
+export function pickMode(mode: string): number {
+  switch (mode) {
+    case 'fast': return 1;
+    default:
+      new ConfigError('unknown mode');
+  }
+  return 0;
+}
+
+// ParseError: throw 했다. Widget: 이름이 Error 가 아닌 생성자는 부수효과용일 수 있다.
+class ParseError extends Error {}
+class Widget { constructor() { document.body.append('x'); } }
+export function parseOrMount(src: string): void {
+  if (!src) throw new ParseError('empty');
+  new Widget();
+}

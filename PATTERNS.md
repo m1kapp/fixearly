@@ -82,10 +82,11 @@ fixearly가 잡는 패턴들의 정본. **점수는 흐릿한 집계, 이 카탈
 - **오탐 가드**: **인라인 숫자 리터럴 배열만** 본다. 변수는 런타임 타입을 정적으로 확신할 수 없어 제외(미탐을 감수하고 오탐 0을 택한다)
 
 #### 버린 반환값 (`s.replace(…)` · `arr.concat(…)` 를 대입 없이)
-- **탐지**: 문장으로 쓰인 `concat`·`trim*`·`toLowerCase`·`toUpperCase`·`pad*`·`substring`·`repeat`·`toSorted` 류 호출, 그리고 첫 인자가 문자열·정규식 리터럴인 `replace`·`replaceAll`
+- **탐지**: 문장으로 쓰인 `concat`·`trim*`·`toLowerCase`·`toUpperCase`·`pad*`·`substring`·`repeat`·`toSorted` 류 호출, 첫 인자가 문자열·정규식 리터럴인 `replace`·`replaceAll`, 그리고 throw 를 빠뜨린 `new XError(…)` 문장
 - **왜 버그인가**: 문자열은 불변이고 이 메서드들은 새 값을 돌려줄 뿐이다 — 대입을 빠뜨린 그 줄은 아무것도 안 한다
 - **고침**: 결과를 대입한다. 기계적이고, 그 줄이 하려던 일을 테스트로 고정하면 수정 전 실패·수정 후 통과가 바로 나온다
 - **오탐 가드**: `this.x()`·같은 파일이 같은 이름을 선언한 자체 메서드(pdf.js `AstIdentifier.toLowerCase`)·magic-string 을 쓰는 파일(rollup·storybook 의 제자리 `replace`/`trim`)·`location`/`router` 의 `replace`(이동)·둘째 인자가 함수인 `replace`(매치를 모으는 순회 관용구)는 뺀다. DOM `normalize()` 와 배열 `reverse`/`sort`/`splice` 는 제자리 변경이라 목록에 없다
+- **throw 빠진 에러**: 이름이 `Error`·`Exception` 으로 끝나는 생성자를 문장으로만 부르면 에러가 만들어지고 버려진다. 코퍼스 75곳에서 23건 — node `benchmark/fs` 21곳의 `default: new Error('Invalid type')`(잘못된 type 이 조용히 측정된다)와 playwright `clock.ts:422`(2026-10-10)
 - **실적**: [nx #37332](https://github.com/nrwl/nx/pull/37332) — `scam-to-standalone` 이 spec 의 `declarations` 줄을 지우는 `replace` 결과를 버렸다. 24곳 저장소에서 원형을 돌려 걸린 진짜 버그 2건(nx·theia) 중 하나다(2026-10-08)
 
 #### 위치를 진리값으로 (`if (s.indexOf(x))`)
