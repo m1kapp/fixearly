@@ -93,3 +93,9 @@ export function filterFibers(filters: string[]) {
   */
   return false;
 }
+
+// 수거 방지용 보관 — 읽지 않는 게 정상이다 · cindy notificationService
+const liveNotifications = new Set<object>();
+export function notify(n: object): void {
+  liveNotifications.add(n);
+}
