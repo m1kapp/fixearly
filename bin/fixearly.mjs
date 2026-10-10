@@ -2130,6 +2130,12 @@ function analyzeTextbookIssues(ts, fileContents) {
     collectSelfCompare(ts, sf, file, lineOf, selfCompare);
   }
 
+  // 가드 [FP:index-repo-startswith-style]: 저장소 전체에 `!s.indexOf(x)` 가 3번 이상이면 그 저자는 위치를 "0번 자리"
+  // 의미로 쓴다 — `if (s.indexOf('curl '))` 는 "curl 로 시작하지 않으면"이다(whistle 17회 · 조건 자리 5건 전부 의도).
+  // 진짜 버그가 나온 Ghost·vscode·nx·angular·n8n 은 이 관용구가 0회였다(10-10).
+  const bangIndexOf = fileContents.reduce((n, { content }) => n + (content.match(/![A-Za-z_$][\w$.]*\.indexOf\(/g) || []).length, 0);
+  if (bangIndexOf >= 3) indexOfAsBool.length = 0;
+
   return {
     awaitInForEach: { count: awaitInForEach.length, worst: awaitInForEach.slice(0, 6) },
     spreadAccumulator: { count: spreadAccumulator.length, worst: spreadAccumulator.slice(0, 6) },
