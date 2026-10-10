@@ -304,7 +304,7 @@ if (generatedSrc) {
       // node.key 는 NaN 관용구(!==), label 은 맨 이름 중복, next() 는 호출, node.value 는 공백이 다른 문자열,
       // "a" 는 리터럴 인자, el.startArrowhead 는 다른 식이다.
       // n 은 맨 이름의 NaN 아님 관용구, 0 은 리터럴끼리다.
-      miss: ["node.key", "label", "next()", "node.value", '"a"', "el.startArrowhead", "n", "0", "token.buf", "Math.PI"],
+      miss: ["node.key", "label", "next()", "node.value", '"a"', "el.startArrowhead", "n", "0", "token.buf", "Math.PI", "f[0]", "b", "false"],
       // 출력 줄: `    this.xref === — src/...:12`
       namePattern: /^\s{4}(\S+) \S+ — \S*self-compare\.ts:/gm,
     },

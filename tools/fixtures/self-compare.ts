@@ -38,5 +38,12 @@ declare function equal(a: unknown, b: unknown): boolean;
 timingSafeEqual(token.buf, token.buf);
 // miss: 테스트가 상수를 일부러 같은 값과 비교한다
 export const nanEq = equal(Math.PI, Math.PI);
+declare const f: Float32Array, b: number | null;
+// miss: Infinity - Infinity 로 NaN 을 일부러 만든다 (fingerprintjs)
+f[0] = f[0] - f[0];
+// miss: null 아니고 NaN 아닌 값 (vega)
+export const firstValid = b != null && b >= b;
+// miss: 컴파일러 산출물의 리터럴 키워드 중복 (openclaude)
+export const compiled = false || false;
 // miss: 다른 식
 export const diff = el.startArrowhead || el.endArrowhead || n;

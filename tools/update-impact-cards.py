@@ -336,6 +336,7 @@ BLURB = {
     "Schneegans/Burn-My-Windows": ("GNOME 창 열고 닫기 효과", "GNOME window open/close effects"),
     "gkurt/tegaki": ("손글씨 애니메이션 렌더러", "animated handwriting renderer"),
     "rgthree/rgthree-comfy": ("ComfyUI 노드 모음", "ComfyUI custom nodes"),
+    "serverless/serverless": ("서버리스 배포 프레임워크", "serverless deployment framework"),
     "twentyhq/twenty": ("오픈소스 CRM", "open-source CRM"),
     "directus/directus": ("데이터 백엔드", "data backend"),
     "Budibase/budibase": ("사내 도구 빌더", "internal tools builder"),

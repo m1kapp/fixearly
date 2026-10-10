@@ -40,7 +40,7 @@
    "title": "view-widget-upsert O(n²)",
    "type": "O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map)",
    "repo": "twentyhq/twenty",
-   "repoLabel": "twenty · 58.1k★",
+   "repoLabel": "twenty · 58.2k★",
    "pr": 23231,
    "createdAt": "2026-07-24T01:00:49Z",
    "closedAt": "2026-07-24T07:31:11Z",
@@ -52,7 +52,7 @@
    "title": "nested relations hydration O(n²)",
    "type": "O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map)",
    "repo": "twentyhq/twenty",
-   "repoLabel": "twenty · 58.1k★",
+   "repoLabel": "twenty · 58.2k★",
    "pr": 23232,
    "createdAt": "2026-07-24T01:48:53Z",
    "closedAt": "2026-07-24T16:25:37Z",
@@ -158,7 +158,7 @@
    "title": "resource-mapper schema validation O(n²)",
    "type": "O(n²) (value별 schema.find — id Map으로 O(1))",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 206.8k★",
+   "repoLabel": "n8n · 206.9k★",
    "pr": 34899,
    "createdAt": "2026-07-24T13:05:42Z",
    "status": "merged",
@@ -489,7 +489,7 @@
    "titleEn": "credential uninstall exits before deletions finish",
    "type": "버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all)",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 206.8k★",
+   "repoLabel": "n8n · 206.9k★",
    "pr": 37047,
    "status": "closed",
    "createdAt": "2026-08-25T15:17:47Z",
@@ -503,7 +503,7 @@
    "titleEn": "credential uninstall exits before deletions finish",
    "type": "버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all)",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 206.8k★",
+   "repoLabel": "n8n · 206.9k★",
    "pr": 40103,
    "status": "merged",
    "createdAt": "2026-10-01T13:44:30Z",
@@ -805,7 +805,7 @@
    "titleEn": "expression unique and set operations deep-compare even primitive arrays pairwise",
    "type": "O(n²) 배열 조회 (lodash isEqual 쌍 비교 — 원시값만 있으면 Set 이 같은 답을 낸다)",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 206.8k★",
+   "repoLabel": "n8n · 206.9k★",
    "pr": 40311,
    "status": "waiting",
    "createdAt": "2026-10-05T13:39:05Z"
@@ -1074,7 +1074,7 @@
    "titleEn": "write-only set in the AI markdown diff",
    "type": "쓰기만 하는 컬렉션 (diffBlockLists 의 handledOld — 삭제 판정은 newMap.has 로 이미 한다)",
    "repo": "toeverything/AFFiNE",
-   "repoLabel": "affine · 73.3k★",
+   "repoLabel": "affine · 73.4k★",
    "pr": 15692,
    "createdAt": "2026-10-09T14:24:05Z",
    "status": "waiting"
@@ -1147,7 +1147,17 @@
    "pr": 790,
    "createdAt": "2026-10-10T01:51:42Z",
    "status": "waiting"
+  },
+  {
+   "title": "Route53 기존 레코드를 못 찾고 매번 CREATE 를 보냄",
+   "titleEn": "Route53 helper never finds the existing record and always sends CREATE",
+   "type": "return 없는 콜백 (createRecordIfNotExists 의 ResourceRecordSets.find — 블록 본문이 값을 안 돌려줘 existingRecord 가 늘 undefined)",
+   "repo": "serverless/serverless",
+   "repoLabel": "serverless · 46.9k★",
+   "pr": 13947,
+   "createdAt": "2026-10-10T08:40:23Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-10T01:56:12.868Z"
+ "generatedAt": "2026-10-10T08:45:02.601Z"
 }
