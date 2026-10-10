@@ -278,6 +278,15 @@ if (generatedSrc) {
       namePattern: /^\s{4}([A-Za-z_$][\w$]*)\.\w+\(\) — \S*index-of-as-bool\.ts:/gm,
     },
     {
+      file: "index-of-as-bool-style.ts",
+      key: "indexOfAsBool",
+      label: "위치를 진리값으로",
+      // 저장소가 !s.indexOf 관용구를 쓰면(3회 이상) 위치를 0번 자리 의미로 쓰는 스타일이다 — 조건 자리도 의도다.
+      hit: [],
+      miss: ["cmd", "s"],
+      namePattern: /^\s{4}([A-Za-z_$][\w$]*)\.\w+\(\) — \S*index-of-as-bool-style\.ts:/gm,
+    },
+    {
       file: "callback-no-return.ts",
       key: "callbackNoReturn",
       label: "return 없는 콜백",
@@ -488,7 +497,8 @@ if (generatedSrc) {
     for (const n of fx.hit) check(`${fx.key} 잡음 "${n}"`, names.has(n));
     for (const n of fx.miss) check(`${fx.key} 안 잡음 "${n}"`, !names.has(n));
     // 출력은 상위 몇 건만 찍히므로 총량도 따로 본다 — 오탐이 늘면 여기가 먼저 깨진다.
-    check(`${fx.key} 총 ${fx.hit.length}건`, total === fx.hit.length);
+    // 잡을 게 없는 픽스처(hit: [])는 머리줄이 안 찍힌다 — 0건으로 본다.
+    check(`${fx.key} 총 ${fx.hit.length}건`, (total ?? (fx.hit.length === 0 && !fx.fromJson ? 0 : null)) === fx.hit.length);
   }
 }
 
