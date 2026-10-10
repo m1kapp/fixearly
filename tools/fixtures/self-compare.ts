@@ -31,5 +31,12 @@ export const lit = areSame("a", "a");
 export const notNaN = n === n;
 // miss: 리터럴끼리 (글자가 없다)
 export const off = 0 > 0;
+declare const token: { buf: Uint8Array };
+declare function timingSafeEqual(a: Uint8Array, b: Uint8Array): boolean;
+declare function equal(a: unknown, b: unknown): boolean;
+// miss: 길이가 다를 때 하는 더미 비교
+timingSafeEqual(token.buf, token.buf);
+// miss: 테스트가 상수를 일부러 같은 값과 비교한다
+export const nanEq = equal(Math.PI, Math.PI);
 // miss: 다른 식
 export const diff = el.startArrowhead || el.endArrowhead || n;
