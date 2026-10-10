@@ -914,7 +914,7 @@
    "titleEn": "filter-failing re-serializes every extracted test per result",
    "type": "O(n²) 배열 조회 (extractedTests.some(JSON.stringify(...)) — 미매칭 결과 5,000건에서 4.2초 → 21ms)",
    "repo": "promptfoo/promptfoo",
-   "repoLabel": "promptfoo · 25.8k★",
+   "repoLabel": "promptfoo · 25.9k★",
    "pr": 11464,
    "status": "merged",
    "createdAt": "2026-10-08T03:00:51Z",
@@ -1034,7 +1034,7 @@
    "repoLabel": "Babylon.js · 26.1k★",
    "pr": 18990,
    "createdAt": "2026-10-09T11:42:12Z",
-   "status": "waiting"
+   "status": "changes"
   },
   {
    "title": "output 마이그레이션 ID 의 .d.ts 정규화 결과를 버림",
@@ -1044,7 +1044,10 @@
    "repoLabel": "angular · 101k★",
    "pr": 71267,
    "createdAt": "2026-10-09T11:52:16Z",
-   "status": "waiting"
+   "status": "approved",
+   "approvedBy": [
+    "JeanMeche"
+   ]
   },
   {
    "title": "댓글 스레드 그래프의 깊이 Map 쓰기만 함",
@@ -1122,7 +1125,8 @@
    "repoLabel": "vscode · 193.5k★",
    "pr": 340771,
    "createdAt": "2026-10-09T17:53:48Z",
-   "status": "waiting"
+   "status": "reviewing",
+   "engagedAt": "2026-10-09T19:17:50Z"
   },
   {
    "title": "jdbc: 접두사를 떼는 줄이 아무것도 안 함",
@@ -1133,7 +1137,17 @@
    "pr": 14812,
    "createdAt": "2026-10-09T18:05:41Z",
    "status": "waiting"
+  },
+  {
+   "title": "모델 정보 창의 Base Model 행이 파일이 없으면 사라짐",
+   "titleEn": "model info dialog hides the Base Model row when there is no base model file",
+   "type": "같은 식 두 번 비교 (dialog_info 의 !info.baseModelFile && !info.baseModelFile — baseModel 이었어야)",
+   "repo": "rgthree/rgthree-comfy",
+   "repoLabel": "rgthree-comfy · 3.6k★",
+   "pr": 790,
+   "createdAt": "2026-10-10T01:51:42Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-09T19:17:07.822Z"
+ "generatedAt": "2026-10-10T01:56:12.868Z"
 }

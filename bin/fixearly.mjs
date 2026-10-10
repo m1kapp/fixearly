@@ -2292,7 +2292,13 @@ function collectSelfCompare(ts, sf, file, lineOf, out) {
     if (ts.isCallExpression(node) && node.arguments.length === 2) {
       const callee = node.expression;
       const name = ts.isIdentifier(callee) ? callee.text : ts.isPropertyAccessExpression(callee) ? callee.name.text : "";
-      if (SAME_FN.test(name) && same(node.arguments[0], node.arguments[1]) && !ts.isLiteralExpression(node.arguments[0])) {
+      const arg = node.arguments[0];
+      // 가드 [FP:self-compare-call-constant]: 비교 함수 호출은 인자가 속성 접근일 때만 본다. 맨 이름·리터럴·`Math.PI`·`Number.NaN`
+      // 을 같은 값과 비교하는 건 테스트가 일부러 쓰는 모양이다(deno `assert/equal_test.ts` `equal(NaN, NaN)`, Cesium Specs).
+      // timingSafeEqual(b, b) 는 길이가 다를 때 일부러 하는 더미 비교다(super-productivity·twinny 토큰 비교).
+      const memberArg = (ts.isPropertyAccessExpression(arg) || ts.isElementAccessExpression(arg)) &&
+        !/^(Math|Number|Infinity|NaN)\b/.test(arg.getText(sf));
+      if (SAME_FN.test(name) && name !== "timingSafeEqual" && memberArg && same(arg, node.arguments[1])) {
         out.push({ file, line: lineOf(node), name: node.arguments[0].getText(sf).slice(0, 40), op: name + "()" });
       }
     }
