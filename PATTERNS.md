@@ -102,6 +102,13 @@ fixearly가 잡는 패턴들의 정본. **점수는 흐릿한 집계, 이 카탈
 - **오탐 가드**: 결과를 버리는 `filter`·`some`(forEach 대용 — forEach 화살표의 식 본문 포함), async 콜백, 마지막 문장이 push·set·log 류 동기 호출인 map(payload cron 등록)은 뺀다
 - **실측**: 코퍼스 75곳에서 6건(가드 뒤 5건), 전부 진짜 — n8n displayOptions `find` · medusa docs 접근자 판정 · vscode CLI 텔레메트리 flush · vscode 원격 확장 설치(2026-10-10)
 
+#### 같은 식 두 번 비교 (`this.xref === this.xref` · `a.end || a.end`)
+- **탐지**: 양쪽이 원문 그대로 같은 `===`·`==`·`<`·`>`·`-`, 같은 조건을 두 번 쓴 `&&`·`||`, 같은 인자를 두 번 넘긴 `same`·`equals`·`compare` 류 호출 — 호출·증감이 섞인 식은 뺀다
+- **왜 버그인가**: 답이 늘 같다. 거의 언제나 한쪽은 다른 이름(start/end · include/exclude · 바깥 변수)이었어야 하는 복사·붙여넣기다
+- **고침**: 주변 대칭 코드에서 원래 이름을 찾아 바꾼다
+- **오탐 가드**: `x !== x` 는 NaN 검사(vue `vnode.key`)라 비교 집합에 없다. 맨 이름 하나의 `x && x` 와 JSX `{x && x}` 는 렌더 관용구다. 공백을 정규화하지 않는다(`v === " " || v === ""` 는 다르다)
+- **실측**: 코퍼스 75곳 원형에서 동작이 틀린 것 5건 — angular `isEquivalent()` 늘 참 · vscode 가려진 `e` 자기 비교 · excalidraw `endArrowhead || endArrowhead` · vscode 검색 `filesToExclude` 두 번 · vscode 터널 `privacy` 두 번. 무해한 중복도 같이 잡힌다(typeorm `typeof x.equals` 두 번, 2026-10-10)
+
 ### T2 — 성능, n 무한
 
 #### 루프 안 DB/HTTP 순차 `await` (N+1)

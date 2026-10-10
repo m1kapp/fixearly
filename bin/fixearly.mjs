@@ -1608,6 +1608,7 @@ function analyzeTextbookIssues(ts, fileContents) {
   const discardedPureCall = [];
   const indexOfAsBool = [];
   const callbackNoReturn = [];
+  const selfCompare = [];
 
   for (const { file, content } of fileContents) {
     const kind = scriptKindOf(ts, file);
@@ -2126,6 +2127,7 @@ function analyzeTextbookIssues(ts, fileContents) {
     // eval 이나 with 뿐이다. 재할당되는 이름도 뺀다(다른 값이 들어올 수 있다).
     collectWriteOnly(ts, sf, file, lineOf, writeOnlyCollection);
     collectBoolMisuse(ts, sf, file, lineOf, indexOfAsBool, callbackNoReturn);
+    collectSelfCompare(ts, sf, file, lineOf, selfCompare);
   }
 
   return {
@@ -2144,6 +2146,7 @@ function analyzeTextbookIssues(ts, fileContents) {
     discardedPureCall: { count: discardedPureCall.length, worst: discardedPureCall.slice(0, 6) },
     indexOfAsBool: { count: indexOfAsBool.length, worst: indexOfAsBool.slice(0, 6) },
     callbackNoReturn: { count: callbackNoReturn.length, worst: callbackNoReturn.slice(0, 6) },
+    selfCompare: { count: selfCompare.length, worst: selfCompare.slice(0, 6) },
   };
 }
 
@@ -2236,6 +2239,61 @@ function collectBoolMisuse(ts, sf, file, lineOf, idxOut, cbOut) {
             !!tailName && !SYNC_TAIL.has(tailName);
         }
         if (hit) cbOut.push({ file, line: lineOf(node), name: recv, method: m });
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(sf);
+}
+
+/**
+ * 같은 식을 자기 자신과 비교하는 자리 — 늘 같은 답이 나오고, 대개 다른 이름을 쓰려던 복사·붙여넣기다.
+ * 2026-10-10 코퍼스 75곳 원형: angular `isEquivalent() { return this.xref === this.xref }`(늘 참) ·
+ * vscode `find(e => areSameExtensions(e.identifier, e.identifier))`(가려진 e) · excalidraw
+ * `endArrowhead || endArrowhead`(start 였어야) · vscode 검색 `filesToExclude || filesToExclude`(include 였어야).
+ */
+function collectSelfCompare(ts, sf, file, lineOf, out) {
+  const K = ts.SyntaxKind;
+  const CMP = new Set([K.EqualsEqualsEqualsToken, K.EqualsEqualsToken, K.LessThanToken, K.GreaterThanToken,
+    K.LessThanEqualsToken, K.GreaterThanEqualsToken, K.MinusToken]);
+  const LOGIC = new Set([K.AmpersandAmpersandToken, K.BarBarToken]);
+  const SAME_FN = /(same|equals?|compare|^eq$|isEqual|deepEqual|shallowEqual|areEqual)/i;
+  // 호출·증감·할당이 있으면 두 번 평가한 값이 다를 수 있다 — `next() === next()` 는 자기 비교가 아니다.
+  const pure = (n) => {
+    let ok = true;
+    const g = (x) => {
+      if (!ok) return;
+      if (ts.isCallExpression(x) || ts.isNewExpression(x) || ts.isPostfixUnaryExpression(x) || ts.isAwaitExpression(x) ||
+          (ts.isPrefixUnaryExpression(x) && (x.operator === K.PlusPlusToken || x.operator === K.MinusMinusToken)) ||
+          (ts.isBinaryExpression(x) && x.operatorToken.kind >= K.FirstAssignment && x.operatorToken.kind <= K.LastAssignment)) ok = false;
+      ts.forEachChild(x, g);
+    };
+    g(n);
+    return ok;
+  };
+  // 공백까지 원문 그대로 비교한다 — 정규화하면 `x === ' ' || x === ''` 가 같아진다.
+  const same = (a, b) => pure(a) && a.getText(sf) === b.getText(sf) && /[A-Za-z_$]/.test(a.getText(sf));
+  // 가드 [FP:self-compare-flow-generic]: Flow 파일은 JS 로 읽으면 `Array<Array<T>>` 가 비교식으로 깨진다(react ReactFizzServer).
+  if (/@flow\b/.test(sf.text.slice(0, 2000))) return;
+  const visit = (node) => {
+    if (ts.isBinaryExpression(node) && same(node.left, node.right)) {
+      const op = node.operatorToken.kind;
+      // 가드 [FP:self-compare-nan-idiom]: `x !== x` 는 NaN 검사 관용구다(vue `vnode.key !== vnode.key`, mobx `+a !== +a`).
+      // `!==`·`!=` 는 비교 집합에 넣지 않는다.
+      // `value === value` 처럼 맨 이름의 같음 비교도 "NaN 이 아님" 관용구다(lodash·node comparisons·svelte equality).
+      const nanIdiom = ts.isIdentifier(node.left) && (op === K.EqualsEqualsEqualsToken || op === K.EqualsEqualsToken);
+      if (CMP.has(op) && !nanIdiom) out.push({ file, line: lineOf(node), name: node.left.getText(sf).slice(0, 40), op: node.operatorToken.getText(sf) });
+      // 가드 [FP:self-compare-render-idiom]: `label && label` 처럼 맨 이름 하나의 중복과 JSX 자식 `{x && x}` 는
+      // 렌더 관용구·무해한 중복이라 뺀다 — payload·next.js 예제 템플릿에 수십 곳.
+      else if (LOGIC.has(op) && !ts.isIdentifier(node.left) && !ts.isJsxExpression(node.parent)) {
+        out.push({ file, line: lineOf(node), name: node.left.getText(sf).slice(0, 40), op: node.operatorToken.getText(sf) });
+      }
+    }
+    if (ts.isCallExpression(node) && node.arguments.length === 2) {
+      const callee = node.expression;
+      const name = ts.isIdentifier(callee) ? callee.text : ts.isPropertyAccessExpression(callee) ? callee.name.text : "";
+      if (SAME_FN.test(name) && same(node.arguments[0], node.arguments[1]) && !ts.isLiteralExpression(node.arguments[0])) {
+        out.push({ file, line: lineOf(node), name: node.arguments[0].getText(sf).slice(0, 40), op: name + "()" });
       }
     }
     ts.forEachChild(node, visit);
@@ -3214,6 +3272,10 @@ if (textbook) {
   if (t.callbackNoReturn?.count > 0) {
     console.log(`  ⚠ return 없는 콜백: ${t.callbackNoReturn.count}곳 — 블록 본문이 값을 안 돌려줘 결과가 늘 undefined 입니다 (find 는 못 찾고 Promise.all 은 안 기다림)`);
     for (const w of t.callbackNoReturn.worst) console.log(`    ${w.name}.${w.method}() — ${w.file}:${w.line}`);
+  }
+  if (t.selfCompare?.count > 0) {
+    console.log(`  ⚠ 같은 식 두 번 비교: ${t.selfCompare.count}곳 — 양쪽이 같은 식이라 답이 늘 같습니다 (다른 이름을 쓰려던 복사·붙여넣기)`);
+    for (const w of t.selfCompare.worst) console.log(`    ${w.name} ${w.op} — ${w.file}:${w.line}`);
   }
   if (t.forInArray.count > 0) {
     console.log(`  ⚠ 배열에 for...in: ${t.forInArray.count}곳 — 인덱스가 문자열이고 상속 속성까지 돕니다 (for...of 권장)`);
