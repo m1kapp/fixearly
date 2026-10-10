@@ -683,7 +683,7 @@
    "titleEn": "Vite input stylesheet dependency race",
    "type": "버려진 Promise (입력 CSS 파일 시각 기록을 기다리지 않아 재빌드 누락)",
    "repo": "tailwindlabs/tailwindcss",
-   "repoLabel": "tailwindcss · 97.8k★",
+   "repoLabel": "tailwindcss · 97.9k★",
    "pr": 20525,
    "createdAt": "2026-09-27T10:48:19Z",
    "status": "waiting"
@@ -1034,10 +1034,11 @@
    "repoLabel": "Babylon.js · 26.2k★",
    "pr": 18990,
    "createdAt": "2026-10-09T11:42:12Z",
-   "status": "approved",
-   "approvedBy": [
-    "Popov72"
-   ]
+   "status": "merged",
+   "mergedAt": "2026-10-10T20:07:38Z",
+   "release": {
+    "channel": "pending"
+   }
   },
   {
    "title": "output 마이그레이션 ID 의 .d.ts 정규화 결과를 버림",
@@ -1172,5 +1173,5 @@
    "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-10T18:32:44.552Z"
+ "generatedAt": "2026-10-10T20:12:04.927Z"
 }

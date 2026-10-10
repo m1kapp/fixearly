@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 36**
+> **fixearly 임팩트 점수: 37**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -57,7 +57,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `React 컴파일러 패스의 쓰기만 하는 컬렉션` | [react · 250.8k★](https://github.com/facebook/react) | 쓰기만 하는 컬렉션 (propagateNonNull 의 terminalPreds Set · alignReactiveScopesToBlockScopesHIR 의 placeScopes Map — 기록만 하고 읽지 않음) | [#37699](https://github.com/react/react/pull/37699) | ✅ merged | +1 |
 | `댓글 신고 이메일의 조회 3회 직렬` | [ghost · 55.5k★](https://github.com/TryGhost/Ghost) | 독립 순차 await (신고 API 가 기다리는 post·member·owner 조회 3개를 병렬 시작) | [#31019](https://github.com/TryGhost/Ghost/pull/31019) | ✅ merged | +1 |
 | `sitemap 청크 URL 분류 O(n²)` | [astro · 63.2k★](https://github.com/withastro/astro) | O(n²) (청크별 배열 복사와 URL 포함 검사 → Set) | [#18149](https://github.com/withastro/astro/pull/18149) | ⚪ awaiting review | — |
-| `Vite 입력 CSS 의존성 기록 경합` | [tailwindcss · 97.8k★](https://github.com/tailwindlabs/tailwindcss) | 버려진 Promise (입력 CSS 파일 시각 기록을 기다리지 않아 재빌드 누락) | [#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | ⚪ awaiting review | — |
+| `Vite 입력 CSS 의존성 기록 경합` | [tailwindcss · 97.9k★](https://github.com/tailwindlabs/tailwindcss) | 버려진 Promise (입력 CSS 파일 시각 기록을 기다리지 않아 재빌드 누락) | [#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | ⚪ awaiting review | — |
 | `ES 청크 재내보내기 이름 반복 검색` | [rollup · 26.3k★](https://github.com/rollup/rollup) | O(n²) 배열 조회 (재내보내기마다 렌더된 export 배열 탐색 → Set) | [#6534](https://github.com/rollup/rollup/pull/6534) | ✅ merged | +1 |
 | `알림 목록의 모니터 관계 반복 검색` | [openstatus · 9.2k★](https://github.com/openstatusHQ/openstatus) | O(n²) 배열 조회 (알림마다 전체 모니터 관계 재검색 → Map 그룹화) | [#2780](https://github.com/openstatusHQ/openstatus/pull/2780) | ❌ closed | — |
 | `히트맵 버킷 증분의 쓰기만 하는 Map` | [grafana · 77.2k★](https://github.com/grafana/grafana) | 쓰기만 하는 컬렉션 (uPlot 에서 옮겨온 fixedDec — 채우기만 하고 읽지 않는다) | [#133985](https://github.com/grafana/grafana/pull/133985) | ❌ closed | — |
@@ -83,7 +83,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `PKI 동기화 3곳의 외부 ID Map 쓰기만 함` | [infisical · 29.7k★](https://github.com/Infisical/infisical) | 쓰기만 하는 컬렉션 (ACM·Secrets Manager·Azure Key Vault 동기화의 syncRecordsByExternalId — 채우기만 하고 읽지 않음, Chef 만 씀) | [#8536](https://github.com/Infisical/infisical/pull/8536) | ⚪ awaiting review | — |
 | `채우기만 하고 읽지 않는 Map 3개` | [super-productivity · 22.7k★](https://github.com/super-productivity/super-productivity) | 쓰기만 하는 컬렉션 (op-log 검증 projectTaskMap · sync-md mdById · doc-mode lastWrittenTitles — 주석은 echo 판별용이라는데 읽는 곳 0) | [#10607](https://github.com/super-productivity/super-productivity/pull/10607) | ✅ merged | +1 |
 | `보내는 쪽이 사라진 구독 스트림` | [cline · 70.1k★](https://github.com/cline/cline) | 쓰기만 하는 컬렉션 (activeRelinquishControlSubscriptions — 유일한 송신 함수가 지워져 add/delete 만 남음 · 웹뷰 콜백도 못 울림) | [#14974](https://github.com/cline/cline/pull/14974) | ✅ merged | +1 |
-| `인스펙터 v2 애니메이션 창이 자식 애니메이션을 버림` | [Babylon.js · 26.2k★](https://github.com/BabylonJS/Babylon.js) | 버린 반환값 (animations.concat(자식 애니메이션) 를 대입 안 함 — 자식에만 애니메이션이 있으면 'No Animations') | [#18990](https://github.com/BabylonJS/Babylon.js/pull/18990) | 🔵 approved · 머지 대기 | — |
+| `인스펙터 v2 애니메이션 창이 자식 애니메이션을 버림` | [Babylon.js · 26.2k★](https://github.com/BabylonJS/Babylon.js) | 버린 반환값 (animations.concat(자식 애니메이션) 를 대입 안 함 — 자식에만 애니메이션이 있으면 'No Animations') | [#18990](https://github.com/BabylonJS/Babylon.js/pull/18990) | ✅ merged | +1 |
 | `output 마이그레이션 ID 의 .d.ts 정규화 결과를 버림` | [angular · 101k★](https://github.com/angular/angular) | 버린 반환값 (id.replace(/\.d\.ts$/, '.ts') 결과 미대입 — 형제 마이그레이션 둘은 대입) | [#71267](https://github.com/angular/angular/pull/71267) | 🔵 approved · 머지 대기 | — |
 | `댓글 스레드 그래프의 깊이 Map 쓰기만 함` | [ghost · 55.5k★](https://github.com/TryGhost/Ghost) | 쓰기만 하는 컬렉션 (buildThreadGraph 의 depthById — 깊이는 reply.depth 로 이미 읽힌다) | [#31677](https://github.com/TryGhost/Ghost/pull/31677) | ⚪ awaiting review | — |
 | `ER 다이어그램·dagre 그래프의 쓰기만 하는 Map` | [mermaid · 90.6k★](https://github.com/mermaid-js/mermaid) | 쓰기만 하는 컬렉션 (ErDB.getData 의 subGraphDB — flowDb 에서 복사, parentDB 만 읽힘 · mermaid-graphlib 의 parents — set·clear 만) | [#8413](https://github.com/mermaid-js/mermaid/pull/8413) | ⚪ awaiting review | — |
