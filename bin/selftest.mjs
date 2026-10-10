@@ -288,6 +288,18 @@ if (generatedSrc) {
       namePattern: /^\s{4}([A-Za-z_$][\w$]*)\.\w+\(\) — \S*callback-no-return\.ts:/gm,
     },
     {
+      file: "self-compare.ts",
+      key: "selfCompare",
+      label: "같은 식 두 번 비교",
+      hit: ["this.xref", "el.endArrowhead", "args.filesToExclude", "e.id"],
+      // node.key 는 NaN 관용구(!==), label 은 맨 이름 중복, next() 는 호출, node.value 는 공백이 다른 문자열,
+      // "a" 는 리터럴 인자, el.startArrowhead 는 다른 식이다.
+      // n 은 맨 이름의 NaN 아님 관용구, 0 은 리터럴끼리다.
+      miss: ["node.key", "label", "next()", "node.value", '"a"', "el.startArrowhead", "n", "0"],
+      // 출력 줄: `    this.xref === — src/...:12`
+      namePattern: /^\s{4}(\S+) \S+ — \S*self-compare\.ts:/gm,
+    },
+    {
       file: "write-only-collection.ts",
       // analyzeTextbookIssues 가 돌려주는 키
       key: "writeOnlyCollection",
@@ -691,7 +703,7 @@ if (generatedSrc) {
   const emptyTextbook = Object.fromEntries([
     "awaitInForEach", "spreadAccumulator", "regexInLoop", "floatingPromise",
     "loopInvariantIndex", "sharedRefFill", "deepEqualSetOp", "numericSortNoComparator", "emptyCatch",
-    "statefulRegex", "forInArray", "writeOnlyCollection", "discardedPureCall", "indexOfAsBool", "callbackNoReturn",
+    "statefulRegex", "forInArray", "writeOnlyCollection", "discardedPureCall", "indexOfAsBool", "callbackNoReturn", "selfCompare",
   ].map((key) => [key, { count: 0, worst: [] }]));
   const quality = {
     quadratic: { candidateList: [{ file: "src/perf.ts", line: 3, recv: "rows", method: "find" }] },
