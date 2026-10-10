@@ -251,12 +251,12 @@ if (generatedSrc) {
       file: "discarded-pure-call.ts",
       key: "discardedPureCall",
       label: "버린 반환값",
-      hit: ["spec", "label"],
+      hit: ["spec", "label", "ConfigError"],
       // assigned 는 대입했고, collector 는 콜백 순회 관용구, location 은 이동,
       // token 은 같은 파일이 같은 이름을 선언한 자체 메서드다.
-      miss: ["assigned", "out", "collector", "location", "token", "sheet", "node", "acc", "vb", "tracked"],
+      miss: ["assigned", "out", "collector", "location", "token", "sheet", "node", "acc", "vb", "tracked", "ParseError", "Widget"],
       // 출력 줄: `    spec.replace() — src/...:7`
-      namePattern: /^\s{4}([A-Za-z_$][\w$]*)\.\w+\(\) — \S*discarded-pure-call\.ts:/gm,
+      namePattern: /^\s{4}(?:new )?([A-Za-z_$][\w$]*)(?:\.\w+)?\(\) — \S*discarded-pure-call\.ts:/gm,
     },
     {
       file: "discarded-pure-call-jsx.js",
