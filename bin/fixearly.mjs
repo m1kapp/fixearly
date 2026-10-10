@@ -2260,8 +2260,9 @@ function collectBoolMisuse(ts, sf, file, lineOf, idxOut, cbOut) {
  */
 function collectSelfCompare(ts, sf, file, lineOf, out) {
   const K = ts.SyntaxKind;
+  // `x - x` 는 넣지 않는다 — fingerprintjs `f[0] = f[0] - f[0]` 처럼 Infinity 로 NaN 을 일부러 만든다.
   const CMP = new Set([K.EqualsEqualsEqualsToken, K.EqualsEqualsToken, K.LessThanToken, K.GreaterThanToken,
-    K.LessThanEqualsToken, K.GreaterThanEqualsToken, K.MinusToken]);
+    K.LessThanEqualsToken, K.GreaterThanEqualsToken]);
   const LOGIC = new Set([K.AmpersandAmpersandToken, K.BarBarToken]);
   const SAME_FN = /(same|equals?|compare|^eq$|isEqual|deepEqual|shallowEqual|areEqual)/i;
   // 호출·증감·할당이 있으면 두 번 평가한 값이 다를 수 있다 — `next() === next()` 는 자기 비교가 아니다.
@@ -2278,7 +2279,8 @@ function collectSelfCompare(ts, sf, file, lineOf, out) {
     return ok;
   };
   // 공백까지 원문 그대로 비교한다 — 정규화하면 `x === ' ' || x === ''` 가 같아진다.
-  const same = (a, b) => pure(a) && a.getText(sf) === b.getText(sf) && /[A-Za-z_$]/.test(a.getText(sf));
+  const KEYWORD = new Set([K.TrueKeyword, K.FalseKeyword, K.NullKeyword, K.UndefinedKeyword, K.ThisKeyword]);
+  const same = (a, b) => pure(a) && !KEYWORD.has(a.kind) && a.getText(sf) === b.getText(sf) && /[A-Za-z_$]/.test(a.getText(sf));
   // 가드 [FP:self-compare-flow-generic]: Flow 파일은 JS 로 읽으면 `Array<Array<T>>` 가 비교식으로 깨진다(react ReactFizzServer).
   if (/@flow\b/.test(sf.text.slice(0, 2000))) return;
   const visit = (node) => {
@@ -2287,7 +2289,9 @@ function collectSelfCompare(ts, sf, file, lineOf, out) {
       // 가드 [FP:self-compare-nan-idiom]: `x !== x` 는 NaN 검사 관용구다(vue `vnode.key !== vnode.key`, mobx `+a !== +a`).
       // `!==`·`!=` 는 비교 집합에 넣지 않는다.
       // `value === value` 처럼 맨 이름의 같음 비교도 "NaN 이 아님" 관용구다(lodash·node comparisons·svelte equality).
-      const nanIdiom = ts.isIdentifier(node.left) && (op === K.EqualsEqualsEqualsToken || op === K.EqualsEqualsToken);
+      // `b >= b` 도 같다(vega extentIndex: null 아니고 NaN 아닌 첫 값 찾기).
+      const nanIdiom = ts.isIdentifier(node.left) && (op === K.EqualsEqualsEqualsToken || op === K.EqualsEqualsToken ||
+        op === K.GreaterThanEqualsToken || op === K.LessThanEqualsToken);
       if (CMP.has(op) && !nanIdiom) out.push({ file, line: lineOf(node), name: node.left.getText(sf).slice(0, 40), op: node.operatorToken.getText(sf) });
       // 가드 [FP:self-compare-render-idiom]: `label && label` 처럼 맨 이름 하나의 중복과 JSX 자식 `{x && x}` 는
       // 렌더 관용구·무해한 중복이라 뺀다 — payload·next.js 예제 템플릿에 수십 곳.
