@@ -1,0 +1,27 @@
+{
+ "note": "정확성 진단을 채점축으로 올릴 수 있나(2026-10-11). 머지 실적 15건인 쓰기만 하는 컬렉션부터 쟀다. 결론: 기각 — 정확성 버그는 성숙한 코드에서 드물어 저장소를 못 가른다. 독립성(rho)은 통과하지만 3곳 이상 발동이 74곳 중 2곳뿐이라 N+1 단독 때와 같은 장식 축이 된다. 버려진 Promise 를 묶으면 12곳으로 늘지만 void f() 한 줄로 피할 수 있어(에러는 그대로 버려짐) 게이밍 검사에서 탈락. 정확성 진단은 PR 발견기(축 1)로 두고, 등급(축 2)은 흔한 구조·성능 패턴만 잰다.",
+ "measuredAt": "2026-10-11",
+ "engineAt": "4fa2ccc333",
+ "scoringVersion": "v15",
+ "n": 74,
+ "density": "사이트 수 / 코드 10k줄",
+ "writeOnlyCollection": {
+  "firesIn": 5,
+  "atLeast3Sites": 0,
+  "rhoScore": -0.14,
+  "rhoLoc": 0.34
+ },
+ "bundle6_mergedRules": {
+  "firesIn": 14,
+  "atLeast3Sites": 2,
+  "rhoScore": -0.17,
+  "rhoLoc": 0.42
+ },
+ "bundle6_plusFloatingPromise": {
+  "firesIn": 28,
+  "atLeast3Sites": 12,
+  "rhoScore": -0.16,
+  "rhoLoc": 0.43
+ },
+ "reproduce": "코퍼스 클론마다 bin/fixearly.mjs 를 돌려 public/fixearly.json 의 quality.textbook.<key>.count 를 data/corpus.json 의 score·loc·kind 와 맞춘다. 판정식은 tools/axis-study.py 와 같다."
+}
