@@ -378,7 +378,7 @@ if (generatedSrc) {
       key: "quadratic",
       label: "O(n²) 게이트",
       hit: ["pending"],
-      miss: ["kinds", "counts"],
+      miss: ["kinds", "counts", "text"],
       fromJson: (j) => (j.quality?.quadratic?.candidateList || []).map((c) => c.recv),
     },
     {
