@@ -615,6 +615,21 @@ RULES = [
      "다음 호출로 새어, 같은 입력에 참·거짓이 번갈아 나온다. 성능이 아니라 조용히 틀린 답이다.",
      "A shared <code>/g</code> regex used with <code>.test()</code> in a loop leaks <code>lastIndex</code> "
      "into the next call, so the same input flips between true and false. Not slow — silently wrong.", "", ""),
+    (("return 없는 콜백",), "return 없는 콜백", "Callback without return", "진단", "diagnostic",
+     "블록 본문 <code>find</code>·<code>filter</code>·<code>some</code> 콜백이 값을 돌려주지 않는다. 늘 "
+     "<code>undefined</code> 라 <code>find</code> 는 아무것도 못 찾고, <code>Promise.all</code> 은 아무것도 안 기다린다.",
+     "A block-bodied <code>find</code>/<code>filter</code>/<code>some</code> callback that never returns. It always yields "
+     "<code>undefined</code>, so <code>find</code> finds nothing and <code>Promise.all</code> waits for nothing.", "", ""),
+    (("같은 식 두 번 비교",), "같은 식 두 번 비교", "Self-comparison", "진단", "diagnostic",
+     "<code>this.x === this.x</code>·<code>a.end || a.end</code> 처럼 같은 식을 양쪽에 둔다. 늘 참이거나 늘 같은 값이라 "
+     "비교하려던 다른 쪽이 빠진 자리다.",
+     "The same expression on both sides — <code>this.x === this.x</code>, <code>a.end || a.end</code>. Always true or always "
+     "the same value: the other operand it meant to compare is missing.", "", ""),
+    (("forEach 안 await",), "forEach 안 await", "await inside forEach", "진단", "diagnostic",
+     "<code>forEach(async …)</code> 는 콜백이 돌려주는 프라미스를 버린다. 호출한 쪽은 기다리지 않고 다음 줄로 가고, "
+     "안에서 난 실패는 아무도 못 본다.",
+     "<code>forEach(async …)</code> drops the promise each callback returns. The caller moves on without waiting, "
+     "and failures inside go unseen.", "", ""),
     ((), "함수 길이", "Function length", "채점 01", "scored 01",
      "한 번에 읽어야 하는 양. 중첩 함수·주석을 뺀 자기 코드 줄 기준, 40줄 초과(JSX 60줄) 비율. "
      "파일을 쪼개도 안 변한다 — 그래서 조작이 안 된다.",
@@ -653,6 +668,15 @@ EXAMPLES = {
     "Discarded pure call": (
         "slug.replace(/\\s+/g, '-');\nif (!ok) new Error('bad slug');",
         "slug = slug.replace(/\\s+/g, '-');\nif (!ok) throw new Error('bad slug');"),
+    "Callback without return": (
+        "const user = users.find((u) => {\n  u.id === id;\n});",
+        "const user = users.find((u) => {\n  return u.id === id;\n});"),
+    "Self-comparison": (
+        "isEquivalent(e) {\n  return this.xref === this.xref;\n}",
+        "isEquivalent(e) {\n  return this.xref === e.xref;\n}"),
+    "await inside forEach": (
+        "ids.forEach(async (id) => {\n  await remove(id);\n});\nlog('done');",
+        "for (const id of ids) {\n  await remove(id);\n}\nlog('done');"),
     "Stateful /g regex": (
         "const TAG = /^v\\d+/g;\ntags.filter((t) => TAG.test(t));",
         "const TAG = /^v\\d+/;\ntags.filter((t) => TAG.test(t));"),
@@ -687,38 +711,55 @@ def _star_num(v):
 
 
 _by_rule = {i: [] for i in range(len(RULES))}
+# 아직 판정이 안 난 PR — 같은 규칙 줄 아래에 흐리게 둔다. 머지 실적과 섞으면 실적이 부풀려 보인다.
+_pending = {i: [] for i in range(len(RULES))}
 unmapped = []
-for f in sorted(findings, key=lambda f: f.get("mergedAt") or ""):
-    if state_by_pr.get(str(f["pr"])) != "merged":
-        continue
+for f in sorted(findings, key=lambda f: f.get("mergedAt") or f.get("createdAt") or ""):
+    st = state_by_pr.get(str(f["pr"]))
     prefix = f["type"].split(" (")[0]
     i = next((i for i, r in enumerate(RULES) if prefix in r[0]), None)
+    if st not in ("merged", "closed"):
+        if i is not None:
+            _pending[i].append(f)
+        continue
+    if st != "merged":
+        continue
     if i is None:
         unmapped.append(f"#{f['pr']} {prefix}")
     else:
         _by_rule[i].append(f)
-_rows = []
-# 머지가 많은 규칙부터, 머지 없는 채점축은 원래 번호 순으로 뒤에.
-for i in sorted(_by_rule, key=lambda i: (-len(_by_rule[i]), i)):
-    _, ko, en, tko, ten, dko, den, nko, nen = RULES[i]
-    _seen = {}
-    for f in _by_rule[i]:
-        _seen.setdefault(f["repo"], []).append(f)
-    _chips = []
-    for repo, fs in sorted(_seen.items(), key=lambda kv: -_star_num(split_label(kv[1][-1]["repoLabel"])[1])):
+
+def _rule_chips(fs_all):
+    """저장소별로 묶은 칩. 별 많은 순."""
+    seen = {}
+    for f in fs_all:
+        seen.setdefault(f["repo"], []).append(f)
+    out = []
+    for repo, fs in sorted(seen.items(), key=lambda kv: -_star_num(split_label(kv[1][-1]["repoLabel"])[1])):
         name, stars = split_label(fs[-1]["repoLabel"])
         src = AVATAR.get(repo)
         fav = f'<img src="{src}" alt="" width="18" height="18" loading="lazy">' if src else ""
         many = f'<i>×{len(fs)}</i>' if len(fs) > 1 else ""
         star = f'<small>{STAR}{stars}</small>' if stars else ""
-        _chips.append(f'<a href="https://github.com/{repo}/pull/{fs[0]["pr"]}" target="_blank" rel="noopener"'
-                      f' title="{esc(repo)} · {", ".join("#" + str(x["pr"]) for x in fs)}">{fav}'
-                      f'<span class="cn"><b>{esc(name)}</b>{star}</span>{many}</a>')
+        out.append(f'<a href="https://github.com/{repo}/pull/{fs[0]["pr"]}" target="_blank" rel="noopener"'
+                   f' title="{esc(repo)} · {", ".join("#" + str(x["pr"]) for x in fs)}">{fav}'
+                   f'<span class="cn"><b>{esc(name)}</b>{star}</span>{many}</a>')
+    return out
+
+_rows = []
+# 머지가 많은 규칙부터, 머지 없는 채점축은 원래 번호 순으로 뒤에.
+for i in sorted(_by_rule, key=lambda i: (-len(_by_rule[i]), i)):
+    _, ko, en, tko, ten, dko, den, nko, nen = RULES[i]
+    _chips, _pchips = _rule_chips(_by_rule[i]), _rule_chips(_pending[i])
     n = len(_by_rule[i])
     merged = (f'<span class="axk"><span class="ko">머지 {n}건</span><span class="en">{n} merged</span></span>'
               if n else "")
     note = (f'<p class="axs"><span class="ko">{nko}</span><span class="en">{nen}</span></p>' if nko else "")
     chips = f'<div class="axc">{"".join(_chips)}</div>' if _chips else ""
+    np_ = len(_pending[i])
+    if _pchips:
+        chips += (f'<div class="axc axp"><span class="axpl"><span class="ko">대기 {np_}</span>'
+                  f'<span class="en">{np_} open</span></span>{"".join(_pchips)}</div>')
     _ex = EXAMPLES.get(en)
     code = (f'<div class="axx"><figure><figcaption><span class="ko">고치기 전</span><span class="en">Before</span></figcaption>'
             f'<pre>{_hl(_ex[0])}</pre></figure><figure class="ok"><figcaption><span class="ko">고친 후</span>'
