@@ -26,3 +26,16 @@ export function tally(counts: Row[]): Record<string, number> {
     Object.values(Report).map((t) => [t, counts.find((c) => c.type === t)?.count || 0]),
   );
 }
+
+// text: 한 곳에서 문자열 slice 로 만들고, 다른 곳에선 문자열이다 — indexOf 는 문자열 검색이다(webpack).
+// [FP:quad-string-slice-name]
+export function head(input: string): string {
+  const text = input.slice(0, 10);
+  return text;
+}
+export function skipComments(src: string, marks: string[]): number {
+  const text = src;
+  let n = 0;
+  for (const m of marks) if (text.indexOf(m) !== -1) n++;
+  return n;
+}

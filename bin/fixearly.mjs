@@ -1052,10 +1052,23 @@ function analyzeQuadraticLookups(ts, fileContents) {
           return ARRAY_MAKERS.has(init.expression.name.getText(sf));
         return false;
       };
+      // [FP:quad-string-slice-name] `slice`·`concat` 은 문자열에도 있다. webpack syntax-parser 의
+      // `const text = store.input.slice(…)` 하나 때문에 파일 전체의 `text.indexOf("*/", i)` 가 배열 스캔으로
+      // 잡혔다(2026-10-11). 이 둘만으로 얻은 증거는, 같은 파일에 같은 이름의 배열 아닌 선언이 있으면 버린다.
+      const AMBIGUOUS_MAKERS = new Set(["slice", "concat"]);
+      const weakOnly = new Set();
+      const strong = new Set();
+      const nonArray = new Set();
       const walkDecl = (n) => {
+        if (ts.isVariableDeclaration(n) && n.name && ts.isIdentifier(n.name) && n.initializer &&
+            !looksArray(n.initializer, n.type)) nonArray.add(n.name.getText(sf));
         if ((ts.isVariableDeclaration(n) || ts.isParameter(n) || ts.isPropertyDeclaration(n)) &&
             n.name && ts.isIdentifier(n.name) && looksArray(n.initializer, n.type)) {
           const nm = n.name.getText(sf);
+          const ini = n.initializer;
+          const weak = !n.type && ini && ts.isCallExpression(ini) && ts.isPropertyAccessExpression(ini.expression) &&
+            AMBIGUOUS_MAKERS.has(ini.expression.name.getText(sf));
+          (weak ? weakOnly : strong).add(nm);
           arrayVars.add(nm);
           // 함수 안에서 선언된 작은 고정 목록도 사실상 상수다 — 스코프가 아니라 크기로 본다.
           // `const listTypes = ["a","b","c"]` 를 루프에서 훑는 건 O(n x 3) = O(n) 이다.
@@ -1072,6 +1085,7 @@ function analyzeQuadraticLookups(ts, fileContents) {
         ts.forEachChild(n, walkDecl);
       };
       ts.forEachChild(sf, walkDecl);
+      for (const nm of weakOnly) if (!strong.has(nm) && nonArray.has(nm)) arrayVars.delete(nm);
     }
 
     const isFnLike = (n) =>
