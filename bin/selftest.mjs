@@ -398,9 +398,19 @@ if (generatedSrc) {
       label: "루프 안 N+1",
       hit: ["eachRepo"],
       // Promise.all(map(async ...)) 은 병렬 배칭이지 순차 N+1 이 아니다.
-      miss: ["batchedRepo", "intentRepo"],
+      miss: ["batchedRepo", "intentRepo", "retryRepo"],
       // 이 축은 콘솔에 안 찍힌다 — 산출물 JSON 에서 수신자 이름으로 읽는다.
       fromJson: (j) => (j.quality?.nplusOne?.worst || []).map((w) => w.recv),
+    },
+    {
+      file: "serial-await.ts",
+      key: "serialAwait",
+      label: "독립 순차 await",
+      hit: ["usersHit"],
+      miss: ["usersTx"],
+      // 구간 첫 줄의 변수 이름으로 판정한다.
+      fromJson: (j, srcAt) => (j.quality?.serialAwait?.worst || [])
+        .map((w) => (srcAt(w.line).match(/const\s+([A-Za-z_$][\w$]*)/) || [])[1] || "?"),
     },
     {
       file: "shared-ref-fill.ts",
