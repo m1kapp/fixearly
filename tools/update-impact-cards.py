@@ -636,6 +636,29 @@ RULES = [
 ]
 
 
+# 규칙마다 고치기 전·후 한 쌍 — 설명만으로는 어느 줄이 문제인지 안 보인다. 머지된 PR 의 모양을 줄여 옮겼다.
+EXAMPLES = {
+    "Write-only collection": (
+        "const seen = new Set();\nfor (const n of nodes) {\n  seen.add(n.id); // 아무도 안 읽음\n  render(n);\n}",
+        "for (const n of nodes) {\n  render(n);\n}"),
+    "O(n²) lookup": (
+        "for (const row of rows) {\n  const user = users.find((u) => u.id === row.userId);\n}",
+        "const byId = new Map(users.map((u) => [u.id, u]));\nfor (const row of rows) {\n  const user = byId.get(row.userId);\n}"),
+    "Needless sequential I/O": (
+        "const user = await getUser(id);\nconst posts = await getPosts(id);",
+        "const [user, posts] = await Promise.all([\n  getUser(id),\n  getPosts(id),\n]);"),
+    "Floating promise": (
+        "async function save(data) {\n  writeCache(data);\n  log('saved');\n}",
+        "async function save(data) {\n  await writeCache(data);\n  log('saved');\n}"),
+    "Discarded pure call": (
+        "slug.replace(/\\s+/g, '-');\nif (!ok) new Error('bad slug');",
+        "slug = slug.replace(/\\s+/g, '-');\nif (!ok) throw new Error('bad slug');"),
+    "Stateful /g regex": (
+        "const TAG = /^v\\d+/g;\ntags.filter((t) => TAG.test(t));",
+        "const TAG = /^v\\d+/;\ntags.filter((t) => TAG.test(t));"),
+}
+
+
 def _star_num(v):
     if not v:
         return 0
@@ -676,9 +699,13 @@ for i in sorted(_by_rule, key=lambda i: (-len(_by_rule[i]), i)):
               if n else "")
     note = (f'<p class="axs"><span class="ko">{nko}</span><span class="en">{nen}</span></p>' if nko else "")
     chips = f'<div class="axc">{"".join(_chips)}</div>' if _chips else ""
+    _ex = EXAMPLES.get(en)
+    code = (f'<div class="axx"><figure><figcaption><span class="ko">고치기 전</span><span class="en">Before</span></figcaption>'
+            f'<pre>{esc(_ex[0])}</pre></figure><figure class="ok"><figcaption><span class="ko">고친 후</span>'
+            f'<span class="en">After</span></figcaption><pre>{esc(_ex[1])}</pre></figure></div>' if _ex else "")
     _rows.append(f'<div class="axr"><div class="axn"><b><span class="ko">{ko}</span><span class="en">{en}</span></b>'
                  f'<span class="axt"><span class="ko">{tko}</span><span class="en">{ten}</span></span>{merged}</div>'
-                 f'<p><span class="ko">{dko}</span><span class="en">{den}</span></p>{note}{chips}</div>')
+                 f'<p><span class="ko">{dko}</span><span class="en">{den}</span></p>{note}{code}{chips}</div>')
 _total = sum(len(v) for v in _by_rule.values())
 _nmerged = sum(1 for v in _by_rule.values() if v)
 _head = (f'<div class="axh"><span class="ko">규칙 {len(RULES)}개<small>{_nmerged}개가 남의 저장소에 머지됨 · {_total}건</small></span>'
