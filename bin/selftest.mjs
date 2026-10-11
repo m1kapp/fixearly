@@ -374,6 +374,14 @@ if (generatedSrc) {
       fromJson: (j) => (j.quality?.quadratic?.candidateList || []).map((c) => c.recv),
     },
     {
+      file: "quadratic-gates.ts",
+      key: "quadratic",
+      label: "O(n²) 게이트",
+      hit: ["pending"],
+      miss: ["kinds", "counts"],
+      fromJson: (j) => (j.quality?.quadratic?.candidateList || []).map((c) => c.recv),
+    },
+    {
       file: "regex-in-loop.ts",
       key: "regexInLoop",
       label: "루프 안 new RegExp",

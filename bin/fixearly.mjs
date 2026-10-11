@@ -74,7 +74,9 @@ const wantKit = args.includes("--kit"); // cog × git churn = "먼저 고칠 파
 // 옛·새 파서를 비교해 영향 0곳(.js 안 JSX 없음), .js 컴포넌트 저장소는 움직인다(kiss-translator A 83 → B+ 77).
 // v15(2026-10-09): O(n²) 가 정렬 비교 함수(sort·toSorted) 안의 선형 탐색도 본다. 보드 75곳 실측: 점수·등급 변화 0,
 // 후보만 4곳에서 +2~8(storybook·outline·nx·vscode).
-const SCORING_VERSION = "v15";
+// v16(2026-10-11): O(n²) 가 for-of 헤더 식(한 번 평가)과 Object.values(Enum) 바깥을 뺀다. 코퍼스 75곳 표본 53개 손검증의
+// 탐지기 오류 5건 중 둘. 후보 2,144 → 2,110(12곳) · 실측 점수 변화 elysia 27 → 28 한 곳, 등급 변화 없음.
+const SCORING_VERSION = "v16";
 
 // 등급 색 (라이트 기준) — 배지·임베드 공용
 const GRADE_COLORS = { S: "#0f7a63", A: "#12915a", B: "#7d8a2c", C: "#c0862e", D: "#cb4436", E: "#8f2f24" };
@@ -937,6 +939,10 @@ function quadOuterDynamic(text) {
 const CONSTish = /^[A-Z][A-Z0-9_]{2,}$/; // ALL_CAPS 식별자
 function quadConstOuter(text, moduleConsts) {
   if (!text) return false;
+  // [FP:quad-object-values-enum] `Object.values(IntegrityReport)` 는 enum·상수 객체의 고정 목록이다.
+  // 루트가 `Object` 라 예전엔 데이터로 봤다 — immich integrity.repository 가 이 모양이었다(2026-10-11).
+  const ov = /^Object\.(?:values|keys|entries)\(\s*([A-Za-z_$][\w$]*)\s*\)/.exec(text.trim());
+  if (ov) return /^[A-Z]/.test(ov[1]) || moduleConsts.has(ov[1]);
   const root = text.split(/[.[(]/)[0].trim();
   if (!root) return false;
   if (CONSTish.test(root)) return true;
@@ -1188,7 +1194,14 @@ function analyzeQuadraticLookups(ts, fileContents) {
           ts.isPropertyAccessExpression(node.expression) &&
           QUAD_ITERATING_METHODS.has(node.expression.name.getText(sf)) &&
           isFnLike(child);
-        if (!alreadyWalked) walk(child, childInLoop, childLocals, childOuter, childLoop, childFn);
+        if (alreadyWalked) return;
+        // [FP:quad-loop-header-once] for-of/for-in 의 반복 대상 식과 for 초기화식은 루프 진입 때 한 번 평가된다.
+        // elysia `for (const t of types.some(…) ? ALL : types)` 를 루프 안 스캔으로 셌다(2026-10-11).
+        const once = (node.kind === ts.SyntaxKind.ForOfStatement || node.kind === ts.SyntaxKind.ForInStatement)
+          ? child === node.expression
+          : node.kind === ts.SyntaxKind.ForStatement && child === node.initializer;
+        if (once) walk(child, inLoop, locals, outerText, loopNode, childFn);
+        else walk(child, childInLoop, childLocals, childOuter, childLoop, childFn);
       });
     };
     ts.forEachChild(sf, (n) => walk(n, false, new Set(), null, null, null));
