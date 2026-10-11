@@ -272,7 +272,7 @@
   "stars": "54.6k",
   "branch": "main",
   "sha": "ee07678",
-  "sub": "ghost/core/core"
+  "sub": "ghost/core"
  },
  {
   "rank": 26,
@@ -567,7 +567,7 @@
   "kcls": "k-engine",
   "klabel": "엔진·컴파일러",
   "stars": "110k",
-  "branch": "main",
+  "branch": "release-6.0",
   "sha": "cc5c6e2d3",
   "sub": "src"
  },
@@ -822,6 +822,6 @@
   "stars": "36.6k",
   "branch": "master",
   "sha": "",
-  "sub": "src"
+  "sub": "packages/typeorm/src"
  }
 ]
