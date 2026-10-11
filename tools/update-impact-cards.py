@@ -659,6 +659,26 @@ EXAMPLES = {
 }
 
 
+# 예제 코드 색 — 빌드 때 span 으로 칠한다(런타임 하이라이터 없음). 예제가 짧아 토큰 몇 종이면 충분하다.
+_JS_KW = {"const", "let", "var", "for", "of", "if", "return", "async", "await", "function", "new", "throw"}
+_JS_TOK = re.compile(r"(?P<c>//[^\n]*)|(?P<s>'[^'\n]*')|(?P<r>(?<=[(=,]\s)/(?:\\.|[^/\n])+/[gimsuy]*|(?<=[(=,])/(?:\\.|[^/\n])+/[gimsuy]*)"
+                     r"|(?P<w>[A-Za-z_$][\w$]*)(?P<call>(?=\())?|(?P<n>\b\d+\b)")
+
+
+def _hl(code):
+    out, i = [], 0
+    for m in _JS_TOK.finditer(code):
+        out.append(esc(code[i:m.start()]))
+        kind = m.lastgroup if m.lastgroup != "call" else "w"
+        t = m.group(0)
+        if kind == "w":
+            kind = "k" if t in _JS_KW else ("f" if m.group("call") is not None else "")
+        out.append(f'<span class="t{kind}">{esc(t)}</span>' if kind else esc(t))
+        i = m.end()
+    out.append(esc(code[i:]))
+    return "".join(out)
+
+
 def _star_num(v):
     if not v:
         return 0
@@ -701,8 +721,8 @@ for i in sorted(_by_rule, key=lambda i: (-len(_by_rule[i]), i)):
     chips = f'<div class="axc">{"".join(_chips)}</div>' if _chips else ""
     _ex = EXAMPLES.get(en)
     code = (f'<div class="axx"><figure><figcaption><span class="ko">고치기 전</span><span class="en">Before</span></figcaption>'
-            f'<pre>{esc(_ex[0])}</pre></figure><figure class="ok"><figcaption><span class="ko">고친 후</span>'
-            f'<span class="en">After</span></figcaption><pre>{esc(_ex[1])}</pre></figure></div>' if _ex else "")
+            f'<pre>{_hl(_ex[0])}</pre></figure><figure class="ok"><figcaption><span class="ko">고친 후</span>'
+            f'<span class="en">After</span></figcaption><pre>{_hl(_ex[1])}</pre></figure></div>' if _ex else "")
     _rows.append(f'<div class="axr"><div class="axn"><b><span class="ko">{ko}</span><span class="en">{en}</span></b>'
                  f'<span class="axt"><span class="ko">{tko}</span><span class="en">{ten}</span></span>{merged}</div>'
                  f'<p><span class="ko">{dko}</span><span class="en">{den}</span></p>{note}{code}{chips}</div>')
