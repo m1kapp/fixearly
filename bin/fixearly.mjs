@@ -76,7 +76,9 @@ const wantKit = args.includes("--kit"); // cog × git churn = "먼저 고칠 파
 // 후보만 4곳에서 +2~8(storybook·outline·nx·vscode).
 // v16(2026-10-11): O(n²) 가 for-of 헤더 식(한 번 평가)과 Object.values(Enum) 바깥을 뺀다. 코퍼스 75곳 표본 53개 손검증의
 // 탐지기 오류 5건 중 둘. 후보 2,144 → 2,110(12곳) · 실측 점수 변화 elysia 27 → 28 한 곳, 등급 변화 없음.
-const SCORING_VERSION = "v16";
+// v17(2026-10-11): 순차 I/O 표본 34개 손검증의 오탐 셋 — 조건 없는 재시도 for, transaction·lock 옵션 구간, `.unit.` 테스트 파일.
+// 옛·새 엔진 실측: outline 77 → 78(순차 7 → 2) · qwik 86 A+ → 71 B(.unit.ts 211개가 프로덕션으로 세져 복잡도를 희석했다) · 나머지 18곳 변화 없음.
+const SCORING_VERSION = "v17";
 
 // 등급 색 (라이트 기준) — 배지·임베드 공용
 const GRADE_COLORS = { S: "#0f7a63", A: "#12915a", B: "#7d8a2c", C: "#c0862e", D: "#cb4436", E: "#8f2f24" };
@@ -1283,9 +1285,11 @@ function analyzeNPlusOne(ts, fileContents) {
     );
 
     const loopLabel = (n) => {
+      // 가드 [FP:retry-loop-no-condition]: `for (let attempt = 0; ; attempt++)` 는 조건이 없어 라벨이 비었다 —
+      // 초기화식의 변수 이름으로 의도를 읽는다(vscode codexProviderConfiguration, 2026-10-11).
       const e = ts.isForOfStatement(n) || ts.isForInStatement(n) ? n.expression
-        : ts.isForStatement(n) ? n.condition : n.expression;
-      return (e ? e.getText(sf) : "").replace(/\s+/g, " ").slice(0, 60);
+        : ts.isForStatement(n) ? (n.condition || n.initializer) : n.expression;
+      return (e ? e.getText(sf) : "").replace(/^(let|const|var)\s+/, "").replace(/\s+/g, " ").slice(0, 60);
     };
 
     const visit = (node) => {
@@ -1543,7 +1547,11 @@ function analyzeSerialAwaits(ts, fileContents) {
         if (run.length >= 2) {
           // 인자가 아니라 콜리만 본다 — 인자에 우연히 든 단어로 잡히면 안 된다.
           const io = run.filter((r) => looksIO(r.call.expression.getText(sf)));
-          if (io.length >= 2) {
+          // 가드 [FP:serial-in-transaction]: 인자에 `transaction`·`lock` 옵션을 넘기면 한 커넥션을 공유한다 —
+          // Promise.all 로 펴도 줄 서서 돈다. outline subscriptions.ts 가 주석으로 그렇게 밝혔다(2026-10-11).
+          const txOpt = run.some((r) => r.call.arguments.some((a) => ts.isObjectLiteralExpression(a) &&
+            a.properties.some((p) => p.name && /^(transaction|lock)$/.test(p.name.getText(sf)))));
+          if (io.length >= 2 && !txOpt) {
             sites.push({
               file,
               line: sf.getLineAndCharacterOfPosition(run[0].stmt.getStart(sf)).line + 1,
@@ -2643,10 +2651,10 @@ if (trackedSet) {
   console.log(`  git repo 아님 — 파일시스템 전체 분석 (빌드산출물 포함될 수 있음)\n`);
 }
 
-// [FP:non-production-file] 비-프로덕션 파일 일관 제외: 테스트·타입테스트(.test-d)·벤치·스토리·__tests__.
+// [FP:non-production-file] 비-프로덕션 파일 일관 제외: 테스트·타입테스트(.test-d)·`.unit.`(qwik)·벤치·스토리·__tests__.
 // (중복 축에서만 걸러 다른 축엔 포함되던 불일치 제거 — 테스트 콜로케이션이 점수를 깎던 문제.)
 // 점수는 "배포되는 프로덕션 코드"의 건강만 잰다. 테스트 존재 여부는 별도 신호.
-const NON_SOURCE_RE = /(\.(test|spec|test-d|bench|benchmark|stories|e2e)\.[tj]sx?$)|(\/(__(tests?|mocks?|fixtures?|snapshots?)__|tests?|testdata|benchmarks?|__bench__|e2e|fixtures?|mocks?)\/)|(\.d\.ts$)/;
+const NON_SOURCE_RE = /(\.(test|spec|test-d|unit|bench|benchmark|stories|e2e)\.[tj]sx?$)|(\/(__(tests?|mocks?|fixtures?|snapshots?)__|tests?|testdata|benchmarks?|__bench__|e2e|fixtures?|mocks?)\/)|(\.d\.ts$)/;
 // 벤더링·생성 디렉토리: 저장소에 커밋된 서드파티 코드는 미니파이가 아니어도(개발 빌드는 읽기 가능)
 // 사람이 쓴 코드가 아니다. 실제 사례: next.js의 src/compiled/ 45MB(react-dom 개발빌드 여러 벌)가
 // 중복 82%·maxCog 997을 만들어 D 27을 찍게 했다 — 전부 벤더 코드였다.

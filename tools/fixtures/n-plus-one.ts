@@ -41,3 +41,12 @@ export async function loadChunked(intentRepo: Repo, chunks: string[][]): Promise
   }
   return out;
 }
+
+// retryRepo: 조건 없는 for 의 초기화식이 `attempt` — 재시도는 일부러 줄 세운 것이다(vscode codex).
+// [FP:retry-loop-no-condition]
+export async function loadWithRetry(retryRepo: Repo, id: string): Promise<unknown> {
+  for (let attempt = 0; ; attempt++) {
+    const row = await retryRepo.findOne({ id });
+    if (row || attempt > 3) return row;
+  }
+}
