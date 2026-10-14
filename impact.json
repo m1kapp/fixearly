@@ -1181,8 +1181,11 @@
    "repoLabel": "angular · 101.1k★",
    "pr": 71350,
    "createdAt": "2026-10-14T12:24:08Z",
-   "status": "waiting"
+   "status": "closed",
+   "closedAt": "2026-10-14T12:41:35Z",
+   "closedReason": "중복 — 다른 기여자가 6일 전 같은 한 줄 수정을 낸 #71245 가 이미 열려 있었다(제출 전 열린 PR 검색을 빠뜨렸다)",
+   "closedReasonEn": "duplicate — another contributor had opened the identical one-line fix six days earlier in #71245 (we skipped searching open PRs before submitting)"
   }
  ],
- "generatedAt": "2026-10-14T12:28:53.672Z"
+ "generatedAt": "2026-10-14T12:44:14.265Z"
 }
