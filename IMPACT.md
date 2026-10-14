@@ -96,7 +96,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `모델 정보 창의 Base Model 행이 파일이 없으면 사라짐` | [rgthree-comfy · 3.6k★](https://github.com/rgthree/rgthree-comfy) | 같은 식 두 번 비교 (dialog_info 의 !info.baseModelFile && !info.baseModelFile — baseModel 이었어야) | [#790](https://github.com/rgthree/rgthree-comfy/pull/790) | ⚪ awaiting review | — |
 | `Route53 기존 레코드를 못 찾고 매번 CREATE 를 보냄` | [serverless · 46.9k★](https://github.com/serverless/serverless) | return 없는 콜백 (createRecordIfNotExists 의 ResourceRecordSets.find — 블록 본문이 값을 안 돌려줘 existingRecord 가 늘 undefined) | [#13947](https://github.com/serverless/serverless/pull/13947) | ⚪ awaiting review | — |
 | `벤치마크가 잘못된 type 을 받아도 실패하지 않고 엉뚱한 값을 잼` | [Node.js · 122.5k★](https://github.com/nodejs/node) | 버린 반환값 (fs·webstorage 벤치마크 21곳 default 분기의 new Error('Invalid type') — throw 가 빠져 아무 일도 안 함) | [#66647](https://github.com/nodejs/node/pull/66647) | ⚪ awaiting review | — |
-| `임시 변수 읽기가 무엇과도 같다고 답함` | [angular · 101.1k★](https://github.com/angular/angular) | 같은 식 두 번 비교 (ReadTemporaryExpr.isEquivalent 가 인자를 안 받고 this.xref === this.xref 를 비교 — 다른 임시 변수·NULL 리터럴과도 참) | [#71350](https://github.com/angular/angular/pull/71350) | ⚪ awaiting review | — |
+| `임시 변수 읽기가 무엇과도 같다고 답함` | [angular · 101.1k★](https://github.com/angular/angular) | 같은 식 두 번 비교 (ReadTemporaryExpr.isEquivalent 가 인자를 안 받고 this.xref === this.xref 를 비교 — 다른 임시 변수·NULL 리터럴과도 참) | [#71350](https://github.com/angular/angular/pull/71350) | ❌ closed | — |
 
 ## 규칙
 

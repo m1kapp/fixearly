@@ -79,6 +79,7 @@
 | [nx#36633](https://github.com/nrwl/nx/pull/36633) | 닫힘 | 우리가 접었다 — 34일째 사람 리뷰 0(반응은 봇뿐), 09-12 핑에도 무응답. 슬롯을 회수했다 |
 | [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 닫힘 | 승인 뒤 merge queue 의 CLA 검사가 PR 을 연 계정(yoominho91)을 미서명으로 잡았다. 같은 커밋으로 irontaek 이 #40103 을 다시 열었다 |
 | [react#37698](https://github.com/facebook/react/pull/37698) | 닫힘 | 잘못된 GitHub 계정(yoominho91)으로 제출해 닫고 irontaek의 #37699로 교체했다 |
+| [angular#71350](https://github.com/angular/angular/pull/71350) | 닫힘 | 중복 — 다른 기여자가 6일 전 같은 한 줄 수정을 낸 #71245 가 이미 열려 있었다(제출 전 열린 PR 검색을 빠뜨렸다) |
 | [grafana#133985](https://github.com/grafana/grafana/pull/133985) | 닫힘 | 우리가 접었다 — 게이트 0 을 안 읽었다: 모든 커밋 서명 필수인데 서명 키가 없었다. 브랜치를 되돌리자 GitHub 가 자동으로 닫았다 |
 | [vscode#334230](https://github.com/microsoft/vscode/pull/334230) | 닫힘 | 우리가 접었다 — 12일째 사람 리뷰 0(반응은 봇뿐), 09-12 핑에도 무응답. 슬롯을 회수했다 |
 <!-- /auto:decided -->
@@ -354,7 +355,6 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [insomnia#10575](https://github.com/Kong/insomnia/pull/10575) | forEach 안 await | ⚪ 대기 | 6일째 / 보통 1일 |
 | [Trilium#11949](https://github.com/TriliumNext/Trilium/pull/11949) | 버려진 Promise | ⚪ 대기 | 6일째 / 보통 1일 |
 | [ghost#31677](https://github.com/TryGhost/Ghost/pull/31677) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 4일째 / 보통 1일 |
-| [angular#71350](https://github.com/angular/angular/pull/71350) | 같은 식 두 번 비교 | ⚪ 대기 | 오늘 / 보통 5일 |
 | [compiler-explorer#9241](https://github.com/compiler-explorer/compiler-explorer/pull/9241) | 버린 반환값 | ⚪ 대기 | 6일째 / 보통 1일 |
 | [cytoscape.js#3527](https://github.com/cytoscape/cytoscape.js/pull/3527) | O(n²) | ⚪ 대기 | 6일째 / 보통 6일 |
 | [mermaid#8413](https://github.com/mermaid-js/mermaid/pull/8413) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 4일째 / 보통 6일 |
@@ -364,7 +364,7 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [Node.js#66647](https://github.com/nodejs/node/pull/66647) | 버린 반환값 | ⚪ 대기 | 3일째 / 보통 4일 |
 | [nx#37332](https://github.com/nrwl/nx/pull/37332) | 버린 반환값 | ⚪ 대기 | 6일째 / 보통 1일 |
 | [opensumi#4776](https://github.com/opensumi/core/pull/4776) | 버린 반환값 | ⚪ 대기 | 4일째 / 보통 4일 |
-| [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 6일째 / 보통 4일 |
+| [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 7일째 / 보통 4일 |
 | [rgthree-comfy#790](https://github.com/rgthree/rgthree-comfy/pull/790) | 같은 식 두 번 비교 | ⚪ 대기 | 4일째 / 보통 4일 |
 | [serverless#13947](https://github.com/serverless/serverless/pull/13947) | return 없는 콜백 | ⚪ 대기 | 4일째 / 보통 1일 |
 | [strapi#27893](https://github.com/strapi/strapi/pull/27893) | 버려진 Promise | ⚪ 대기 | 12일째 / 보통 7일 |
@@ -372,7 +372,7 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [affine#15692](https://github.com/toeverything/AFFiNE/pull/15692) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 4일째 / 보통 4일 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 17일째 / 보통 1일 · 보류 |
 
-**열린 것 22건(보류 2건 빼면 20건).** 판정 난 64건 중 머지 38 · 승인 0 · 닫힘 26.
+**열린 것 21건(보류 2건 빼면 19건).** 판정 난 65건 중 머지 38 · 승인 0 · 닫힘 27.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -807,7 +807,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | Babylon.js | 96% | 83% | 1.0일 | 24/25 | **1차 통과** | 판정 경험 있음 |
 | grafana | 95% | 89% | 0.9일 | 36/38 | **1차 통과** | 판정 경험 있음 · 게이트 0 — 2026-06-22 부터 모든 커밋 서명 필수, 미서명 PR 은 닫는다(CONTRIBUTING, 에이전트 작성 PR 포함). CLA assistant 서명도 필요 |
 | storybook | 94% | 97% | 2.6일 | 17/18 | **1차 통과** | 판정 경험 있음 · 게이트 0 — danger 가 `ci:*`·`qa:*` 라벨을 요구하는데 메인테이너만 붙일 수 있다 (#35829 가 25일째 빨간불이라 접었다) · CONTRIBUTING 'Never let an LLM speak for you': 사람 개입 없는 PR 은 3일 뒤 자동 닫힘 |
-| angular | 93% | 90% | 4.6일 | 14/15 | 1차 통과 · 후순위(느림) | 열린 PR 있음 — 저장소당 1건 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
+| angular | 93% | 90% | 4.6일 | 14/15 | 1차 통과 · 후순위(느림) | 판정 경험 있음 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
 | mikro-orm | 92% | 94% | 0.2일 | 12/13 | **1차 통과** | 판정 경험 있음 |
 | promptfoo | 92% | 88% | 0.8일 | 11/12 | **1차 통과** | 판정 경험 있음 |
 | cherry-studio | 91% | 91% | 10.8일 | 10/11 | 1차 통과 · 후순위(느림) | 판정 경험 있음 |
