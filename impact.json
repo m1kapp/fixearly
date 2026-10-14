@@ -320,7 +320,7 @@
    "titleEn": "unused Map in resize handler",
    "type": "쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제)",
    "repo": "excalidraw/excalidraw",
-   "repoLabel": "excalidraw · 133.8k★",
+   "repoLabel": "excalidraw · 133.9k★",
    "pr": 11805,
    "createdAt": "2026-08-01T14:22:45Z",
    "status": "closed",
@@ -1069,7 +1069,7 @@
    "titleEn": "write-only maps in ER diagram data and dagre graphlib",
    "type": "쓰기만 하는 컬렉션 (ErDB.getData 의 subGraphDB — flowDb 에서 복사, parentDB 만 읽힘 · mermaid-graphlib 의 parents — set·clear 만)",
    "repo": "mermaid-js/mermaid",
-   "repoLabel": "mermaid · 90.7k★",
+   "repoLabel": "mermaid · 90.6k★",
    "pr": 8413,
    "createdAt": "2026-10-09T14:13:52Z",
    "status": "waiting"
@@ -1172,7 +1172,17 @@
    "pr": 66647,
    "createdAt": "2026-10-10T18:27:04Z",
    "status": "waiting"
+  },
+  {
+   "title": "임시 변수 읽기가 무엇과도 같다고 답함",
+   "titleEn": "Temporary read reports itself equivalent to any expression",
+   "type": "같은 식 두 번 비교 (ReadTemporaryExpr.isEquivalent 가 인자를 안 받고 this.xref === this.xref 를 비교 — 다른 임시 변수·NULL 리터럴과도 참)",
+   "repo": "angular/angular",
+   "repoLabel": "angular · 101.1k★",
+   "pr": 71350,
+   "createdAt": "2026-10-14T12:24:08Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-14T10:42:23.819Z"
+ "generatedAt": "2026-10-14T12:28:53.672Z"
 }
