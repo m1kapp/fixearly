@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 38**
+> **fixearly 임팩트 점수: 39**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -14,10 +14,10 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `deleteBulkMetadata N+1` | [immich · 116.3k★](https://github.com/immich-app/immich) | N+1 (루프 안 순차 DELETE, item당 왕복 1회) | [#30163](https://github.com/immich-app/immich/pull/30163) | ❌ closed | — |
 | `sync-agent findOne N+1` | [novu · 40.1k★](https://github.com/novuhq/novu) | N+1 (for 루프 안 findOne, 소스 통합당 쿼리 1회) | [#12074](https://github.com/novuhq/novu/pull/12074) | ❌ closed | — |
 | `booking member diff O(n²)` | [cal.com · 49k★](https://github.com/calcom/cal.diy) | O(n²) 배열 조회 (루프 안 .some() 선형스캔 4회 → Set) | [#29828](https://github.com/calcom/cal.diy/pull/29828) | ❌ closed | — |
-| `view-widget-upsert O(n²)` | [twenty · 58.3k★](https://github.com/twentyhq/twenty) | O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map) | [#23231](https://github.com/twentyhq/twenty/pull/23231) | ❌ closed | — |
-| `nested relations hydration O(n²)` | [twenty · 58.3k★](https://github.com/twentyhq/twenty) | O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map) | [#23232](https://github.com/twentyhq/twenty/pull/23232) | ❌ closed | — |
+| `view-widget-upsert O(n²)` | [twenty · 58.4k★](https://github.com/twentyhq/twenty) | O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map) | [#23231](https://github.com/twentyhq/twenty/pull/23231) | ❌ closed | — |
+| `nested relations hydration O(n²)` | [twenty · 58.4k★](https://github.com/twentyhq/twenty) | O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map) | [#23232](https://github.com/twentyhq/twenty/pull/23232) | ❌ closed | — |
 | `lucky-user set rebuild in loop` | [cal.com · 49k★](https://github.com/calcom/cal.diy) | 루프 불변 인덱스 재구축 (while마다 new Set 재구축 → 호이스팅) | [#29832](https://github.com/calcom/cal.diy/pull/29832) | ❌ closed | — |
-| `dataloader doc placement O(n²)` | [payload · 45.2k★](https://github.com/payloadcms/payload) | O(n²) (배치당 keys.findIndex 전체 스캔 — Map으로 O(1)) | [#17469](https://github.com/payloadcms/payload/pull/17469) | ❌ closed | — |
+| `dataloader doc placement O(n²)` | [payload · 45.3k★](https://github.com/payloadcms/payload) | O(n²) (배치당 keys.findIndex 전체 스캔 — Map으로 O(1)) | [#17469](https://github.com/payloadcms/payload/pull/17469) | ❌ closed | — |
 | `translations batch match O(n²)` | [medusa · 36.7k★](https://github.com/medusajs/medusa) | O(n²) (batch당 filter+some 전체 스캔 — Set으로 O(1)) | [#16188](https://github.com/medusajs/medusa/pull/16188) | ✅ merged | +1 |
 | `markdown import merge O(n²)` | [outline · 40.9k★](https://github.com/outline/outline) | O(n²) (형제 out.find title 스캔 — Map으로 O(1)) | [#13117](https://github.com/outline/outline/pull/13117) | ✅ merged | +1 |
 | `doc-metadata localization O(n²)` | [strapi · 73.3k★](https://github.com/strapi/strapi) | O(n²) (localization별 versions.find — 복합키 Map으로 O(1)) | [#27125](https://github.com/strapi/strapi/pull/27125) | ❌ closed | — |
@@ -79,7 +79,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `SCAM 변환이 spec 의 declarations 를 못 지운다` | [nx · 29.4k★](https://github.com/nrwl/nx) | 버린 반환값 (spec.replace(/declarations: \[.+/, '') 결과를 대입 안 함 — standalone 컴포넌트가 declarations 에 남아 테스트가 깨진다) | [#37332](https://github.com/nrwl/nx/pull/37332) | ⚪ awaiting review | — |
 | `설정 검색이 중첩 속성을 못 찾는다` | [jupyterlab · 15.4k★](https://github.com/jupyterlab/jupyterlab) | 버린 반환값 (acc.concat(재귀 결과) 를 대입 안 함 — 객체 설정 안의 속성 이름·제목이 검색에서 빠진다) | [#20008](https://github.com/jupyterlab/jupyterlab/pull/20008) | ✅ merged | +1 |
 | `clang-query 도구 옵션이 compile_flags.txt 에 안 들어간다` | [compiler-explorer · 19.1k★](https://github.com/compiler-explorer/compiler-explorer) | 버린 반환값 (compileFlags.concat(this.tool.options) 결과를 대입 안 함 — TS 전환 때 push 가 concat 으로 바뀐 회귀) | [#9241](https://github.com/compiler-explorer/compiler-explorer/pull/9241) | ⚪ awaiting review | — |
-| `RAG 색인 상태 Map 쓰기만 함` | [readest · 25.2k★](https://github.com/readest/readest) | 쓰기만 하는 컬렉션 (ragService 의 indexingStates Map · IndexingState 객체 — 기록만 하고 읽지 않음) | [#6687](https://github.com/readest/readest/pull/6687) | ✅ merged | +1 |
+| `RAG 색인 상태 Map 쓰기만 함` | [readest · 25.3k★](https://github.com/readest/readest) | 쓰기만 하는 컬렉션 (ragService 의 indexingStates Map · IndexingState 객체 — 기록만 하고 읽지 않음) | [#6687](https://github.com/readest/readest/pull/6687) | ✅ merged | +1 |
 | `PKI 동기화 3곳의 외부 ID Map 쓰기만 함` | [infisical · 29.8k★](https://github.com/Infisical/infisical) | 쓰기만 하는 컬렉션 (ACM·Secrets Manager·Azure Key Vault 동기화의 syncRecordsByExternalId — 채우기만 하고 읽지 않음, Chef 만 씀) | [#8536](https://github.com/Infisical/infisical/pull/8536) | ⚪ awaiting review | — |
 | `채우기만 하고 읽지 않는 Map 3개` | [super-productivity · 22.8k★](https://github.com/super-productivity/super-productivity) | 쓰기만 하는 컬렉션 (op-log 검증 projectTaskMap · sync-md mdById · doc-mode lastWrittenTitles — 주석은 echo 판별용이라는데 읽는 곳 0) | [#10607](https://github.com/super-productivity/super-productivity/pull/10607) | ✅ merged | +1 |
 | `보내는 쪽이 사라진 구독 스트림` | [cline · 70.3k★](https://github.com/cline/cline) | 쓰기만 하는 컬렉션 (activeRelinquishControlSubscriptions — 유일한 송신 함수가 지워져 add/delete 만 남음 · 웹뷰 콜백도 못 울림) | [#14974](https://github.com/cline/cline/pull/14974) | ✅ merged | +1 |
@@ -97,7 +97,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `Route53 기존 레코드를 못 찾고 매번 CREATE 를 보냄` | [serverless · 46.9k★](https://github.com/serverless/serverless) | return 없는 콜백 (createRecordIfNotExists 의 ResourceRecordSets.find — 블록 본문이 값을 안 돌려줘 existingRecord 가 늘 undefined) | [#13947](https://github.com/serverless/serverless/pull/13947) | ⚪ awaiting review | — |
 | `벤치마크가 잘못된 type 을 받아도 실패하지 않고 엉뚱한 값을 잼` | [Node.js · 122.3k★](https://github.com/nodejs/node) | 버린 반환값 (fs·webstorage 벤치마크 21곳 default 분기의 new Error('Invalid type') — throw 가 빠져 아무 일도 안 함) | [#66647](https://github.com/nodejs/node/pull/66647) | ⚪ awaiting review | — |
 | `임시 변수 읽기가 무엇과도 같다고 답함` | [angular · 101.1k★](https://github.com/angular/angular) | 같은 식 두 번 비교 (ReadTemporaryExpr.isEquivalent 가 인자를 안 받고 this.xref === this.xref 를 비교 — 다른 임시 변수·NULL 리터럴과도 참) | [#71350](https://github.com/angular/angular/pull/71350) | ❌ closed | — |
-| `gh 가 없어도 릴리즈 스크립트가 attestation 검증을 실행함` | [react · 251k★](https://github.com/facebook/react) | 조건 자리의 async 호출 (executableIsAvailable('gh') 를 await 없이 if 에 — Promise 라 늘 참) | [#37855](https://github.com/react/react/pull/37855) | ⚪ awaiting review | — |
+| `gh 가 없어도 릴리즈 스크립트가 attestation 검증을 실행함` | [react · 251k★](https://github.com/facebook/react) | 조건 자리의 async 호출 (executableIsAvailable('gh') 를 await 없이 if 에 — Promise 라 늘 참) | [#37855](https://github.com/react/react/pull/37855) | ✅ merged | +1 |
 
 ## 규칙
 
