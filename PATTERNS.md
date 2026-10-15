@@ -103,6 +103,13 @@ fixearly가 잡는 패턴들의 정본. **점수는 흐릿한 집계, 이 카탈
 - **오탐 가드**: 결과를 버리는 `filter`·`some`(forEach 대용 — forEach 화살표의 식 본문 포함), async 콜백, 마지막 문장이 push·set·log 류 동기 호출인 map(payload cron 등록)은 뺀다
 - **실측**: 코퍼스 75곳에서 6건(가드 뒤 5건), 전부 진짜 — n8n displayOptions `find` · medusa docs 접근자 판정 · vscode CLI 텔레메트리 flush · vscode 원격 확장 설치(2026-10-10)
 
+#### 조건 자리의 async 호출 (`if (isValid())` · `!this.canInstall(x)`)
+- **탐지**: 같은 파일에서 `async` 로 선언한 함수·메서드를 `await` 없이 if·while·삼항 조건이나 `!` 에 쓴 자리
+- **왜 버그인가**: async 함수는 Promise 를 돌려주고 Promise 는 늘 참이다 — `if` 는 늘 들어가고 `!` 는 늘 거짓이라 막으려던 분기가 죽는다
+- **고침**: `await` 한 단어(호출하는 함수가 이미 async 면 기계적이다)
+- **오탐 가드**: 맨 이름 호출은 함수 선언·변수에만, `this.x()` 는 메서드에만 맞춘다 — 이름이 같은 import 동기 함수를 async 메서드로 착각하지 않게
+- **실측**: 코퍼스 75곳 원형 6건 중 진짜 4건(가드 뒤 4/4) — vscode 설치 가능 확인 건너뜀·REPL 조기 반환·gulp 파일 존재 확인, react 릴리즈 스크립트 gh 확인(2026-10-15)
+
 #### 같은 식 두 번 비교 (`this.xref === this.xref` · `a.end || a.end`)
 - **탐지**: 양쪽이 원문 그대로 같은 `===`·`==`·`<`·`>`·`-`, 같은 조건을 두 번 쓴 `&&`·`||`, 같은 인자를 두 번 넘긴 `same`·`equals`·`compare` 류 호출 — 호출·증감이 섞인 식은 뺀다
 - **왜 버그인가**: 답이 늘 같다. 거의 언제나 한쪽은 다른 이름(start/end · include/exclude · 바깥 변수)이었어야 하는 복사·붙여넣기다

@@ -625,6 +625,11 @@ RULES = [
      "비교하려던 다른 쪽이 빠진 자리다.",
      "The same expression on both sides — <code>this.x === this.x</code>, <code>a.end || a.end</code>. Always true or always "
      "the same value: the other operand it meant to compare is missing.", "", ""),
+    (("조건 자리의 async 호출",), "조건 자리의 async 호출", "Async call as condition", "진단", "diagnostic",
+     "async 함수를 <code>await</code> 없이 <code>if</code>·<code>!</code> 에 쓴다. Promise 는 늘 참이라 <code>if</code> 는 늘 들어가고 "
+     "<code>!</code> 는 늘 거짓 — 막으려던 분기가 죽는다.",
+     "An async function used in <code>if</code> or <code>!</code> without <code>await</code>. A Promise is always truthy, so the "
+     "branch always runs — or, negated, the guard never fires.", "", ""),
     (("forEach 안 await",), "forEach 안 await", "await inside forEach", "진단", "diagnostic",
      "<code>forEach(async …)</code> 는 콜백이 돌려주는 프라미스를 버린다. 호출한 쪽은 기다리지 않고 다음 줄로 가고, "
      "안에서 난 실패는 아무도 못 본다.",
@@ -674,6 +679,9 @@ EXAMPLES = {
     "Self-comparison": (
         "isEquivalent(e) {\n  return this.xref === this.xref;\n}",
         "isEquivalent(e) {\n  return this.xref === e.xref;\n}"),
+    "Async call as condition": (
+        "if (!canInstall(ext)) {\n  throw new Error('blocked');\n}",
+        "if (!(await canInstall(ext))) {\n  throw new Error('blocked');\n}"),
     "await inside forEach": (
         "ids.forEach(async (id) => {\n  await remove(id);\n});\nlog('done');",
         "for (const id of ids) {\n  await remove(id);\n}\nlog('done');"),
