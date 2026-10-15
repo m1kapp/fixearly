@@ -1644,6 +1644,7 @@ function analyzeTextbookIssues(ts, fileContents) {
   const indexOfAsBool = [];
   const callbackNoReturn = [];
   const selfCompare = [];
+  const asyncInCondition = [];
 
   for (const { file, content } of fileContents) {
     const kind = scriptKindOf(ts, file);
@@ -2169,6 +2170,7 @@ function analyzeTextbookIssues(ts, fileContents) {
     collectWriteOnly(ts, sf, file, lineOf, writeOnlyCollection);
     collectBoolMisuse(ts, sf, file, lineOf, indexOfAsBool, callbackNoReturn);
     collectSelfCompare(ts, sf, file, lineOf, selfCompare);
+    collectAsyncInCondition(ts, sf, file, lineOf, asyncInCondition);
   }
 
   // 가드 [FP:index-repo-startswith-style]: 저장소 전체에 `!s.indexOf(x)` 가 3번 이상이면 그 저자는 위치를 "0번 자리"
@@ -2194,6 +2196,7 @@ function analyzeTextbookIssues(ts, fileContents) {
     indexOfAsBool: { count: indexOfAsBool.length, worst: indexOfAsBool.slice(0, 6) },
     callbackNoReturn: { count: callbackNoReturn.length, worst: callbackNoReturn.slice(0, 6) },
     selfCompare: { count: selfCompare.length, worst: selfCompare.slice(0, 6) },
+    asyncInCondition: { count: asyncInCondition.length, worst: asyncInCondition.slice(0, 6) },
   };
 }
 
@@ -2299,6 +2302,51 @@ function collectBoolMisuse(ts, sf, file, lineOf, idxOut, cbOut) {
  * vscode `find(e => areSameExtensions(e.identifier, e.identifier))`(가려진 e) · excalidraw
  * `endArrowhead || endArrowhead`(start 였어야) · vscode 검색 `filesToExclude || filesToExclude`(include 였어야).
  */
+// ── 조건 자리의 async 호출: `if (isValid())` 에서 isValid 가 async 면 조건은 Promise 라 늘 참이고, `!isValid()` 는 늘 거짓이다.
+// vscode `!this.canInstallResourceExtension(ext)` 는 설치 불가 확인을 통째로 건너뛰고, react 릴리즈 스크립트
+// `if (executableIsAvailable('gh'))` 는 gh 가 없어도 검증을 돌렸다(2026-10-15 코퍼스 원형: 6건 중 4건 진짜).
+// 같은 파일에서 async 로 선언된 것만 본다 — 맨 이름 호출은 함수 선언·변수만, `this.x()` 는 메서드만 맞춘다.
+// 가드 [FP:async-cond-name-kind]: 맨 이름 `isEngineValid(...)` 는 import 한 동기 함수였고, 같은 파일의 같은 이름은
+// async 메서드였다(vscode extensionGalleryService). 이름 공간을 섞으면 그 둘이 같아진다.
+function collectAsyncInCondition(ts, sf, file, lineOf, out) {
+  const isAsync = (fn) => !!fn?.modifiers?.some((m) => m.kind === ts.SyntaxKind.AsyncKeyword);
+  const fnAsync = new Map(), methodAsync = new Map();
+  const mark = (map, name, a) => map.set(name, map.has(name) ? (map.get(name) && a) : a);
+  const collect = (n) => {
+    if (ts.isFunctionDeclaration(n) && n.name) mark(fnAsync, n.name.text, isAsync(n));
+    else if (ts.isVariableDeclaration(n) && ts.isIdentifier(n.name) && n.initializer &&
+             (ts.isArrowFunction(n.initializer) || ts.isFunctionExpression(n.initializer))) mark(fnAsync, n.name.text, isAsync(n.initializer));
+    else if (ts.isMethodDeclaration(n) && n.name && ts.isIdentifier(n.name)) mark(methodAsync, n.name.text, isAsync(n));
+    ts.forEachChild(n, collect);
+  };
+  collect(sf);
+  const inCondition = (n) => {
+    let c = n, p = n.parent, negated = false;
+    while (p && (ts.isParenthesizedExpression(p) ||
+      (ts.isPrefixUnaryExpression(p) && p.operator === ts.SyntaxKind.ExclamationToken) ||
+      (ts.isBinaryExpression(p) && (p.operatorToken.kind === ts.SyntaxKind.AmpersandAmpersandToken || p.operatorToken.kind === ts.SyntaxKind.BarBarToken)))) {
+      if (ts.isPrefixUnaryExpression(p)) negated = true;
+      c = p; p = p.parent;
+    }
+    if (!p) return false;
+    if ((ts.isIfStatement(p) || ts.isWhileStatement(p) || ts.isDoStatement(p)) && p.expression === c) return true;
+    if (ts.isConditionalExpression(p) && p.condition === c) return true;
+    return negated;
+  };
+  const visit = (n) => {
+    if (ts.isCallExpression(n) && !ts.isAwaitExpression(n.parent)) {
+      const c = n.expression;
+      let name = null;
+      if (ts.isIdentifier(c) && fnAsync.get(c.text)) name = c.text;
+      else if (ts.isPropertyAccessExpression(c) && c.expression.kind === ts.SyntaxKind.ThisKeyword &&
+               methodAsync.get(c.name.text)) name = `this.${c.name.text}`;
+      if (name && inCondition(n)) out.push({ file, line: lineOf(n), name });
+    }
+    ts.forEachChild(n, visit);
+  };
+  visit(sf);
+}
+
 function collectSelfCompare(ts, sf, file, lineOf, out) {
   const K = ts.SyntaxKind;
   // `x - x` 는 넣지 않는다 — fingerprintjs `f[0] = f[0] - f[0]` 처럼 Infinity 로 NaN 을 일부러 만든다.
@@ -3332,6 +3380,10 @@ if (textbook) {
   if (t.callbackNoReturn?.count > 0) {
     console.log(`  ⚠ return 없는 콜백: ${t.callbackNoReturn.count}곳 — 블록 본문이 값을 안 돌려줘 결과가 늘 undefined 입니다 (find 는 못 찾고 Promise.all 은 안 기다림)`);
     for (const w of t.callbackNoReturn.worst) console.log(`    ${w.name}.${w.method}() — ${w.file}:${w.line}`);
+  }
+  if (t.asyncInCondition?.count > 0) {
+    console.log(`  ⚠ 조건 자리의 async 호출: ${t.asyncInCondition.count}곳 — Promise 는 늘 참이라 분기가 고정됩니다 (await 이 빠진 자리)`);
+    for (const w of t.asyncInCondition.worst) console.log(`    ${w.name}() — ${w.file}:${w.line}`);
   }
   if (t.selfCompare?.count > 0) {
     console.log(`  ⚠ 같은 식 두 번 비교: ${t.selfCompare.count}곳 — 양쪽이 같은 식이라 답이 늘 같습니다 (다른 이름을 쓰려던 복사·붙여넣기)`);

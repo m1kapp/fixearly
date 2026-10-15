@@ -297,6 +297,16 @@ if (generatedSrc) {
       namePattern: /^\s{4}([A-Za-z_$][\w$]*)\.\w+\(\) — \S*callback-no-return\.ts:/gm,
     },
     {
+      file: "async-in-condition.ts",
+      key: "asyncInCondition",
+      label: "조건 자리의 async 호출",
+      hit: ["this.canInstall", "toolExists", "isReady"],
+      // awaited 는 await 했고, checkSync 는 동기, isEngineValid 는 맨 이름이 import 한 동기 함수(같은 이름 async 메서드와 다른 이름 공간),
+      // started 는 조건이 아닌 값 자리다.
+      miss: ["awaited", "checkSync", "isEngineValid", "started"],
+      namePattern: /^\s{4}(\S+)\(\) — \S*async-in-condition\.ts:/gm,
+    },
+    {
       file: "self-compare.ts",
       key: "selfCompare",
       label: "같은 식 두 번 비교",
@@ -731,7 +741,7 @@ if (generatedSrc) {
   const emptyTextbook = Object.fromEntries([
     "awaitInForEach", "spreadAccumulator", "regexInLoop", "floatingPromise",
     "loopInvariantIndex", "sharedRefFill", "deepEqualSetOp", "numericSortNoComparator", "emptyCatch",
-    "statefulRegex", "forInArray", "writeOnlyCollection", "discardedPureCall", "indexOfAsBool", "callbackNoReturn", "selfCompare",
+    "statefulRegex", "forInArray", "writeOnlyCollection", "discardedPureCall", "indexOfAsBool", "callbackNoReturn", "selfCompare", "asyncInCondition",
   ].map((key) => [key, { count: 0, worst: [] }]));
   const quality = {
     quadratic: { candidateList: [{ file: "src/perf.ts", line: 3, recv: "rows", method: "find" }] },
