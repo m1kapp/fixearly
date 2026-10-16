@@ -255,7 +255,7 @@
    "titleEn": "in-depth analytics serial awaits",
    "type": "독립 순차 await (독립 groupBy 3개 직렬 → Promise.all, 합→최댓값)",
    "repo": "baptisteArno/typebot.io",
-   "repoLabel": "typebot · 10.5k★",
+   "repoLabel": "typebot · 10.6k★",
    "pr": 2572,
    "createdAt": "2026-07-29T15:06:43Z",
    "status": "merged",
@@ -305,7 +305,7 @@
    "titleEn": "pure CSS chunk linear lookup",
    "type": "O(n²) (청크 x import 마다 pureCssChunkNames 전량 스캔 — Set으로 O(1))",
    "repo": "vitejs/vite",
-   "repoLabel": "vite · 83.3k★",
+   "repoLabel": "vite · 83.4k★",
    "pr": 23114,
    "createdAt": "2026-07-31T06:36:11Z",
    "status": "merged",
@@ -920,8 +920,12 @@
    "repo": "TriliumNext/Trilium",
    "repoLabel": "Trilium · 38.4k★",
    "pr": 11949,
-   "status": "waiting",
-   "createdAt": "2026-10-08T02:29:17Z"
+   "status": "merged",
+   "createdAt": "2026-10-08T02:29:17Z",
+   "mergedAt": "2026-10-16T20:33:50Z",
+   "release": {
+    "channel": "pending"
+   }
   },
   {
    "title": "실패 테스트 재실행이 추출 테스트마다 전부 다시 직렬화",
@@ -1254,5 +1258,5 @@
    "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-16T15:13:58.032Z"
+ "generatedAt": "2026-10-16T20:41:16.715Z"
 }

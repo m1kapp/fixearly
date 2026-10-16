@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 42**
+> **fixearly 임팩트 점수: 43**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -29,10 +29,10 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `static formula 갱신 enriched row 조회 O(n²)` | [budibase · 28.3k★](https://github.com/Budibase/budibase) | O(n²) (행마다 enrichedRows.find — id Map으로 O(1), 100건에서 5,050→100) | [#19555](https://github.com/Budibase/budibase/pull/19555) | ❌ closed | — |
 | `cart variant lookup O(n²)` | [medusa · 36.8k★](https://github.com/medusajs/medusa) | O(n²) 배열 조회 (장바구니 아이템마다 variants 선형 스캔 → Map) | [#16233](https://github.com/medusajs/medusa/pull/16233) | ✅ merged | +1 |
 | `eval dataset item 반복 조회` | [langfuse · 35.9k★](https://github.com/langfuse/langfuse) | 중복 쿼리 (변수마다 동일 WHERE 로 같은 행 재조회 → 컬럼 합쳐 1회) | [#15585](https://github.com/langfuse/langfuse/pull/15585) | ❌ closed | — |
-| `in-depth analytics 순차 await` | [typebot · 10.5k★](https://github.com/baptisteArno/typebot.io) | 독립 순차 await (독립 groupBy 3개 직렬 → Promise.all, 합→최댓값) | [#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | ✅ merged | +1 |
+| `in-depth analytics 순차 await` | [typebot · 10.6k★](https://github.com/baptisteArno/typebot.io) | 독립 순차 await (독립 groupBy 3개 직렬 → Promise.all, 합→최댓값) | [#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | ✅ merged | +1 |
 | `loadTables 카탈로그 전량 재스캔` | [typeorm · 36.7k★](https://github.com/typeorm/typeorm) | O(n²) (테이블마다 columns·constraints·fks·indices 전량 스캔 — Map 그룹핑으로 O(1)) | [#12746](https://github.com/typeorm/typeorm/pull/12746) | ❌ closed | — |
 | `growth stats 집계 3회 직렬` | [ghost · 55.5k★](https://github.com/TryGhost/Ghost) | 독립 순차 await (postId 하나로만 매개되는 집계 3개 직렬 → Promise.all, 합→최댓값) | [#29704](https://github.com/TryGhost/Ghost/pull/29704) | ✅ merged | +1 |
-| `pure CSS 청크 선형 조회` | [vite · 83.3k★](https://github.com/vitejs/vite) | O(n²) (청크 x import 마다 pureCssChunkNames 전량 스캔 — Set으로 O(1)) | [#23114](https://github.com/vitejs/vite/pull/23114) | ✅ merged | +1 |
+| `pure CSS 청크 선형 조회` | [vite · 83.4k★](https://github.com/vitejs/vite) | O(n²) (청크 x import 마다 pureCssChunkNames 전량 스캔 — Set으로 O(1)) | [#23114](https://github.com/vitejs/vite/pull/23114) | ✅ merged | +1 |
 | `resize 핸들러 안 미사용 Map` | [excalidraw · 134k★](https://github.com/excalidraw/excalidraw) | 쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제) | [#11805](https://github.com/excalidraw/excalidraw/pull/11805) | ❌ closed | — |
 | `member 통계 안 미사용 Map` | [ghost · 55.5k★](https://github.com/TryGhost/Ghost) | 쓰기만 하는 컬렉션 (날짜별 Map 을 채우고 아무도 안 읽음 — 삭제) | [#29831](https://github.com/TryGhost/Ghost/pull/29831) | ✅ merged | +1 |
 | `invalidate() 안 미사용 Set` | [storybook · 91.3k★](https://github.com/storybookjs/storybook) | 쓰기만 하는 컬렉션 (파일 변경마다 채우고 아무도 안 읽음 — 소비자는 2022-11 에 이미 삭제됨) | [#35829](https://github.com/storybookjs/storybook/pull/35829) | ❌ closed | — |
@@ -73,7 +73,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `중복 검사 Set 을 안 읽어 codemod 가 중복 이름을 만듦` | [turborepo · 31.2k★](https://github.com/vercel/turborepo) | 쓰기만 하는 컬렉션 (2026-03 리팩터가 has() 검사를 지워 채우기만 하는 Set 이 남았고, 그 결과 중복 이름을 생성) | [#14433](https://github.com/vercel/turborepo/pull/14433) | ✅ merged | +1 |
 | `cose 레이아웃이 간선마다 노드 전체를 훑음` | [cytoscape.js · 11.2k★](https://github.com/cytoscape/cytoscape.js) | O(n²) 배열 조회 (간선마다 nodes.some 두 번 — hasElementWithId 로 O(1), 3000노드 519→11ms) | [#3527](https://github.com/cytoscape/cytoscape.js/pull/3527) | ✅ merged | +1 |
 | `백업 복원이 복사가 끝나기 전에 앱을 재시작` | [insomnia · 40k★](https://github.com/Kong/insomnia) | forEach 안 await (forEach(async copyFile) 뒤 곧바로 app.exit() — 복원이 안 되거나 일부만 된다) | [#10575](https://github.com/Kong/insomnia/pull/10575) | ⚪ awaiting review | — |
-| `불리언 라벨 저장을 기다리지 않음` | [Trilium · 38.4k★](https://github.com/TriliumNext/Trilium) | 버려진 Promise (async setBooleanWithInheritance 가 setLabel 을 await 안 함 — 보드가 기다려도 저장 전에 넘어가고 실패는 사라진다) | [#11949](https://github.com/TriliumNext/Trilium/pull/11949) | ⚪ awaiting review | — |
+| `불리언 라벨 저장을 기다리지 않음` | [Trilium · 38.4k★](https://github.com/TriliumNext/Trilium) | 버려진 Promise (async setBooleanWithInheritance 가 setLabel 을 await 안 함 — 보드가 기다려도 저장 전에 넘어가고 실패는 사라진다) | [#11949](https://github.com/TriliumNext/Trilium/pull/11949) | ✅ merged | +1 |
 | `실패 테스트 재실행이 추출 테스트마다 전부 다시 직렬화` | [promptfoo · 26.1k★](https://github.com/promptfoo/promptfoo) | O(n²) 배열 조회 (extractedTests.some(JSON.stringify(...)) — 미매칭 결과 5,000건에서 4.2초 → 21ms) | [#11464](https://github.com/promptfoo/promptfoo/pull/11464) | ✅ merged | +1 |
 | `모델 변경 후 QA 재학습이 옛 모델로 돈다` | [FastGPT · 29.8k★](https://github.com/labring/FastGPT) | 버려진 Promise (updateTraining 을 await 없이 트랜잭션 커밋 전에 호출 — 워커가 옛 에이전트 모델로 작업을 집고 실패는 사라진다) | [#7918](https://github.com/labring/FastGPT/pull/7918) | ❌ closed | — |
 | `SCAM 변환이 spec 의 declarations 를 못 지운다` | [nx · 29.4k★](https://github.com/nrwl/nx) | 버린 반환값 (spec.replace(/declarations: \[.+/, '') 결과를 대입 안 함 — standalone 컴포넌트가 declarations 에 남아 테스트가 깨진다) | [#37332](https://github.com/nrwl/nx/pull/37332) | ⚪ awaiting review | — |
