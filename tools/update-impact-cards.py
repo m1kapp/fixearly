@@ -636,6 +636,11 @@ RULES = [
      "\"들어 있나\"를 물었는데 거꾸로 답한다. <code>includes</code> 나 <code>!== -1</code> 로.",
      "An <code>indexOf</code> result used directly as a condition. Missing is <code>-1</code> (truthy), first is <code>0</code> "
      "(falsy) — it answers \"is it there?\" backwards. Use <code>includes</code> or <code>!== -1</code>.", "", ""),
+    (("finally 가 삼킨 throw",), "finally 가 삼킨 throw", "Throw swallowed by finally", "진단", "diagnostic",
+     "<code>catch</code> 가 다시 던지는데 <code>finally</code> 가 <code>return</code> 한다. finally 의 return 이 진행 중인 예외를 "
+     "덮어써, 알아채려고 던진 에러가 밖에서 안 보인다.",
+     "<code>catch</code> rethrows but <code>finally</code> returns. The return overwrites the in-flight exception, so the error "
+     "thrown to get noticed never reaches the caller.", "", ""),
     (("forEach 안 await",), "forEach 안 await", "await inside forEach", "진단", "diagnostic",
      "<code>forEach(async …)</code> 는 콜백이 돌려주는 프라미스를 버린다. 호출한 쪽은 기다리지 않고 다음 줄로 가고, "
      "안에서 난 실패는 아무도 못 본다.",
@@ -691,6 +696,9 @@ EXAMPLES = {
     "indexOf as boolean": (
         "if (path.indexOf('index.html')) {\n  root = path.split('index.html')[0];\n}",
         "if (path.includes('index.html')) {\n  root = path.split('index.html')[0];\n}"),
+    "Throw swallowed by finally": (
+        "try {\n  out = work();\n} catch (e) {\n  if (isDev()) throw e;\n} finally {\n  return out;\n}",
+        "try {\n  out = work();\n} catch (e) {\n  if (isDev()) throw e;\n}\nreturn out;"),
     "await inside forEach": (
         "ids.forEach(async (id) => {\n  await remove(id);\n});\nlog('done');",
         "for (const id of ids) {\n  await remove(id);\n}\nlog('done');"),
