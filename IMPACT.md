@@ -23,7 +23,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `doc-metadata localization O(n²)` | [strapi · 73.3k★](https://github.com/strapi/strapi) | O(n²) (localization별 versions.find — 복합키 Map으로 O(1)) | [#27125](https://github.com/strapi/strapi/pull/27125) | ❌ closed | — |
 | `try/catch 안 릴리즈 정리를 await 안 함` | [strapi · 73.3k★](https://github.com/strapi/strapi) | 버려진 Promise (try/catch 로 감싼 async 호출에 await 가 없어 catch 가 안 돈다 — 로그 대신 unhandled rejection) | [#27893](https://github.com/strapi/strapi/pull/27893) | ✅ merged | +1 |
 | `parse-fields dedup O(n²)` | [directus · 38.5k★](https://github.com/directus/directus) | O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1)) | [#27978](https://github.com/directus/directus/pull/27978) | ❌ closed | — |
-| `resource-mapper schema validation O(n²)` | [n8n · 207.6k★](https://github.com/n8n-io/n8n) | O(n²) (value별 schema.find — id Map으로 O(1)) | [#34899](https://github.com/n8n-io/n8n/pull/34899) | ✅ merged | +1 |
+| `resource-mapper schema validation O(n²)` | [n8n · 207.7k★](https://github.com/n8n-io/n8n) | O(n²) (value별 schema.find — id Map으로 O(1)) | [#34899](https://github.com/n8n-io/n8n/pull/34899) | ✅ merged | +1 |
 | `user field validation O(n²)` | [nocodb · 65.3k★](https://github.com/nocodb/nocodb) | O(n²) (value별 baseUsers.find ×4 — id·email Map으로 O(1)) | [#14309](https://github.com/nocodb/nocodb/pull/14309) | ✅ merged | +1 |
 | `ExternalRequest field lookup O(n²)` | [budibase · 28.3k★](https://github.com/Budibase/budibase) | O(n²) (행 필드별 fieldNames.find — Set으로 O(1)) | [#19320](https://github.com/Budibase/budibase/pull/19320) | ❌ closed | — |
 | `static formula 갱신 enriched row 조회 O(n²)` | [budibase · 28.3k★](https://github.com/Budibase/budibase) | O(n²) (행마다 enrichedRows.find — id Map으로 O(1), 100건에서 5,050→100) | [#19555](https://github.com/Budibase/budibase/pull/19555) | ❌ closed | — |
@@ -44,8 +44,8 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `watch 재실행 결과를 안 기다림` | [rollup · 26.3k★](https://github.com/rollup/rollup) | 버려진 Promise (재실행을 await 하지 않아 리스너 실패가 catch 를 지나쳐 ERROR·END 이벤트가 사라진다) | [#6506](https://github.com/rollup/rollup/pull/6506) | ✅ merged | +1 |
 | `의존성 분할 안 미사용 Set` | [pnpm · 36.8k★](https://github.com/pnpm/pnpm) | 쓰기만 하는 컬렉션 (함수 호출마다 Set 생성, 링크 의존성마다 .add(), 읽기 없음 — 삭제) | [#14032](https://github.com/pnpm/pnpm/pull/14032) | ✅ merged | +1 |
 | `bulkSave 오류 문서 반복 매칭` | [mongoose · 27.5k★](https://github.com/Automattic/mongoose) | O(n²) 배열 조회 (문서마다 writeErrors.find 전체 스캔 → 실패 id Set으로 O(1)) | [#16474](https://github.com/Automattic/mongoose/pull/16474) | ✅ merged | +1 |
-| `credential 삭제 완료 전 명령 종료` | [n8n · 207.6k★](https://github.com/n8n-io/n8n) | 버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all) | [#37047](https://github.com/n8n-io/n8n/pull/37047) | ❌ closed | — |
-| `credential 삭제 완료 전 명령 종료` | [n8n · 207.6k★](https://github.com/n8n-io/n8n) | 버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all) | [#40103](https://github.com/n8n-io/n8n/pull/40103) | ✅ merged | +1 |
+| `credential 삭제 완료 전 명령 종료` | [n8n · 207.7k★](https://github.com/n8n-io/n8n) | 버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all) | [#37047](https://github.com/n8n-io/n8n/pull/37047) | ❌ closed | — |
+| `credential 삭제 완료 전 명령 종료` | [n8n · 207.7k★](https://github.com/n8n-io/n8n) | 버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all) | [#40103](https://github.com/n8n-io/n8n/pull/40103) | ✅ merged | +1 |
 | `post relation 연결 반복 조회` | [ghost · 55.5k★](https://github.com/TryGhost/Ghost) | O(n²) (relation마다 전체 posts.find → id Map으로 O(1), 100건에서 id 조회 5,050→100) | [#30284](https://github.com/TryGhost/Ghost/pull/30284) | ❌ closed | — |
 | `툴 피커 안 미사용 Map` | [vscode · 193.7k★](https://github.com/microsoft/vscode) | 쓰기만 하는 컬렉션 (MCP 툴마다 .set(), 읽기 없음 — #249448 이후 15개월째 · 삭제) | [#334230](https://github.com/microsoft/vscode/pull/334230) | ❌ closed | — |
 | `no-duplicate-case 이전 case 재스캔` | [eslint · 27.6k★](https://github.com/eslint/eslint) | O(n²) (case 마다 이전 case 전량 비교, 비교마다 토큰 전수 — 토큰 키 Set 으로 O(n)) | [#21317](https://github.com/eslint/eslint/pull/21317) | ❌ closed | — |
@@ -65,7 +65,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `읽지 않는 Set 이 리팩터 뒤에 남음` | [orval · 6.5k★](https://github.com/orval-labs/orval) | 쓰기만 하는 컬렉션 (add 만 하고 읽는 곳 0 — has() 를 쓰던 코드가 find() 로 바뀐 뒤 남은 흔적) | [#4254](https://github.com/orval-labs/orval/pull/4254) | ✅ merged | +1 |
 | `M:N 소유 측 populate 가 부모마다 자식 전체를 다시 훑고 indexOf 로 정렬` | [mikro-orm · 9.3k★](https://github.com/mikro-orm/mikro-orm) | O(n²) 배열 조회 (부모 × 자식 filter + indexOf 정렬 — 자식 위치를 Map 으로 한 번 색인) | [#8392](https://github.com/mikro-orm/mikro-orm/pull/8392) | ✅ merged | +1 |
 | `upsertMany 재조회 행을 엔티티마다 전부 비교` | [mikro-orm · 9.3k★](https://github.com/mikro-orm/mikro-orm) | O(n²) 배열 조회 (배치 × 재조회 행 comparator.matching — 엄격 비교 키 값으로 행을 한 번 묶어 같은 묶음만 비교) | [#8393](https://github.com/mikro-orm/mikro-orm/pull/8393) | ✅ merged | +1 |
-| `표현식 unique·차집합이 원시값 배열도 깊은 비교로 이중 순회` | [n8n · 207.6k★](https://github.com/n8n-io/n8n) | O(n²) 배열 조회 (lodash isEqual 쌍 비교 — 원시값만 있으면 Set 이 같은 답을 낸다) | [#40311](https://github.com/n8n-io/n8n/pull/40311) | ⚪ awaiting review | — |
+| `표현식 unique·차집합이 원시값 배열도 깊은 비교로 이중 순회` | [n8n · 207.7k★](https://github.com/n8n-io/n8n) | O(n²) 배열 조회 (lodash isEqual 쌍 비교 — 원시값만 있으면 Set 이 같은 답을 낸다) | [#40311](https://github.com/n8n-io/n8n/pull/40311) | ⚪ awaiting review | — |
 | `채우기만 하고 읽지 않는 Map` | [Babylon.js · 26.2k★](https://github.com/BabylonJS/Babylon.js) | 쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — DFS 는 연결점의 소유 블록을 직접 따라간다) | [#18980](https://github.com/BabylonJS/Babylon.js/pull/18980) | ✅ merged | +1 |
 | `채우기만 하고 읽지 않는 Map 3개` | [cherry-studio · 52.7k★](https://github.com/CherryHQ/cherry-studio) | 쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — 생긴 뒤 한 번도 읽힌 적 없다) | [#21363](https://github.com/CherryHQ/cherry-studio/pull/21363) | ✅ merged | +1 |
 | `검증 에러가 dev 서버를 죽임` | [react-router · 56.6k★](https://github.com/remix-run/react-router) | 버려진 Promise (throw 하는 async 검증을 await 없이 불러 unhandled rejection 으로 프로세스 종료) | [#15591](https://github.com/remix-run/react-router/pull/15591) | ⚪ awaiting review | — |
@@ -99,6 +99,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `임시 변수 읽기가 무엇과도 같다고 답함` | [angular · 101.1k★](https://github.com/angular/angular) | 같은 식 두 번 비교 (ReadTemporaryExpr.isEquivalent 가 인자를 안 받고 this.xref === this.xref 를 비교 — 다른 임시 변수·NULL 리터럴과도 참) | [#71350](https://github.com/angular/angular/pull/71350) | ❌ closed | — |
 | `gh 가 없어도 릴리즈 스크립트가 attestation 검증을 실행함` | [react · 251.2k★](https://github.com/facebook/react) | 조건 자리의 async 호출 (executableIsAvailable('gh') 를 await 없이 if 에 — Promise 라 늘 참) | [#37855](https://github.com/react/react/pull/37855) | ✅ merged | +1 |
 | `index.html 이 없는 경로에서도 browserHistoryRoot 를 추측해 딥링크가 '/' 로` | [framework7 · 18.8k★](https://github.com/framework7io/framework7) | 위치를 진리값으로 (pathname.indexOf('index.html') 를 그대로 조건에 — 없으면 -1 이라 참) | [#4405](https://github.com/framework7io/framework7/pull/4405) | ⚪ awaiting review | — |
+| `ICU 를 한 번 잡은 뒤 다음 속성 번역의 ICU 를 놓침` | [angular · 101.1k★](https://github.com/angular/angular) | 전역 정규식 상태 (/gi 정규식을 .test() 로만 써 lastIndex 가 남음 — 매치 뒤 throw 라 리셋 안 됨) | [#71389](https://github.com/angular/angular/pull/71389) | ⚪ awaiting review | — |
 
 ## 규칙
 
