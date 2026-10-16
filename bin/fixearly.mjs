@@ -1645,6 +1645,7 @@ function analyzeTextbookIssues(ts, fileContents) {
   const callbackNoReturn = [];
   const selfCompare = [];
   const asyncInCondition = [];
+  const finallySwallow = [];
 
   for (const { file, content } of fileContents) {
     const kind = scriptKindOf(ts, file);
@@ -2171,6 +2172,7 @@ function analyzeTextbookIssues(ts, fileContents) {
     collectBoolMisuse(ts, sf, file, lineOf, indexOfAsBool, callbackNoReturn);
     collectSelfCompare(ts, sf, file, lineOf, selfCompare);
     collectAsyncInCondition(ts, sf, file, lineOf, asyncInCondition);
+    collectFinallySwallow(ts, sf, file, lineOf, finallySwallow);
   }
 
   // 가드 [FP:index-repo-startswith-style]: 저장소 전체에 `!s.indexOf(x)` 가 3번 이상이면 그 저자는 위치를 "0번 자리"
@@ -2197,6 +2199,7 @@ function analyzeTextbookIssues(ts, fileContents) {
     callbackNoReturn: { count: callbackNoReturn.length, worst: callbackNoReturn.slice(0, 6) },
     selfCompare: { count: selfCompare.length, worst: selfCompare.slice(0, 6) },
     asyncInCondition: { count: asyncInCondition.length, worst: asyncInCondition.slice(0, 6) },
+    finallySwallow: { count: finallySwallow.length, worst: finallySwallow.slice(0, 6) },
   };
 }
 
@@ -2341,6 +2344,42 @@ function collectAsyncInCondition(ts, sf, file, lineOf, out) {
       else if (ts.isPropertyAccessExpression(c) && c.expression.kind === ts.SyntaxKind.ThisKeyword &&
                methodAsync.get(c.name.text)) name = `this.${c.name.text}`;
       if (name && inCondition(n)) out.push({ file, line: lineOf(n), name });
+    }
+    ts.forEachChild(n, visit);
+  };
+  visit(sf);
+}
+
+// ── finally 가 삼킨 throw: `catch (e) { if (dev) throw e; } finally { return x; }` 에서 finally 의 return·throw 가
+// catch 의 throw 를 덮어써 그 throw 는 절대 밖으로 못 나간다. 다시 던지려던 의도가 죽는다.
+// excalidraw delta.ts 3곳이 "dev·test 면 다시 던져 알아채자" 고 적어두고 finally 에서 return 했다(2026-10-16 원형:
+// 코퍼스 75 + 10k+ 75곳에서 3건, 전부 진짜). finally 블록 맨 위 단계의 return·throw 만 본다 — `if` 안에 있으면 조건부라
+// 의도된 경우가 있고(svelte async.js 는 플래그로 막는다), catch 가 다시 던지지 않으면 삼키는 게 의도다
+// (cypress fetch 패치: "내부 오류로 사용자 요청을 막지 마라").
+function collectFinallySwallow(ts, sf, file, lineOf, out) {
+  const owned = (root, pred) => {
+    const hits = [];
+    const walk = (m) => {
+      if (m !== root && (ts.isFunctionLike(m) || ts.isClassLike(m) || ts.isTryStatement(m))) return;
+      if (pred(m)) hits.push(m);
+      ts.forEachChild(m, walk);
+    };
+    walk(root);
+    return hits;
+  };
+  const nameOf = (n) => {
+    for (let p = n.parent; p; p = p.parent) {
+      if ((ts.isFunctionDeclaration(p) || ts.isMethodDeclaration(p)) && p.name) return p.name.getText(sf);
+      if ((ts.isArrowFunction(p) || ts.isFunctionExpression(p)) && ts.isVariableDeclaration(p.parent)) return p.parent.name.getText(sf);
+    }
+    return "<anonymous>";
+  };
+  const visit = (n) => {
+    if (ts.isTryStatement(n) && n.catchClause && n.finallyBlock) {
+      const exit = n.finallyBlock.statements.find((st) => ts.isReturnStatement(st) || ts.isThrowStatement(st));
+      const rethrow = exit && owned(n.catchClause.block, ts.isThrowStatement)[0];
+      if (rethrow) out.push({ file, line: lineOf(exit), name: nameOf(n), throwLine: lineOf(rethrow),
+        kind: ts.isReturnStatement(exit) ? "return" : "throw" });
     }
     ts.forEachChild(n, visit);
   };
@@ -3380,6 +3419,10 @@ if (textbook) {
   if (t.callbackNoReturn?.count > 0) {
     console.log(`  ⚠ return 없는 콜백: ${t.callbackNoReturn.count}곳 — 블록 본문이 값을 안 돌려줘 결과가 늘 undefined 입니다 (find 는 못 찾고 Promise.all 은 안 기다림)`);
     for (const w of t.callbackNoReturn.worst) console.log(`    ${w.name}.${w.method}() — ${w.file}:${w.line}`);
+  }
+  if (t.finallySwallow?.count > 0) {
+    console.log(`  ⚠ finally 가 삼킨 throw: ${t.finallySwallow.count}곳 — finally 의 return·throw 가 catch 에서 다시 던진 예외를 덮어씁니다`);
+    for (const w of t.finallySwallow.worst) console.log(`    ${w.name}() — ${w.file}:${w.line} (catch throw :${w.throwLine})`);
   }
   if (t.asyncInCondition?.count > 0) {
     console.log(`  ⚠ 조건 자리의 async 호출: ${t.asyncInCondition.count}곳 — Promise 는 늘 참이라 분기가 고정됩니다 (await 이 빠진 자리)`);

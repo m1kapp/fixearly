@@ -307,6 +307,16 @@ if (generatedSrc) {
       namePattern: /^\s{4}(\S+)\(\) — \S*async-in-condition\.ts:/gm,
     },
     {
+      file: "finally-swallow.ts",
+      key: "finallySwallow",
+      label: "finally 가 삼킨 throw",
+      hit: ["postprocess", "redraw"],
+      // guarded 는 finally 의 return 이 if 안, noRethrow 는 catch 가 안 던짐, innerTry 는 catch 의 throw 가 안쪽 try 에서 잡힘,
+      // afterFinally 는 return 이 try 뒤에 있다.
+      miss: ["guarded", "noRethrow", "innerTry", "afterFinally"],
+      namePattern: /^\s{4}(\S+)\(\) — \S*finally-swallow\.ts:/gm,
+    },
+    {
       file: "self-compare.ts",
       key: "selfCompare",
       label: "같은 식 두 번 비교",
@@ -741,7 +751,7 @@ if (generatedSrc) {
   const emptyTextbook = Object.fromEntries([
     "awaitInForEach", "spreadAccumulator", "regexInLoop", "floatingPromise",
     "loopInvariantIndex", "sharedRefFill", "deepEqualSetOp", "numericSortNoComparator", "emptyCatch",
-    "statefulRegex", "forInArray", "writeOnlyCollection", "discardedPureCall", "indexOfAsBool", "callbackNoReturn", "selfCompare", "asyncInCondition",
+    "statefulRegex", "forInArray", "writeOnlyCollection", "discardedPureCall", "indexOfAsBool", "callbackNoReturn", "selfCompare", "asyncInCondition", "finallySwallow",
   ].map((key) => [key, { count: 0, worst: [] }]));
   const quality = {
     quadratic: { candidateList: [{ file: "src/perf.ts", line: 3, recv: "rows", method: "find" }] },

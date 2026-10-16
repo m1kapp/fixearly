@@ -110,6 +110,13 @@ fixearly가 잡는 패턴들의 정본. **점수는 흐릿한 집계, 이 카탈
 - **오탐 가드**: 맨 이름 호출은 함수 선언·변수에만, `this.x()` 는 메서드에만 맞춘다 — 이름이 같은 import 동기 함수를 async 메서드로 착각하지 않게
 - **실측**: 코퍼스 75곳 원형 6건 중 진짜 4건(가드 뒤 4/4) — vscode 설치 가능 확인 건너뜀·REPL 조기 반환·gulp 파일 존재 확인, react 릴리즈 스크립트 gh 확인(2026-10-15)
 
+#### finally 가 삼킨 throw (`catch (e) { if (dev) throw e } finally { return x }`)
+- **탐지**: `catch` 블록이 `throw` 하는데 같은 `try` 의 `finally` 블록 맨 위 단계에 `return`·`throw` 가 있는 자리
+- **왜 버그인가**: finally 의 return·throw 는 진행 중인 예외를 덮어쓴다 — catch 가 다시 던진 에러는 호출자에게 절대 닿지 않는다
+- **고침**: `return` 을 `try` 문 뒤로 옮긴다(정상 경로의 반환값은 그대로, 다시 던진 예외만 살아난다)
+- **오탐 가드**: finally 안 `if` 속 return 은 보지 않고(조건부로 막는 의도 — svelte), catch 가 안 던지면 삼키는 게 의도라 뺀다(cypress)
+- **실측**: 코퍼스 75 + 10k+ 75곳에서 3건, 전부 진짜 — excalidraw delta.ts 의 "dev·test 면 다시 던져 알아채자"가 죽어 있었다(2026-10-16)
+
 #### 같은 식 두 번 비교 (`this.xref === this.xref` · `a.end || a.end`)
 - **탐지**: 양쪽이 원문 그대로 같은 `===`·`==`·`<`·`>`·`-`, 같은 조건을 두 번 쓴 `&&`·`||`, 같은 인자를 두 번 넘긴 `same`·`equals`·`compare` 류 호출 — 호출·증감이 섞인 식은 뺀다
 - **왜 버그인가**: 답이 늘 같다. 거의 언제나 한쪽은 다른 이름(start/end · include/exclude · 바깥 변수)이었어야 하는 복사·붙여넣기다
