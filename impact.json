@@ -16,7 +16,7 @@
    "title": "sync-agent findOne N+1",
    "type": "N+1 (for 루프 안 findOne, 소스 통합당 쿼리 1회)",
    "repo": "novuhq/novu",
-   "repoLabel": "novu · 40.1k★",
+   "repoLabel": "novu · 40.2k★",
    "pr": 12074,
    "createdAt": "2026-07-23T23:16:52Z",
    "status": "closed",
@@ -28,7 +28,7 @@
    "title": "booking member diff O(n²)",
    "type": "O(n²) 배열 조회 (루프 안 .some() 선형스캔 4회 → Set)",
    "repo": "calcom/cal.diy",
-   "repoLabel": "cal.com · 49k★",
+   "repoLabel": "cal.com · 49.1k★",
    "pr": 29828,
    "createdAt": "2026-07-24T00:51:16Z",
    "status": "closed",
@@ -64,7 +64,7 @@
    "title": "lucky-user set rebuild in loop",
    "type": "루프 불변 인덱스 재구축 (while마다 new Set 재구축 → 호이스팅)",
    "repo": "calcom/cal.diy",
-   "repoLabel": "cal.com · 49k★",
+   "repoLabel": "cal.com · 49.1k★",
    "pr": 29832,
    "createdAt": "2026-07-24T08:00:48Z",
    "status": "closed",
@@ -162,7 +162,7 @@
    "title": "resource-mapper schema validation O(n²)",
    "type": "O(n²) (value별 schema.find — id Map으로 O(1))",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 207.5k★",
+   "repoLabel": "n8n · 207.6k★",
    "pr": 34899,
    "createdAt": "2026-07-24T13:05:42Z",
    "status": "merged",
@@ -324,7 +324,7 @@
    "titleEn": "unused Map in resize handler",
    "type": "쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제)",
    "repo": "excalidraw/excalidraw",
-   "repoLabel": "excalidraw · 133.9k★",
+   "repoLabel": "excalidraw · 134k★",
    "pr": 11805,
    "createdAt": "2026-08-01T14:22:45Z",
    "status": "closed",
@@ -493,7 +493,7 @@
    "titleEn": "credential uninstall exits before deletions finish",
    "type": "버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all)",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 207.5k★",
+   "repoLabel": "n8n · 207.6k★",
    "pr": 37047,
    "status": "closed",
    "createdAt": "2026-08-25T15:17:47Z",
@@ -507,7 +507,7 @@
    "titleEn": "credential uninstall exits before deletions finish",
    "type": "버려진 Promise (forEach(async) 결과를 기다리지 않아 성공 로그·명령 종료가 삭제보다 먼저 발생 → Promise.all)",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 207.5k★",
+   "repoLabel": "n8n · 207.6k★",
    "pr": 40103,
    "status": "merged",
    "createdAt": "2026-10-01T13:44:30Z",
@@ -630,7 +630,7 @@
    "titleEn": "write-only collections in React Compiler passes",
    "type": "쓰기만 하는 컬렉션 (propagateNonNull 의 terminalPreds Set · alignReactiveScopesToBlockScopesHIR 의 placeScopes Map — 기록만 하고 읽지 않음)",
    "repo": "facebook/react",
-   "repoLabel": "react · 251.1k★",
+   "repoLabel": "react · 251.2k★",
    "pr": 37698,
    "createdAt": "2026-09-27T06:18:39Z",
    "status": "closed",
@@ -643,7 +643,7 @@
    "titleEn": "write-only collections in React Compiler passes",
    "type": "쓰기만 하는 컬렉션 (propagateNonNull 의 terminalPreds Set · alignReactiveScopesToBlockScopesHIR 의 placeScopes Map — 기록만 하고 읽지 않음)",
    "repo": "facebook/react",
-   "repoLabel": "react · 251.1k★",
+   "repoLabel": "react · 251.2k★",
    "pr": 37699,
    "createdAt": "2026-09-27T06:31:18Z",
    "status": "merged",
@@ -809,7 +809,7 @@
    "titleEn": "expression unique and set operations deep-compare even primitive arrays pairwise",
    "type": "O(n²) 배열 조회 (lodash isEqual 쌍 비교 — 원시값만 있으면 Set 이 같은 답을 낸다)",
    "repo": "n8n-io/n8n",
-   "repoLabel": "n8n · 207.5k★",
+   "repoLabel": "n8n · 207.6k★",
    "pr": 40311,
    "status": "waiting",
    "createdAt": "2026-10-05T13:39:05Z"
@@ -912,7 +912,7 @@
    "titleEn": "boolean label toggle resolves before the write",
    "type": "버려진 Promise (async setBooleanWithInheritance 가 setLabel 을 await 안 함 — 보드가 기다려도 저장 전에 넘어가고 실패는 사라진다)",
    "repo": "TriliumNext/Trilium",
-   "repoLabel": "Trilium · 38.3k★",
+   "repoLabel": "Trilium · 38.4k★",
    "pr": 11949,
    "status": "waiting",
    "createdAt": "2026-10-08T02:29:17Z"
@@ -922,7 +922,7 @@
    "titleEn": "filter-failing re-serializes every extracted test per result",
    "type": "O(n²) 배열 조회 (extractedTests.some(JSON.stringify(...)) — 미매칭 결과 5,000건에서 4.2초 → 21ms)",
    "repo": "promptfoo/promptfoo",
-   "repoLabel": "promptfoo · 26k★",
+   "repoLabel": "promptfoo · 26.1k★",
    "pr": 11464,
    "status": "merged",
    "createdAt": "2026-10-08T03:00:51Z",
@@ -979,8 +979,12 @@
    "repo": "compiler-explorer/compiler-explorer",
    "repoLabel": "compiler-explorer · 19.1k★",
    "pr": 9241,
-   "status": "waiting",
-   "createdAt": "2026-10-08T08:45:53Z"
+   "status": "merged",
+   "createdAt": "2026-10-08T08:45:53Z",
+   "mergedAt": "2026-10-16T14:06:42Z",
+   "release": {
+    "channel": "pending"
+   }
   },
   {
    "title": "RAG 색인 상태 Map 쓰기만 함",
@@ -1087,7 +1091,7 @@
    "titleEn": "write-only set in the AI markdown diff",
    "type": "쓰기만 하는 컬렉션 (diffBlockLists 의 handledOld — 삭제 판정은 newMap.has 로 이미 한다)",
    "repo": "toeverything/AFFiNE",
-   "repoLabel": "affine · 73.5k★",
+   "repoLabel": "affine · 73.6k★",
    "pr": 15692,
    "createdAt": "2026-10-09T14:24:05Z",
    "status": "waiting"
@@ -1176,7 +1180,7 @@
    "titleEn": "Benchmarks silently measure an undefined path for an invalid type",
    "type": "버린 반환값 (fs·webstorage 벤치마크 21곳 default 분기의 new Error('Invalid type') — throw 가 빠져 아무 일도 안 함)",
    "repo": "nodejs/node",
-   "repoLabel": "Node.js · 122.3k★",
+   "repoLabel": "Node.js · 122.4k★",
    "pr": 66647,
    "createdAt": "2026-10-10T18:27:04Z",
    "status": "waiting"
@@ -1199,7 +1203,7 @@
    "titleEn": "Release script runs gh attestation verify even when gh is missing",
    "type": "조건 자리의 async 호출 (executableIsAvailable('gh') 를 await 없이 if 에 — Promise 라 늘 참)",
    "repo": "facebook/react",
-   "repoLabel": "react · 251.1k★",
+   "repoLabel": "react · 251.2k★",
    "pr": 37855,
    "createdAt": "2026-10-14T23:58:04Z",
    "status": "merged",
@@ -1219,5 +1223,5 @@
    "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-16T00:12:43.207Z"
+ "generatedAt": "2026-10-16T14:12:30.134Z"
 }
