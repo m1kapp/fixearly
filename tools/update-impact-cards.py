@@ -308,6 +308,7 @@ BLURB = {
     "remix-run/react-router": ("React 라우터", "React router"),
     "mozilla/pdf.js": ("Mozilla 의 PDF 뷰어", "Mozilla PDF viewer"),
     "vercel/turborepo": ("Vercel 의 모노레포 빌드 도구", "Vercel monorepo build tool"),
+    "framework7io/framework7": ("모바일·데스크톱 앱 UI 프레임워크", "UI framework for mobile and desktop apps"),
     "cytoscape/cytoscape.js": ("그래프 시각화·분석 라이브러리", "graph visualization and analysis library"),
     "Kong/insomnia": ("API 클라이언트", "API client"),
     "TriliumNext/Trilium": ("계층형 개인 지식 노트", "hierarchical personal knowledge base"),
@@ -630,6 +631,11 @@ RULES = [
      "<code>!</code> 는 늘 거짓 — 막으려던 분기가 죽는다.",
      "An async function used in <code>if</code> or <code>!</code> without <code>await</code>. A Promise is always truthy, so the "
      "branch always runs — or, negated, the guard never fires.", "", ""),
+    (("위치를 진리값으로",), "위치를 진리값으로", "indexOf as boolean", "진단", "diagnostic",
+     "<code>indexOf</code> 결과를 그대로 조건에 쓴다. 없으면 <code>-1</code> 이라 참, 맨 앞이면 <code>0</code> 이라 거짓 — "
+     "\"들어 있나\"를 물었는데 거꾸로 답한다. <code>includes</code> 나 <code>!== -1</code> 로.",
+     "An <code>indexOf</code> result used directly as a condition. Missing is <code>-1</code> (truthy), first is <code>0</code> "
+     "(falsy) — it answers \"is it there?\" backwards. Use <code>includes</code> or <code>!== -1</code>.", "", ""),
     (("forEach 안 await",), "forEach 안 await", "await inside forEach", "진단", "diagnostic",
      "<code>forEach(async …)</code> 는 콜백이 돌려주는 프라미스를 버린다. 호출한 쪽은 기다리지 않고 다음 줄로 가고, "
      "안에서 난 실패는 아무도 못 본다.",
@@ -682,6 +688,9 @@ EXAMPLES = {
     "Async call as condition": (
         "if (!canInstall(ext)) {\n  throw new Error('blocked');\n}",
         "if (!(await canInstall(ext))) {\n  throw new Error('blocked');\n}"),
+    "indexOf as boolean": (
+        "if (path.indexOf('index.html')) {\n  root = path.split('index.html')[0];\n}",
+        "if (path.includes('index.html')) {\n  root = path.split('index.html')[0];\n}"),
     "await inside forEach": (
         "ids.forEach(async (id) => {\n  await remove(id);\n});\nlog('done');",
         "for (const id of ids) {\n  await remove(id);\n}\nlog('done');"),
