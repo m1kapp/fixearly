@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-16T15:10:01+00:00",
+  "generatedAt": "2026-10-16T20:36:17+00:00",
   "method": "GitHub REST contributors?per_page=1&anon=true; last-page count; commit authors, not unique humans",
   "repos": {
     "Automattic/mongoose": 1093,
@@ -9,7 +9,7 @@
     "Infisical/infisical": 287,
     "Kong/insomnia": 366,
     "Schneegans/Burn-My-Windows": 125,
-    "TriliumNext/Trilium": 485,
+    "TriliumNext/Trilium": 486,
     "TryGhost/Ghost": 932,
     "angular/angular": 2693,
     "baptisteArno/typebot.io": 91,
@@ -40,10 +40,10 @@
     "nrwl/nx": 1310,
     "openstatusHQ/openstatus": 128,
     "opensumi/core": 119,
-    "orval-labs/orval": 407,
+    "orval-labs/orval": 409,
     "outline/outline": 266,
-    "payloadcms/payload": 588,
-    "pnpm/pnpm": 713,
+    "payloadcms/payload": 589,
+    "pnpm/pnpm": 715,
     "promptfoo/promptfoo": 391,
     "readest/readest": 144,
     "remix-run/react-router": 1324,
@@ -55,10 +55,10 @@
     "super-productivity/super-productivity": 542,
     "tailwindlabs/tailwindcss": 384,
     "toeverything/AFFiNE": 270,
-    "twentyhq/twenty": 776,
+    "twentyhq/twenty": 777,
     "typeorm/typeorm": 1259,
-    "vercel/turborepo": 720,
+    "vercel/turborepo": 721,
     "vitejs/vite": 1377,
-    "withastro/astro": 1249
+    "withastro/astro": 1250
   }
 }
