@@ -311,6 +311,7 @@ BLURB = {
     "framework7io/framework7": ("모바일·데스크톱 앱 UI 프레임워크", "UI framework for mobile and desktop apps"),
     "cytoscape/cytoscape.js": ("그래프 시각화·분석 라이브러리", "graph visualization and analysis library"),
     "Kong/insomnia": ("API 클라이언트", "API client"),
+    "James-Yu/LaTeX-Workshop": ("VS Code 용 LaTeX 작성·빌드 확장", "LaTeX writing and build extension for VS Code"),
     "TriliumNext/Trilium": ("계층형 개인 지식 노트", "hierarchical personal knowledge base"),
     "promptfoo/promptfoo": ("LLM 앱 평가·레드팀 도구", "LLM eval and red-teaming tool"),
     "labring/FastGPT": ("AI 에이전트·지식베이스 빌더", "AI agent and knowledge base builder"),
