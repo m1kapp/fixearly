@@ -4,7 +4,7 @@
    "title": "deleteBulkMetadata N+1",
    "type": "N+1 (루프 안 순차 DELETE, item당 왕복 1회)",
    "repo": "immich-app/immich",
-   "repoLabel": "immich · 116.5k★",
+   "repoLabel": "immich · 116.6k★",
    "pr": 30163,
    "createdAt": "2026-07-23T15:26:09Z",
    "status": "closed",
@@ -106,7 +106,7 @@
    "title": "markdown import merge O(n²)",
    "type": "O(n²) (형제 out.find title 스캔 — Map으로 O(1))",
    "repo": "outline/outline",
-   "repoLabel": "outline · 40.9k★",
+   "repoLabel": "outline · 41k★",
    "pr": 13117,
    "createdAt": "2026-07-24T12:49:22Z",
    "mergedAt": "2026-07-30T03:04:09Z",
@@ -731,7 +731,7 @@
    "titleEn": "write-only decimals map in heatmap bucket increments",
    "type": "쓰기만 하는 컬렉션 (uPlot 에서 옮겨온 fixedDec — 채우기만 하고 읽지 않는다)",
    "repo": "grafana/grafana",
-   "repoLabel": "grafana · 77.3k★",
+   "repoLabel": "grafana · 77.4k★",
    "pr": 133985,
    "status": "closed",
    "createdAt": "2026-10-01T15:19:50Z",
@@ -1018,7 +1018,7 @@
    "titleEn": "write-only external-id map in three PKI syncs",
    "type": "쓰기만 하는 컬렉션 (ACM·Secrets Manager·Azure Key Vault 동기화의 syncRecordsByExternalId — 채우기만 하고 읽지 않음, Chef 만 씀)",
    "repo": "Infisical/infisical",
-   "repoLabel": "infisical · 29.8k★",
+   "repoLabel": "infisical · 29.9k★",
    "pr": 8536,
    "createdAt": "2026-10-09T05:26:31Z",
    "status": "waiting"
@@ -1275,8 +1275,12 @@
    "repoLabel": "SponsorBlock · 13.9k★",
    "pr": 2572,
    "createdAt": "2026-10-18T15:06:20Z",
-   "status": "waiting"
+   "status": "merged",
+   "mergedAt": "2026-10-18T16:42:18Z",
+   "release": {
+    "channel": "pending"
+   }
   }
  ],
- "generatedAt": "2026-10-18T15:17:00.243Z"
+ "generatedAt": "2026-10-18T22:07:05.421Z"
 }
