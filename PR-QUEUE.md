@@ -20,6 +20,7 @@
 | [tegaki#77](https://github.com/gkurt/tegaki/pull/77) | 머지 | — |
 | [burn-my-windows#583](https://github.com/Schneegans/Burn-My-Windows/pull/583) | 머지 | — |
 | [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 머지 | 사람 리뷰 없이 20.7일 만에 메인테이너가 직접 머지 |
+| [SponsorBlock#2572](https://github.com/ajayyy/SponsorBlock/pull/2572) | 머지 | — |
 | [openstatus#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | 머지 | — |
 | [cytoscape.js#3527](https://github.com/cytoscape/cytoscape.js/pull/3527) | 머지 | — |
 | [orval#4254](https://github.com/orval-labs/orval/pull/4254) | 머지 | — |
@@ -355,19 +356,18 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [vscode#340771](https://github.com/microsoft/vscode/pull/340771) | return 없는 콜백 | 🟢 리뷰 진행 | 8일째 / 보통 1일 |
+| [vscode#340771](https://github.com/microsoft/vscode/pull/340771) | return 없는 콜백 | 🟢 리뷰 진행 | 9일째 / 보통 1일 |
 | [infisical#8536](https://github.com/Infisical/infisical/pull/8536) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
 | [LaTeX-Workshop#5007](https://github.com/James-Yu/LaTeX-Workshop/pull/5007) | forEach 안 await | ⚪ 대기 | 1일째 / 보통 2일 |
 | [insomnia#10575](https://github.com/Kong/insomnia/pull/10575) | forEach 안 await | ⚪ 대기 | 11일째 / 보통 2일 · 보류 |
 | [ghost#31677](https://github.com/TryGhost/Ghost/pull/31677) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
-| [SponsorBlock#2572](https://github.com/ajayyy/SponsorBlock/pull/2572) | 같은 식 두 번 비교 | ⚪ 대기 | 오늘 / 보통 4일 |
 | [angular#71389](https://github.com/angular/angular/pull/71389) | 전역 정규식 상태 | ⚪ 대기 | 2일째 / 보통 2일 |
 | [framework7#4405](https://github.com/framework7io/framework7/pull/4405) | 위치를 진리값으로 | ⚪ 대기 | 2일째 / 보통 4일 |
 | [mermaid#8413](https://github.com/mermaid-js/mermaid/pull/8413) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 9일째 / 보통 6일 |
 | [pdf.js#22102](https://github.com/mozilla/pdf.js/pull/22102) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
 | [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 13일째 / 보통 2일 · 보류 |
-| [nocodb#14812](https://github.com/nocodb/nocodb/pull/14812) | 버린 반환값 | ⚪ 대기 | 8일째 |
-| [Node.js#66647](https://github.com/nodejs/node/pull/66647) | 버린 반환값 | ⚪ 대기 | 7일째 / 보통 2일 |
+| [nocodb#14812](https://github.com/nocodb/nocodb/pull/14812) | 버린 반환값 | ⚪ 대기 | 9일째 |
+| [Node.js#66647](https://github.com/nodejs/node/pull/66647) | 버린 반환값 | ⚪ 대기 | 8일째 / 보통 2일 |
 | [nx#37332](https://github.com/nrwl/nx/pull/37332) | 버린 반환값 | ⚪ 대기 | 10일째 / 보통 3일 · 보류 |
 | [opensumi#4776](https://github.com/opensumi/core/pull/4776) | 버린 반환값 | ⚪ 대기 | 9일째 / 보통 4일 |
 | [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 11일째 / 보통 3일 · 보류 |
@@ -377,7 +377,7 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [affine#15692](https://github.com/toeverything/AFFiNE/pull/15692) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 9일째 / 보통 4일 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 21일째 / 보통 2일 · 보류 |
 
-**열린 것 21건(보류 10건 빼면 11건).** 판정 난 70건 중 머지 43 · 승인 0 · 닫힘 27.
+**열린 것 20건(보류 10건 빼면 10건).** 판정 난 71건 중 머지 44 · 승인 0 · 닫힘 27.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -850,7 +850,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | eslint | 57% | 59% | 2.7일 | 16/28 | 컷 | 판정 경험 있음 · 게이트 0 — AI 보조 PR 은 **선행 이슈**가 있어야 받는다(eslint.org/docs/latest/contribute/ai-policy). PR 템플릿의 AI 체크박스를 정직하게 체크하면 이 정책이 적용된다 |
 | berry | 57% | 57% | 11.6일 | 27/47 | 컷 | — |
 | v86 | 56% | 70% | 2.0일 | 14/25 | 컷 | — |
-| SponsorBlock | 56% | 50% | 3.6일 | 9/16 | 컷 | 열린 PR 있음 — 저장소당 1건 |
+| SponsorBlock | 56% | 50% | 3.6일 | 9/16 | 컷 | 판정 경험 있음 |
 | react-router | 55% | 67% | 3.4일 | 16/29 | 컷 | 열린 PR 있음 — 저장소당 1건 |
 | core | 53% | 53% | 5.6일 | 9/17 | 컷 | — |
 | tailwindcss | 52% | 63% | 0.4일 | 17/33 | 컷 | 열린 PR 있음 — 저장소당 1건 |
