@@ -77,15 +77,21 @@ META = {key: (ko, en, at, ended) for key, _i, ko, en, at, ended in STAGE}
 ORDER = [k for k, *_ in STAGE]
 STALLABLE = ("waiting", "reviewing")
 
+# 키는 저장소 이름/번호 — 번호만 쓰면 typebot#2572 와 SponsorBlock#2572 가 겹친다.
+# 소유자는 빼는데, facebook/react 가 react/react 로 옮겨 IMPACT.md 링크의 소유자가 달라서다.
 state_by_pr = {}
 for line in md.splitlines():
-    m = re.search(r"/pull/(\d+)\)\s*\|\s*([^|]+)\|", line)
+    m = re.search(r"github\.com/[^/]+/([^/]+/pull/\d+)\)\s*\|\s*([^|]+)\|", line)
     if not m:
         continue
     for icon, key in ICON2KEY.items():
         if icon in m.group(2):
             state_by_pr[m.group(1)] = key
             break
+
+
+def pr_key(f):
+    return f"{f['repo'].split('/')[1]}/pull/{f['pr']}"
 
 
 def stall_after(f):
@@ -311,6 +317,7 @@ BLURB = {
     "framework7io/framework7": ("모바일·데스크톱 앱 UI 프레임워크", "UI framework for mobile and desktop apps"),
     "cytoscape/cytoscape.js": ("그래프 시각화·분석 라이브러리", "graph visualization and analysis library"),
     "Kong/insomnia": ("API 클라이언트", "API client"),
+    "ajayyy/SponsorBlock": ("YouTube 스폰서 구간 자동 건너뛰기 확장", "browser extension that skips YouTube sponsor segments"),
     "James-Yu/LaTeX-Workshop": ("VS Code 용 LaTeX 작성·빌드 확장", "LaTeX writing and build extension for VS Code"),
     "TriliumNext/Trilium": ("계층형 개인 지식 노트", "hierarchical personal knowledge base"),
     "promptfoo/promptfoo": ("LLM 앱 평가·레드팀 도구", "LLM eval and red-teaming tool"),
@@ -465,7 +472,7 @@ def card(f, key, rank=None):
 
 grouped = {k: [] for k in ORDER}
 for f in findings:
-    key = state_by_pr.get(str(f["pr"]), "waiting")
+    key = state_by_pr.get(pr_key(f), "waiting")
     if key in STALLABLE:
         limit, elapsed_days = stall_after(f), stage_age_days(f, key)
         if limit is not None and elapsed_days is not None and elapsed_days >= limit:
@@ -477,12 +484,12 @@ entries = sorted(((f, k) for k in ORDER for f in grouped[k]),
                                    else 3 if item[1] == "approved" else 2,
                                    item[0].get("createdAt", ""), item[0]["pr"]), reverse=True)
 merged_oldest_first = sorted(grouped["merged"], key=lambda f: (f.get("createdAt", ""), f["pr"]))
-rank_by_pr = {f["pr"]: rank for rank, f in enumerate(merged_oldest_first, 1)}
-rows = "\n      ".join(card(f, k, rank_by_pr.get(f["pr"])) for f, k in entries)
+rank_by_pr = {pr_key(f): rank for rank, f in enumerate(merged_oldest_first, 1)}
+rows = "\n      ".join(card(f, k, rank_by_pr.get(pr_key(f))) for f, k in entries)
 
 # 머지된 저장소는 히어로에서 로고만 먼저 보여준다. 유명 로고를 장식처럼 빌려온 게
 # 아니라 실제 PR이 들어간 곳이라는 뜻이므로, 각 로고는 해당 머지 PR 자체로 연결한다.
-merged_contrib = [f for f in findings if state_by_pr.get(str(f["pr"])) == "merged"]
+merged_contrib = [f for f in findings if state_by_pr.get(pr_key(f)) == "merged"]
 contrib_counts = Counter(f["repo"] for f in merged_contrib)
 seen_contrib = set()
 contrib = []
@@ -555,7 +562,7 @@ if _next_avg is not None and _next_mid is not None:
 
 # 머지된 것들의 공통 형태와 걸린 기간 — 리드 문장도 손으로 쓰면 반드시 어긋난다.
 # "같은 형태"라는 주장은 type 문자열이 실제로 그럴 때만 낸다. 아니면 개수·기간만.
-_merged = [f for f in findings if state_by_pr.get(str(f["pr"])) == "merged" and f.get("mergedAt")]
+_merged = [f for f in findings if state_by_pr.get(pr_key(f)) == "merged" and f.get("mergedAt")]
 if _merged:
     import datetime as _dt
     _p = lambda t: _dt.datetime.fromisoformat(t.replace("Z", "+00:00"))
@@ -741,7 +748,7 @@ _by_rule = {i: [] for i in range(len(RULES))}
 _pending = {i: [] for i in range(len(RULES))}
 unmapped = []
 for f in sorted(findings, key=lambda f: f.get("mergedAt") or f.get("createdAt") or ""):
-    st = state_by_pr.get(str(f["pr"]))
+    st = state_by_pr.get(pr_key(f))
     prefix = f["type"].split(" (")[0]
     i = next((i for i, r in enumerate(RULES) if prefix in r[0]), None)
     if st not in ("merged", "closed"):
@@ -868,13 +875,13 @@ for r in nocount:
     print(f"  ✗ 기여자 수 없음(npm run contributors): {r}")
 # 닫힌 건 사유가 없으면 카드가 조용히 "닫힘"만 남는다 — 그게 제일 읽히는 줄인데.
 noreason = sorted(f"#{f['pr']}" for f in findings
-                  if state_by_pr.get(str(f["pr"])) == "closed"
+                  if state_by_pr.get(pr_key(f)) == "closed"
                   and not (f.get("closedReason") and f.get("closedReasonEn")))
 for r in noreason:
     print(f"  ✗ 닫힌 사유 없음(impact.json 의 closedReason/closedReasonEn): {r}")
 missing = missing + noicon + nocount + notranslated + noreason + unmapped
 missing_release = sorted(f"#{f['pr']}" for f in findings
-                         if state_by_pr.get(str(f["pr"])) == "merged"
+                         if state_by_pr.get(pr_key(f)) == "merged"
                          and f.get("release", {}).get("channel") != "pending"
                          and not (f.get("release", {}).get("channel") in ("stable", "nightly", "prerelease")
                                   and f.get("release", {}).get("version")
