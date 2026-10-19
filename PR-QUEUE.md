@@ -358,6 +358,7 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
 | [vscode#340771](https://github.com/microsoft/vscode/pull/340771) | return 없는 콜백 | 🟢 리뷰 진행 | 9일째 / 보통 1일 |
+| [wp-calypso#115386](https://github.com/Automattic/wp-calypso/pull/115386) | return 없는 콜백 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [semi-design#3428](https://github.com/DouyinFE/semi-design/pull/3428) | 같은 식 두 번 비교 | ⚪ 대기 | 오늘 / 보통 6일 |
 | [infisical#8536](https://github.com/Infisical/infisical/pull/8536) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 10일째 / 보통 1일 · 보류 |
 | [LaTeX-Workshop#5007](https://github.com/James-Yu/LaTeX-Workshop/pull/5007) | forEach 안 await | ⚪ 대기 | 2일째 / 보통 2일 |
@@ -381,7 +382,7 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [affine#15692](https://github.com/toeverything/AFFiNE/pull/15692) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 10일째 / 보통 3일 · 보류 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 22일째 / 보통 3일 · 보류 |
 
-**열린 것 23건(보류 11건 빼면 12건).** 판정 난 72건 중 머지 45 · 승인 0 · 닫힘 27.
+**열린 것 24건(보류 11건 빼면 13건).** 판정 난 72건 중 머지 45 · 승인 0 · 닫힘 27.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -820,7 +821,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | Babylon.js | 100% | 100% | 4.4일 | 2/2 | 표본 부족 | 판정 경험 있음 |
 | cherry-studio | 93% | 93% | 0.4일 | 13/14 | **1차 통과** | 판정 경험 있음 |
 | cytoscape.js | 93% | 90% | 7.5일 | 13/14 | 1차 통과 · 후순위(느림) | 판정 경험 있음 |
-| wp-calypso | 87% | 88% | 0.5일 | 20/23 | **1차 통과** | 판정 경험 있음 |
+| wp-calypso | 87% | 88% | 0.5일 | 20/23 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
 | core | 86% | 76% | 3.9일 | 6/7 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
 | infisical | 83% | 81% | 0.4일 | 10/12 | **1차 통과** | 열린 PR 있음 — 저장소당 1건 |
 | tegaki | 83% | 83% | 0.5일 | 10/12 | **1차 통과** | 판정 경험 있음 |

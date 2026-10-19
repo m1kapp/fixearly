@@ -1048,7 +1048,7 @@
    "titleEn": "subscription stream whose sender is gone",
    "type": "쓰기만 하는 컬렉션 (activeRelinquishControlSubscriptions — 유일한 송신 함수가 지워져 add/delete 만 남음 · 웹뷰 콜백도 못 울림)",
    "repo": "cline/cline",
-   "repoLabel": "cline · 70.5k★",
+   "repoLabel": "cline · 70.6k★",
    "pr": 14974,
    "createdAt": "2026-10-09T10:12:15Z",
    "status": "merged",
@@ -1327,7 +1327,17 @@
    "release": {
     "channel": "pending"
    }
+  },
+  {
+   "title": "번역 옵션 변수 검사가 첫 옵션에서 멈춤",
+   "titleEn": "i18n-no-variables stops after the first translate() option",
+   "type": "return 없는 콜백 (validateOptions 의 properties.every 콜백이 값을 안 돌려줘 첫 속성 뒤 멈춤 — 두 번째 옵션의 변수는 안 잡힌다)",
+   "repo": "Automattic/wp-calypso",
+   "repoLabel": "wp-calypso · 12.6k★",
+   "pr": 115386,
+   "createdAt": "2026-10-19T16:30:16Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-19T16:11:01.904Z"
+ "generatedAt": "2026-10-19T16:32:40.089Z"
 }
