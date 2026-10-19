@@ -1312,7 +1312,11 @@
    "repoLabel": "ag-ui · 16.7k★",
    "pr": 3118,
    "createdAt": "2026-10-19T15:13:04Z",
-   "status": "waiting"
+   "status": "merged",
+   "mergedAt": "2026-10-19T17:31:19Z",
+   "release": {
+    "channel": "pending"
+   }
   },
   {
    "title": "Google Workspace 첫해 할인 안내가 4년째 안 뜸",
@@ -1339,5 +1343,5 @@
    "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-19T16:32:40.089Z"
+ "generatedAt": "2026-10-19T17:38:49.712Z"
 }
