@@ -14,7 +14,7 @@ import os from "os";
 import path from "path";
 import { spawnSync } from "child_process";
 import { fileURLToPath } from "url";
-import { buildSweepDecision, collectSweepCandidates } from "./sweep.mjs";
+import { buildSweepDecision, collectSweepCandidates, thanksUrl } from "./sweep.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const src = fs.readFileSync(path.join(ROOT, "bin", "fixearly.mjs"), "utf8");
@@ -781,6 +781,10 @@ if (generatedSrc) {
     readLine, previous: first.candidates,
   });
   check("깨끗한 훑기는 monitor이며 해소를 보존", clean.decision === "monitor" && clean.counts.resolved === 3);
+  const url = thanksUrl(clean);
+  const axes = url && decodeURIComponent(new URL(url).searchParams.get("axes"));
+  check("해소가 있으면 축별 건수만 담은 신고 링크", axes && !/[\\/]|\.ts/.test(axes) && axes.split("\n").reduce((n, l) => n + Number(l.split(" ").pop()), 0) === 3);
+  check("해소가 없으면 신고 링크 없음", thanksUrl(second) === null);
 }
 
 console.log(fail ? `\n  ${fail} FAIL` : `\n  all passed`);

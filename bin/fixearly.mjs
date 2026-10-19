@@ -20,7 +20,7 @@ import fs from "fs";
 import path from "path";
 import { createRequire } from "module";
 import { execFileSync } from "child_process";
-import { buildSweepDecision, sweepConsoleLines } from "./sweep.mjs";
+import { buildSweepDecision, sweepConsoleLines, thanksUrl } from "./sweep.mjs";
 
 const args = process.argv.slice(2);
 const getFlag = (name) => {
@@ -3613,6 +3613,8 @@ if (dead) {
 if (stats.quality.sweep) {
   console.log("\n  ── 빠른 정적 훑기 (실제 영향 점수 아님) ──");
   for (const line of sweepConsoleLines(stats.quality.sweep)) console.log(line);
+  const thanks = thanksUrl(stats.quality.sweep);
+  if (thanks) console.log(`\n  고친 게 있다면 숫자만 남겨 주세요 (코드·경로는 안 들어갑니다):\n    ${thanks}`);
 }
 // ── (선택) LLM 자문 — 정적 지표가 못 보는 네이밍·응집도. 점수엔 미반영, 자문만 ──
 if (args.includes("--llm") && cognitive) {

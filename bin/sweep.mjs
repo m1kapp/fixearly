@@ -139,3 +139,13 @@ export function sweepConsoleLines(sweep, limit = 5) {
   if (!sweep.candidates.length) lines.push("    현재 기준선은 깨끗함 — 다음 실행부터 diff만 보면 됨");
   return lines;
 }
+
+// 지난 실행엔 있었는데 이번엔 사라진 후보 = 고친 것. 비공개 저장소에서도 숫자만은 남길 수 있게
+// 축별 건수를 채운 신고 링크를 만든다. 경로·코드는 넣지 않는다.
+export function thanksUrl(sweep) {
+  const byLabel = new Map();
+  for (const item of sweep?.resolved || []) byLabel.set(item.label, (byLabel.get(item.label) || 0) + 1);
+  if (!byLabel.size) return null;
+  const axes = [...byLabel].map(([label, n]) => `${label} ${n}`).join("\n");
+  return `https://github.com/m1kapp/fixearly/issues/new?template=thanks.yml&axes=${encodeURIComponent(axes)}`;
+}
