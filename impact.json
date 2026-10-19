@@ -842,7 +842,7 @@
    "titleEn": "three maps filled but never read",
    "type": "쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — 생긴 뒤 한 번도 읽힌 적 없다)",
    "repo": "CherryHQ/cherry-studio",
-   "repoLabel": "cherry-studio · 52.7k★",
+   "repoLabel": "cherry-studio · 52.8k★",
    "pr": 21363,
    "status": "merged",
    "createdAt": "2026-10-07T11:05:27Z",
@@ -1322,8 +1322,12 @@
    "repoLabel": "wp-calypso · 12.6k★",
    "pr": 115382,
    "createdAt": "2026-10-19T15:13:08Z",
-   "status": "waiting"
+   "status": "merged",
+   "mergedAt": "2026-10-19T15:59:03Z",
+   "release": {
+    "channel": "pending"
+   }
   }
  ],
- "generatedAt": "2026-10-19T15:18:22.921Z"
+ "generatedAt": "2026-10-19T16:11:01.904Z"
 }

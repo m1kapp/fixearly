@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 44**
+> **fixearly 임팩트 점수: 45**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -67,7 +67,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `upsertMany 재조회 행을 엔티티마다 전부 비교` | [mikro-orm · 9.3k★](https://github.com/mikro-orm/mikro-orm) | O(n²) 배열 조회 (배치 × 재조회 행 comparator.matching — 엄격 비교 키 값으로 행을 한 번 묶어 같은 묶음만 비교) | [#8393](https://github.com/mikro-orm/mikro-orm/pull/8393) | ✅ merged | +1 |
 | `표현식 unique·차집합이 원시값 배열도 깊은 비교로 이중 순회` | [n8n · 208k★](https://github.com/n8n-io/n8n) | O(n²) 배열 조회 (lodash isEqual 쌍 비교 — 원시값만 있으면 Set 이 같은 답을 낸다) | [#40311](https://github.com/n8n-io/n8n/pull/40311) | ⚪ awaiting review | — |
 | `채우기만 하고 읽지 않는 Map` | [Babylon.js · 26.2k★](https://github.com/BabylonJS/Babylon.js) | 쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — DFS 는 연결점의 소유 블록을 직접 따라간다) | [#18980](https://github.com/BabylonJS/Babylon.js/pull/18980) | ✅ merged | +1 |
-| `채우기만 하고 읽지 않는 Map 3개` | [cherry-studio · 52.7k★](https://github.com/CherryHQ/cherry-studio) | 쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — 생긴 뒤 한 번도 읽힌 적 없다) | [#21363](https://github.com/CherryHQ/cherry-studio/pull/21363) | ✅ merged | +1 |
+| `채우기만 하고 읽지 않는 Map 3개` | [cherry-studio · 52.8k★](https://github.com/CherryHQ/cherry-studio) | 쓰기만 하는 컬렉션 (set 만 하고 읽는 곳 0 — 생긴 뒤 한 번도 읽힌 적 없다) | [#21363](https://github.com/CherryHQ/cherry-studio/pull/21363) | ✅ merged | +1 |
 | `검증 에러가 dev 서버를 죽임` | [react-router · 56.6k★](https://github.com/remix-run/react-router) | 버려진 Promise (throw 하는 async 검증을 await 없이 불러 unhandled rejection 으로 프로세스 종료) | [#15591](https://github.com/remix-run/react-router/pull/15591) | ⚪ awaiting review | — |
 | `리팩터 뒤 남은 조상 Set` | [pdf.js · 54k★](https://github.com/mozilla/pdf.js) | 쓰기만 하는 컬렉션 (2021 usehref 리팩터로 소비자 둘이 ancestors 로 바뀐 뒤 남은 Set) | [#22102](https://github.com/mozilla/pdf.js/pull/22102) | ⚪ awaiting review | — |
 | `중복 검사 Set 을 안 읽어 codemod 가 중복 이름을 만듦` | [turborepo · 31.2k★](https://github.com/vercel/turborepo) | 쓰기만 하는 컬렉션 (2026-03 리팩터가 has() 검사를 지워 채우기만 하는 Set 이 남았고, 그 결과 중복 이름을 생성) | [#14433](https://github.com/vercel/turborepo/pull/14433) | ✅ merged | +1 |
@@ -105,7 +105,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `개발·테스트에서 다시 던지려던 delta 후처리 에러가 사라짐` | [excalidraw · 134.2k★](https://github.com/excalidraw/excalidraw) | finally 가 삼킨 throw (catch 가 dev·test 면 다시 던지는데 finally 의 return 이 진행 중 예외를 덮어써 로그만 남는다 — 3곳) | [#12359](https://github.com/excalidraw/excalidraw/pull/12359) | ⚪ awaiting review | — |
 | `range 슬라이더가 끝값이 숫자가 아니어도 통과시킴` | [semi-design · 10.4k★](https://github.com/DouyinFE/semi-design) | 같은 식 두 번 비교 (valueFormatIsCorrect 가 typeof value[0] 를 두 번 검사 — [30, undefined] 가 currentValue 로 들어간다) | [#3428](https://github.com/DouyinFE/semi-design/pull/3428) | ⚪ awaiting review | — |
 | `비동기 onNewMessage·onNewToolCall 훅을 기다리지 않음` | [ag-ui · 16.7k★](https://github.com/ag-ui-protocol/ag-ui) | return 없는 콜백 (Promise.all 안 블록 본문 map 이 훅의 promise 를 안 돌려줌 — 4곳, 거부되면 unhandled rejection) | [#3118](https://github.com/ag-ui-protocol/ag-ui/pull/3118) | ⚪ awaiting review | — |
-| `Google Workspace 첫해 할인 안내가 4년째 안 뜸` | [wp-calypso · 12.6k★](https://github.com/Automattic/wp-calypso) | 같은 식 두 번 비교 (item_original_subtotal_integer < item_original_subtotal_integer — 2021 리팩터가 할인가 자리를 원가로 바꿔 늘 거짓) | [#115382](https://github.com/Automattic/wp-calypso/pull/115382) | ⚪ awaiting review | — |
+| `Google Workspace 첫해 할인 안내가 4년째 안 뜸` | [wp-calypso · 12.6k★](https://github.com/Automattic/wp-calypso) | 같은 식 두 번 비교 (item_original_subtotal_integer < item_original_subtotal_integer — 2021 리팩터가 할인가 자리를 원가로 바꿔 늘 거짓) | [#115382](https://github.com/Automattic/wp-calypso/pull/115382) | ✅ merged | +1 |
 
 ## 규칙
 
