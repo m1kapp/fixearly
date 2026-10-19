@@ -1293,7 +1293,37 @@
    "pr": 12359,
    "createdAt": "2026-10-19T15:05:33Z",
    "status": "waiting"
+  },
+  {
+   "title": "range 슬라이더가 끝값이 숫자가 아니어도 통과시킴",
+   "titleEn": "Range slider accepts a non-numeric end value",
+   "type": "같은 식 두 번 비교 (valueFormatIsCorrect 가 typeof value[0] 를 두 번 검사 — [30, undefined] 가 currentValue 로 들어간다)",
+   "repo": "DouyinFE/semi-design",
+   "repoLabel": "semi-design · 10.4k★",
+   "pr": 3428,
+   "createdAt": "2026-10-19T15:13:01Z",
+   "status": "waiting"
+  },
+  {
+   "title": "비동기 onNewMessage·onNewToolCall 훅을 기다리지 않음",
+   "titleEn": "Async onNewMessage and onNewToolCall hooks are not awaited",
+   "type": "return 없는 콜백 (Promise.all 안 블록 본문 map 이 훅의 promise 를 안 돌려줌 — 4곳, 거부되면 unhandled rejection)",
+   "repo": "ag-ui-protocol/ag-ui",
+   "repoLabel": "ag-ui · 16.7k★",
+   "pr": 3118,
+   "createdAt": "2026-10-19T15:13:04Z",
+   "status": "waiting"
+  },
+  {
+   "title": "Google Workspace 첫해 할인 안내가 4년째 안 뜸",
+   "titleEn": "Google Workspace first-year discount callout never renders",
+   "type": "같은 식 두 번 비교 (item_original_subtotal_integer < item_original_subtotal_integer — 2021 리팩터가 할인가 자리를 원가로 바꿔 늘 거짓)",
+   "repo": "Automattic/wp-calypso",
+   "repoLabel": "wp-calypso · 12.6k★",
+   "pr": 115382,
+   "createdAt": "2026-10-19T15:13:08Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-19T15:07:49.433Z"
+ "generatedAt": "2026-10-19T15:18:22.921Z"
 }
