@@ -103,6 +103,9 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `outline 설정을 바꿔도 캐시된 매크로 인자가 안 붙음` | [LaTeX-Workshop · 12.4k★](https://github.com/James-Yu/LaTeX-Workshop) | forEach 안 await (forEach(async) 뒤 곧바로 reconstruct() — 게다가 워커는 구조적 복제본만 바꿔 캐시 AST 엔 인자가 안 남는다) | [#5007](https://github.com/James-Yu/LaTeX-Workshop/pull/5007) | ⚪ awaiting review | — |
 | `끝만 다른 미리 불러온 구간을 중복으로 보고 건너뜀` | [SponsorBlock · 13.9k★](https://github.com/ajayyy/SponsorBlock) | 같은 식 두 번 비교 (checkForPreloadedSegment 가 s.segment[1] === s.segment[1] 로 끝 시간을 자기와 비교 — 시작만 같으면 중복으로 보고 버린다) | [#2572](https://github.com/ajayyy/SponsorBlock/pull/2572) | ✅ merged | +1 |
 | `개발·테스트에서 다시 던지려던 delta 후처리 에러가 사라짐` | [excalidraw · 134.2k★](https://github.com/excalidraw/excalidraw) | finally 가 삼킨 throw (catch 가 dev·test 면 다시 던지는데 finally 의 return 이 진행 중 예외를 덮어써 로그만 남는다 — 3곳) | [#12359](https://github.com/excalidraw/excalidraw/pull/12359) | ⚪ awaiting review | — |
+| `range 슬라이더가 끝값이 숫자가 아니어도 통과시킴` | [semi-design · 10.4k★](https://github.com/DouyinFE/semi-design) | 같은 식 두 번 비교 (valueFormatIsCorrect 가 typeof value[0] 를 두 번 검사 — [30, undefined] 가 currentValue 로 들어간다) | [#3428](https://github.com/DouyinFE/semi-design/pull/3428) | ⚪ awaiting review | — |
+| `비동기 onNewMessage·onNewToolCall 훅을 기다리지 않음` | [ag-ui · 16.7k★](https://github.com/ag-ui-protocol/ag-ui) | return 없는 콜백 (Promise.all 안 블록 본문 map 이 훅의 promise 를 안 돌려줌 — 4곳, 거부되면 unhandled rejection) | [#3118](https://github.com/ag-ui-protocol/ag-ui/pull/3118) | ⚪ awaiting review | — |
+| `Google Workspace 첫해 할인 안내가 4년째 안 뜸` | [wp-calypso · 12.6k★](https://github.com/Automattic/wp-calypso) | 같은 식 두 번 비교 (item_original_subtotal_integer < item_original_subtotal_integer — 2021 리팩터가 할인가 자리를 원가로 바꿔 늘 거짓) | [#115382](https://github.com/Automattic/wp-calypso/pull/115382) | ⚪ awaiting review | — |
 
 ## 규칙
 
