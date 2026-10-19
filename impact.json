@@ -28,7 +28,7 @@
    "title": "booking member diff O(n²)",
    "type": "O(n²) 배열 조회 (루프 안 .some() 선형스캔 4회 → Set)",
    "repo": "calcom/cal.diy",
-   "repoLabel": "cal.com · 49.1k★",
+   "repoLabel": "cal.com · 49.2k★",
    "pr": 29828,
    "createdAt": "2026-07-24T00:51:16Z",
    "status": "closed",
@@ -64,7 +64,7 @@
    "title": "lucky-user set rebuild in loop",
    "type": "루프 불변 인덱스 재구축 (while마다 new Set 재구축 → 호이스팅)",
    "repo": "calcom/cal.diy",
-   "repoLabel": "cal.com · 49.1k★",
+   "repoLabel": "cal.com · 49.2k★",
    "pr": 29832,
    "createdAt": "2026-07-24T08:00:48Z",
    "status": "closed",
@@ -1283,7 +1283,17 @@
    "release": {
     "channel": "pending"
    }
+  },
+  {
+   "title": "개발·테스트에서 다시 던지려던 delta 후처리 에러가 사라짐",
+   "titleEn": "Delta post-processing errors meant to rethrow in dev and test are swallowed",
+   "type": "finally 가 삼킨 throw (catch 가 dev·test 면 다시 던지는데 finally 의 return 이 진행 중 예외를 덮어써 로그만 남는다 — 3곳)",
+   "repo": "excalidraw/excalidraw",
+   "repoLabel": "excalidraw · 134.2k★",
+   "pr": 12359,
+   "createdAt": "2026-10-19T15:05:33Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-10-19T14:17:30.945Z"
+ "generatedAt": "2026-10-19T15:07:49.433Z"
 }

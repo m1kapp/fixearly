@@ -13,10 +13,10 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 |------|------|------|----|------|------|
 | `deleteBulkMetadata N+1` | [immich · 116.7k★](https://github.com/immich-app/immich) | N+1 (루프 안 순차 DELETE, item당 왕복 1회) | [#30163](https://github.com/immich-app/immich/pull/30163) | ❌ closed | — |
 | `sync-agent findOne N+1` | [novu · 40.2k★](https://github.com/novuhq/novu) | N+1 (for 루프 안 findOne, 소스 통합당 쿼리 1회) | [#12074](https://github.com/novuhq/novu/pull/12074) | ❌ closed | — |
-| `booking member diff O(n²)` | [cal.com · 49.1k★](https://github.com/calcom/cal.diy) | O(n²) 배열 조회 (루프 안 .some() 선형스캔 4회 → Set) | [#29828](https://github.com/calcom/cal.diy/pull/29828) | ❌ closed | — |
+| `booking member diff O(n²)` | [cal.com · 49.2k★](https://github.com/calcom/cal.diy) | O(n²) 배열 조회 (루프 안 .some() 선형스캔 4회 → Set) | [#29828](https://github.com/calcom/cal.diy/pull/29828) | ❌ closed | — |
 | `view-widget-upsert O(n²)` | [twenty · 58.5k★](https://github.com/twentyhq/twenty) | O(n²) 배열 조회 (4개 루프서 .find() 키조회 → Map) | [#23231](https://github.com/twentyhq/twenty/pull/23231) | ❌ closed | — |
 | `nested relations hydration O(n²)` | [twenty · 58.5k★](https://github.com/twentyhq/twenty) | O(n²) 그룹핑/조회 (부모 레코드마다 관계행 전수 스캔 → Map) | [#23232](https://github.com/twentyhq/twenty/pull/23232) | ❌ closed | — |
-| `lucky-user set rebuild in loop` | [cal.com · 49.1k★](https://github.com/calcom/cal.diy) | 루프 불변 인덱스 재구축 (while마다 new Set 재구축 → 호이스팅) | [#29832](https://github.com/calcom/cal.diy/pull/29832) | ❌ closed | — |
+| `lucky-user set rebuild in loop` | [cal.com · 49.2k★](https://github.com/calcom/cal.diy) | 루프 불변 인덱스 재구축 (while마다 new Set 재구축 → 호이스팅) | [#29832](https://github.com/calcom/cal.diy/pull/29832) | ❌ closed | — |
 | `dataloader doc placement O(n²)` | [payload · 45.4k★](https://github.com/payloadcms/payload) | O(n²) (배치당 keys.findIndex 전체 스캔 — Map으로 O(1)) | [#17469](https://github.com/payloadcms/payload/pull/17469) | ❌ closed | — |
 | `translations batch match O(n²)` | [medusa · 36.8k★](https://github.com/medusajs/medusa) | O(n²) (batch당 filter+some 전체 스캔 — Set으로 O(1)) | [#16188](https://github.com/medusajs/medusa/pull/16188) | ✅ merged | +1 |
 | `markdown import merge O(n²)` | [outline · 41k★](https://github.com/outline/outline) | O(n²) (형제 out.find title 스캔 — Map으로 O(1)) | [#13117](https://github.com/outline/outline/pull/13117) | ✅ merged | +1 |
@@ -102,6 +102,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `ICU 를 한 번 잡은 뒤 다음 속성 번역의 ICU 를 놓침` | [angular · 101.1k★](https://github.com/angular/angular) | 전역 정규식 상태 (/gi 정규식을 .test() 로만 써 lastIndex 가 남음 — 매치 뒤 throw 라 리셋 안 됨) | [#71389](https://github.com/angular/angular/pull/71389) | ⚪ awaiting review | — |
 | `outline 설정을 바꿔도 캐시된 매크로 인자가 안 붙음` | [LaTeX-Workshop · 12.4k★](https://github.com/James-Yu/LaTeX-Workshop) | forEach 안 await (forEach(async) 뒤 곧바로 reconstruct() — 게다가 워커는 구조적 복제본만 바꿔 캐시 AST 엔 인자가 안 남는다) | [#5007](https://github.com/James-Yu/LaTeX-Workshop/pull/5007) | ⚪ awaiting review | — |
 | `끝만 다른 미리 불러온 구간을 중복으로 보고 건너뜀` | [SponsorBlock · 13.9k★](https://github.com/ajayyy/SponsorBlock) | 같은 식 두 번 비교 (checkForPreloadedSegment 가 s.segment[1] === s.segment[1] 로 끝 시간을 자기와 비교 — 시작만 같으면 중복으로 보고 버린다) | [#2572](https://github.com/ajayyy/SponsorBlock/pull/2572) | ✅ merged | +1 |
+| `개발·테스트에서 다시 던지려던 delta 후처리 에러가 사라짐` | [excalidraw · 134.2k★](https://github.com/excalidraw/excalidraw) | finally 가 삼킨 throw (catch 가 dev·test 면 다시 던지는데 finally 의 return 이 진행 중 예외를 덮어써 로그만 남는다 — 3곳) | [#12359](https://github.com/excalidraw/excalidraw/pull/12359) | ⚪ awaiting review | — |
 
 ## 규칙
 

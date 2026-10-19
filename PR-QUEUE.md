@@ -358,10 +358,11 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 |---|---|---|---|
 | [vscode#340771](https://github.com/microsoft/vscode/pull/340771) | return 없는 콜백 | 🟢 리뷰 진행 | 9일째 / 보통 1일 |
 | [infisical#8536](https://github.com/Infisical/infisical/pull/8536) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 10일째 / 보통 1일 · 보류 |
-| [LaTeX-Workshop#5007](https://github.com/James-Yu/LaTeX-Workshop/pull/5007) | forEach 안 await | ⚪ 대기 | 1일째 / 보통 2일 |
+| [LaTeX-Workshop#5007](https://github.com/James-Yu/LaTeX-Workshop/pull/5007) | forEach 안 await | ⚪ 대기 | 2일째 / 보통 2일 |
 | [insomnia#10575](https://github.com/Kong/insomnia/pull/10575) | forEach 안 await | ⚪ 대기 | 12일째 / 보통 2일 · 보류 |
 | [ghost#31677](https://github.com/TryGhost/Ghost/pull/31677) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 10일째 / 보통 1일 · 보류 |
 | [angular#71389](https://github.com/angular/angular/pull/71389) | 전역 정규식 상태 | ⚪ 대기 | 2일째 / 보통 2일 |
+| [excalidraw#12359](https://github.com/excalidraw/excalidraw/pull/12359) | finally 가 삼킨 throw | ⚪ 대기 | 오늘 / 보통 20일 |
 | [framework7#4405](https://github.com/framework7io/framework7/pull/4405) | 위치를 진리값으로 | ⚪ 대기 | 3일째 / 보통 4일 |
 | [mermaid#8413](https://github.com/mermaid-js/mermaid/pull/8413) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 10일째 / 보통 6일 |
 | [pdf.js#22102](https://github.com/mozilla/pdf.js/pull/22102) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 12일째 / 보통 1일 · 보류 |
@@ -369,15 +370,15 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [nocodb#14812](https://github.com/nocodb/nocodb/pull/14812) | 버린 반환값 | ⚪ 대기 | 9일째 |
 | [Node.js#66647](https://github.com/nodejs/node/pull/66647) | 버린 반환값 | ⚪ 대기 | 8일째 / 보통 2일 |
 | [nx#37332](https://github.com/nrwl/nx/pull/37332) | 버린 반환값 | ⚪ 대기 | 11일째 / 보통 3일 · 보류 |
-| [opensumi#4776](https://github.com/opensumi/core/pull/4776) | 버린 반환값 | ⚪ 대기 | 9일째 / 보통 4일 |
+| [opensumi#4776](https://github.com/opensumi/core/pull/4776) | 버린 반환값 | ⚪ 대기 | 10일째 / 보통 4일 |
 | [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 12일째 / 보통 3일 · 보류 |
 | [rgthree-comfy#790](https://github.com/rgthree/rgthree-comfy/pull/790) | 같은 식 두 번 비교 | ⚪ 대기 | 9일째 / 보통 4일 |
 | [serverless#13947](https://github.com/serverless/serverless/pull/13947) | return 없는 콜백 | ⚪ 대기 | 9일째 / 보통 1일 · 보류 |
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 22일째 / 보통 1일 · 보류 |
-| [affine#15692](https://github.com/toeverything/AFFiNE/pull/15692) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 9일째 / 보통 4일 |
+| [affine#15692](https://github.com/toeverything/AFFiNE/pull/15692) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 10일째 / 보통 4일 |
 | [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 22일째 / 보통 2일 · 보류 |
 
-**열린 것 20건(보류 10건 빼면 10건).** 판정 난 71건 중 머지 44 · 승인 0 · 닫힘 27.
+**열린 것 21건(보류 10건 빼면 11건).** 판정 난 71건 중 머지 44 · 승인 0 · 닫힘 27.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -884,7 +885,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | typeorm | 19% | 34% | 11.9일 | 5/26 | 컷 | 판정 경험 있음 |
 | cal.diy | 11% | 9% | 3.4일 | 5/45 | 컷 | 판정 경험 있음 · 게이트 0 — 외부 PR 에서 `required` 잡이 항상 실패 |
 | drizzle-orm | 7% | 6% | 4.2일 | 3/41 | 컷 | drizzle-kit 의 snapshotsDiffer 는 beta(v1 재작성)에서 사라졌다 — main 쪽 수정은 곧 버려질 코드 |
-| excalidraw | 4% | 4% | 20.4일 | 2/52 | 컷 | 판정 경험 있음 |
+| excalidraw | 4% | 4% | 20.4일 | 2/52 | 컷 | 열린 PR 있음 — 저장소당 1건 |
 | webpack | 0% | 17% | 0.2일 | 0/3 | 표본 부족 | 게이트 0 — AGENTS.md 가 PR 본문 양식(Use of AI 섹션 필수, governance AI_POLICY: human-in-the-loop·질문에 답할 수 있어야 함)과 Co-authored-by 금지, 커밋 author 는 사람만을 REQUIRED 로 둔다 |
 | pdf.js | 0% | 90% | 0.7일 | 0/4 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
 | prisma | 0% | 78% | 0.8일 | 0/7 | 표본 부족 | — |
