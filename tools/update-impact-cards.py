@@ -935,8 +935,9 @@ def _thanks_card(t):
             f'<span class="tkt"><span class="ko">{esc(ind)}</span><span class="en">{esc(_INDUSTRY_EN.get(ind, ind))}</span></span>')
     tags += f'<span class="tkt">{esc(t.get("stack", ""))}</span>' if t.get("stack") else ""
     if verify and verify != "없음":
-        tags += (f'<span class="tkt tkv"><span class="ko">{esc(verify)}</span>'
-                 f'<span class="en">{esc(_VERIFY_EN.get(verify, verify))}</span></span>')
+        # 태그엔 괄호 앞 이름만 — 풀이는 양식에 있다.
+        tags += (f'<span class="tkt tkv"><span class="ko">{esc(verify.split(" (")[0])}</span>'
+                 f'<span class="en">{esc(_VERIFY_EN.get(verify, verify).split(" (")[0])}</span></span>')
     lines = ([t["note"]] if t.get("note") else []) + (t.get("metric") or [])
     if hl and not big:
         lines.insert(0, f'{hl["name"]}: {hl["before"]} → {hl["after"]}')
@@ -947,7 +948,6 @@ def _thanks_card(t):
             + f'<span class="tkn">{esc(t.get("name") or "익명")} · {t["at"]} · #{t["issue"]}</span></a>')
 
 
-_tfix = sum(n for t in _thanks for _, n in t["axes"])
 # 신청 창구 — 신고가 0건이어도 둔다. 칸이 비어 있으면 아무도 신고할 곳을 모른다.
 _tcta = ('<a class="tk tkc" href="https://github.com/m1kapp/fixearly/issues/new?template=thanks.yml" target="_blank" rel="noopener">'
          '<span class="tka"><span class="ko">비공개 저장소에서 고쳤나요? 이렇게 신청해 주세요</span>'
@@ -959,8 +959,8 @@ _tcta = ('<a class="tk tkc" href="https://github.com/m1kapp/fixearly/issues/new?
          '<li><span class="ko">저장소명·경로·코드는 안 받는다. 회사 이름은 공개 허락을 체크했을 때만 싣는다</span>'
          '<span class="en">No repo names, paths or code. The company name shows only if you confirm permission</span></li></ol>'
          '<span class="tkb"><span class="ko">신청 창구 열기 →</span><span class="en">Open the report form →</span></span></a>')
-_head_ko = f"비공개 저장소에서 고쳤다는 신고 {len(_thanks)}건 · {_tfix}곳 — 자기 신고라 위 머지 수에 안 센다" if _thanks else "비공개 저장소에서 고친 것도 숫자만으로 남길 수 있다"
-_head_en = (f'{len(_thanks)} self-report{"s" if len(_thanks) > 1 else ""} from private repos · {_tfix} fixes — not counted as merges above'
+_head_ko = f"비공개 저장소에서 고쳤다는 자기 신고 {len(_thanks)}건 — 규칙별로 나눴고, 위 머지 수에 안 센다" if _thanks else "비공개 저장소에서 고친 것도 숫자만으로 남길 수 있다"
+_head_en = (f'{len(_thanks)} self-reported fix{"es" if len(_thanks) > 1 else ""} from private repos, one per rule — not counted as merges above'
             if _thanks else "Fixes in private repos can be recorded with numbers alone")
 _thtml = (f'<div class="thanks"><div class="axh"><span class="ko">사내 적용<small>{_head_ko}</small></span>'
           f'<span class="en">In-house fixes<small>{_head_en}</small></span></div>'
