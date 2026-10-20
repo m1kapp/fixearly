@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        **회사명·저장소명·파일 경로·버그 설명은 쓰지 마세요.** 축과 건수만으로 충분합니다.
+        **저장소명·파일 경로·버그 설명은 쓰지 마세요.** 회사(org) 이름은 아래에서 허락을 체크했을 때만 표시하고, 아니면 업종으로만 씁니다.
         메인테이너가 확인하고 `thanks` 라벨을 붙인 신고만 랜딩에 "자기 신고"로 표시됩니다. OSS 머지 수에는 더하지 않습니다.
   - type: textarea
     id: axes
@@ -18,6 +18,49 @@ body:
         독립 await 직렬화 1
     validations:
       required: true
+  - type: dropdown
+    id: industry
+    attributes:
+      label: 업종
+      options: [B2B SaaS, 커머스, 핀테크, 게임, 미디어·콘텐츠, 공공·교육, 개발 도구, 기타]
+    validations:
+      required: true
+  - type: dropdown
+    id: stack
+    attributes:
+      label: 스택
+      options: [TypeScript · Node, TypeScript · React, JavaScript, Python, 기타]
+    validations:
+      required: true
+  - type: input
+    id: metric_name
+    attributes:
+      label: 대표 성과 — 지표 (선택)
+      placeholder: "그래프 검증 5,000노드"
+  - type: input
+    id: metric_before
+    attributes:
+      label: 대표 성과 — 전 (선택)
+      placeholder: "519.51ms"
+  - type: input
+    id: metric_after
+    attributes:
+      label: 대표 성과 — 후 (선택)
+      placeholder: "6.41ms"
+  - type: dropdown
+    id: verify
+    attributes:
+      label: 검증 방법
+      description: 숫자는 방법이 있을 때만 크게 표시합니다.
+      options: [재현 테스트 (수정 전 실패 · 후 통과), 벤치마크, 운영 지표, 없음]
+    validations:
+      required: true
+  - type: textarea
+    id: metric
+    attributes:
+      label: 그 밖의 성과 (선택)
+      description: "한 줄에 하나씩. 지표 · 전→후 · 방법."
+      placeholder: "p50 응답 2.1s → 0.4s · 스테이징 부하 테스트 10분"
   - type: input
     id: note
     attributes:
@@ -27,12 +70,17 @@ body:
     id: name
     attributes:
       label: 표시 이름 (선택 · 비우면 익명)
-  - type: textarea
-    id: metric
+  - type: input
+    id: org
     attributes:
-      label: 측정한 성과 (선택)
-      description: "지표 · 전→후 · 측정 방법. 방법이 없으면 숫자는 표시하지 않고 메모로만 씁니다."
-      placeholder: "p50 응답 2.1s → 0.4s · 스테이징 부하 테스트 10분"
+      label: 회사(org) 이름 (선택)
+      description: 아래 허락을 체크하지 않으면 표시하지 않습니다.
+  - type: checkboxes
+    id: org_consent
+    attributes:
+      label: 회사 이름을 넣었다면
+      options:
+        - label: 회사 이름을 공개해도 된다는 허락을 받았습니다
   - type: textarea
     id: snippet
     attributes:

@@ -21,6 +21,19 @@ class ImpactCardTimeTest(unittest.TestCase):
         self.assertEqual(grid.count("기여자 약 "), len(findings))
         self.assertIn(f'기여자 약 {counts["facebook/react"]:,}명', grid)
 
+    def test_thanks_cards_show_numbers_only_when_verified(self):
+        reports = json.loads((ROOT / "thanks.json").read_text(encoding="utf-8"))["reports"]
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        block = re.search(r"<!--auto:thanks-->(.*?)<!--/auto:thanks-->", html, re.S).group(1)
+        cards = re.findall(r'<a class="tk" .*?</a>', block)
+        self.assertEqual(len(cards), len(reports))
+        for report, card in zip(reports, cards):
+            with self.subTest(issue=report["issue"]):
+                verified = report.get("headline") and report.get("verify") not in (None, "없음")
+                self.assertEqual('class="tkh"' in card, bool(verified))
+                if not report.get("org"):
+                    self.assertIn(report["industry"], card)
+
     def test_merged_pr_can_await_release(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         findings = json.loads((ROOT / "impact.json").read_text(encoding="utf-8"))["findings"]
