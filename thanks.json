@@ -1,18 +1,49 @@
 {
- "_": "사내·비공개 저장소 적용 신고. thanks 라벨이 붙은 이슈만 옮긴다. 자기 신고라 impact.json 머지 수에 더하지 않는다. org 는 이슈에서 공개 허락을 체크했을 때만 채운다.",
+ "_": "사내·비공개 저장소 적용 신고. thanks 라벨이 붙은 이슈만 옮긴다. 자기 신고라 impact.json 머지 수에 더하지 않는다. org 는 이슈에서 공개 허락을 체크했을 때만 채운다. 한 이슈에 규칙이 여럿이면 규칙마다 따로 나눈다. at 은 사내 병합일.",
  "reports": [
   {
    "issue": 218,
-   "at": "2026-10-20",
-   "axes": [["버려진 Promise", 1], ["O(n²) 배열 조회", 1]],
    "industry": "B2B SaaS",
    "stack": "TypeScript · Node",
    "org": null,
    "name": null,
-   "headline": {"name": "그래프 검증 5,000노드", "before": "519.51ms", "after": "6.41ms"},
+   "at": "2026-10-08",
+   "axes": [
+    [
+     "버려진 Promise",
+     1
+    ]
+   ],
+   "headline": null,
+   "verify": "재현 테스트 (수정 전 실패 · 후 통과)",
+   "metric": [
+    "이미지 생성이 1초 안에 실패하면 이후 답변이 억제되던 경합"
+   ],
+   "note": null
+  },
+  {
+   "issue": 218,
+   "industry": "B2B SaaS",
+   "stack": "TypeScript · Node",
+   "org": null,
+   "name": null,
+   "at": "2026-08-23",
+   "axes": [
+    [
+     "O(n²) 배열 조회",
+     1
+    ]
+   ],
+   "headline": {
+    "name": "그래프 검증 5,000노드",
+    "before": "519.51ms",
+    "after": "6.41ms"
+   },
    "verify": "벤치마크",
-   "metric": ["이미지 즉시 실패 뒤 답변 억제 경합: 재현 단위 테스트가 수정 전 실패 · 수정 후 통과"],
-   "note": "사내 서비스에 2건 병합 (2026-08-23, 2026-10-08)"
+   "metric": [
+    "워밍업 3회 뒤 20회 중앙값"
+   ],
+   "note": null
   }
  ]
 }
