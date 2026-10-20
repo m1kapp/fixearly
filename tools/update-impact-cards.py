@@ -903,18 +903,54 @@ missing += missing_times
 # 사내 적용 신고 — 비공개 저장소라 PR 링크 대신 신고 이슈로 건다. 자기 신고라 위 머지 수에 더하지 않는다.
 # 신고가 없으면 칸째로 비운다. 출처: thanks.json (thanks 라벨이 붙은 이슈만 옮긴다).
 _thanks = json.load(open(f"{ROOT}/thanks.json", encoding="utf-8"))["reports"]
-_trows = "".join(
-    f'<a class="tk" href="https://github.com/m1kapp/fixearly/issues/{t["issue"]}" target="_blank" rel="noopener">'
-    f'<span class="tka">{" · ".join(f"{esc(a)} {n}" for a, n in t["axes"])}</span>'
-    f'<span class="tkn">{esc(t["name"] or "익명")} · {t["at"]}</span>'
-    + (f'<span class="tkm">{esc(t["note"])}</span>' if t.get("note") else "")
-    + "".join(f'<span class="tkm">{esc(m)}</span>' for m in t.get("metric", []))
-    + "</a>"
-    for t in _thanks)
+_VERIFY_EN = {"재현 테스트 (수정 전 실패 · 후 통과)": "repro test (fails before · passes after)",
+              "벤치마크": "benchmark", "운영 지표": "production metric"}
+_INDUSTRY_EN = {"커머스": "commerce", "핀테크": "fintech", "게임": "games", "미디어·콘텐츠": "media",
+                "공공·교육": "public · education", "개발 도구": "dev tools", "기타": "other"}
+
+
+def _ratio(before, after):
+    # 같은 단위의 두 숫자일 때만 배수를 붙인다. 단위가 다르거나 숫자가 아니면 말을 지어내지 않는다.
+    m = [re.fullmatch(r"\s*([\d.,]+)\s*(\S*)\s*", v or "") for v in (before, after)]
+    if not all(m) or m[0][2] != m[1][2]:
+        return ""
+    a, b = (float(x[1].replace(",", "")) for x in m)
+    if not a or not b:
+        return ""
+    r = max(a, b) / min(a, b)
+    return f"{r:.0f}×" if r >= 10 else f"{r:.1f}×"
+
+
+def _thanks_card(t):
+    hl, verify = t.get("headline"), t.get("verify")
+    # 검증 방법이 없으면 숫자를 크게 쓰지 않는다 — 양식이 약속한 규칙이다.
+    big = ""
+    if hl and verify and verify != "없음":
+        r = _ratio(hl["before"], hl["after"])
+        big = (f'<span class="tkh"><span class="tkhn">{esc(hl["name"])}</span>'
+               f'<b>{esc(hl["before"])} → {esc(hl["after"])}</b>{f"<i>{r}</i>" if r else ""}</span>')
+    who = esc(t["org"]) if t.get("org") else None
+    ind = t.get("industry", "")
+    tags = (f'<span class="tkt">{who}</span>' if who else
+            f'<span class="tkt"><span class="ko">{esc(ind)}</span><span class="en">{esc(_INDUSTRY_EN.get(ind, ind))}</span></span>')
+    tags += f'<span class="tkt">{esc(t.get("stack", ""))}</span>' if t.get("stack") else ""
+    if verify and verify != "없음":
+        tags += (f'<span class="tkt tkv"><span class="ko">{esc(verify)}</span>'
+                 f'<span class="en">{esc(_VERIFY_EN.get(verify, verify))}</span></span>')
+    lines = ([t["note"]] if t.get("note") else []) + (t.get("metric") or [])
+    if hl and not big:
+        lines.insert(0, f'{hl["name"]}: {hl["before"]} → {hl["after"]}')
+    return (f'<a class="tk" href="https://github.com/m1kapp/fixearly/issues/{t["issue"]}" target="_blank" rel="noopener">'
+            f'<span class="tkg">{tags}</span>{big}'
+            f'<span class="tka">{" · ".join(f"{esc(a)} {n}" for a, n in t["axes"])}</span>'
+            + "".join(f'<span class="tkm">{esc(m)}</span>' for m in lines)
+            + f'<span class="tkn">{esc(t.get("name") or "익명")} · {t["at"]} · #{t["issue"]}</span></a>')
+
+
 _tfix = sum(n for t in _thanks for _, n in t["axes"])
 _thtml = (f'<div class="thanks"><div class="axh"><span class="ko">사내 적용<small>비공개 저장소에서 고쳤다는 신고 {len(_thanks)}건 · {_tfix}곳 — 자기 신고라 위 머지 수에 안 센다</small></span>'
           f'<span class="en">In-house fixes<small>{len(_thanks)} self-report{"s" if len(_thanks) > 1 else ""} from private repos · {_tfix} fixes — not counted as merges above</small></span></div>'
-          f'{_trows}</div>') if _thanks else ""
+          f'{"".join(_thanks_card(t) for t in _thanks)}</div>') if _thanks else ""
 T_BEGIN, T_END = "<!--auto:thanks-->", "<!--/auto:thanks-->"
 assert T_BEGIN in h and T_END in h, "사내 적용 마커가 없다"
 h = re.sub(re.escape(T_BEGIN) + r".*?" + re.escape(T_END), lambda m: T_BEGIN + _thtml + T_END, h, count=1, flags=re.S)
