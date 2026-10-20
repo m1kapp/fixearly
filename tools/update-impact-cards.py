@@ -948,9 +948,23 @@ def _thanks_card(t):
 
 
 _tfix = sum(n for t in _thanks for _, n in t["axes"])
-_thtml = (f'<div class="thanks"><div class="axh"><span class="ko">사내 적용<small>비공개 저장소에서 고쳤다는 신고 {len(_thanks)}건 · {_tfix}곳 — 자기 신고라 위 머지 수에 안 센다</small></span>'
-          f'<span class="en">In-house fixes<small>{len(_thanks)} self-report{"s" if len(_thanks) > 1 else ""} from private repos · {_tfix} fixes — not counted as merges above</small></span></div>'
-          f'{"".join(_thanks_card(t) for t in _thanks)}</div>') if _thanks else ""
+# 신청 창구 — 신고가 0건이어도 둔다. 칸이 비어 있으면 아무도 신고할 곳을 모른다.
+_tcta = ('<a class="tk tkc" href="https://github.com/m1kapp/fixearly/issues/new?template=thanks.yml" target="_blank" rel="noopener">'
+         '<span class="tka"><span class="ko">비공개 저장소에서 고쳤나요? 이렇게 신청해 주세요</span>'
+         '<span class="en">Fixed something in a private repo? Report it like this</span></span>'
+         '<ol class="tks"><li><span class="ko"><code>fixearly --sweep</code> 을 고치기 전·후 같은 폴더에서 돌린다 — 해소된 축과 건수가 담긴 신청 링크가 나온다</span>'
+         '<span class="en">Run <code>fixearly --sweep</code> before and after the fix from the same folder — it prints a report link with the resolved axes and counts</span></li>'
+         '<li><span class="ko">업종·스택·검증 방법을 고르고, 전→후 숫자가 있으면 적는다</span>'
+         '<span class="en">Pick industry, stack and how you verified it; add before → after numbers if you have them</span></li>'
+         '<li><span class="ko">저장소명·경로·코드는 안 받는다. 회사 이름은 공개 허락을 체크했을 때만 싣는다</span>'
+         '<span class="en">No repo names, paths or code. The company name shows only if you confirm permission</span></li></ol>'
+         '<span class="tkb"><span class="ko">신청 창구 열기 →</span><span class="en">Open the report form →</span></span></a>')
+_head_ko = f"비공개 저장소에서 고쳤다는 신고 {len(_thanks)}건 · {_tfix}곳 — 자기 신고라 위 머지 수에 안 센다" if _thanks else "비공개 저장소에서 고친 것도 숫자만으로 남길 수 있다"
+_head_en = (f'{len(_thanks)} self-report{"s" if len(_thanks) > 1 else ""} from private repos · {_tfix} fixes — not counted as merges above'
+            if _thanks else "Fixes in private repos can be recorded with numbers alone")
+_thtml = (f'<div class="thanks"><div class="axh"><span class="ko">사내 적용<small>{_head_ko}</small></span>'
+          f'<span class="en">In-house fixes<small>{_head_en}</small></span></div>'
+          f'{"".join(_thanks_card(t) for t in _thanks)}{_tcta}</div>')
 T_BEGIN, T_END = "<!--auto:thanks-->", "<!--/auto:thanks-->"
 assert T_BEGIN in h and T_END in h, "사내 적용 마커가 없다"
 h = re.sub(re.escape(T_BEGIN) + r".*?" + re.escape(T_END), lambda m: T_BEGIN + _thtml + T_END, h, count=1, flags=re.S)

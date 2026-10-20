@@ -27,6 +27,7 @@ class ImpactCardTimeTest(unittest.TestCase):
         block = re.search(r"<!--auto:thanks-->(.*?)<!--/auto:thanks-->", html, re.S).group(1)
         cards = re.findall(r'<a class="tk" .*?</a>', block)
         self.assertEqual(len(cards), len(reports))
+        self.assertIn('class="tk tkc" href="https://github.com/m1kapp/fixearly/issues/new?template=thanks.yml"', block)
         for report, card in zip(reports, cards):
             with self.subTest(issue=report["issue"]):
                 verified = report.get("headline") and report.get("verify") not in (None, "없음")
