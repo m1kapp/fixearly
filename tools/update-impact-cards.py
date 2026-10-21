@@ -941,11 +941,14 @@ def _thanks_card(t):
     lines = ([t["note"]] if t.get("note") else []) + (t.get("metric") or [])
     if hl and not big:
         lines.insert(0, f'{hl["name"]}: {hl["before"]} → {hl["after"]}')
+    # 사내 PR 번호는 글자로만 — 링크는 org·저장소를 드러낸다.
+    pr = (f' · <span class="ko">사내 PR #{int(t["pr"])} 병합</span><span class="en">in-house PR #{int(t["pr"])} merged</span>'
+          if t.get("pr") else "")
     return (f'<a class="tk" href="https://github.com/m1kapp/fixearly/issues/{t["issue"]}" target="_blank" rel="noopener">'
             f'<span class="tkg">{tags}</span>{big}'
             f'<span class="tka">{" · ".join(f"{esc(a)} {n}" for a, n in t["axes"])}</span>'
             + "".join(f'<span class="tkm">{esc(m)}</span>' for m in lines)
-            + f'<span class="tkn">{esc(t.get("name") or "익명")} · {t["at"]} · #{t["issue"]}</span></a>')
+            + f'<span class="tkn">{esc(t.get("name") or "익명")} · {t["at"]}{pr}</span></a>')
 
 
 # 신청 창구 — 신고가 0건이어도 둔다. 칸이 비어 있으면 아무도 신고할 곳을 모른다.

@@ -34,6 +34,9 @@ class ImpactCardTimeTest(unittest.TestCase):
                 self.assertEqual('class="tkh"' in card, bool(verified))
                 if not report.get("org"):
                     self.assertIn(report["industry"], card)
+                if report.get("pr"):
+                    self.assertIn(f'사내 PR #{report["pr"]} 병합', card)
+                    self.assertEqual(card.count("href="), 1)
 
     def test_merged_pr_can_await_release(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
