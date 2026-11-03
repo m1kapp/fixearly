@@ -51,6 +51,19 @@ class ImpactCardTimeTest(unittest.TestCase):
                 self.assertIn('awaiting release', card)
                 self.assertNotIn('/releases/tag/', card)
 
+    def test_live_deployment_does_not_require_a_package_version(self):
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        findings = json.loads((ROOT / "impact.json").read_text(encoding="utf-8"))["findings"]
+        live = [f for f in findings if f.get("release", {}).get("channel") == "live"]
+        self.assertTrue(live)
+        for finding in live:
+            with self.subTest(pr=finding["pr"]):
+                card = next(card for card in re.findall(r'<article\b.*?</article>', html, re.S)
+                            if f'{finding["repo"]}/pull/{finding["pr"]}"' in card)
+                self.assertIn('live deployment', card)
+                self.assertIn(finding["release"]["url"], card)
+                self.assertNotIn('awaiting release', card)
+
     def test_elapsed_time_uses_registry_snapshot(self):
         result = subprocess.run(
             [sys.executable, ROOT / "tools/update-impact-cards.py", "--selftest"],

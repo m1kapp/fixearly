@@ -265,11 +265,15 @@ def delivery_timeline(f, key, pr_url, age_html):
     version, released, release_url = (release.get("version"),
                                       release.get("releasedAt"),
                                       release.get("url"))
-    if not (created and merged and version and released and release_url):
+    if not (created and merged and (version or release.get("channel") == "live") and released and release_url):
         return ""
     merged_month, release_month = map(month, (merged, released))
     release_link = f'href="{release_url}" target="_blank" rel="noopener"'
-    if release.get("channel") == "nightly":
+    if release.get("channel") == "live":
+        cls = 'iship'
+        release_ko = '서비스 반영'
+        release_en = 'live deployment'
+    elif release.get("channel") == "nightly":
         cls = "iship nightly"
         release_ko = 'nightly 배포 · 안정판 대기'
         release_en = 'nightly shipped · stable pending'
@@ -300,6 +304,7 @@ def delivery_timeline(f, key, pr_url, age_html):
 # 무엇을 하는 물건인지만 남긴다. 새 저장소는 여기 없으면 빈칸으로 나가고,
 # --check 가 잡는다.
 BLURB = {
+    "spencermountain/compromise": ("영어 자연어 처리 라이브러리", "English natural-language processing library"),
     "cline/cline": ("VS Code 코딩 에이전트", "coding agent for VS Code"),
     "super-productivity/super-productivity": ("할 일·시간 기록 앱", "todo and time-tracking app"),
     "Infisical/infisical": ("시크릿·인증서 관리 플랫폼", "secrets and certificate management platform"),
@@ -589,6 +594,9 @@ if _merged:
 # type 접두어로 규칙을 가른다. 새 축이 머지됐는데 여기 없으면 조용히 빠지는 쪽이라, 모르는 접두어는 누락으로 센다.
 # (types, 이름 ko, en, 태그 ko, en, 설명 ko, en, 채점 메모 ko, en)
 RULES = [
+    (("정규식 문자 집합 누락", "변경 후 참조 무효화"), "직접 재현한 버그", "Manually reproduced bugs", "수동 검증", "manual verification",
+     "이슈에서 직접 재현한 파서·선택 범위 결함. 자동 진단이나 채점 결과가 아닌 개별 수정이다.",
+     "Parser and selection defects reproduced from reported issues. Individual fixes, not automated diagnostics or scoring.", "", ""),
     (("O(n²)", "O(n²) 배열 조회", "O(n²) 그룹핑/조회"), "O(n²) 조회", "O(n²) lookup", "채점 06", "scored 06",
      "행마다 다른 배열을 <code>.find</code>·<code>.some</code>·<code>.includes</code> 로 처음부터 훑는 자리. "
      "한 번 Map·Set 으로 색인해두면 조회가 O(1)이 된다 — 데이터가 커질수록 차이가 제곱으로 벌어진다.",
@@ -886,8 +894,8 @@ missing = missing + noicon + nocount + notranslated + noreason + unmapped
 missing_release = sorted(f"#{f['pr']}" for f in findings
                          if state_by_pr.get(pr_key(f)) == "merged"
                          and f.get("release", {}).get("channel") != "pending"
-                         and not (f.get("release", {}).get("channel") in ("stable", "nightly", "prerelease")
-                                  and f.get("release", {}).get("version")
+                         and not (f.get("release", {}).get("channel") in ("stable", "nightly", "prerelease", "live")
+                                  and (f.get("release", {}).get("version") or f.get("release", {}).get("channel") == "live")
                                   and f.get("release", {}).get("releasedAt")
                                   and f.get("release", {}).get("url")))
 for r in missing_release:
