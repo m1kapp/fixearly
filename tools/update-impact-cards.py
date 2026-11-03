@@ -63,7 +63,7 @@ STAGE = [
     # 실제로 배정된 건 22건뿐이다(novu·langfuse 는 0건 — 메인테이너가 그냥 머지한다).
     # 절반 넘는 저장소에서 일어나지도 않는 사건을 기다리는 것처럼 읽혔다.
     ("waiting",   "⚪", "아무도 안 봄",     "nobody has looked", 0, False),
-    ("stalled",   "🟣", "보류",           "stalled",           0, False),
+    ("stalled",   "🟣", "장기 대기",       "long-waiting",           0, False),
     ("draft",     "🟡", "초안",           "draft",             0, False),
     ("closed",    "❌", "닫힘",           "closed",            0, True),
 ]
@@ -227,7 +227,7 @@ def delivery_timeline(f, key, pr_url, age_html):
             "changes": "변경 요청 대응 중",
             "reviewing": "리뷰 진행 중",
             "waiting": "아직 아무도 안 봄",
-            "stalled": "보류",
+            "stalled": "장기 대기",
             "draft": "초안",
         }.get(key, "아직")
         pending_en = {
@@ -378,11 +378,9 @@ def card(f, key, rank=None):
     star_html = f'<span class="stars">{STAR}{stars}</span>' if stars else ""
     # 닫힌 건 트레일을 안 그린다 — 진행이 없으니 진행 표시도 없다.
     mark = "" if ended else trail(at)
-    # 보류는 열려는 있지만 우리 쪽에서 손을 뗀 것이다. 살아 있는 카드와 같은 밝기로
-    # 두면 목록을 훑을 때 "아직 진행 중"으로 읽히고, 그게 정확히 틀린 인상이다.
-    # closed·stalled 는 필터가 잡는 손잡이이기도 하다(index.html 의 .ifilter).
+    # 장기 대기도 열린 PR이다. 닫힌 카드만 흐리게 표시한다.
     cls = ("ic" + (" done" if key == "merged" else "")
-           + (" off" if ended or key == "stalled" else "")
+           + (" off" if ended else "")
            + (" closed" if ended else "")
            + (" stalled" if key == "stalled" else ""))
     rank_attr = f' data-rank="{rank:02d}"' if rank is not None else ""

@@ -15,7 +15,7 @@ class ImpactCardTimeTest(unittest.TestCase):
         findings = json.loads((ROOT / "impact.json").read_text(encoding="utf-8"))["findings"]
         counts = json.loads((ROOT / "data/repo-contributors.json").read_text(encoding="utf-8"))["repos"]
         html = (ROOT / "index.html").read_text(encoding="utf-8")
-        grid = html[html.index('<div class="iwrap hide-stalled hide-closed">'):]
+        grid = html[html.index('<div class="iwrap hide-closed">'):]
 
         self.assertEqual(set(counts), {f["repo"] for f in findings})
         self.assertEqual(grid.count("기여자 약 "), len(findings))
@@ -64,6 +64,14 @@ class ImpactCardTimeTest(unittest.TestCase):
                 self.assertIn(finding["release"]["url"], card)
                 self.assertNotIn('awaiting release', card)
 
+    def test_long_waiting_cards_are_visible_by_default(self):
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertIn('<div class="iwrap hide-closed">', html)
+        self.assertNotIn('<div class="iwrap hide-stalled', html)
+        for classes in re.findall(r'<article class="([^"]+)"', html):
+            if 'stalled' in classes.split():
+                self.assertNotIn('off', classes.split())
+
     def test_elapsed_time_uses_registry_snapshot(self):
         result = subprocess.run(
             [sys.executable, ROOT / "tools/update-impact-cards.py", "--selftest"],
@@ -76,7 +84,7 @@ class ImpactCardTimeTest(unittest.TestCase):
 
     def test_security_contribution_is_in_grid_as_fixearly_detection(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
-        grid_pos = html.index('<div class="iwrap hide-stalled hide-closed">')
+        grid_pos = html.index('<div class="iwrap hide-closed">')
         security_pos = html.index("openstatusHQ/openstatus/pull/2620")
 
         self.assertGreater(security_pos, grid_pos)
@@ -95,7 +103,7 @@ class ImpactCardTimeTest(unittest.TestCase):
     def test_grid_prioritizes_active_then_newest_with_registry_totals(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         findings = json.loads((ROOT / "impact.json").read_text(encoding="utf-8"))["findings"]
-        grid = html[html.index('<div class="iwrap hide-stalled hide-closed">'):]
+        grid = html[html.index('<div class="iwrap hide-closed">'):]
         ordered = sorted(findings, key=lambda f: (
             0 if f["status"] == "closed" else 1 if f["status"] == "merged"
             else 3 if f["status"] == "approved" else 2,
