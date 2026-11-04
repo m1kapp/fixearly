@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 52**
+> **fixearly 임팩트 점수: 53**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -109,6 +109,8 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `번역 옵션 변수 검사가 첫 옵션에서 멈춤` | [wp-calypso · 12.6k★](https://github.com/Automattic/wp-calypso) | return 없는 콜백 (validateOptions 의 properties.every 콜백이 값을 안 돌려줘 첫 속성 뒤 멈춤 — 두 번째 옵션의 변수는 안 잡힌다) | [#115386](https://github.com/Automattic/wp-calypso/pull/115386) | ⚪ awaiting review | — |
 | `Windows 함수 이름이 필터에서 사라짐` | [compiler-explorer · 19.2k★](https://github.com/compiler-explorer/compiler-explorer) | 정규식 문자 집합 누락 (global·weak 선언에서 @ 문자가 빠져 장식된 함수 이름을 잘라 읽음) | [#9461](https://github.com/compiler-explorer/compiler-explorer/pull/9461) | ✅ merged | +1 |
 | `동사 정규화가 선택한 단어 대신 문장 전체를 반환` | [compromise · 12.2k★](https://github.com/spencermountain/compromise) | 변경 후 참조 무효화 (동사 교체로 단어 ID가 사라져 선택 범위를 문장 전체로 잘못 복구) | [#1258](https://github.com/spencermountain/compromise/pull/1258) | ✅ merged | +1 |
+| `결합 문자가 단어 끝에서 잘려 나감` | [compromise · 12.2k★](https://github.com/spencermountain/compromise) | 정규식 문자 집합 누락 (단어 끝 결합 문자를 구두점으로 잘라 원래 글자를 훼손) | [#1260](https://github.com/spencermountain/compromise/pull/1260) | ✅ merged | +1 |
+| `재사용 Zod 스키마의 기본값 타입이 넓어짐` | [orval · 6.6k★](https://github.com/orval-labs/orval) | 문맥 타입 소실 (참조 스키마 기본값을 별도 상수로 빼 튜플·열거형 타입이 넓어짐) | [#4441](https://github.com/orval-labs/orval/pull/4441) | 🟠 changes requested | — |
 
 ## 규칙
 

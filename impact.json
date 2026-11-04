@@ -1391,6 +1391,30 @@
    "release": {
     "channel": "pending"
    }
+  },
+  {
+   "title": "결합 문자가 단어 끝에서 잘려 나감",
+   "titleEn": "Trailing combining marks are stripped from their base letters",
+   "type": "정규식 문자 집합 누락 (단어 끝 결합 문자를 구두점으로 잘라 원래 글자를 훼손)",
+   "repo": "spencermountain/compromise",
+   "repoLabel": "compromise · 12.2k★",
+   "pr": 1260,
+   "status": "merged",
+   "createdAt": "2026-11-03T12:14:31Z",
+   "mergedAt": "2026-11-03T14:28:43Z",
+   "release": {
+    "channel": "pending"
+   }
+  },
+  {
+   "title": "재사용 Zod 스키마의 기본값 타입이 넓어짐",
+   "titleEn": "Reusable Zod schema defaults lose tuple and enum contextual types",
+   "type": "문맥 타입 소실 (참조 스키마 기본값을 별도 상수로 빼 튜플·열거형 타입이 넓어짐)",
+   "repo": "orval-labs/orval",
+   "repoLabel": "orval · 6.6k★",
+   "pr": 4441,
+   "status": "changes",
+   "createdAt": "2026-11-03T12:52:32Z"
   }
  ],
  "generatedAt": "2026-11-03T11:31:11.521Z"
