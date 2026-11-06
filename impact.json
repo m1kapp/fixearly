@@ -1413,8 +1413,26 @@
    "repo": "orval-labs/orval",
    "repoLabel": "orval · 6.6k★",
    "pr": 4441,
-   "status": "changes",
-   "createdAt": "2026-11-03T12:52:32Z"
+   "status": "merged",
+   "createdAt": "2026-11-03T12:52:32Z",
+   "mergedAt": "2026-11-05T12:28:31Z",
+   "release": {
+    "channel": "pending"
+   }
+  },
+  {
+   "title": "인용문 텍스트 출력에서 양 끝 따옴표가 잘림",
+   "titleEn": "Quotation text output strips the outer quotation marks",
+   "type": "선택 범위 구두점 제거 (인용문이 공용 텍스트 정리 규칙을 따라 양 끝 따옴표까지 제거)",
+   "repo": "spencermountain/compromise",
+   "repoLabel": "compromise · 12.2k★",
+   "pr": 1262,
+   "status": "merged",
+   "createdAt": "2026-11-04T09:33:46Z",
+   "mergedAt": "2026-11-04T13:33:21Z",
+   "release": {
+    "channel": "pending"
+   }
   }
  ],
  "generatedAt": "2026-11-03T11:31:11.521Z"
