@@ -304,6 +304,7 @@ def delivery_timeline(f, key, pr_url, age_html):
 # 무엇을 하는 물건인지만 남긴다. 새 저장소는 여기 없으면 빈칸으로 나가고,
 # --check 가 잡는다.
 BLURB = {
+    "fishjar/kiss-translator": ("이중 언어 웹페이지 번역 확장", "Bilingual webpage translation extension"),
     "spencermountain/compromise": ("영어 자연어 처리 라이브러리", "English natural-language processing library"),
     "cline/cline": ("VS Code 코딩 에이전트", "coding agent for VS Code"),
     "super-productivity/super-productivity": ("할 일·시간 기록 앱", "todo and time-tracking app"),
@@ -592,7 +593,7 @@ if _merged:
 # type 접두어로 규칙을 가른다. 새 축이 머지됐는데 여기 없으면 조용히 빠지는 쪽이라, 모르는 접두어는 누락으로 센다.
 # (types, 이름 ko, en, 태그 ko, en, 설명 ko, en, 채점 메모 ko, en)
 RULES = [
-    (("정규식 문자 집합 누락", "변경 후 참조 무효화", "문맥 타입 소실", "선택 범위 구두점 제거"), "직접 재현한 버그", "Manually reproduced bugs", "수동 검증", "manual verification",
+    (("정규식 문자 집합 누락", "변경 후 참조 무효화", "문맥 타입 소실", "선택 범위 구두점 제거", "비동기 결과의 대상 검증 누락"), "직접 재현한 버그", "Manually reproduced bugs", "수동 검증", "manual verification",
      "이슈에서 직접 재현한 파서·선택 범위·생성 타입 결함. 자동 진단이나 채점 결과가 아닌 개별 수정이다.",
      "Parser, selection, and generated-type defects reproduced from reported issues. Individual fixes, not automated diagnostics or scoring.", "", ""),
     (("O(n²)", "O(n²) 배열 조회", "O(n²) 그룹핑/조회"), "O(n²) 조회", "O(n²) lookup", "채점 06", "scored 06",

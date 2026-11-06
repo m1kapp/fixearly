@@ -65,6 +65,7 @@
     "typeorm/typeorm": 1263,
     "vercel/turborepo": 724,
     "vitejs/vite": 1385,
-    "withastro/astro": 1261
+    "withastro/astro": 1261,
+    "fishjar/kiss-translator": 97
   }
 }

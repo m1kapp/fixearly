@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 55**
+> **fixearly 임팩트 점수: 56**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -112,6 +112,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `결합 문자가 단어 끝에서 잘려 나감` | [compromise · 12.2k★](https://github.com/spencermountain/compromise) | 정규식 문자 집합 누락 (단어 끝 결합 문자를 구두점으로 잘라 원래 글자를 훼손) | [#1260](https://github.com/spencermountain/compromise/pull/1260) | ✅ merged | +1 |
 | `재사용 Zod 스키마의 기본값 타입이 넓어짐` | [orval · 6.6k★](https://github.com/orval-labs/orval) | 문맥 타입 소실 (참조 스키마 기본값을 별도 상수로 빼 튜플·열거형 타입이 넓어짐) | [#4441](https://github.com/orval-labs/orval/pull/4441) | ✅ merged | +1 |
 | `인용문 텍스트 출력에서 양 끝 따옴표가 잘림` | [compromise · 12.2k★](https://github.com/spencermountain/compromise) | 선택 범위 구두점 제거 (인용문이 공용 텍스트 정리 규칙을 따라 양 끝 따옴표까지 제거) | [#1262](https://github.com/spencermountain/compromise/pull/1262) | ✅ merged | +1 |
+| `늦은 번역 응답이 입력창 포커스를 빼앗음` | [kiss-translator](https://github.com/fishjar/kiss-translator) | 비동기 결과의 대상 검증 누락 (응답 대기 중 이동한 포커스를 원래 입력창으로 되돌려 기존 내용을 덮음) | [#1281](https://github.com/fishjar/kiss-translator/pull/1281) | ✅ merged | +1 |
 
 ## 규칙
 

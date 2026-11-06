@@ -1433,6 +1433,20 @@
    "release": {
     "channel": "pending"
    }
+  },
+  {
+   "title": "늦은 번역 응답이 입력창 포커스를 빼앗음",
+   "titleEn": "Delayed input translation steals focus from another field",
+   "type": "비동기 결과의 대상 검증 누락 (응답 대기 중 이동한 포커스를 원래 입력창으로 되돌려 기존 내용을 덮음)",
+   "repo": "fishjar/kiss-translator",
+   "repoLabel": "kiss-translator",
+   "pr": 1281,
+   "status": "merged",
+   "createdAt": "2026-11-06T14:38:07Z",
+   "mergedAt": "2026-11-06T19:08:03Z",
+   "release": {
+    "channel": "pending"
+   }
   }
  ],
  "generatedAt": "2026-11-03T11:31:11.521Z"
