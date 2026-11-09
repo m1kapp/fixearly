@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 56**
+> **fixearly 임팩트 점수: 58**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -87,7 +87,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `output 마이그레이션 ID 의 .d.ts 정규화 결과를 버림` | [angular · 101.1k★](https://github.com/angular/angular) | 버린 반환값 (id.replace(/\.d\.ts$/, '.ts') 결과 미대입 — 형제 마이그레이션 둘은 대입) | [#71267](https://github.com/angular/angular/pull/71267) | ✅ merged | +1 |
 | `댓글 스레드 그래프의 깊이 Map 쓰기만 함` | [ghost · 55.7k★](https://github.com/TryGhost/Ghost) | 쓰기만 하는 컬렉션 (buildThreadGraph 의 depthById — 깊이는 reply.depth 로 이미 읽힌다) | [#31677](https://github.com/TryGhost/Ghost/pull/31677) | ✅ merged | +1 |
 | `ER 다이어그램·dagre 그래프의 쓰기만 하는 Map` | [mermaid · 91k★](https://github.com/mermaid-js/mermaid) | 쓰기만 하는 컬렉션 (ErDB.getData 의 subGraphDB — flowDb 에서 복사, parentDB 만 읽힘 · mermaid-graphlib 의 parents — set·clear 만) | [#8413](https://github.com/mermaid-js/mermaid/pull/8413) | ⚪ awaiting review | — |
-| `AI 마크다운 diff 의 쓰기만 하는 Set` | [affine · 74.2k★](https://github.com/toeverything/AFFiNE) | 쓰기만 하는 컬렉션 (diffBlockLists 의 handledOld — 삭제 판정은 newMap.has 로 이미 한다) | [#15692](https://github.com/toeverything/AFFiNE/pull/15692) | ⚪ awaiting review | — |
+| `AI 마크다운 diff 의 쓰기만 하는 Set` | [affine · 74.2k★](https://github.com/toeverything/AFFiNE) | 쓰기만 하는 컬렉션 (diffBlockLists 의 handledOld — 삭제 판정은 newMap.has 로 이미 한다) | [#15692](https://github.com/toeverything/AFFiNE/pull/15692) | ❌ closed | — |
 | `키맵 검색에서 연속 키 사이 공백이 사라짐` | [opensumi · 3.7k★](https://github.com/opensumi/core) | 버린 반환값 (searchKeybindings 의 chordRenderedResult.concat — 결과를 버리고, 인덱스는 spaceIndexArr[-1] 로 NaN, 끝에 join('+') 로 덮어씀) | [#4776](https://github.com/opensumi/core/pull/4776) | ⚪ awaiting review | — |
 | `v26 설정 이전에서 flame·claw 키 이름 변경이 버려짐` | [burn-my-windows · 3.1k★](https://github.com/Schneegans/Burn-My-Windows) | 버린 반환값 (fromVersion26 의 r.replace('flame-','fire-') · r.replace('claw-','trex-') — 대입 안 해서 사용자 설정이 옛 키로 남아 무시됨) | [#583](https://github.com/Schneegans/Burn-My-Windows/pull/583) | ✅ merged | +1 |
 | `손글씨 획 생성기의 쓰기만 하는 Map·Set` | [tegaki · 3.3k★](https://github.com/gkurt/tegaki) | 쓰기만 하는 컬렉션 (partitionFaces 의 twinOf · assembleStrokes 의 consumedEnd — 걷기는 outgoing·consumedSeg 로 한다) | [#77](https://github.com/gkurt/tegaki/pull/77) | ✅ merged | +1 |
@@ -103,7 +103,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `outline 설정을 바꿔도 캐시된 매크로 인자가 안 붙음` | [LaTeX-Workshop · 12.4k★](https://github.com/James-Yu/LaTeX-Workshop) | forEach 안 await (forEach(async) 뒤 곧바로 reconstruct() — 게다가 워커는 구조적 복제본만 바꿔 캐시 AST 엔 인자가 안 남는다) | [#5007](https://github.com/James-Yu/LaTeX-Workshop/pull/5007) | ✅ merged | +1 |
 | `끝만 다른 미리 불러온 구간을 중복으로 보고 건너뜀` | [SponsorBlock · 14k★](https://github.com/ajayyy/SponsorBlock) | 같은 식 두 번 비교 (checkForPreloadedSegment 가 s.segment[1] === s.segment[1] 로 끝 시간을 자기와 비교 — 시작만 같으면 중복으로 보고 버린다) | [#2572](https://github.com/ajayyy/SponsorBlock/pull/2572) | ✅ merged | +1 |
 | `개발·테스트에서 다시 던지려던 delta 후처리 에러가 사라짐` | [excalidraw · 135.1k★](https://github.com/excalidraw/excalidraw) | finally 가 삼킨 throw (catch 가 dev·test 면 다시 던지는데 finally 의 return 이 진행 중 예외를 덮어써 로그만 남는다 — 3곳) | [#12359](https://github.com/excalidraw/excalidraw/pull/12359) | ⚪ awaiting review | — |
-| `range 슬라이더가 끝값이 숫자가 아니어도 통과시킴` | [semi-design · 10.5k★](https://github.com/DouyinFE/semi-design) | 같은 식 두 번 비교 (valueFormatIsCorrect 가 typeof value[0] 를 두 번 검사 — [30, undefined] 가 currentValue 로 들어간다) | [#3428](https://github.com/DouyinFE/semi-design/pull/3428) | ⚪ awaiting review | — |
+| `range 슬라이더가 끝값이 숫자가 아니어도 통과시킴` | [semi-design · 10.5k★](https://github.com/DouyinFE/semi-design) | 같은 식 두 번 비교 (valueFormatIsCorrect 가 typeof value[0] 를 두 번 검사 — [30, undefined] 가 currentValue 로 들어간다) | [#3428](https://github.com/DouyinFE/semi-design/pull/3428) | ✅ merged | +1 |
 | `비동기 onNewMessage·onNewToolCall 훅을 기다리지 않음` | [ag-ui · 17k★](https://github.com/ag-ui-protocol/ag-ui) | return 없는 콜백 (Promise.all 안 블록 본문 map 이 훅의 promise 를 안 돌려줌 — 4곳, 거부되면 unhandled rejection) | [#3118](https://github.com/ag-ui-protocol/ag-ui/pull/3118) | ✅ merged | +1 |
 | `Google Workspace 첫해 할인 안내가 4년째 안 뜸` | [wp-calypso · 12.6k★](https://github.com/Automattic/wp-calypso) | 같은 식 두 번 비교 (item_original_subtotal_integer < item_original_subtotal_integer — 2021 리팩터가 할인가 자리를 원가로 바꿔 늘 거짓) | [#115382](https://github.com/Automattic/wp-calypso/pull/115382) | ✅ merged | +1 |
 | `번역 옵션 변수 검사가 첫 옵션에서 멈춤` | [wp-calypso · 12.6k★](https://github.com/Automattic/wp-calypso) | return 없는 콜백 (validateOptions 의 properties.every 콜백이 값을 안 돌려줘 첫 속성 뒤 멈춤 — 두 번째 옵션의 변수는 안 잡힌다) | [#115386](https://github.com/Automattic/wp-calypso/pull/115386) | ⚪ awaiting review | — |
@@ -113,6 +113,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `재사용 Zod 스키마의 기본값 타입이 넓어짐` | [orval · 6.6k★](https://github.com/orval-labs/orval) | 문맥 타입 소실 (참조 스키마 기본값을 별도 상수로 빼 튜플·열거형 타입이 넓어짐) | [#4441](https://github.com/orval-labs/orval/pull/4441) | ✅ merged | +1 |
 | `인용문 텍스트 출력에서 양 끝 따옴표가 잘림` | [compromise · 12.2k★](https://github.com/spencermountain/compromise) | 선택 범위 구두점 제거 (인용문이 공용 텍스트 정리 규칙을 따라 양 끝 따옴표까지 제거) | [#1262](https://github.com/spencermountain/compromise/pull/1262) | ✅ merged | +1 |
 | `늦은 번역 응답이 입력창 포커스를 빼앗음` | [kiss-translator](https://github.com/fishjar/kiss-translator) | 비동기 결과의 대상 검증 누락 (응답 대기 중 이동한 포커스를 원래 입력창으로 되돌려 기존 내용을 덮음) | [#1281](https://github.com/fishjar/kiss-translator/pull/1281) | ✅ merged | +1 |
+| `입력 중 Alt+B가 숨긴 플로팅 버튼을 호출` | [kiss-translator](https://github.com/fishjar/kiss-translator) | 편집 중 단축키 충돌 (고정 Alt+B가 입력 영역에서도 임시 버튼을 호출) | [#1287](https://github.com/fishjar/kiss-translator/pull/1287) | ✅ merged | +1 |
 
 ## 규칙
 

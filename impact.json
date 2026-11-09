@@ -1126,7 +1126,10 @@
    "repoLabel": "affine · 74.2k★",
    "pr": 15692,
    "createdAt": "2026-10-09T14:24:05Z",
-   "status": "waiting"
+   "status": "closed",
+   "closedAt": "2026-11-08T08:35:20Z",
+   "closedReason": "미병합 종료 · 종료 사유는 확인되지 않음",
+   "closedReasonEn": "Closed without merging; no closure reason confirmed"
   },
   {
    "title": "키맵 검색에서 연속 키 사이 공백이 사라짐",
@@ -1322,7 +1325,11 @@
    "repoLabel": "semi-design · 10.5k★",
    "pr": 3428,
    "createdAt": "2026-10-19T15:13:01Z",
-   "status": "waiting"
+   "status": "merged",
+   "mergedAt": "2026-11-05T08:38:15Z",
+   "release": {
+    "channel": "pending"
+   }
   },
   {
    "title": "비동기 onNewMessage·onNewToolCall 훅을 기다리지 않음",
@@ -1444,6 +1451,20 @@
    "status": "merged",
    "createdAt": "2026-11-06T14:38:07Z",
    "mergedAt": "2026-11-06T19:08:03Z",
+   "release": {
+    "channel": "pending"
+   }
+  },
+  {
+   "title": "입력 중 Alt+B가 숨긴 플로팅 버튼을 호출",
+   "titleEn": "Alt+B unexpectedly opens the hidden floating button while editing",
+   "type": "편집 중 단축키 충돌 (고정 Alt+B가 입력 영역에서도 임시 버튼을 호출)",
+   "repo": "fishjar/kiss-translator",
+   "repoLabel": "kiss-translator",
+   "pr": 1287,
+   "status": "merged",
+   "createdAt": "2026-11-08T02:38:31Z",
+   "mergedAt": "2026-11-08T04:36:32Z",
    "release": {
     "channel": "pending"
    }
