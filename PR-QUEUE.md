@@ -19,12 +19,20 @@
 |---|---|---|
 | [tegaki#77](https://github.com/gkurt/tegaki/pull/77) | 머지 | — |
 | [burn-my-windows#583](https://github.com/Schneegans/Burn-My-Windows/pull/583) | 머지 | — |
+| [compromise#1258](https://github.com/spencermountain/compromise/pull/1258) | 머지 | — |
+| [compromise#1260](https://github.com/spencermountain/compromise/pull/1260) | 머지 | — |
+| [compromise#1262](https://github.com/spencermountain/compromise/pull/1262) | 머지 | — |
+| [kiss-translator#1281](https://github.com/fishjar/kiss-translator/pull/1281) | 머지 | — |
+| [kiss-translator#1287](https://github.com/fishjar/kiss-translator/pull/1287) | 머지 | — |
 | [typebot#2572](https://github.com/baptisteArno/typebot.io/pull/2572) | 머지 | 사람 리뷰 없이 20.7일 만에 메인테이너가 직접 머지 |
 | [SponsorBlock#2572](https://github.com/ajayyy/SponsorBlock/pull/2572) | 머지 | — |
 | [openstatus#2583](https://github.com/openstatusHQ/openstatus/pull/2583) | 머지 | — |
 | [ag-ui#3118](https://github.com/ag-ui-protocol/ag-ui/pull/3118) | 머지 | — |
+| [semi-design#3428](https://github.com/DouyinFE/semi-design/pull/3428) | 머지 | — |
 | [cytoscape.js#3527](https://github.com/cytoscape/cytoscape.js/pull/3527) | 머지 | — |
 | [orval#4254](https://github.com/orval-labs/orval/pull/4254) | 머지 | — |
+| [framework7#4405](https://github.com/framework7io/framework7/pull/4405) | 머지 | — |
+| [orval#4441](https://github.com/orval-labs/orval/pull/4441) | 머지 | — |
 | [LaTeX-Workshop#5007](https://github.com/James-Yu/LaTeX-Workshop/pull/5007) | 머지 | — |
 | [rollup#6482](https://github.com/rollup/rollup/pull/6482) | 머지 | — |
 | [rollup#6506](https://github.com/rollup/rollup/pull/6506) | 머지 | — |
@@ -34,6 +42,7 @@
 | [mikro-orm#8392](https://github.com/mikro-orm/mikro-orm/pull/8392) | 머지 | — |
 | [mikro-orm#8393](https://github.com/mikro-orm/mikro-orm/pull/8393) | 머지 | — |
 | [compiler-explorer#9241](https://github.com/compiler-explorer/compiler-explorer/pull/9241) | 머지 | — |
+| [compiler-explorer#9461](https://github.com/compiler-explorer/compiler-explorer/pull/9461) | 머지 | — |
 | [super-productivity#10607](https://github.com/super-productivity/super-productivity/pull/10607) | 머지 | — |
 | [promptfoo#11464](https://github.com/promptfoo/promptfoo/pull/11464) | 머지 | — |
 | [Trilium#11949](https://github.com/TriliumNext/Trilium/pull/11949) | 머지 | — |
@@ -46,6 +55,7 @@
 | [medusa#16233](https://github.com/medusajs/medusa/pull/16233) | 머지 | 메인테이너 승인 뒤 자동 머지 |
 | [mongoose#16474](https://github.com/Automattic/mongoose/pull/16474) | 머지 | 리뷰의 변경 요청을 반영한 뒤 승인·머지 |
 | [astro#17987](https://github.com/withastro/astro/pull/17987) | 머지 | — |
+| [astro#18149](https://github.com/withastro/astro/pull/18149) | 머지 | — |
 | [Babylon.js#18980](https://github.com/BabylonJS/Babylon.js/pull/18980) | 머지 | — |
 | [Babylon.js#18990](https://github.com/BabylonJS/Babylon.js/pull/18990) | 머지 | — |
 | [jupyterlab#20008](https://github.com/jupyterlab/jupyterlab/pull/20008) | 머지 | — |
@@ -55,6 +65,7 @@
 | [ghost#29704](https://github.com/TryGhost/Ghost/pull/29704) | 머지 | 메인테이너가 병렬화 변경을 승인한 뒤 머지 |
 | [ghost#29831](https://github.com/TryGhost/Ghost/pull/29831) | 머지 | — |
 | [ghost#31019](https://github.com/TryGhost/Ghost/pull/31019) | 머지 | — |
+| [ghost#31677](https://github.com/TryGhost/Ghost/pull/31677) | 머지 | — |
 | [n8n#34899](https://github.com/n8n-io/n8n/pull/34899) | 머지 | 봇이 요구한 changeset prefix 만 고치고 통과 |
 | [react#37699](https://github.com/facebook/react/pull/37699) | 머지 | — |
 | [react#37855](https://github.com/facebook/react/pull/37855) | 머지 | — |
@@ -63,6 +74,7 @@
 | [angular#70977](https://github.com/angular/angular/pull/70977) | 머지 | — |
 | [angular#71119](https://github.com/angular/angular/pull/71119) | 머지 | — |
 | [angular#71267](https://github.com/angular/angular/pull/71267) | 머지 | — |
+| [angular#71389](https://github.com/angular/angular/pull/71389) | 머지 | — |
 | [wp-calypso#115382](https://github.com/Automattic/wp-calypso/pull/115382) | 머지 | — |
 | [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 닫힘 | 상위 #2751 의존성 업데이트로 Hono 4.13.8·node-server 2.1.1이 반영돼 보안 목표가 충족됐다. 이 PR은 미병합 |
 | [openstatus#2780](https://github.com/openstatusHQ/openstatus/pull/2780) | 닫힘 | 메인테이너가 V1 API 폐기 예정이라고 밝혀 우리가 닫았다 |
@@ -71,6 +83,7 @@
 | [novu#12074](https://github.com/novuhq/novu/pull/12074) | 닫힘 | 우리가 접었다 — 중앙 1일인 곳에서 15일째 사람 리뷰 0(승인은 봇). 슬롯을 회수했다 |
 | [typeorm#12746](https://github.com/typeorm/typeorm/pull/12746) | 닫힘 | 우리가 접었다 — 46일째 사람 리뷰 0(반응은 봇뿐), 09-12 핑에도 무응답. 슬롯을 회수했다 |
 | [langfuse#15585](https://github.com/langfuse/langfuse/pull/15585) | 닫힘 | 우리가 접었다 — 중앙 0.6일인 곳에서 37일째 사람 반응 0(붙은 건 CLA 봇뿐) |
+| [affine#15692](https://github.com/toeverything/AFFiNE/pull/15692) | 닫힘 | 미병합 종료 · 종료 사유는 확인되지 않음 |
 | [payload#17469](https://github.com/payloadcms/payload/pull/17469) | 닫힘 | 우리가 접었다 — 중앙 4일인 곳에서 14일째 아무 반응이 없었다 |
 | [astro#17665](https://github.com/withastro/astro/pull/17665) | 닫힘 | 우리가 접었다 — 중앙 2일인 곳에서 24일째 사람 반응 0. CI 는 통과 상태였다 |
 | [budibase#19320](https://github.com/Budibase/budibase/pull/19320) | 닫힘 | 사유 없이 닫힘. 요청받지 않은 최적화는 그냥 거절될 수 있다 |
@@ -87,6 +100,7 @@
 | [storybook#35829](https://github.com/storybookjs/storybook/pull/35829) | 닫힘 | 우리가 접었다 — Danger 가 `ci:*`·`qa:*` 라벨에서 막는데 그 라벨은 메인테이너만 붙일 수 있다 (게이트 0) |
 | [nx#36633](https://github.com/nrwl/nx/pull/36633) | 닫힘 | 우리가 접었다 — 34일째 사람 리뷰 0(반응은 봇뿐), 09-12 핑에도 무응답. 슬롯을 회수했다 |
 | [n8n#37047](https://github.com/n8n-io/n8n/pull/37047) | 닫힘 | 승인 뒤 merge queue 의 CLA 검사가 PR 을 연 계정(yoominho91)을 미서명으로 잡았다. 같은 커밋으로 irontaek 이 #40103 을 다시 열었다 |
+| [nx#37332](https://github.com/nrwl/nx/pull/37332) | 닫힘 | 우리가 닫았다 — 상위 #37508이 해당 SCAM 변환기를 제거해 수정 대상이 사라짐 |
 | [react#37698](https://github.com/facebook/react/pull/37698) | 닫힘 | 잘못된 GitHub 계정(yoominho91)으로 제출해 닫고 irontaek의 #37699로 교체했다 |
 | [angular#71350](https://github.com/angular/angular/pull/71350) | 닫힘 | 중복 — 다른 기여자가 6일 전 같은 한 줄 수정을 낸 #71245 가 이미 열려 있었다(제출 전 열린 PR 검색을 빠뜨렸다) |
 | [grafana#133985](https://github.com/grafana/grafana/pull/133985) | 닫힘 | 우리가 접었다 — 게이트 0 을 안 읽었다: 모든 커밋 서명 필수인데 서명 키가 없었다. 브랜치를 되돌리자 GitHub 가 자동으로 닫았다 |
@@ -359,30 +373,23 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [vscode#340771](https://github.com/microsoft/vscode/pull/340771) | return 없는 콜백 | 🟢 리뷰 진행 | 10일째 / 보통 1일 · 보류 |
-| [wp-calypso#115386](https://github.com/Automattic/wp-calypso/pull/115386) | return 없는 콜백 | ⚪ 대기 | 오늘 / 보통 1일 |
-| [semi-design#3428](https://github.com/DouyinFE/semi-design/pull/3428) | 같은 식 두 번 비교 | ⚪ 대기 | 오늘 / 보통 3일 |
-| [infisical#8536](https://github.com/Infisical/infisical/pull/8536) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
-| [insomnia#10575](https://github.com/Kong/insomnia/pull/10575) | forEach 안 await | ⚪ 대기 | 12일째 / 보통 4일 · 보류 |
-| [ghost#31677](https://github.com/TryGhost/Ghost/pull/31677) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 11일째 / 보통 1일 · 보류 |
-| [angular#71389](https://github.com/angular/angular/pull/71389) | 전역 정규식 상태 | ⚪ 대기 | 3일째 / 보통 3일 |
-| [excalidraw#12359](https://github.com/excalidraw/excalidraw/pull/12359) | finally 가 삼킨 throw | ⚪ 대기 | 오늘 / 보통 20일 |
-| [framework7#4405](https://github.com/framework7io/framework7/pull/4405) | 위치를 진리값으로 | ⚪ 대기 | 4일째 / 보통 4일 |
-| [mermaid#8413](https://github.com/mermaid-js/mermaid/pull/8413) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 10일째 / 보통 6일 |
-| [pdf.js#22102](https://github.com/mozilla/pdf.js/pull/22102) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 13일째 / 보통 1일 · 보류 |
-| [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 14일째 / 보통 4일 · 보류 |
-| [nocodb#14812](https://github.com/nocodb/nocodb/pull/14812) | 버린 반환값 | ⚪ 대기 | 10일째 |
-| [Node.js#66647](https://github.com/nodejs/node/pull/66647) | 버린 반환값 | ⚪ 대기 | 9일째 / 보통 5일 |
-| [nx#37332](https://github.com/nrwl/nx/pull/37332) | 버린 반환값 | ⚪ 대기 | 12일째 / 보통 2일 · 보류 |
-| [opensumi#4776](https://github.com/opensumi/core/pull/4776) | 버린 반환값 | ⚪ 대기 | 10일째 / 보통 4일 |
-| [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 13일째 / 보통 4일 · 보류 |
-| [rgthree-comfy#790](https://github.com/rgthree/rgthree-comfy/pull/790) | 같은 식 두 번 비교 | ⚪ 대기 | 10일째 / 보통 4일 |
-| [serverless#13947](https://github.com/serverless/serverless/pull/13947) | return 없는 콜백 | ⚪ 대기 | 10일째 / 보통 1일 · 보류 |
-| [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 23일째 / 보통 1일 · 보류 |
-| [affine#15692](https://github.com/toeverything/AFFiNE/pull/15692) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 10일째 / 보통 3일 · 보류 |
-| [astro#18149](https://github.com/withastro/astro/pull/18149) | O(n²) | ⚪ 대기 | 23일째 / 보통 3일 · 보류 |
+| [vscode#340771](https://github.com/microsoft/vscode/pull/340771) | return 없는 콜백 | 🟢 리뷰 진행 | 39일째 / 보통 1일 · 보류 |
+| [nocodb#14812](https://github.com/nocodb/nocodb/pull/14812) | 버린 반환값 | 🟢 리뷰 진행 | 39일째 |
+| [wp-calypso#115386](https://github.com/Automattic/wp-calypso/pull/115386) | return 없는 콜백 | ⚪ 대기 | 29일째 / 보통 1일 · 보류 |
+| [infisical#8536](https://github.com/Infisical/infisical/pull/8536) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 40일째 / 보통 1일 · 보류 |
+| [insomnia#10575](https://github.com/Kong/insomnia/pull/10575) | forEach 안 await | ⚪ 대기 | 42일째 / 보통 4일 · 보류 |
+| [excalidraw#12359](https://github.com/excalidraw/excalidraw/pull/12359) | finally 가 삼킨 throw | ⚪ 대기 | 30일째 / 보통 20일 · 보류 |
+| [mermaid#8413](https://github.com/mermaid-js/mermaid/pull/8413) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 40일째 / 보통 6일 · 보류 |
+| [pdf.js#22102](https://github.com/mozilla/pdf.js/pull/22102) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 42일째 / 보통 1일 · 보류 |
+| [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 44일째 / 보통 4일 · 보류 |
+| [Node.js#66647](https://github.com/nodejs/node/pull/66647) | 버린 반환값 | ⚪ 대기 | 38일째 / 보통 5일 · 보류 |
+| [opensumi#4776](https://github.com/opensumi/core/pull/4776) | 버린 반환값 | ⚪ 대기 | 40일째 / 보통 4일 · 보류 |
+| [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 42일째 / 보통 4일 · 보류 |
+| [rgthree-comfy#790](https://github.com/rgthree/rgthree-comfy/pull/790) | 같은 식 두 번 비교 | ⚪ 대기 | 39일째 / 보통 4일 · 보류 |
+| [serverless#13947](https://github.com/serverless/serverless/pull/13947) | return 없는 콜백 | ⚪ 대기 | 39일째 / 보통 1일 · 보류 |
+| [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 52일째 / 보통 1일 · 보류 |
 
-**열린 것 22건(보류 12건 빼면 10건).** 판정 난 74건 중 머지 47 · 승인 0 · 닫힘 27.
+**열린 것 15건(보류 14건 빼면 1건).** 판정 난 88건 중 머지 59 · 승인 0 · 닫힘 29.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -814,14 +821,14 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | cherry-studio | 100% | 100% | 0.4일 | 11/11 | **1차 통과** | 판정 경험 있음 |
 | mikro-orm | 100% | 95% | 0.4일 | 10/10 | **1차 통과** | 판정 경험 있음 |
 | promptfoo | 100% | 93% | 0.7일 | 7/7 | 표본 부족 | 판정 경험 있음 |
-| compromise | 100% | 95% | 0.7일 | 17/17 | **1차 통과** | — |
-| Ghost | 100% | 100% | 0.9일 | 1/1 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
+| compromise | 100% | 95% | 0.7일 | 17/17 | **1차 통과** | 판정 경험 있음 |
+| Ghost | 100% | 100% | 0.9일 | 1/1 | 표본 부족 | 판정 경험 있음 |
 | openstatus | 100% | 60% | 2.6일 | 2/2 | 표본 부족 | 판정 경험 있음 |
 | compiler-explorer | 100% | 100% | 3.8일 | 27/27 | 1차 통과 · 후순위(느림) | 판정 경험 있음 |
 | Babylon.js | 100% | 100% | 5.1일 | 3/3 | 표본 부족 | 판정 경험 있음 |
 | storybook | 100% | 91% | 7.0일 | 8/8 | 표본 부족 | 판정 경험 있음 · 게이트 0 — danger 가 `ci:*`·`qa:*` 라벨을 요구하는데 메인테이너만 붙일 수 있다 (#35829 가 25일째 빨간불이라 접었다) · CONTRIBUTING 'Never let an LLM speak for you': 사람 개입 없는 PR 은 3일 뒤 자동 닫힘 |
 | cytoscape.js | 93% | 90% | 7.5일 | 13/14 | 1차 통과 · 후순위(느림) | 판정 경험 있음 |
-| kiss-translator | 92% | 90% | 1.1일 | 11/12 | **1차 통과** | — |
+| kiss-translator | 92% | 90% | 1.1일 | 11/12 | **1차 통과** | 판정 경험 있음 |
 | grafana | 87% | 86% | 0.8일 | 26/30 | **1차 통과** | 판정 경험 있음 · 게이트 0 — 2026-06-22 부터 모든 커밋 서명 필수, 미서명 PR 은 닫는다(CONTRIBUTING, 에이전트 작성 PR 포함). CLA assistant 서명도 필요 |
 | core | 86% | 76% | 3.9일 | 6/7 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
 | pnpm | 85% | 89% | 0.7일 | 11/13 | **1차 통과** | 판정 경험 있음 · AI 작성 PR 본문에 agent disclosure 필수 · 전체 저장소 대신 영향 패키지 테스트 실행 |
@@ -830,7 +837,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | rollup | 82% | 82% | 3.3일 | 14/17 | 1차 통과 · 후순위(느림) | 판정 경험 있음 · 코드 변경은 테스트 필수 · 내부 API 단위 테스트 대신 전체 산출물 테스트로 검증 · 첫 외부 기여자 CI 는 메인테이너 워크플로 승인 필요 · Vercel 배포도 Rollup 팀원 승인 필요 |
 | postcss | 79% | 75% | 0.2일 | 26/33 | 컷 | — |
 | terser | 79% | 72% | 5.5일 | 26/33 | 컷 | — |
-| semi-design | 78% | 88% | 2.9일 | 14/18 | 컷 | 열린 PR 있음 — 저장소당 1건 |
+| semi-design | 78% | 88% | 2.9일 | 14/18 | 컷 | 판정 경험 있음 |
 | react-hook-form | 77% | 75% | 0.3일 | 10/13 | 컷 | — |
 | nest | 77% | 78% | 0.4일 | 17/22 | 컷 | — |
 | wp-calypso | 77% | 80% | 0.8일 | 23/30 | 컷 | 열린 PR 있음 — 저장소당 1건 |
@@ -847,15 +854,15 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | babel | 67% | 69% | 1.3일 | 6/9 | 표본 부족 | 게이트 0 — AI_POLICY.md: LLM 이 쓴 PR 설명 금지(본인이 직접 써야 함), LLM 산문은 앞에 명시 표기. 어기면 조직 차단까지. 설명을 사람이 쓰지 않는 한 내지 않는다 |
 | vscode | 64% | 71% | 0.1일 | 9/14 | 컷 | 열린 PR 있음 — 저장소당 1건 · CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음 |
 | node | 63% | 64% | 5.2일 | 12/19 | 컷 | 열린 PR 있음 — 저장소당 1건 |
-| astro | 62% | 68% | 2.8일 | 10/16 | 컷 | 열린 PR 있음 — 저장소당 1건 · 사용자에게 보이는 변화면 changeset 필요 — 내부 전용 변경은 changeset 없이 머지된다(#17430 refactor·#16734 chore 가 changeset 0) · AI 정책 없음 · **포크 PR 워크플로가 승인 게이트가 아니다**(2026-09-13 #17987 제출 직후 CI 가 바로 돌았다 — angular·nx 와 다르다) · **`Test (Smoke)` 는 `smoke/docs` 의존성을 pkg.pr.new 커밋 핀에서 받는다** — 그 빌드가 만료되면 `ERR_PNPM_FETCH_404` 로 죽는다(2026-09-13 #17987 에서 밟음). PR 내용과 무관하다 |
+| astro | 62% | 68% | 2.8일 | 10/16 | 컷 | 판정 경험 있음 · 사용자에게 보이는 변화면 changeset 필요 — 내부 전용 변경은 changeset 없이 머지된다(#17430 refactor·#16734 chore 가 changeset 0) · AI 정책 없음 · **포크 PR 워크플로가 승인 게이트가 아니다**(2026-09-13 #17987 제출 직후 CI 가 바로 돌았다 — angular·nx 와 다르다) · **`Test (Smoke)` 는 `smoke/docs` 의존성을 pkg.pr.new 커밋 핀에서 받는다** — 그 빌드가 만료되면 `ERR_PNPM_FETCH_404` 로 죽는다(2026-09-13 #17987 에서 밟음). PR 내용과 무관하다 |
 | SponsorBlock | 62% | 54% | 3.4일 | 10/16 | 컷 | 판정 경험 있음 |
 | ag-ui | 60% | 87% | 0.2일 | 6/10 | 컷 | 판정 경험 있음 |
 | Trilium | 60% | 68% | 0.3일 | 6/10 | 컷 | 판정 경험 있음 |
 | super-productivity | 60% | 65% | 1.4일 | 12/20 | 컷 | 판정 경험 있음 |
-| angular | 60% | 80% | 3.4일 | 12/20 | 컷 | 열린 PR 있음 — 저장소당 1건 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
+| angular | 60% | 80% | 3.4일 | 12/20 | 컷 | 판정 경험 있음 · CLA 서명 필요 — 2026-09-11 yoominho91 서명 완료(cla/google 통과) |
 | cesium | 59% | 72% | 1.1일 | 10/17 | 컷 | — |
 | react-router | 59% | 72% | 3.8일 | 17/29 | 컷 | 열린 PR 있음 — 저장소당 1건 |
-| framework7 | 59% | 71% | 4.3일 | 17/29 | 컷 | 열린 PR 있음 — 저장소당 1건 |
+| framework7 | 59% | 71% | 4.3일 | 17/29 | 컷 | 판정 경험 있음 |
 | readest | 57% | 77% | 0.6일 | 4/7 | 표본 부족 | 판정 경험 있음 |
 | svelte | 57% | 54% | 1.8일 | 13/23 | 컷 | — |
 | berry | 57% | 57% | 11.6일 | 27/47 | 컷 | — |
@@ -866,7 +873,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | serverless | 50% | 89% | 0.0일 | 2/4 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
 | marktext | 50% | 42% | 0.5일 | 6/12 | 컷 | — |
 | eslint | 50% | 56% | 2.7일 | 14/28 | 컷 | 판정 경험 있음 · 게이트 0 — AI 보조 PR 은 **선행 이슈**가 있어야 받는다(eslint.org/docs/latest/contribute/ai-policy). PR 템플릿의 AI 체크박스를 정직하게 체크하면 이 정책이 적용된다 |
-| AFFiNE | 50% | 50% | 2.8일 | 11/22 | 컷 | 열린 PR 있음 — 저장소당 1건 |
+| AFFiNE | 50% | 50% | 2.8일 | 11/22 | 컷 | 판정 경험 있음 |
 | rgthree-comfy | 50% | 49% | 3.9일 | 15/30 | 컷 | 열린 PR 있음 — 저장소당 1건 |
 | budibase | 50% | 88% | 8.7일 | 3/6 | 표본 부족 | 판정 경험 있음 · 게이트 0 — 외부 PR 은 '작성자에게 배정된' 이슈를 참조해야 하는데 배정은 메인테이너만 한다 (#19555 가 이 봇 체크로 당일 닫혔다) |
 | mattermost | 50% | 64% | 11.9일 | 5/10 | 컷 | — |
@@ -876,7 +883,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | mermaid | 45% | 52% | 6.1일 | 10/22 | 컷 | 열린 PR 있음 — 저장소당 1건 |
 | parcel | 45% | 45% | 6.6일 | 9/20 | 컷 | — |
 | typebot.io | 44% | 31% | 10.9일 | 8/18 | 컷 | 판정 경험 있음 |
-| nx | 43% | 80% | 2.2일 | 3/7 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 · 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 · **포크 PR 의 워크플로는 메인테이너 승인이 있어야 돈다**(2026-09-12 확인: 네 워크플로 전부 `action_required`). 빨간불처럼 보여도 우리 코드가 깬 게 아니다 — 재푸시하면 승인만 다시 걸린다 |
+| nx | 43% | 80% | 2.2일 | 3/7 | 표본 부족 | 판정 경험 있음 · 열린 PR 있음 — 저장소당 1건 · PR 제목을 `scripts/validate-pr-title.js` 가 검증한다 · **포크 PR 의 워크플로는 메인테이너 승인이 있어야 돈다**(2026-09-12 확인: 네 워크플로 전부 `action_required`). 빨간불처럼 보여도 우리 코드가 깬 게 아니다 — 재푸시하면 승인만 다시 걸린다 |
 | next.js | 43% | 65% | 3.7일 | 3/7 | 표본 부족 | 커밋 서명 필수 · 기여 가이드가 사소한 정리 PR 은 닫힐 가능성이 높다고 명시 · PR 템플릿: 외부 기여자 PR 설명은 사람이 직접 써야 함 |
 | core | 40% | 48% | 0.3일 | 6/15 | 컷 | — |
 | turborepo | 38% | 74% | 3.8일 | 3/8 | 표본 부족 | 판정 경험 있음 |

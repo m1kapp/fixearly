@@ -63,7 +63,7 @@ STAGE = [
     # 실제로 배정된 건 22건뿐이다(novu·langfuse 는 0건 — 메인테이너가 그냥 머지한다).
     # 절반 넘는 저장소에서 일어나지도 않는 사건을 기다리는 것처럼 읽혔다.
     ("waiting",   "⚪", "아무도 안 봄",     "nobody has looked", 0, False),
-    ("stalled",   "🟣", "보류",           "stalled",           0, False),
+    ("stalled",   "🟣", "장기 대기",       "long-waiting",           0, False),
     ("draft",     "🟡", "초안",           "draft",             0, False),
     ("closed",    "❌", "닫힘",           "closed",            0, True),
 ]
@@ -227,7 +227,7 @@ def delivery_timeline(f, key, pr_url, age_html):
             "changes": "변경 요청 대응 중",
             "reviewing": "리뷰 진행 중",
             "waiting": "아직 아무도 안 봄",
-            "stalled": "보류",
+            "stalled": "장기 대기",
             "draft": "초안",
         }.get(key, "아직")
         pending_en = {
@@ -265,11 +265,15 @@ def delivery_timeline(f, key, pr_url, age_html):
     version, released, release_url = (release.get("version"),
                                       release.get("releasedAt"),
                                       release.get("url"))
-    if not (created and merged and version and released and release_url):
+    if not (created and merged and (version or release.get("channel") == "live") and released and release_url):
         return ""
     merged_month, release_month = map(month, (merged, released))
     release_link = f'href="{release_url}" target="_blank" rel="noopener"'
-    if release.get("channel") == "nightly":
+    if release.get("channel") == "live":
+        cls = 'iship'
+        release_ko = '서비스 반영'
+        release_en = 'live deployment'
+    elif release.get("channel") == "nightly":
         cls = "iship nightly"
         release_ko = 'nightly 배포 · 안정판 대기'
         release_en = 'nightly shipped · stable pending'
@@ -300,6 +304,8 @@ def delivery_timeline(f, key, pr_url, age_html):
 # 무엇을 하는 물건인지만 남긴다. 새 저장소는 여기 없으면 빈칸으로 나가고,
 # --check 가 잡는다.
 BLURB = {
+    "fishjar/kiss-translator": ("이중 언어 웹페이지 번역 확장", "Bilingual webpage translation extension"),
+    "spencermountain/compromise": ("영어 자연어 처리 라이브러리", "English natural-language processing library"),
     "cline/cline": ("VS Code 코딩 에이전트", "coding agent for VS Code"),
     "super-productivity/super-productivity": ("할 일·시간 기록 앱", "todo and time-tracking app"),
     "Infisical/infisical": ("시크릿·인증서 관리 플랫폼", "secrets and certificate management platform"),
@@ -373,11 +379,9 @@ def card(f, key, rank=None):
     star_html = f'<span class="stars">{STAR}{stars}</span>' if stars else ""
     # 닫힌 건 트레일을 안 그린다 — 진행이 없으니 진행 표시도 없다.
     mark = "" if ended else trail(at)
-    # 보류는 열려는 있지만 우리 쪽에서 손을 뗀 것이다. 살아 있는 카드와 같은 밝기로
-    # 두면 목록을 훑을 때 "아직 진행 중"으로 읽히고, 그게 정확히 틀린 인상이다.
-    # closed·stalled 는 필터가 잡는 손잡이이기도 하다(index.html 의 .ifilter).
+    # 장기 대기도 열린 PR이다. 닫힌 카드만 흐리게 표시한다.
     cls = ("ic" + (" done" if key == "merged" else "")
-           + (" off" if ended or key == "stalled" else "")
+           + (" off" if ended else "")
            + (" closed" if ended else "")
            + (" stalled" if key == "stalled" else ""))
     rank_attr = f' data-rank="{rank:02d}"' if rank is not None else ""
@@ -589,6 +593,9 @@ if _merged:
 # type 접두어로 규칙을 가른다. 새 축이 머지됐는데 여기 없으면 조용히 빠지는 쪽이라, 모르는 접두어는 누락으로 센다.
 # (types, 이름 ko, en, 태그 ko, en, 설명 ko, en, 채점 메모 ko, en)
 RULES = [
+    (("정규식 문자 집합 누락", "변경 후 참조 무효화", "문맥 타입 소실", "선택 범위 구두점 제거", "비동기 결과의 대상 검증 누락", "편집 중 단축키 충돌"), "직접 재현한 버그", "Manually reproduced bugs", "수동 검증", "manual verification",
+     "이슈에서 직접 재현한 파서·선택 범위·생성 타입 결함. 자동 진단이나 채점 결과가 아닌 개별 수정이다.",
+     "Parser, selection, and generated-type defects reproduced from reported issues. Individual fixes, not automated diagnostics or scoring.", "", ""),
     (("O(n²)", "O(n²) 배열 조회", "O(n²) 그룹핑/조회"), "O(n²) 조회", "O(n²) lookup", "채점 06", "scored 06",
      "행마다 다른 배열을 <code>.find</code>·<code>.some</code>·<code>.includes</code> 로 처음부터 훑는 자리. "
      "한 번 Map·Set 으로 색인해두면 조회가 O(1)이 된다 — 데이터가 커질수록 차이가 제곱으로 벌어진다.",
@@ -886,8 +893,8 @@ missing = missing + noicon + nocount + notranslated + noreason + unmapped
 missing_release = sorted(f"#{f['pr']}" for f in findings
                          if state_by_pr.get(pr_key(f)) == "merged"
                          and f.get("release", {}).get("channel") != "pending"
-                         and not (f.get("release", {}).get("channel") in ("stable", "nightly", "prerelease")
-                                  and f.get("release", {}).get("version")
+                         and not (f.get("release", {}).get("channel") in ("stable", "nightly", "prerelease", "live")
+                                  and (f.get("release", {}).get("version") or f.get("release", {}).get("channel") == "live")
                                   and f.get("release", {}).get("releasedAt")
                                   and f.get("release", {}).get("url")))
 for r in missing_release:
