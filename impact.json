@@ -1485,7 +1485,17 @@
    "pr": 9609,
    "createdAt": "2026-11-19T11:20:36Z",
    "status": "waiting"
+  },
+  {
+   "title": "Stripe 구독 누락이 고객 누락으로 표시됨",
+   "titleEn": "Missing Stripe subscriptions reported as missing customers",
+   "type": "위치를 진리값으로 (indexOf('customer') 가 -1 일 때도 참이라 엉뚱한 오류에 고객 누락 라벨)",
+   "repo": "TryGhost/Ghost",
+   "repoLabel": "ghost · 55.9k★",
+   "pr": 33132,
+   "createdAt": "2026-11-19T11:39:09Z",
+   "status": "waiting"
   }
  ],
- "generatedAt": "2026-11-19T11:22:34.465Z"
+ "generatedAt": "2026-11-19T11:41:18.834Z"
 }
