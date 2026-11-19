@@ -153,7 +153,7 @@
    "title": "parse-fields dedup O(n²)",
    "type": "O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1))",
    "repo": "directus/directus",
-   "repoLabel": "directus · 38.8k★",
+   "repoLabel": "directus · 38.7k★",
    "pr": 27978,
    "createdAt": "2026-07-24T13:03:10Z",
    "closedAt": "2026-07-29T19:34:55Z",
@@ -327,7 +327,7 @@
    "titleEn": "unused Map in resize handler",
    "type": "쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제)",
    "repo": "excalidraw/excalidraw",
-   "repoLabel": "excalidraw · 135.9k★",
+   "repoLabel": "excalidraw · 136k★",
    "pr": 11805,
    "createdAt": "2026-08-01T14:22:45Z",
    "status": "closed",
@@ -697,7 +697,7 @@
    "titleEn": "Vite input stylesheet dependency race",
    "type": "버려진 Promise (입력 CSS 파일 시각 기록을 기다리지 않아 재빌드 누락)",
    "repo": "tailwindlabs/tailwindcss",
-   "repoLabel": "tailwindcss · 98.6k★",
+   "repoLabel": "tailwindcss · 98.7k★",
    "pr": 20525,
    "createdAt": "2026-09-27T10:48:19Z",
    "status": "waiting"
@@ -1127,7 +1127,7 @@
    "titleEn": "write-only set in the AI markdown diff",
    "type": "쓰기만 하는 컬렉션 (diffBlockLists 의 handledOld — 삭제 판정은 newMap.has 로 이미 한다)",
    "repo": "toeverything/AFFiNE",
-   "repoLabel": "affine · 74.8k★",
+   "repoLabel": "affine · 74.9k★",
    "pr": 15692,
    "createdAt": "2026-10-09T14:24:05Z",
    "status": "closed",
@@ -1319,7 +1319,7 @@
    "titleEn": "Delta post-processing errors meant to rethrow in dev and test are swallowed",
    "type": "finally 가 삼킨 throw (catch 가 dev·test 면 다시 던지는데 finally 의 return 이 진행 중 예외를 덮어써 로그만 남는다 — 3곳)",
    "repo": "excalidraw/excalidraw",
-   "repoLabel": "excalidraw · 135.9k★",
+   "repoLabel": "excalidraw · 136k★",
    "pr": 12359,
    "createdAt": "2026-10-19T15:05:33Z",
    "status": "waiting"
@@ -1343,7 +1343,7 @@
    "titleEn": "Async onNewMessage and onNewToolCall hooks are not awaited",
    "type": "return 없는 콜백 (Promise.all 안 블록 본문 map 이 훅의 promise 를 안 돌려줌 — 4곳, 거부되면 unhandled rejection)",
    "repo": "ag-ui-protocol/ag-ui",
-   "repoLabel": "ag-ui · 20.5k★",
+   "repoLabel": "ag-ui · 20.6k★",
    "pr": 3118,
    "createdAt": "2026-10-19T15:13:04Z",
    "status": "merged",
@@ -1479,12 +1479,16 @@
   {
    "title": "SPIR-V LLVM IR 창이 항상 에러",
    "titleEn": "SPIR-V LLVM IR view always fails",
-   "type": "공유 배열 제자리 변경 (동시 실행되는 IR 생성이 -emit-llvm-bc 를 물려받음) · 버린 concat",
+   "type": "버린 반환값 (concat('-S') 결과를 버림 — 같은 함수가 공유 옵션 배열을 제자리 변경해 동시에 도는 IR 생성이 -emit-llvm-bc 를 물려받음)",
    "repo": "compiler-explorer/compiler-explorer",
    "repoLabel": "compiler-explorer · 19.2k★",
    "pr": 9609,
    "createdAt": "2026-11-19T11:20:36Z",
-   "status": "waiting"
+   "status": "merged",
+   "mergedAt": "2026-11-19T12:44:29Z",
+   "release": {
+    "channel": "pending"
+   }
   },
   {
    "title": "Stripe 구독 누락이 고객 누락으로 표시됨",
@@ -1497,5 +1501,5 @@
    "status": "waiting"
   }
  ],
- "generatedAt": "2026-11-19T11:41:18.834Z"
+ "generatedAt": "2026-11-19T14:08:03.665Z"
 }

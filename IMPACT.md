@@ -3,7 +3,7 @@
 fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수판이 아니라 **증거**다 —
 "점수"가 등급만 매기는 게 아니라, 진짜 고칠 것을 파일:줄 단위로 짚는다는 증명.
 
-> **fixearly 임팩트 점수: 59**
+> **fixearly 임팩트 점수: 60**
 > 머지된 PR 1개 = **+1점**. (draft·open = 0, 닫힘 = 0)
 > _(fixearly가 실제로 고쳐 머지된 것의 누적 — 대상 repo의 점수와는 별개 지표.)_
 >
@@ -22,7 +22,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `markdown import merge O(n²)` | [outline · 41.3k★](https://github.com/outline/outline) | O(n²) (형제 out.find title 스캔 — Map으로 O(1)) | [#13117](https://github.com/outline/outline/pull/13117) | ✅ merged | +1 |
 | `doc-metadata localization O(n²)` | [strapi · 73.5k★](https://github.com/strapi/strapi) | O(n²) (localization별 versions.find — 복합키 Map으로 O(1)) | [#27125](https://github.com/strapi/strapi/pull/27125) | ❌ closed | — |
 | `try/catch 안 릴리즈 정리를 await 안 함` | [strapi · 73.5k★](https://github.com/strapi/strapi) | 버려진 Promise (try/catch 로 감싼 async 호출에 await 가 없어 catch 가 안 돈다 — 로그 대신 unhandled rejection) | [#27893](https://github.com/strapi/strapi/pull/27893) | ✅ merged | +1 |
-| `parse-fields dedup O(n²)` | [directus · 38.8k★](https://github.com/directus/directus) | O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1)) | [#27978](https://github.com/directus/directus/pull/27978) | ❌ closed | — |
+| `parse-fields dedup O(n²)` | [directus · 38.7k★](https://github.com/directus/directus) | O(n²) (nested-field 중복제거 find 스캔 — Set으로 O(1)) | [#27978](https://github.com/directus/directus/pull/27978) | ❌ closed | — |
 | `resource-mapper schema validation O(n²)` | [n8n · 211.4k★](https://github.com/n8n-io/n8n) | O(n²) (value별 schema.find — id Map으로 O(1)) | [#34899](https://github.com/n8n-io/n8n/pull/34899) | ✅ merged | +1 |
 | `user field validation O(n²)` | [nocodb · 65.6k★](https://github.com/nocodb/nocodb) | O(n²) (value별 baseUsers.find ×4 — id·email Map으로 O(1)) | [#14309](https://github.com/nocodb/nocodb/pull/14309) | ✅ merged | +1 |
 | `ExternalRequest field lookup O(n²)` | [budibase · 28.4k★](https://github.com/Budibase/budibase) | O(n²) (행 필드별 fieldNames.find — Set으로 O(1)) | [#19320](https://github.com/Budibase/budibase/pull/19320) | ❌ closed | — |
@@ -33,7 +33,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `loadTables 카탈로그 전량 재스캔` | [typeorm · 36.7k★](https://github.com/typeorm/typeorm) | O(n²) (테이블마다 columns·constraints·fks·indices 전량 스캔 — Map 그룹핑으로 O(1)) | [#12746](https://github.com/typeorm/typeorm/pull/12746) | ❌ closed | — |
 | `growth stats 집계 3회 직렬` | [ghost · 55.9k★](https://github.com/TryGhost/Ghost) | 독립 순차 await (postId 하나로만 매개되는 집계 3개 직렬 → Promise.all, 합→최댓값) | [#29704](https://github.com/TryGhost/Ghost/pull/29704) | ✅ merged | +1 |
 | `pure CSS 청크 선형 조회` | [vite · 84k★](https://github.com/vitejs/vite) | O(n²) (청크 x import 마다 pureCssChunkNames 전량 스캔 — Set으로 O(1)) | [#23114](https://github.com/vitejs/vite/pull/23114) | ✅ merged | +1 |
-| `resize 핸들러 안 미사용 Map` | [excalidraw · 135.9k★](https://github.com/excalidraw/excalidraw) | 쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제) | [#11805](https://github.com/excalidraw/excalidraw/pull/11805) | ❌ closed | — |
+| `resize 핸들러 안 미사용 Map` | [excalidraw · 136k★](https://github.com/excalidraw/excalidraw) | 쓰기만 하는 컬렉션 (포인터 이동마다 채우고 아무도 안 읽음 — 삭제) | [#11805](https://github.com/excalidraw/excalidraw/pull/11805) | ❌ closed | — |
 | `member 통계 안 미사용 Map` | [ghost · 55.9k★](https://github.com/TryGhost/Ghost) | 쓰기만 하는 컬렉션 (날짜별 Map 을 채우고 아무도 안 읽음 — 삭제) | [#29831](https://github.com/TryGhost/Ghost/pull/29831) | ✅ merged | +1 |
 | `invalidate() 안 미사용 Set` | [storybook · 91.6k★](https://github.com/storybookjs/storybook) | 쓰기만 하는 컬렉션 (파일 변경마다 채우고 아무도 안 읽음 — 소비자는 2022-11 에 이미 삭제됨) | [#35829](https://github.com/storybookjs/storybook/pull/35829) | ❌ closed | — |
 | `스택 트레이스 절반 유실` | [astro · 64.1k★](https://github.com/withastro/astro) | 전역 정규식 상태 (/g 정규식을 filter 안에서 .test() — lastIndex 가 새어 프레임이 하나 걸러 사라진다) | [#17665](https://github.com/withastro/astro/pull/17665) | ❌ closed | — |
@@ -57,7 +57,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `React 컴파일러 패스의 쓰기만 하는 컬렉션` | [react · 252.8k★](https://github.com/facebook/react) | 쓰기만 하는 컬렉션 (propagateNonNull 의 terminalPreds Set · alignReactiveScopesToBlockScopesHIR 의 placeScopes Map — 기록만 하고 읽지 않음) | [#37699](https://github.com/react/react/pull/37699) | ✅ merged | +1 |
 | `댓글 신고 이메일의 조회 3회 직렬` | [ghost · 55.9k★](https://github.com/TryGhost/Ghost) | 독립 순차 await (신고 API 가 기다리는 post·member·owner 조회 3개를 병렬 시작) | [#31019](https://github.com/TryGhost/Ghost/pull/31019) | ✅ merged | +1 |
 | `sitemap 청크 URL 분류 O(n²)` | [astro · 64.1k★](https://github.com/withastro/astro) | O(n²) (청크별 배열 복사와 URL 포함 검사 → Set) | [#18149](https://github.com/withastro/astro/pull/18149) | ✅ merged | +1 |
-| `Vite 입력 CSS 의존성 기록 경합` | [tailwindcss · 98.6k★](https://github.com/tailwindlabs/tailwindcss) | 버려진 Promise (입력 CSS 파일 시각 기록을 기다리지 않아 재빌드 누락) | [#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | ⚪ awaiting review | — |
+| `Vite 입력 CSS 의존성 기록 경합` | [tailwindcss · 98.7k★](https://github.com/tailwindlabs/tailwindcss) | 버려진 Promise (입력 CSS 파일 시각 기록을 기다리지 않아 재빌드 누락) | [#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | ⚪ awaiting review | — |
 | `ES 청크 재내보내기 이름 반복 검색` | [rollup · 26.3k★](https://github.com/rollup/rollup) | O(n²) 배열 조회 (재내보내기마다 렌더된 export 배열 탐색 → Set) | [#6534](https://github.com/rollup/rollup/pull/6534) | ✅ merged | +1 |
 | `알림 목록의 모니터 관계 반복 검색` | [openstatus · 9.3k★](https://github.com/openstatusHQ/openstatus) | O(n²) 배열 조회 (알림마다 전체 모니터 관계 재검색 → Map 그룹화) | [#2780](https://github.com/openstatusHQ/openstatus/pull/2780) | ❌ closed | — |
 | `히트맵 버킷 증분의 쓰기만 하는 Map` | [grafana · 78k★](https://github.com/grafana/grafana) | 쓰기만 하는 컬렉션 (uPlot 에서 옮겨온 fixedDec — 채우기만 하고 읽지 않는다) | [#133985](https://github.com/grafana/grafana/pull/133985) | ❌ closed | — |
@@ -87,7 +87,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `output 마이그레이션 ID 의 .d.ts 정규화 결과를 버림` | [angular · 101.5k★](https://github.com/angular/angular) | 버린 반환값 (id.replace(/\.d\.ts$/, '.ts') 결과 미대입 — 형제 마이그레이션 둘은 대입) | [#71267](https://github.com/angular/angular/pull/71267) | ✅ merged | +1 |
 | `댓글 스레드 그래프의 깊이 Map 쓰기만 함` | [ghost · 55.9k★](https://github.com/TryGhost/Ghost) | 쓰기만 하는 컬렉션 (buildThreadGraph 의 depthById — 깊이는 reply.depth 로 이미 읽힌다) | [#31677](https://github.com/TryGhost/Ghost/pull/31677) | ✅ merged | +1 |
 | `ER 다이어그램·dagre 그래프의 쓰기만 하는 Map` | [mermaid · 91.2k★](https://github.com/mermaid-js/mermaid) | 쓰기만 하는 컬렉션 (ErDB.getData 의 subGraphDB — flowDb 에서 복사, parentDB 만 읽힘 · mermaid-graphlib 의 parents — set·clear 만) | [#8413](https://github.com/mermaid-js/mermaid/pull/8413) | ⚪ awaiting review | — |
-| `AI 마크다운 diff 의 쓰기만 하는 Set` | [affine · 74.8k★](https://github.com/toeverything/AFFiNE) | 쓰기만 하는 컬렉션 (diffBlockLists 의 handledOld — 삭제 판정은 newMap.has 로 이미 한다) | [#15692](https://github.com/toeverything/AFFiNE/pull/15692) | ❌ closed | — |
+| `AI 마크다운 diff 의 쓰기만 하는 Set` | [affine · 74.9k★](https://github.com/toeverything/AFFiNE) | 쓰기만 하는 컬렉션 (diffBlockLists 의 handledOld — 삭제 판정은 newMap.has 로 이미 한다) | [#15692](https://github.com/toeverything/AFFiNE/pull/15692) | ❌ closed | — |
 | `키맵 검색에서 연속 키 사이 공백이 사라짐` | [opensumi · 3.7k★](https://github.com/opensumi/core) | 버린 반환값 (searchKeybindings 의 chordRenderedResult.concat — 결과를 버리고, 인덱스는 spaceIndexArr[-1] 로 NaN, 끝에 join('+') 로 덮어씀) | [#4776](https://github.com/opensumi/core/pull/4776) | ⚪ awaiting review | — |
 | `v26 설정 이전에서 flame·claw 키 이름 변경이 버려짐` | [burn-my-windows · 3.1k★](https://github.com/Schneegans/Burn-My-Windows) | 버린 반환값 (fromVersion26 의 r.replace('flame-','fire-') · r.replace('claw-','trex-') — 대입 안 해서 사용자 설정이 옛 키로 남아 무시됨) | [#583](https://github.com/Schneegans/Burn-My-Windows/pull/583) | ✅ merged | +1 |
 | `손글씨 획 생성기의 쓰기만 하는 Map·Set` | [tegaki · 3.3k★](https://github.com/gkurt/tegaki) | 쓰기만 하는 컬렉션 (partitionFaces 의 twinOf · assembleStrokes 의 consumedEnd — 걷기는 outgoing·consumedSeg 로 한다) | [#77](https://github.com/gkurt/tegaki/pull/77) | ✅ merged | +1 |
@@ -102,9 +102,9 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `ICU 를 한 번 잡은 뒤 다음 속성 번역의 ICU 를 놓침` | [angular · 101.5k★](https://github.com/angular/angular) | 전역 정규식 상태 (/gi 정규식을 .test() 로만 써 lastIndex 가 남음 — 매치 뒤 throw 라 리셋 안 됨) | [#71389](https://github.com/angular/angular/pull/71389) | ✅ merged | +1 |
 | `outline 설정을 바꿔도 캐시된 매크로 인자가 안 붙음` | [LaTeX-Workshop · 12.4k★](https://github.com/James-Yu/LaTeX-Workshop) | forEach 안 await (forEach(async) 뒤 곧바로 reconstruct() — 게다가 워커는 구조적 복제본만 바꿔 캐시 AST 엔 인자가 안 남는다) | [#5007](https://github.com/James-Yu/LaTeX-Workshop/pull/5007) | ✅ merged | +1 |
 | `끝만 다른 미리 불러온 구간을 중복으로 보고 건너뜀` | [SponsorBlock · 14.1k★](https://github.com/ajayyy/SponsorBlock) | 같은 식 두 번 비교 (checkForPreloadedSegment 가 s.segment[1] === s.segment[1] 로 끝 시간을 자기와 비교 — 시작만 같으면 중복으로 보고 버린다) | [#2572](https://github.com/ajayyy/SponsorBlock/pull/2572) | ✅ merged | +1 |
-| `개발·테스트에서 다시 던지려던 delta 후처리 에러가 사라짐` | [excalidraw · 135.9k★](https://github.com/excalidraw/excalidraw) | finally 가 삼킨 throw (catch 가 dev·test 면 다시 던지는데 finally 의 return 이 진행 중 예외를 덮어써 로그만 남는다 — 3곳) | [#12359](https://github.com/excalidraw/excalidraw/pull/12359) | ⚪ awaiting review | — |
+| `개발·테스트에서 다시 던지려던 delta 후처리 에러가 사라짐` | [excalidraw · 136k★](https://github.com/excalidraw/excalidraw) | finally 가 삼킨 throw (catch 가 dev·test 면 다시 던지는데 finally 의 return 이 진행 중 예외를 덮어써 로그만 남는다 — 3곳) | [#12359](https://github.com/excalidraw/excalidraw/pull/12359) | ⚪ awaiting review | — |
 | `range 슬라이더가 끝값이 숫자가 아니어도 통과시킴` | [semi-design · 10.5k★](https://github.com/DouyinFE/semi-design) | 같은 식 두 번 비교 (valueFormatIsCorrect 가 typeof value[0] 를 두 번 검사 — [30, undefined] 가 currentValue 로 들어간다) | [#3428](https://github.com/DouyinFE/semi-design/pull/3428) | ✅ merged | +1 |
-| `비동기 onNewMessage·onNewToolCall 훅을 기다리지 않음` | [ag-ui · 20.5k★](https://github.com/ag-ui-protocol/ag-ui) | return 없는 콜백 (Promise.all 안 블록 본문 map 이 훅의 promise 를 안 돌려줌 — 4곳, 거부되면 unhandled rejection) | [#3118](https://github.com/ag-ui-protocol/ag-ui/pull/3118) | ✅ merged | +1 |
+| `비동기 onNewMessage·onNewToolCall 훅을 기다리지 않음` | [ag-ui · 20.6k★](https://github.com/ag-ui-protocol/ag-ui) | return 없는 콜백 (Promise.all 안 블록 본문 map 이 훅의 promise 를 안 돌려줌 — 4곳, 거부되면 unhandled rejection) | [#3118](https://github.com/ag-ui-protocol/ag-ui/pull/3118) | ✅ merged | +1 |
 | `Google Workspace 첫해 할인 안내가 4년째 안 뜸` | [wp-calypso · 12.7k★](https://github.com/Automattic/wp-calypso) | 같은 식 두 번 비교 (item_original_subtotal_integer < item_original_subtotal_integer — 2021 리팩터가 할인가 자리를 원가로 바꿔 늘 거짓) | [#115382](https://github.com/Automattic/wp-calypso/pull/115382) | ✅ merged | +1 |
 | `번역 옵션 변수 검사가 첫 옵션에서 멈춤` | [wp-calypso · 12.7k★](https://github.com/Automattic/wp-calypso) | return 없는 콜백 (validateOptions 의 properties.every 콜백이 값을 안 돌려줘 첫 속성 뒤 멈춤 — 두 번째 옵션의 변수는 안 잡힌다) | [#115386](https://github.com/Automattic/wp-calypso/pull/115386) | ⚪ awaiting review | — |
 | `Windows 함수 이름이 필터에서 사라짐` | [compiler-explorer · 19.2k★](https://github.com/compiler-explorer/compiler-explorer) | 정규식 문자 집합 누락 (global·weak 선언에서 @ 문자가 빠져 장식된 함수 이름을 잘라 읽음) | [#9461](https://github.com/compiler-explorer/compiler-explorer/pull/9461) | ✅ merged | +1 |
@@ -114,7 +114,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `인용문 텍스트 출력에서 양 끝 따옴표가 잘림` | [compromise · 12.2k★](https://github.com/spencermountain/compromise) | 선택 범위 구두점 제거 (인용문이 공용 텍스트 정리 규칙을 따라 양 끝 따옴표까지 제거) | [#1262](https://github.com/spencermountain/compromise/pull/1262) | ✅ merged | +1 |
 | `늦은 번역 응답이 입력창 포커스를 빼앗음` | [kiss-translator · 13.4k★](https://github.com/fishjar/kiss-translator) | 비동기 결과의 대상 검증 누락 (응답 대기 중 이동한 포커스를 원래 입력창으로 되돌려 기존 내용을 덮음) | [#1281](https://github.com/fishjar/kiss-translator/pull/1281) | ✅ merged | +1 |
 | `입력 중 Alt+B가 숨긴 플로팅 버튼을 호출` | [kiss-translator · 13.4k★](https://github.com/fishjar/kiss-translator) | 편집 중 단축키 충돌 (고정 Alt+B가 입력 영역에서도 임시 버튼을 호출) | [#1287](https://github.com/fishjar/kiss-translator/pull/1287) | ✅ merged | +1 |
-| `SPIR-V LLVM IR 창이 항상 에러` | [compiler-explorer · 19.2k★](https://github.com/compiler-explorer/compiler-explorer) | 공유 배열 제자리 변경 (동시 실행되는 IR 생성이 -emit-llvm-bc 를 물려받음) · 버린 concat | [#9609](https://github.com/compiler-explorer/compiler-explorer/pull/9609) | ⚪ awaiting review | — |
+| `SPIR-V LLVM IR 창이 항상 에러` | [compiler-explorer · 19.2k★](https://github.com/compiler-explorer/compiler-explorer) | 공유 배열 제자리 변경 (동시 실행되는 IR 생성이 -emit-llvm-bc 를 물려받음) · 버린 concat | [#9609](https://github.com/compiler-explorer/compiler-explorer/pull/9609) | ✅ merged | +1 |
 | `Stripe 구독 누락이 고객 누락으로 표시됨` | [ghost · 55.9k★](https://github.com/TryGhost/Ghost) | 위치를 진리값으로 (indexOf('customer') 가 -1 일 때도 참이라 엉뚱한 오류에 고객 누락 라벨) | [#33132](https://github.com/TryGhost/Ghost/pull/33132) | ⚪ awaiting review | — |
 
 ## 규칙
