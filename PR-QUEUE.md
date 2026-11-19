@@ -380,6 +380,7 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [wp-calypso#115386](https://github.com/Automattic/wp-calypso/pull/115386) | return 없는 콜백 | ⚪ 대기 | 30일째 / 보통 1일 · 보류 |
 | [infisical#8536](https://github.com/Infisical/infisical/pull/8536) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 41일째 / 보통 1일 · 보류 |
 | [insomnia#10575](https://github.com/Kong/insomnia/pull/10575) | forEach 안 await | ⚪ 대기 | 42일째 / 보통 4일 · 보류 |
+| [ghost#33132](https://github.com/TryGhost/Ghost/pull/33132) | 위치를 진리값으로 | ⚪ 대기 | 오늘 / 보통 1일 |
 | [compiler-explorer#9609](https://github.com/compiler-explorer/compiler-explorer/pull/9609) | 공유 배열 제자리 변경 | ⚪ 대기 | 오늘 / 보통 4일 |
 | [excalidraw#12359](https://github.com/excalidraw/excalidraw/pull/12359) | finally 가 삼킨 throw | ⚪ 대기 | 30일째 / 보통 20일 · 보류 |
 | [mermaid#8413](https://github.com/mermaid-js/mermaid/pull/8413) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 40일째 / 보통 6일 · 보류 |
@@ -391,7 +392,7 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [serverless#13947](https://github.com/serverless/serverless/pull/13947) | return 없는 콜백 | ⚪ 대기 | 40일째 / 보통 1일 · 보류 |
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 53일째 / 보통 1일 · 보류 |
 
-**열린 것 16건(보류 13건 빼면 3건).** 판정 난 89건 중 머지 59 · 승인 1 · 닫힘 29.
+**열린 것 17건(보류 13건 빼면 4건).** 판정 난 89건 중 머지 59 · 승인 1 · 닫힘 29.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -824,7 +825,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | mikro-orm | 100% | 95% | 0.4일 | 10/10 | **1차 통과** | 판정 경험 있음 |
 | promptfoo | 100% | 93% | 0.7일 | 7/7 | 표본 부족 | 판정 경험 있음 |
 | compromise | 100% | 95% | 0.7일 | 17/17 | **1차 통과** | 판정 경험 있음 |
-| Ghost | 100% | 100% | 0.9일 | 1/1 | 표본 부족 | 판정 경험 있음 |
+| Ghost | 100% | 100% | 0.9일 | 1/1 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
 | openstatus | 100% | 60% | 2.6일 | 2/2 | 표본 부족 | 판정 경험 있음 |
 | compiler-explorer | 100% | 100% | 3.8일 | 27/27 | 1차 통과 · 후순위(느림) | 열린 PR 있음 — 저장소당 1건 |
 | Babylon.js | 100% | 100% | 5.1일 | 3/3 | 표본 부족 | 판정 경험 있음 |

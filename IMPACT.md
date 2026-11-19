@@ -115,6 +115,7 @@ fixearly가 **실제 오픈소스에서 찾아낸 이슈**와 그 결과. 점수
 | `늦은 번역 응답이 입력창 포커스를 빼앗음` | [kiss-translator · 13.4k★](https://github.com/fishjar/kiss-translator) | 비동기 결과의 대상 검증 누락 (응답 대기 중 이동한 포커스를 원래 입력창으로 되돌려 기존 내용을 덮음) | [#1281](https://github.com/fishjar/kiss-translator/pull/1281) | ✅ merged | +1 |
 | `입력 중 Alt+B가 숨긴 플로팅 버튼을 호출` | [kiss-translator · 13.4k★](https://github.com/fishjar/kiss-translator) | 편집 중 단축키 충돌 (고정 Alt+B가 입력 영역에서도 임시 버튼을 호출) | [#1287](https://github.com/fishjar/kiss-translator/pull/1287) | ✅ merged | +1 |
 | `SPIR-V LLVM IR 창이 항상 에러` | [compiler-explorer · 19.2k★](https://github.com/compiler-explorer/compiler-explorer) | 공유 배열 제자리 변경 (동시 실행되는 IR 생성이 -emit-llvm-bc 를 물려받음) · 버린 concat | [#9609](https://github.com/compiler-explorer/compiler-explorer/pull/9609) | ⚪ awaiting review | — |
+| `Stripe 구독 누락이 고객 누락으로 표시됨` | [ghost · 55.9k★](https://github.com/TryGhost/Ghost) | 위치를 진리값으로 (indexOf('customer') 가 -1 일 때도 참이라 엉뚱한 오류에 고객 누락 라벨) | [#33132](https://github.com/TryGhost/Ghost/pull/33132) | ⚪ awaiting review | — |
 
 ## 규칙
 
