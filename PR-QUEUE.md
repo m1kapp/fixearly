@@ -43,6 +43,7 @@
 | [mikro-orm#8393](https://github.com/mikro-orm/mikro-orm/pull/8393) | 머지 | — |
 | [compiler-explorer#9241](https://github.com/compiler-explorer/compiler-explorer/pull/9241) | 머지 | — |
 | [compiler-explorer#9461](https://github.com/compiler-explorer/compiler-explorer/pull/9461) | 머지 | — |
+| [compiler-explorer#9609](https://github.com/compiler-explorer/compiler-explorer/pull/9609) | 머지 | — |
 | [super-productivity#10607](https://github.com/super-productivity/super-productivity/pull/10607) | 머지 | — |
 | [promptfoo#11464](https://github.com/promptfoo/promptfoo/pull/11464) | 머지 | — |
 | [Trilium#11949](https://github.com/TriliumNext/Trilium/pull/11949) | 머지 | — |
@@ -379,20 +380,19 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 | [nocodb#14812](https://github.com/nocodb/nocodb/pull/14812) | 버린 반환값 | 🟢 리뷰 진행 | 40일째 |
 | [wp-calypso#115386](https://github.com/Automattic/wp-calypso/pull/115386) | return 없는 콜백 | ⚪ 대기 | 30일째 / 보통 1일 · 보류 |
 | [infisical#8536](https://github.com/Infisical/infisical/pull/8536) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 41일째 / 보통 1일 · 보류 |
-| [insomnia#10575](https://github.com/Kong/insomnia/pull/10575) | forEach 안 await | ⚪ 대기 | 42일째 / 보통 4일 · 보류 |
+| [insomnia#10575](https://github.com/Kong/insomnia/pull/10575) | forEach 안 await | ⚪ 대기 | 43일째 / 보통 4일 · 보류 |
 | [ghost#33132](https://github.com/TryGhost/Ghost/pull/33132) | 위치를 진리값으로 | ⚪ 대기 | 오늘 / 보통 1일 |
-| [compiler-explorer#9609](https://github.com/compiler-explorer/compiler-explorer/pull/9609) | 공유 배열 제자리 변경 | ⚪ 대기 | 오늘 / 보통 4일 |
 | [excalidraw#12359](https://github.com/excalidraw/excalidraw/pull/12359) | finally 가 삼킨 throw | ⚪ 대기 | 30일째 / 보통 20일 · 보류 |
 | [mermaid#8413](https://github.com/mermaid-js/mermaid/pull/8413) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 40일째 / 보통 6일 · 보류 |
-| [pdf.js#22102](https://github.com/mozilla/pdf.js/pull/22102) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 42일째 / 보통 1일 · 보류 |
-| [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 44일째 / 보통 4일 · 보류 |
+| [pdf.js#22102](https://github.com/mozilla/pdf.js/pull/22102) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 43일째 / 보통 1일 · 보류 |
+| [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 45일째 / 보통 4일 · 보류 |
 | [opensumi#4776](https://github.com/opensumi/core/pull/4776) | 버린 반환값 | ⚪ 대기 | 40일째 / 보통 4일 · 보류 |
-| [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 42일째 / 보통 4일 · 보류 |
+| [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 43일째 / 보통 4일 · 보류 |
 | [rgthree-comfy#790](https://github.com/rgthree/rgthree-comfy/pull/790) | 같은 식 두 번 비교 | ⚪ 대기 | 40일째 / 보통 4일 · 보류 |
 | [serverless#13947](https://github.com/serverless/serverless/pull/13947) | return 없는 콜백 | ⚪ 대기 | 40일째 / 보통 1일 · 보류 |
 | [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 53일째 / 보통 1일 · 보류 |
 
-**열린 것 17건(보류 13건 빼면 4건).** 판정 난 89건 중 머지 59 · 승인 1 · 닫힘 29.
+**열린 것 16건(보류 13건 빼면 3건).** 판정 난 90건 중 머지 60 · 승인 1 · 닫힘 29.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -827,7 +827,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | compromise | 100% | 95% | 0.7일 | 17/17 | **1차 통과** | 판정 경험 있음 |
 | Ghost | 100% | 100% | 0.9일 | 1/1 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
 | openstatus | 100% | 60% | 2.6일 | 2/2 | 표본 부족 | 판정 경험 있음 |
-| compiler-explorer | 100% | 100% | 3.8일 | 27/27 | 1차 통과 · 후순위(느림) | 열린 PR 있음 — 저장소당 1건 |
+| compiler-explorer | 100% | 100% | 3.8일 | 27/27 | 1차 통과 · 후순위(느림) | 판정 경험 있음 |
 | Babylon.js | 100% | 100% | 5.1일 | 3/3 | 표본 부족 | 판정 경험 있음 |
 | storybook | 100% | 91% | 7.0일 | 8/8 | 표본 부족 | 판정 경험 있음 · 게이트 0 — danger 가 `ci:*`·`qa:*` 라벨을 요구하는데 메인테이너만 붙일 수 있다 (#35829 가 25일째 빨간불이라 접었다) · CONTRIBUTING 'Never let an LLM speak for you': 사람 개입 없는 PR 은 3일 뒤 자동 닫힘 |
 | cytoscape.js | 93% | 90% | 7.5일 | 13/14 | 1차 통과 · 후순위(느림) | 판정 경험 있음 |
