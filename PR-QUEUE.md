@@ -91,6 +91,7 @@
 | [budibase#19320](https://github.com/Budibase/budibase/pull/19320) | 닫힘 | 사유 없이 닫힘. 요청받지 않은 최적화는 그냥 거절될 수 있다 |
 | [budibase#19555](https://github.com/Budibase/budibase/pull/19555) | 닫힘 | 게이트 0 — 외부 PR 은 "작성자에게 배정된" 이슈를 참조해야 하는데 배정은 메인테이너만 한다 |
 | [eslint#21317](https://github.com/eslint/eslint/pull/21317) | 닫힘 | AI 보조 PR 은 선행 이슈가 필요하다는 정책(게이트 0, 우리가 안 읽었다) · 메인테이너는 이득도 의심했다 — "린터는 보통 생성 코드를 안 훑는다" |
+| [pdf.js#22102](https://github.com/mozilla/pdf.js/pull/22102) | 닫힘 | 자진 종료 · 메인테이너가 AI 생성 정리 패치 리뷰 부담을 지적해 사과하고 닫음 |
 | [twenty#23231](https://github.com/twentyhq/twenty/pull/23231) | 닫힘 | "redundant with #23232" — 같은 저장소에 겹치는 2건을 냈다 |
 | [twenty#23232](https://github.com/twentyhq/twenty/pull/23232) | 닫힘 | 겹친 2건 중 나머지. 사유는 남지 않았다 |
 | [strapi#27125](https://github.com/strapi/strapi/pull/27125) | 닫힘 | 우리가 접었다 — 중앙 2일인 곳에서 14일째 아무 반응이 없었다 |
@@ -375,24 +376,23 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [Node.js#66647](https://github.com/nodejs/node/pull/66647) | 버린 반환값 | 🔵 승인 · 머지 대기 | 39일째 / 보통 5일 · 보류 |
-| [vscode#340771](https://github.com/microsoft/vscode/pull/340771) | return 없는 콜백 | 🟢 리뷰 진행 | 40일째 / 보통 1일 |
-| [nocodb#14812](https://github.com/nocodb/nocodb/pull/14812) | 버린 반환값 | 🟢 리뷰 진행 | 40일째 |
-| [wp-calypso#115386](https://github.com/Automattic/wp-calypso/pull/115386) | return 없는 콜백 | ⚪ 대기 | 30일째 / 보통 1일 · 보류 |
-| [infisical#8536](https://github.com/Infisical/infisical/pull/8536) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 41일째 / 보통 1일 · 보류 |
-| [insomnia#10575](https://github.com/Kong/insomnia/pull/10575) | forEach 안 await | ⚪ 대기 | 43일째 / 보통 4일 · 보류 |
-| [ghost#33132](https://github.com/TryGhost/Ghost/pull/33132) | 위치를 진리값으로 | ⚪ 대기 | 오늘 / 보통 1일 |
-| [excalidraw#12359](https://github.com/excalidraw/excalidraw/pull/12359) | finally 가 삼킨 throw | ⚪ 대기 | 30일째 / 보통 20일 · 보류 |
-| [mermaid#8413](https://github.com/mermaid-js/mermaid/pull/8413) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 40일째 / 보통 6일 · 보류 |
-| [pdf.js#22102](https://github.com/mozilla/pdf.js/pull/22102) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 43일째 / 보통 1일 · 보류 |
-| [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 45일째 / 보통 4일 · 보류 |
-| [opensumi#4776](https://github.com/opensumi/core/pull/4776) | 버린 반환값 | ⚪ 대기 | 40일째 / 보통 4일 · 보류 |
-| [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 43일째 / 보통 4일 · 보류 |
-| [rgthree-comfy#790](https://github.com/rgthree/rgthree-comfy/pull/790) | 같은 식 두 번 비교 | ⚪ 대기 | 40일째 / 보통 4일 · 보류 |
-| [serverless#13947](https://github.com/serverless/serverless/pull/13947) | return 없는 콜백 | ⚪ 대기 | 40일째 / 보통 1일 · 보류 |
-| [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 53일째 / 보통 1일 · 보류 |
+| [Node.js#66647](https://github.com/nodejs/node/pull/66647) | 버린 반환값 | 🔵 승인 · 머지 대기 | 41일째 / 보통 5일 · 보류 |
+| [vscode#340771](https://github.com/microsoft/vscode/pull/340771) | return 없는 콜백 | 🟢 리뷰 진행 | 42일째 / 보통 1일 |
+| [nocodb#14812](https://github.com/nocodb/nocodb/pull/14812) | 버린 반환값 | 🟢 리뷰 진행 | 42일째 |
+| [wp-calypso#115386](https://github.com/Automattic/wp-calypso/pull/115386) | return 없는 콜백 | ⚪ 대기 | 32일째 / 보통 1일 · 보류 |
+| [infisical#8536](https://github.com/Infisical/infisical/pull/8536) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 43일째 / 보통 1일 · 보류 |
+| [insomnia#10575](https://github.com/Kong/insomnia/pull/10575) | forEach 안 await | ⚪ 대기 | 45일째 / 보통 4일 · 보류 |
+| [ghost#33132](https://github.com/TryGhost/Ghost/pull/33132) | 위치를 진리값으로 | ⚪ 대기 | 2일째 / 보통 1일 |
+| [excalidraw#12359](https://github.com/excalidraw/excalidraw/pull/12359) | finally 가 삼킨 throw | ⚪ 대기 | 32일째 / 보통 20일 · 보류 |
+| [mermaid#8413](https://github.com/mermaid-js/mermaid/pull/8413) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 43일째 / 보통 6일 · 보류 |
+| [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 47일째 / 보통 4일 · 보류 |
+| [opensumi#4776](https://github.com/opensumi/core/pull/4776) | 버린 반환값 | ⚪ 대기 | 42일째 / 보통 4일 · 보류 |
+| [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 45일째 / 보통 4일 · 보류 |
+| [rgthree-comfy#790](https://github.com/rgthree/rgthree-comfy/pull/790) | 같은 식 두 번 비교 | ⚪ 대기 | 42일째 / 보통 4일 · 보류 |
+| [serverless#13947](https://github.com/serverless/serverless/pull/13947) | return 없는 콜백 | ⚪ 대기 | 42일째 / 보통 1일 · 보류 |
+| [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 55일째 / 보통 1일 · 보류 |
 
-**열린 것 16건(보류 13건 빼면 3건).** 판정 난 90건 중 머지 60 · 승인 1 · 닫힘 29.
+**열린 것 15건(보류 12건 빼면 3건).** 판정 난 91건 중 머지 60 · 승인 1 · 닫힘 30.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -901,7 +901,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | directus | 19% | 41% | 2.2일 | 3/16 | 컷 | 판정 경험 있음 |
 | typeorm | 19% | 34% | 11.9일 | 5/26 | 컷 | 판정 경험 있음 |
 | cal.diy | 17% | 15% | 9.6일 | 8/48 | 컷 | 판정 경험 있음 · 게이트 0 — 외부 PR 에서 `required` 잡이 항상 실패 |
-| pdf.js | 14% | 85% | 0.4일 | 1/7 | 표본 부족 | 열린 PR 있음 — 저장소당 1건 |
+| pdf.js | 14% | 85% | 0.4일 | 1/7 | 표본 부족 | 판정 경험 있음 |
 | medusa | 14% | 22% | 8.1일 | 4/29 | 컷 | 판정 경험 있음 · 게이트 0 — CONTRIBUTING 'Issues before PRs': 작업 전에 이슈가 먼저 있어야 한다 · PR 대상 브랜치는 main 이 아니라 `develop` · 브랜치 이름 접두사가 PR 라벨을 정한다(CLAUDE.md) · PR 템플릿이 What/Why/How/Testing + 사용 예제를 요구한다 · AI 정책은 없다 |
 | drizzle-orm | 5% | 4% | 2.7일 | 2/37 | 컷 | drizzle-kit 의 snapshotsDiffer 는 beta(v1 재작성)에서 사라졌다 — main 쪽 수정은 곧 버려질 코드 |
 | excalidraw | 4% | 4% | 20.4일 | 2/46 | 컷 | 열린 PR 있음 — 저장소당 1건 |
