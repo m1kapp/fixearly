@@ -1,30 +1,28 @@
 {
   "name": "fixearly",
   "version": "0.5.0",
-  "description": "코드가 아니라 '다음에 고칠 때 드는 비용'을 잰다 — 일찍 고치면 싸다. JS/TS 정적 분석, 100% 로컬, SSS~E 등급, 오픈소스 74개 기준선",
+  "description": "JS/TS 코드에서 고칠 줄을 짚는다 — 규칙은 react·node·angular 등 남의 저장소에 머지된 것들. 100% 로컬 정적 분석",
   "type": "module",
   "bin": {
     "fixearly": "bin/fixearly.mjs"
   },
   "files": [
     "bin/fixearly.mjs",
-    "bin/report.mjs",
     "bin/sweep.mjs",
-    "data/corpus.json"
+    "bin/deps-audit.mjs"
   ],
   "keywords": [
-    "code-quality",
     "static-analysis",
-    "cognitive-complexity",
-    "duplication",
-    "dead-code",
+    "bug-finder",
+    "lint",
+    "javascript",
+    "typescript",
     "cli"
   ],
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   },
   "dependencies": {
-    "knip": "^6.33.0",
     "typescript": "^5.4.0"
   },
   "license": "MIT",
@@ -41,24 +39,12 @@
   },
   "scripts": {
     "dev": "python3 -m http.server 4173",
-    "test": "node bin/selftest.mjs && node bin/impact.mjs --selftest && node tools/test-deps-audit.mjs && python3 tools/check-false-positives.py && python3 tools/test_internal_dashboard.py && python3 tools/fetch-repo-contributors.py --selftest && python3 tools/fetch-repo-contributors.py --check && python3 tools/update-impact-cards.test.py && python3 tools/update-corpus-labels.py --check && python3 tools/add-board-rows.py --check && python3 tools/update-history-ui.py --check && python3 tools/update-impact-cards.py --check && python3 tools/update-pr-queue.py --check",
+    "test": "node bin/selftest.mjs && node bin/impact.mjs --selftest && node tools/test-deps-audit.mjs && python3 tools/check-false-positives.py && python3 tools/fetch-repo-contributors.py --selftest && python3 tools/fetch-repo-contributors.py --check && python3 tools/update-impact-cards.test.py && python3 tools/update-impact-cards.py --check && python3 tools/update-pr-queue.py --check",
     "impact": "node bin/impact.mjs",
     "pre-pr": "node tools/pre-pr-check.mjs",
     "merge-times": "python3 tools/update-repo-merge-times.py",
-    "internal": "python3 tools/internal-dashboard.py --scan --serve",
-    "internal:scan": "python3 tools/internal-dashboard.py --scan",
-    "internal:history": "python3 tools/internal-dashboard.py --render-history",
-    "board": "node tools/update-board.mjs",
-    "og": "python3 tools/make-og.py",
     "cards": "python3 tools/fetch-repo-avatars.py && python3 tools/update-impact-cards.py",
     "contributors": "python3 tools/fetch-repo-contributors.py",
-    "labels": "python3 tools/update-corpus-labels.py",
-    "corpus": "python3 tools/rebuild-corpus.py",
-    "boarddata": "python3 tools/update-board-data.py",
-    "rows": "python3 tools/add-board-rows.py",
-    "measure": "bash tools/remeasure-board.sh",
-    "refresh": "python3 tools/rebuild-corpus.py && python3 tools/update-board-data.py && python3 tools/add-board-rows.py && python3 tools/update-corpus-labels.py && python3 tools/build-score-history.py && python3 tools/update-history-ui.py && node tools/update-board.mjs && python3 tools/make-og.py",
-    "history": "python3 tools/build-score-history.py && python3 tools/update-history-ui.py",
     "avatars": "python3 tools/fetch-repo-avatars.py",
     "queue": "python3 tools/update-pr-queue.py",
     "prepublishOnly": "npm test",

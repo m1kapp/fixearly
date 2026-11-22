@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 /**
- * fixearly selftest — 엔진 내부 순수함수의 회귀 테스트.
+ * fixearly selftest — 탐지기 픽스처·제외 규칙·훑기 회귀 테스트.
  *
  * fixearly.mjs 는 실행 스크립트(import 시 바로 분석을 돈다)라 내부 함수를 export 하지 않는다.
- * 그래서 소스에서 `cognitiveOf`·`isFnLike` 본문만 뽑아 격리 실행한다.
- * 목적: SonarJS S3776(인지 복잡도) 산식이 정본 값과 어긋나지 않는지 고정한다.
+ * 순수 함수는 소스에서 본문만 뽑아 격리 실행하고, 탐지기는 엔진을 통째로 돌려 산출물을 본다.
  *
  * 사용: node bin/selftest.mjs   (npm test)
  */
@@ -18,91 +17,7 @@ import { buildSweepDecision, collectSweepCandidates, thanksUrl } from "./sweep.m
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const src = fs.readFileSync(path.join(ROOT, "bin", "fixearly.mjs"), "utf8");
-
-// 엔진에서 세 함수 선언을 통째로 추출한다(회귀 대상이 바뀌면 여기서 즉시 깨진다).
-// cognitiveOf 는 fnName·isFnLike 를 참조하고 fnName 은 sf 를 클로저로 잡으므로,
-// sf 가 살아있는 cog() 안에서 direct eval 로 세 선언을 함께 평가한다.
-const isFnLikeSrc = src.match(/  const isFnLike = [\s\S]*?;\n/);
-const fnNameSrc = src.match(/  const fnName = \(n\) => \{[\s\S]*?\n  \};\n/);
-const cogSrc = src.match(/  const cognitiveOf = \(fn\) => \{[\s\S]*?\n  \};\n/);
-if (!isFnLikeSrc || !fnNameSrc || !cogSrc) {
-  console.error("selftest: isFnLike/fnName/cognitiveOf 선언을 찾지 못했습니다(엔진 구조 변경?).");
-  process.exit(2);
-}
-const harness = isFnLikeSrc[0] + fnNameSrc[0] + cogSrc[0];
-const isFnLikeVal = isFnLikeSrc[0].match(/const isFnLike = ([\s\S]*);\n/)[1];
-const isFnLike = eval(`(${isFnLikeVal})`); // sf 비의존 — 모듈 스코프에서 find 용
-
-const measure = (code) => {
-  const sf = ts.createSourceFile("t.ts", code, ts.ScriptTarget.ES2020, true);
-  // eslint-disable-next-line no-eval
-  const cognitiveOf = eval(`${harness}\ncognitiveOf`); // direct eval: sf·isFnLike·fnName 스코프 공유
-  let fn = null;
-  const find = (n) => {
-    if (!fn && isFnLike(n)) fn = n;
-    else ts.forEachChild(n, find);
-  };
-  ts.forEachChild(sf, find);
-  return cognitiveOf(fn); // v7: {cog, nest, guard}
-};
-const cogOf = (code) => measure(code).cog;
-
-// [설명, 코드, 기대값] — 값은 SonarSource Cognitive Complexity(S3776) 정본 기준.
-const CASES = [
-  // else-if 는 구조 +1 만(중첩 증가 없음). 루프 안에 있어도 depth 가 더해지면 안 된다.
-  ["else-if in while", `function f(){ while(x){ if(a){} else if(b){} else {} } }`, 5],
-  ["flat if/elseif/elseif/else", `function f(){ if(a){} else if(b){} else if(c){} else {} }`, 4],
-  // else-if 의 '본문'은 여전히 한 단계 중첩된다(링크 자체만 중첩 면제).
-  ["nested if inside else-if body", `function f(){ while(x){ if(a){} else if(b){ if(c){} } } }`, 7],
-  // 이중 루프 + 중첩 if (라벨 점프 없음).
-  ["double loop + if", `function f(m){ for(let i=1;i<=m;++i){ for(let j=2;j<i;++j){ if(i%j==0){ return i; } } } }`, 6],
-  // 논리 연산 연쇄: 같은 연산자 연쇄는 1회, 연산자 바뀌면 +1.
-  ["logical sequence", `function f(){ if(a && b && c || d){} }`, 3],
-  // 삼항 중첩.
-  ["nested ternary", `function f(){ return a ? (b?1:2) : 3; }`, 3],
-  // else { if } 는 else-if 와 다르다: else 가 중첩을 올려 내부 if 가 +2.
-  ["else-block if (not else-if)", `function f(){ if(a){} else { if(b){} } }`, 4],
-  // 라벨 continue: for+1, for+2, if+3, continue LABEL +1 = 7 (SonarSource sumOfPrimes 정본).
-  ["labeled continue", `function f(max){ outer: for(let i=1;i<=max;++i){ for(let j=2;j<i;++j){ if(i%j==0){ continue outer; } } } }`, 7],
-  // 라벨 없는 break/continue 는 증가 없음.
-  ["unlabeled break", `function f(){ for(;;){ if(a){ break; } } }`, 3],
-  // 직접 재귀: if+1, 재귀호출 2회 +2 = 3.
-  ["direct recursion (fib)", `function fib(n){ if(n<2) return n; return fib(n-1)+fib(n-2); }`, 3],
-  // 화살표 재귀도 바인딩 이름으로 잡는다.
-  ["arrow recursion", `const walk = (n) => { if(n){ walk(n.next); } };`, 2],
-  // this.foo()·동명 타 함수 호출은 재귀로 세지 않는다(오탐 방지).
-  ["method call not counted as recursion", `function run(){ this.run(); other.run(); }`, 0],
-];
-
 let fail = 0;
-for (const [name, code, want] of CASES) {
-  const got = cogOf(code);
-  const ok = got === want;
-  if (!ok) fail++;
-  console.log(`  ${ok ? "✓" : "✗"} ${name}: got ${got} want ${want}`);
-}
-
-// v7 축: 최대 중첩 깊이(nest)와 가드 절 몫(guard).
-// cog 는 `if (!x) return` 여덟 줄과 3단 중첩을 같은 점수로 매긴다 — 읽는 비용은 전혀 다르다.
-// 이 두 값이 그 차이를 들고 있으므로 회귀로 못박는다.
-const SHAPE_CASES = [
-  // 가드만 늘어선 검증 파이프라인: 깊이 1, cog 전부가 가드 몫
-  ["가드 3연발", `function f(){ if(!a) return 1; if(!b) return 2; if(!c) return 3; }`, { nest: 1, guard: 3, cog: 3 }],
-  // 같은 cog 3인데 3단 중첩: 깊이 3, 가드 0
-  ["3단 중첩", `function f(){ if(a){ if(b){ if(c){} } } }`, { nest: 3, guard: 0, cog: 6 }],
-  // 가드 블록에 정리 코드가 몇 줄 붙어도 가드로 본다(로그·해제)
-  ["블록 가드", `function f(){ if(!a){ log(1); return 2; } body(); }`, { nest: 1, guard: 1, cog: 1 }],
-  // else 가 붙으면 빠져나가는 가드가 아니다 — 양쪽을 다 들고 읽어야 한다
-  ["else 있으면 가드 아님", `function f(){ if(a) return 1; else return 2; }`, { nest: 1, guard: 0, cog: 2 }],
-  // 루프 안 가드(continue)도 가드다
-  ["루프 안 continue 가드", `function f(){ for(const x of xs){ if(!x) continue; use(x); } }`, { nest: 2, guard: 2, cog: 3 }],
-];
-for (const [name, code, want] of SHAPE_CASES) {
-  const got = measure(code);
-  const ok = got.cog === want.cog && got.nest === want.nest && got.guard === want.guard;
-  if (!ok) fail++;
-  console.log(`  ${ok ? "✓" : "✗"} 모양: ${name}: got cog${got.cog}/깊이${got.nest}/가드${got.guard} want cog${want.cog}/깊이${want.nest}/가드${want.guard}`);
-}
 
 // O(n²) 축의 zone 분류 회귀 — 백엔드가 프론트보다 먼저 매칭돼야 한다(api/admin 라우트 오분류 방지).
 const zoneSrc = src.match(/function quadZoneOf\(file\) \{[\s\S]*?\n\}/);
@@ -127,25 +42,6 @@ if (zoneSrc) {
   }
 }
 
-// 소스 분류도 같은 모노레포 경로를 백엔드로 봐야 LOC breakdown과 O(n²) zone이 갈리지 않는다.
-const classifySrc = src.match(/function classifyFile\(filePath, content\) \{[\s\S]*?\n\}/);
-if (classifySrc) {
-  const classifyFile = eval(`(${classifySrc[0].replace(/^function classifyFile/, "function")})`);
-  const CLASSIFY_CASES = [
-    ["admin-api", "apps/admin-api/src/modules/billing/service.ts", "", "backend"],
-    ["backend", "apps/backend/src/modules/goals/service.ts", "", "backend"],
-    ["suffix back", "apps/flowiki-back/src/modules/docs/service.ts", "", "backend"],
-    ["tsx frontend", "apps/frontend/src/components/Card.tsx", "", "frontend"],
-    ["shared util", "packages/shared/src/date.ts", "", "shared"],
-  ];
-  for (const [name, file, content, want] of CLASSIFY_CASES) {
-    const got = classifyFile(file, content);
-    const ok = got === want;
-    if (!ok) fail++;
-    console.log(`  ${ok ? "✓" : "✗"} source zone: ${name}: got ${got} want ${want}`);
-  }
-}
-
 // 생성 파일 제외는 이름 또는 강한 생성 배너가 있을 때만 발동한다. migration이라는 이유만으로
 // 제외하면 실제 배포 로직을 점수에서 숨길 수 있으므로 일반 migration은 반드시 남긴다.
 const generatedSrc = src.match(/function isGeneratedSource\(filePath, content\) \{[\s\S]*?\n\}/);
@@ -167,72 +63,20 @@ if (generatedSrc) {
   }
 }
 
-// ── 문서가 점수식과 같은 말을 하는지 ──────────────────────────────────────
-// 랜딩과 README 는 배점을 손으로 적는다. v8 에서 N+1 을 채점축에 넣었을 때
-// 두 문서가 전부 "채점축 4개"로 남아 있었고, 함수 길이는 23인데 26으로 적혀
-// 있었다. 숫자를 손으로 적는 문서는 반드시 갈리므로 여기서 고정한다.
+// ── 랜딩·README 의 규칙 개수가 엔진과 같은지 ─────────────────────────────
+// 손으로 적는 개수는 반드시 어긋난다(채점축을 걷어낼 때 랜딩이 21종, 엔진은 24종이었다).
 {
-  console.log("\n문서 ↔ 점수식 일치:");
-  const AXES = [
-    ["인지 복잡도", ["over15Pct", "over25Pct", "cognitive.p90", "cognitive.top10avg"]],
-    ["함수 길이", ["fnOver40Pct", "fnLength.p90", "fnLength.top10avg"]],
-    ["중복", ["duplication.percent"]],
-    ["파일 크기", ["longFileSeverityPct", "avgFileLines"]],
-    ["순차 I/O", ["seqIo"]],
-    ["O(n²)", ["quadratic.candidates"]],
-  ];
-  // AST 모드 점수식만 자른다(regex 폴백은 별도 체계).
-  const from = src.indexOf("qualityScore = Math.max(0, Math.round(");
-  const to = src.indexOf("  // regex 폴백", from);
-  const expr = src.slice(from, to);
-  const caps = new Map(AXES.map(([n]) => [n, 0]));
-  let matched = 0;
-  for (const m of expr.matchAll(/-\s*(?:\((?:[^()]|\([^()]*\))*\?\s*)?Math\.min\((\d+),\s*(.*)$/gm)) {
-    const axis = AXES.find(([, keys]) => keys.some((k) => m[2].includes(k)));
-    if (!axis) continue;
-    caps.set(axis[0], caps.get(axis[0]) + Number(m[1]));
-    matched++;
-  }
-  const total = [...caps.values()].reduce((a, b) => a + b, 0);
-  const check = (name, ok, detail) => {
-    if (!ok) fail++;
-    console.log(`  ${ok ? "✓" : "✗"} ${name}${detail ? `: ${detail}` : ""}`);
-  };
-  check("점수식 항이 모두 축에 매핑됨", matched === expr.match(/-\s*(?:\((?:[^()]|\([^()]*\))*\?\s*)?Math\.min\(/g).length,
-    `${matched}개 매핑`);
-
+  console.log("\n문서 ↔ 엔진 규칙 개수:");
+  const sweepSrc = fs.readFileSync(path.join(ROOT, "bin", "sweep.mjs"), "utf8");
+  const nRules = [...sweepSrc.matchAll(/^  \w+: \{ label:/gm)].length;
   const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
   const readme = fs.readFileSync(path.join(ROOT, "README.md"), "utf8");
-  // lead 문단은 섹션마다 있다 — 배점을 적는 건 #axes 의 것이다.
-  const axesSec = html.slice(html.indexOf('id="axes"'), html.indexOf("</section>", html.indexOf('id="axes"')));
-  const lead = axesSec.match(/<p class="lead ko">(.*?)<\/p>/s)?.[1] ?? "";
-  for (const [axis, cap] of caps) {
-    check(`랜딩 배점 ${axis} ${cap}`, lead.includes(`${axis} ${cap}`));
-    // 축 이름에 () 나 + 가 들어간다(O(n²), N+1) — 정규식 메타문자를 전부 막아야 한다.
-    // `+` 만 escape 하던 때 O(n²) 의 괄호가 캡처 그룹으로 해석돼 조용히 안 맞았다.
-    const lit = axis.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    check(`README 배점 ${axis} ${cap}`,
-      new RegExp(`\\*\\*${lit}\\*\\*\\s*\\|\\s*${cap}\\s*\\|`).test(readme));
-  }
-  check(`합계 ${total}`, lead.includes(`합 ${total}`) && readme.includes(`합 ${total}`));
-
-  const nAxes = caps.size;
-  check(`랜딩 제목 "축 ${nAxes}개"`, html.includes(`축 ${nAxes}개`));
-  check(`랜딩 herometa 채점축 ${nAxes}`, html.includes(`scored axes</span> ${nAxes}`));
-  check(`README 제목 "채점축 ${nAxes}개"`, readme.includes(`채점축 ${nAxes}개`));
-
-  // 진단 개수: DIAG 배열이 진짜 출처다(#dx 를 런타임에 덮어쓴다).
   const diagBlock = html.slice(html.indexOf("const DIAG=["), html.indexOf("\n];", html.indexOf("const DIAG=[")));
-  const diag = [...diagBlock.matchAll(/^\s*\['(\w+)',/gm)].map((m) => m[1]);
-  const byCat = diag.reduce((a, k) => ((a[k] = (a[k] || 0) + 1), a), {});
-  const CHIP = { perf: "성능", bug: "정확성 버그", type: "타입 위생", hyg: "위생" };
-  for (const [k, ko] of Object.entries(CHIP)) {
-    check(`칩 "${ko} ${byCat[k]}"`, html.includes(`${ko} ${byCat[k]}<`));
-  }
-  check(`랜딩 제목 "결함 ${diag.length}종"`, html.includes(`결함 ${diag.length}종`));
-  check(`랜딩 herometa 진단 ${diag.length}`, html.includes(`diagnostics</span> ${diag.length}`));
-  check(`README "진단 ${diag.length}종"`, readme.includes(`진단 ${diag.length}종`));
-  check("채점축과 진단이 겹치지 않음", !diag.some((_, i) => diagBlock.includes("'N+1'")));
+  const nDiag = [...diagBlock.matchAll(/^\s*\['\w+',/gm)].length;
+  const ok = (name, cond) => { if (!cond) fail++; console.log(`  ${cond ? "✓" : "✗"} ${name}`); };
+  ok(`랜딩 DIAG ${nDiag} = 엔진 ${nRules}`, nDiag === nRules);
+  ok(`랜딩 herometa 규칙 ${nRules}`, html.includes(`<b id="ndiag">${nRules}</b>`));
+  ok(`README "규칙 ${nRules}종"`, readme.includes(`규칙 ${nRules}종`));
 }
 
 // ── 탐지기 픽스처: 참·거짓 양쪽을 고정한다 ────────────────────────────────
@@ -255,8 +99,6 @@ if (generatedSrc) {
       // assigned 는 대입했고, collector 는 콜백 순회 관용구, location 은 이동,
       // token 은 같은 파일이 같은 이름을 선언한 자체 메서드다.
       miss: ["assigned", "out", "collector", "location", "token", "sheet", "node", "acc", "vb", "tracked", "ParseError", "Widget"],
-      // 출력 줄: `    spec.replace() — src/...:7`
-      namePattern: /^\s{4}(?:new )?([A-Za-z_$][\w$]*)(?:\.\w+)?\(\) — \S*discarded-pure-call\.ts:/gm,
     },
     {
       file: "discarded-pure-call-jsx.js",
@@ -266,7 +108,6 @@ if (generatedSrc) {
       // 템플릿 리터럴 `….trim()` 은 JSX 속성 값이다 — TS 모드 파싱에선 깨진 문장으로 잡혔다.
       // 그 출력은 여러 줄이라 이름으로 못 거른다 — 총 1건 검사가 지킨다.
       miss: [],
-      namePattern: /^\s{4}(\S+?)\.\w+\(\) — \S*discarded-pure-call-jsx\.js:/gm,
     },
     {
       file: "index-of-as-bool.ts",
@@ -275,7 +116,6 @@ if (generatedSrc) {
       hit: ["msg", "names", "out"],
       // head 는 !s.indexOf 관용구, tail 은 비교, dot·label·list 는 값 자리다.
       miss: ["head", "tail", "dot", "label", "list"],
-      namePattern: /^\s{4}([A-Za-z_$][\w$]*)\.\w+\(\) — \S*index-of-as-bool\.ts:/gm,
     },
     {
       file: "index-of-as-bool-style.ts",
@@ -284,7 +124,6 @@ if (generatedSrc) {
       // 저장소가 !s.indexOf 관용구를 쓰면(3회 이상) 위치를 0번 자리 의미로 쓰는 스타일이다 — 조건 자리도 의도다.
       hit: [],
       miss: ["cmd", "s"],
-      namePattern: /^\s{4}([A-Za-z_$][\w$]*)\.\w+\(\) — \S*index-of-as-bool-style\.ts:/gm,
     },
     {
       file: "callback-no-return.ts",
@@ -294,7 +133,6 @@ if (generatedSrc) {
       // keys 는 결과를 버린 filter, rows 는 return 이 있고, jobs 는 async, items 는 Promise.all 밖, tasks 는 throw 뿐.
       // tags 는 forEach 본문의 filter, crons 는 동기 push 로 끝나는 map 이다.
       miss: ["keys", "rows", "jobs", "items", "tasks", "tags", "crons"],
-      namePattern: /^\s{4}([A-Za-z_$][\w$]*)\.\w+\(\) — \S*callback-no-return\.ts:/gm,
     },
     {
       file: "async-in-condition.ts",
@@ -304,7 +142,6 @@ if (generatedSrc) {
       // awaited 는 await 했고, checkSync 는 동기, isEngineValid 는 맨 이름이 import 한 동기 함수(같은 이름 async 메서드와 다른 이름 공간),
       // started 는 조건이 아닌 값 자리다.
       miss: ["awaited", "checkSync", "isEngineValid", "started"],
-      namePattern: /^\s{4}(\S+)\(\) — \S*async-in-condition\.ts:/gm,
     },
     {
       file: "finally-swallow.ts",
@@ -314,7 +151,6 @@ if (generatedSrc) {
       // guarded 는 finally 의 return 이 if 안, noRethrow 는 catch 가 안 던짐, innerTry 는 catch 의 throw 가 안쪽 try 에서 잡힘,
       // afterFinally 는 return 이 try 뒤에 있다.
       miss: ["guarded", "noRethrow", "innerTry", "afterFinally"],
-      namePattern: /^\s{4}(\S+)\(\) — \S*finally-swallow\.ts:/gm,
     },
     {
       file: "self-compare.ts",
@@ -325,8 +161,6 @@ if (generatedSrc) {
       // "a" 는 리터럴 인자, el.startArrowhead 는 다른 식이다.
       // n 은 맨 이름의 NaN 아님 관용구, 0 은 리터럴끼리다.
       miss: ["node.key", "label", "next()", "node.value", '"a"', "el.startArrowhead", "n", "0", "token.buf", "Math.PI", "f[0]", "b", "false"],
-      // 출력 줄: `    this.xref === — src/...:12`
-      namePattern: /^\s{4}(\S+) \S+ — \S*self-compare\.ts:/gm,
     },
     {
       file: "write-only-collection.ts",
@@ -335,8 +169,6 @@ if (generatedSrc) {
       label: "쓰기만 하는 컬렉션",
       hit: ["seen", "audit"],
       miss: ["known", "bag", "passed", "built", "registry", "later", "skip", "chained", "parked", "liveNotifications"],
-      // 출력 줄: `    seen = new Set() — ...`
-      namePattern: /^\s{4}([A-Za-z_$][\w$]*) = new (?:Map|Set)\(\)/gm,
     },
     {
       file: "await-in-foreach.ts",
@@ -345,8 +177,6 @@ if (generatedSrc) {
       hit: ["rows"],
       // dataset 은 forEach 자체를 await 하는 자체 구현이고, plain 은 콜백에 await 가 없다.
       miss: ["dataset", "plain"],
-      // 출력 줄: `    rows.forEach(async) — src/...:9`
-      namePattern: /^\s{4}([A-Za-z_$][\w$.]*)\.forEach\(async\) — /gm,
     },
     {
       file: "stateful-regex.ts",
@@ -357,8 +187,6 @@ if (generatedSrc) {
       // 버그가 아니다(nx 에서 오탐 2/2 를 낸 계열). plain 은 /g 가 없고, inner 는
       // 루프 안에서 만들어 매 회 새 객체이며, walked 는 exec 순회 관용구다.
       miss: ["guarded", "plain", "inner", "walked", "peeked", "matched"],
-      // 출력 줄: `    leaks.test() — src/...:11`
-      namePattern: /^\s{4}([A-Za-z_$][\w$]*)\.test\(\)/gm,
     },
     {
       file: "loop-invariant-index.ts",
@@ -369,8 +197,6 @@ if (generatedSrc) {
       // 대입되는 값, escaped 는 반복마다 하나씩 필요한 상태, paired 는 루프 헤더라
       // 한 번만 만들어진다. 뒤 세 계열은 mongoose 에서 후보 5건이 전부 오탐으로 나왔다.
       miss: ["base", "cells", "mutated", "escaped", "paired"],
-      // 출력 줄: `    new Set(allowed…) — src/...:10`
-      namePattern: /^\s{4}new (?:Map|Set)\(([A-Za-z_$][\w$]*)…\)/gm,
     },
     {
       file: "quadratic-co-growth.ts",
@@ -380,7 +206,7 @@ if (generatedSrc) {
       hit: ["seenRows"],
       // failedRows: 같은 배열이지만 throw 블록 안 — 실패할 때 한 번 돈다.
       miss: ["patchedNames", "failedRows"],
-      fromJson: (j) => (j.quality?.quadratic?.candidateList || [])
+      fromJson: (j) => (j.quadratic?.candidateList || [])
         .filter((c) => c.coGrows)
         .map((c) => c.recv),
     },
@@ -391,7 +217,7 @@ if (generatedSrc) {
       hit: ["members", "members"],
       // byId 는 미리 만든 Map 의 get 이다 — 선형 탐색이 아니다.
       miss: ["byId", "people"],
-      fromJson: (j) => (j.quality?.quadratic?.candidateList || []).map((c) => c.recv),
+      fromJson: (j) => (j.quadratic?.candidateList || []).map((c) => c.recv),
     },
     {
       file: "quadratic-gates.ts",
@@ -399,7 +225,7 @@ if (generatedSrc) {
       label: "O(n²) 게이트",
       hit: ["pending"],
       miss: ["kinds", "counts", "text"],
-      fromJson: (j) => (j.quality?.quadratic?.candidateList || []).map((c) => c.recv),
+      fromJson: (j) => (j.quadratic?.candidateList || []).map((c) => c.recv),
     },
     {
       file: "regex-in-loop.ts",
@@ -409,7 +235,7 @@ if (generatedSrc) {
       // map() 은 모듈 로드 시 1회 도는 캐시 생성이지 재컴파일이 아니다.
       miss: ["atLoad"],
       // 이 축은 file:line 만 남긴다 — 그 줄의 변수 이름으로 판정한다.
-      fromJson: (j, srcAt) => (j.quality?.textbook?.regexInLoop?.worst || [])
+      fromJson: (j, srcAt) => (j.textbook?.regexInLoop?.worst || [])
         .map((w) => (srcAt(w.line).match(/const\s+([A-Za-z_$][\w$]*)/) || [])[1] || "?"),
     },
     {
@@ -420,7 +246,7 @@ if (generatedSrc) {
       // Promise.all(map(async ...)) 은 병렬 배칭이지 순차 N+1 이 아니다.
       miss: ["batchedRepo", "intentRepo", "retryRepo"],
       // 이 축은 콘솔에 안 찍힌다 — 산출물 JSON 에서 수신자 이름으로 읽는다.
-      fromJson: (j) => (j.quality?.nplusOne?.worst || []).map((w) => w.recv),
+      fromJson: (j) => (j.nplusOne?.worst || []).map((w) => w.recv),
     },
     {
       file: "serial-await.ts",
@@ -429,7 +255,7 @@ if (generatedSrc) {
       hit: ["usersHit"],
       miss: ["usersTx"],
       // 구간 첫 줄의 변수 이름으로 판정한다.
-      fromJson: (j, srcAt) => (j.quality?.serialAwait?.worst || [])
+      fromJson: (j, srcAt) => (j.serialAwait?.worst || [])
         .map((w) => (srcAt(w.line).match(/const\s+([A-Za-z_$][\w$]*)/) || [])[1] || "?"),
     },
     {
@@ -441,7 +267,6 @@ if (generatedSrc) {
       // page.fill({ once: true }) 은 도메인 API 다 — 수신자가 '배열을 만드는 표현'이 아니면
       // Array.prototype.fill 이 아니다(playwright 에서 3곳 밟았다).
       miss: ["{ once: true }"],
-      namePattern: /^\s{4}\.fill\((.+?)\) — /gm,
     },
     {
       file: "deep-equal-set-op.ts",
@@ -451,7 +276,6 @@ if (generatedSrc) {
       // 잡히면 총량이 4가 되어 깨진다 — 이름이 hit 과 겹쳐 miss 로는 못 적는다.
       hit: ["uniqWith", "differenceWith", "intersectionWith"],
       miss: [],
-      namePattern: /^\s{4}(\w+)\(…, isEqual\) — /gm,
     },
     {
       file: "io-in-loop.ts",
@@ -462,8 +286,6 @@ if (generatedSrc) {
       // 이름만 보고 리더로 해석하면 코퍼스에서 834곳이 오탐으로 터졌던 자리다.
       // join 도 같은 이유로 리더가 아니다.
       miss: ["get", "join"],
-      // 출력 줄: `    반복 읽기: loadTemplate() — src/...:22`
-      namePattern: /^\s{4}반복 읽기: ([A-Za-z_$][\w$]*)\(\)/gm,
     },
     {
       file: "floating-promise.ts",
@@ -476,8 +298,6 @@ if (generatedSrc) {
       // persisted 는 다른 클래스의 async 메서드와 이름만 같은 동기 메서드다(mastra 5곳).
       // quiet 는 await 없는 async, tried 는 본문 전체가 try/catch 라 버려도 무해하다.
       miss: ["guarded", "chained", "voided", "awaited", "relayed", "persisted", "quiet", "tried"],
-      // 출력 줄: `    drained() — src/...:15`
-      namePattern: /^\s{4}([A-Za-z_$][\w$]*)\(\) — /gm,
     },
     {
       file: "for-in-array.ts",
@@ -487,8 +307,6 @@ if (generatedSrc) {
       // spec 은 객체를 도는 정상 for...in 이고, fields 는 아래 함수의 동명 배열 때문에
       // 끌려오던 자리다(mongoose schema.js:2396 에서 밟았다).
       miss: ["spec", "fields"],
-      // 출력 줄: `    parts — src/...:10` (경로 앞부분은 실행 위치에 따라 달라진다)
-      namePattern: /^\s{4}([A-Za-z_$][\w$]*) — \S*for-in-array\.ts:/gm,
     },
   ];
   for (const fx of FIXTURES) {
@@ -506,17 +324,12 @@ if (generatedSrc) {
     const r = spawnSync(process.execPath,
       [path.join(ROOT, "bin", "fixearly.mjs"), `--dir=${path.join(out, "src")}`],
       { cwd: out, encoding: "utf8" }); // cwd 를 옮겨 산출물(public/)이 저장소에 안 남게
-    const text0 = (r.stdout || "") + (r.stderr || "");
-    // 콘솔에 안 찍는 축이 있다(N+1 은 seqIo 로만 점수에 들어간다). 그런 축은 산출물
-    // JSON 에서 읽는다 — 테스트를 위해 리포트 출력을 바꾸지 않으려고 이 경로를 둔다.
-    let json = null;
-    if (fx.fromJson) {
-      const jp = path.join(out, "public", "fixearly.json");
-      if (fs.existsSync(jp)) json = JSON.parse(fs.readFileSync(jp, "utf8"));
-    }
+    const text = (r.stdout || "") + (r.stderr || "");
+    const jp = path.join(out, "public", "fixearly.json");
+    const json = fs.existsSync(jp) ? JSON.parse(fs.readFileSync(jp, "utf8")) : null;
     fs.rmSync(out, { recursive: true, force: true });
-    if (/regex 근사 모드/.test(text0)) check(`${fx.key} AST 모드로 측정됨`, false);
-    const text = text0;
+    if (!json) check(`${fx.key} 산출물 생성됨 (${text.trim().split("\n").pop()})`, false);
+    const d = json?.diagnostics || {};
     let names;
     let total;
     if (fx.fromJson) {
@@ -524,19 +337,21 @@ if (generatedSrc) {
       // 옮겨도 깨지므로, 그 줄의 소스 텍스트를 넘겨 이름으로 판정할 수 있게 한다.
       const fixtureLines = fs.readFileSync(p, "utf8").split("\n");
       const srcAt = (line) => (fixtureLines[line - 1] || "").trim();
-      const found = json ? fx.fromJson(json, srcAt) : null;
+      const found = json ? fx.fromJson(d, srcAt) : null;
       names = new Set(found || []);
       total = found ? found.length : null;
     } else {
-      const head = text.match(new RegExp(`${fx.label}: (\\d+)곳`));
-      names = new Set([...text.matchAll(fx.namePattern)].map((m) => m[1]));
-      total = head ? Number(head[1]) : null;
+      // 축 결과의 worst 행에서 이름을 읽는다 — 축마다 이름을 담는 필드가 다르다.
+      const axis = d.textbook?.[fx.key] || d[fx.key] || {};
+      const rows = axis.worst || [];
+      names = new Set(rows.map((w) => w.name ?? w.src ?? w.what ?? w.callee));
+      total = axis.count ?? axis.uncachedLoopSites ?? rows.length;
     }
     for (const n of fx.hit) check(`${fx.key} 잡음 "${n}"`, names.has(n));
     for (const n of fx.miss) check(`${fx.key} 안 잡음 "${n}"`, !names.has(n));
     // 출력은 상위 몇 건만 찍히므로 총량도 따로 본다 — 오탐이 늘면 여기가 먼저 깨진다.
     // 잡을 게 없는 픽스처(hit: [])는 머리줄이 안 찍힌다 — 0건으로 본다.
-    check(`${fx.key} 총 ${fx.hit.length}건`, (total ?? (fx.hit.length === 0 && !fx.fromJson ? 0 : null)) === fx.hit.length);
+    check(`${fx.key} 총 ${fx.hit.length}건`, total === fx.hit.length);
   }
 }
 
@@ -570,7 +385,7 @@ if (generatedSrc) {
   fs.mkdirSync(src, { recursive: true });
   fs.writeFileSync(path.join(src, "a.ts"), body("sum"));
   const outside = run(src);
-  check("바깥 경로의 tmp/scripts 는 제외 사유가 아니다", /파일: 1개/.test(outside.text));
+  check("바깥 경로의 tmp/scripts 는 제외 사유가 아니다", /  1개 파일 · /.test(outside.text));
 
   // 반대쪽: 측정 대상 *안*의 scripts/ 는 예전대로 제외돼야 한다(규칙을 죽이지 않았다).
   const src2 = path.join(root, "keep", "src");
@@ -578,7 +393,7 @@ if (generatedSrc) {
   fs.writeFileSync(path.join(src2, "b.ts"), body("total"));
   fs.writeFileSync(path.join(src2, "scripts", "gen.ts"), body("generated"));
   const inside = run(src2);
-  check("대상 안의 scripts/ 는 여전히 제외된다", /파일: 1개/.test(inside.text));
+  check("대상 안의 scripts/ 는 여전히 제외된다", /  1개 파일 · /.test(inside.text));
 
   // TypeScript 저장소의 tsc/testdata 에는 파서 오류를 검증하려고 의도적으로
   // 깨뜨린 소스가 있다. 제품 코드로 읽으면 createSourceFile 자체가 assertion을
@@ -591,10 +406,10 @@ if (generatedSrc) {
     "declare function dec<T>(target: T): T;\n\n@dec\nawait 1\n",
   );
   const testdata = run(src3);
-  check("testdata 의 깨진 파서 픽스처는 제외된다", testdata.code === 0 && /파일: 1개/.test(testdata.text));
+  check("testdata 의 깨진 파서 픽스처는 제외된다", testdata.code === 0 && /  1개 파일 · /.test(testdata.text));
 
   // [FP:minified-bundle] 저장소에 커밋된 벤더 번들은 git 추적 대상이라 모든 필터를
-  // 통과한다. twenty 에서 for...in 129곳 오탐과 점수 왜곡(78 B → 86 A)을 냈다.
+  // 통과한다. twenty 에서 for...in 129곳 오탐을 냈다.
   const src4 = path.join(root, "vendor-bundle", "src");
   fs.mkdirSync(src4, { recursive: true });
   fs.writeFileSync(path.join(src4, "keep.ts"), body("kept"));
@@ -607,56 +422,21 @@ if (generatedSrc) {
     `${body("bundled")}export const PAYLOAD = "${"x".repeat(4000)}";\n`,
   );
   const bundled = run(src4);
-  check("커밋된 벤더 번들은 제외된다", /파일: 1개/.test(bundled.text));
+  check("커밋된 벤더 번들은 제외된다", /  1개 파일 · /.test(bundled.text));
 
-  // [FP:non-production-file] 테스트·벤치는 프로덕션이 아니다. knip 이 이걸 '미사용'으로
-  // 세면서 데드 코드가 파일 수보다 많이 나온 적이 있다(181곳).
+  // [FP:non-production-file] 테스트·벤치는 프로덕션이 아니다.
   const src5 = path.join(root, "non-production", "src");
   fs.mkdirSync(src5, { recursive: true });
   fs.writeFileSync(path.join(src5, "keep.ts"), body("kept"));
   fs.writeFileSync(path.join(src5, "keep.test.ts"), body("tested"));
   const nonProd = run(src5);
-  check("테스트 파일은 프로덕션에서 빠진다", /파일: 1개/.test(nonProd.text));
+  check("테스트 파일은 프로덕션에서 빠진다", /  1개 파일 · /.test(nonProd.text));
 
-  // 전부 걸러지면 채점하지 않고 실패한다 — 0개를 채점하면 모든 축이 0 이라 만점이 된다.
+  // 전부 걸러지면 실패한다 — 0개를 훑으면 "고칠 줄 없음"이 거짓으로 나온다.
   const empty = run(src2, ["--exclude=*"]);
-  check("전부 제외되면 만점 대신 실패", empty.code === 1 && /분석할 프로덕션 파일이 없습니다/.test(empty.text));
-  check("전부 제외되면 등급을 찍지 않는다", !/등급: /.test(empty.text));
+  check("전부 제외되면 0건 대신 실패", empty.code === 1 && /분석할 프로덕션 파일이 없습니다/.test(empty.text));
 
   fs.rmSync(root, { recursive: true, force: true });
-}
-
-// ── 핫스팟: 분석 대상 밖에서 실행해도 랭킹이 비지 않는다 ─────────────────────
-// 2026-10-08 repattern 실측: 스크래치 디렉터리에서 --hotspots 를 돌리니 랭킹이 통째로 비었다.
-// 함수 경로는 DISPLAY_BASE(대상 git 루트) 기준인데 핫스팟이 cwd 기준으로 풀어 전부 ".." 로 빠졌다.
-// 조용히 "고칠 파일 없음"을 보여주는 오답이라, 대상 밖 cwd 에서 한 줄이라도 나오는지 고정한다.
-{
-  console.log("\n핫스팟 (대상 밖 cwd):");
-  const check = (name, ok) => {
-    if (!ok) fail++;
-    console.log(`  ${ok ? "✓" : "✗"} ${name}`);
-  };
-  const repo = fs.mkdtempSync(path.join(os.tmpdir(), "fixearly-hot-"));
-  const away = fs.mkdtempSync(path.join(os.tmpdir(), "fixearly-hot-cwd-"));
-  const git = (cmd) => spawnSync("git", cmd, { cwd: repo, encoding: "utf8" });
-  git(["init", "-q", "-b", "main"]);
-  git(["config", "user.email", "t@example.com"]);
-  git(["config", "user.name", "t"]);
-  fs.mkdirSync(path.join(repo, "src"));
-  const branchy = (n) => `export function churny(xs: number[]): number {\n  let t = 0;\n`
-    + `  for (const x of xs) {\n    if (x > ${n}) { if (x % 2) { t += x; } else { t -= x; } }\n  }\n  return t;\n}\n`;
-  for (const n of [1, 2]) {
-    fs.writeFileSync(path.join(repo, "src", "churny.ts"), branchy(n));
-    git(["add", "-A"]);
-    git(["commit", "-qm", `c${n}`]);
-  }
-  const r = spawnSync(process.execPath,
-    [path.join(ROOT, "bin", "fixearly.mjs"), `--dir=${path.join(repo, "src")}`, "--hotspots"],
-    { cwd: away, encoding: "utf8" });
-  const text = (r.stdout || "") + (r.stderr || "");
-  check("대상 밖 cwd 에서도 churn>=2 파일이 랭킹에 나온다", /churny\(\):1\s+churny\.ts/.test(text));
-  fs.rmSync(repo, { recursive: true, force: true });
-  fs.rmSync(away, { recursive: true, force: true });
 }
 
 // ── pre-pr 검사기: 남의 저장소 관례를 실제로 잡는가 ────────────────────────

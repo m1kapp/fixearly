@@ -12,7 +12,7 @@ body:
     id: axes
     attributes:
       label: 고친 축과 건수
-      description: "한 줄에 하나씩. `fixearly --sweep` 이 해소를 찾으면 이 칸을 채운 링크를 출력합니다."
+      description: "한 줄에 하나씩. `fixearly` 가 해소를 찾으면 이 칸을 채운 링크를 출력합니다."
       placeholder: |
         같은 식 두 번 비교 2
         독립 await 직렬화 1

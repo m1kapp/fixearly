@@ -30,7 +30,7 @@ OUT="$ROOT/$SLUG"
 SCRATCH="$ROOT/.scratch"
 mkdir -p "$CLONES" "$OUT" "$SCRATCH"
 
-REPOS="$HERE/board-repos.json"
+REPOS="$HERE/corpus-repos.json"
 [ -f "$REPOS" ] || { echo "FAIL 목록 없음: $REPOS"; exit 1; }
 
 python3 -c "

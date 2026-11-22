@@ -540,7 +540,7 @@
    "titleEn": "unused MCP server map in the tools picker",
    "type": "쓰기만 하는 컬렉션 (MCP 툴마다 .set(), 읽기 없음 — #249448 이후 15개월째 · 삭제)",
    "repo": "microsoft/vscode",
-   "repoLabel": "vscode · 195.6k★",
+   "repoLabel": "vscode · 195.7k★",
    "pr": 334230,
    "status": "closed",
    "createdAt": "2026-09-03T11:03:48Z",
@@ -1192,7 +1192,7 @@
    "titleEn": "remote extension init skips awaiting installs and reads pre-release from the wrong extension",
    "type": "return 없는 콜백 (Promise.allSettled 안 동기 map 이 installInServer 를 안 돌려줌) · 같은 파일의 find 가 가려진 e 를 자기 자신과 비교",
    "repo": "microsoft/vscode",
-   "repoLabel": "vscode · 195.6k★",
+   "repoLabel": "vscode · 195.7k★",
    "pr": 340771,
    "createdAt": "2026-10-09T17:53:48Z",
    "status": "reviewing",
@@ -1514,5 +1514,5 @@
    "status": "waiting"
   }
  ],
- "generatedAt": "2026-11-24T16:58:59.930Z"
+ "generatedAt": "2026-11-24T17:19:22.242Z"
 }
