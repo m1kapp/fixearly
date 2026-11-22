@@ -71,13 +71,13 @@
 | [react#37699](https://github.com/facebook/react/pull/37699) | 머지 | — |
 | [react#37855](https://github.com/facebook/react/pull/37855) | 머지 | — |
 | [n8n#40103](https://github.com/n8n-io/n8n/pull/40103) | 머지 | — |
+| [Node.js#66647](https://github.com/nodejs/node/pull/66647) | 머지 | — |
 | [angular#70690](https://github.com/angular/angular/pull/70690) | 머지 | — |
 | [angular#70977](https://github.com/angular/angular/pull/70977) | 머지 | — |
 | [angular#71119](https://github.com/angular/angular/pull/71119) | 머지 | — |
 | [angular#71267](https://github.com/angular/angular/pull/71267) | 머지 | — |
 | [angular#71389](https://github.com/angular/angular/pull/71389) | 머지 | — |
 | [wp-calypso#115382](https://github.com/Automattic/wp-calypso/pull/115382) | 머지 | — |
-| [Node.js#66647](https://github.com/nodejs/node/pull/66647) | 승인 | — |
 | [openstatus#2620](https://github.com/openstatusHQ/openstatus/pull/2620) | 닫힘 | 상위 #2751 의존성 업데이트로 Hono 4.13.8·node-server 2.1.1이 반영돼 보안 목표가 충족됐다. 이 PR은 미병합 |
 | [openstatus#2780](https://github.com/openstatusHQ/openstatus/pull/2780) | 닫힘 | 메인테이너가 V1 API 폐기 예정이라고 밝혀 우리가 닫았다 |
 | [FastGPT#7918](https://github.com/labring/FastGPT/pull/7918) | 닫힘 | 메인테이너: catch-all 이라 await 없이도 기대대로 동작한다 · 새 버전에서 이 자동 갱신·재시도 자체를 없앴다 |
@@ -394,23 +394,22 @@ CLA 는 봇 댓글(`@microsoft-github-policy-service agree`)뿐 · 이슈 없는
 <!-- auto:open — tools/update-pr-queue.py 가 생성한다. 손으로 고치지 마라. -->
 | PR | 축 | 상태 | 경과 / 외부 머지 중앙값 |
 |---|---|---|---|
-| [Node.js#66647](https://github.com/nodejs/node/pull/66647) | 버린 반환값 | 🔵 승인 · 머지 대기 | 41일째 / 보통 5일 · 보류 |
-| [vscode#340771](https://github.com/microsoft/vscode/pull/340771) | return 없는 콜백 | 🟢 리뷰 진행 | 42일째 / 보통 1일 |
-| [nocodb#14812](https://github.com/nocodb/nocodb/pull/14812) | 버린 반환값 | 🟢 리뷰 진행 | 42일째 |
-| [wp-calypso#115386](https://github.com/Automattic/wp-calypso/pull/115386) | return 없는 콜백 | ⚪ 대기 | 32일째 / 보통 1일 · 보류 |
-| [infisical#8536](https://github.com/Infisical/infisical/pull/8536) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 43일째 / 보통 1일 · 보류 |
+| [vscode#340771](https://github.com/microsoft/vscode/pull/340771) | return 없는 콜백 | 🟢 리뷰 진행 | 43일째 / 보통 1일 |
+| [nocodb#14812](https://github.com/nocodb/nocodb/pull/14812) | 버린 반환값 | 🟢 리뷰 진행 | 43일째 |
+| [wp-calypso#115386](https://github.com/Automattic/wp-calypso/pull/115386) | return 없는 콜백 | ⚪ 대기 | 33일째 / 보통 1일 · 보류 |
+| [infisical#8536](https://github.com/Infisical/infisical/pull/8536) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 44일째 / 보통 1일 · 보류 |
 | [insomnia#10575](https://github.com/Kong/insomnia/pull/10575) | forEach 안 await | ⚪ 대기 | 45일째 / 보통 4일 · 보류 |
-| [ghost#33132](https://github.com/TryGhost/Ghost/pull/33132) | 위치를 진리값으로 | ⚪ 대기 | 2일째 / 보통 1일 |
-| [excalidraw#12359](https://github.com/excalidraw/excalidraw/pull/12359) | finally 가 삼킨 throw | ⚪ 대기 | 32일째 / 보통 20일 · 보류 |
+| [ghost#33132](https://github.com/TryGhost/Ghost/pull/33132) | 위치를 진리값으로 | ⚪ 대기 | 3일째 / 보통 1일 |
+| [excalidraw#12359](https://github.com/excalidraw/excalidraw/pull/12359) | finally 가 삼킨 throw | ⚪ 대기 | 33일째 / 보통 20일 · 보류 |
 | [mermaid#8413](https://github.com/mermaid-js/mermaid/pull/8413) | 쓰기만 하는 컬렉션 | ⚪ 대기 | 43일째 / 보통 6일 · 보류 |
-| [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 47일째 / 보통 4일 · 보류 |
-| [opensumi#4776](https://github.com/opensumi/core/pull/4776) | 버린 반환값 | ⚪ 대기 | 42일째 / 보통 4일 · 보류 |
-| [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 45일째 / 보통 4일 · 보류 |
-| [rgthree-comfy#790](https://github.com/rgthree/rgthree-comfy/pull/790) | 같은 식 두 번 비교 | ⚪ 대기 | 42일째 / 보통 4일 · 보류 |
-| [serverless#13947](https://github.com/serverless/serverless/pull/13947) | return 없는 콜백 | ⚪ 대기 | 42일째 / 보통 1일 · 보류 |
-| [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 55일째 / 보통 1일 · 보류 |
+| [n8n#40311](https://github.com/n8n-io/n8n/pull/40311) | O(n²) | ⚪ 대기 | 48일째 / 보통 4일 · 보류 |
+| [opensumi#4776](https://github.com/opensumi/core/pull/4776) | 버린 반환값 | ⚪ 대기 | 43일째 / 보통 4일 · 보류 |
+| [react-router#15591](https://github.com/remix-run/react-router/pull/15591) | 버려진 Promise | ⚪ 대기 | 46일째 / 보통 4일 · 보류 |
+| [rgthree-comfy#790](https://github.com/rgthree/rgthree-comfy/pull/790) | 같은 식 두 번 비교 | ⚪ 대기 | 43일째 / 보통 4일 · 보류 |
+| [serverless#13947](https://github.com/serverless/serverless/pull/13947) | return 없는 콜백 | ⚪ 대기 | 43일째 / 보통 1일 · 보류 |
+| [tailwindcss#20525](https://github.com/tailwindlabs/tailwindcss/pull/20525) | 버려진 Promise | ⚪ 대기 | 56일째 / 보통 1일 · 보류 |
 
-**열린 것 15건(보류 12건 빼면 3건).** 판정 난 91건 중 머지 60 · 승인 1 · 닫힘 30.
+**열린 것 14건(보류 11건 빼면 3건).** 판정 난 91건 중 머지 61 · 승인 0 · 닫힘 30.
 <!-- /auto:open -->
 
 **2026-08-10 준비** — astro 후보를 손검증까지 끝내고 브랜치만 만들어 뒀다(하루 1건이라
@@ -874,7 +873,7 @@ changeset(`astro: patch`)을 같이 넣는다. 브랜치는 `fix/stack-trace-reg
 | FastGPT | 67% | 78% | 1.2일 | 8/12 | 컷 | 판정 경험 있음 |
 | babel | 67% | 69% | 1.3일 | 6/9 | 표본 부족 | 게이트 0 — AI_POLICY.md: LLM 이 쓴 PR 설명 금지(본인이 직접 써야 함), LLM 산문은 앞에 명시 표기. 어기면 조직 차단까지. 설명을 사람이 쓰지 않는 한 내지 않는다 |
 | vscode | 64% | 71% | 0.1일 | 9/14 | 컷 | 열린 PR 있음 — 저장소당 1건 · CLA 는 봇 댓글로 서명(@microsoft-github-policy-service agree) · 이슈 연결 권장이지만 정리 PR 은 이슈 없이도 머지 사례(#334095) · 버그 PR 은 메인테이너가 이슈 먼저 요구할 수 있음 |
-| node | 63% | 64% | 5.2일 | 12/19 | 컷 | 열린 PR 있음 — 저장소당 1건 |
+| node | 63% | 64% | 5.2일 | 12/19 | 컷 | 판정 경험 있음 |
 | astro | 62% | 68% | 2.8일 | 10/16 | 컷 | 판정 경험 있음 · 사용자에게 보이는 변화면 changeset 필요 — 내부 전용 변경은 changeset 없이 머지된다(#17430 refactor·#16734 chore 가 changeset 0) · AI 정책 없음 · **포크 PR 워크플로가 승인 게이트가 아니다**(2026-09-13 #17987 제출 직후 CI 가 바로 돌았다 — angular·nx 와 다르다) · **`Test (Smoke)` 는 `smoke/docs` 의존성을 pkg.pr.new 커밋 핀에서 받는다** — 그 빌드가 만료되면 `ERR_PNPM_FETCH_404` 로 죽는다(2026-09-13 #17987 에서 밟음). PR 내용과 무관하다 |
 | SponsorBlock | 62% | 54% | 3.4일 | 10/16 | 컷 | 판정 경험 있음 |
 | ag-ui | 60% | 87% | 0.2일 | 6/10 | 컷 | 판정 경험 있음 |

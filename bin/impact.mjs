@@ -187,7 +187,10 @@ console.log("  PR 상태 조회 중...\n");
 const rows = [];
 let score = 0;
 for (const f of findings) {
-  const st = await prStatus(f.repo, f.pr);
+  let st = await prStatus(f.repo, f.pr);
+  // node 처럼 봇이 커밋을 main 에 직접 넣고 PR 을 닫는 저장소 — GitHub 은 closed 로 준다.
+  // registry 에 landedIn(main 의 커밋 SHA)을 적어 두면 닫힌 시각을 머지 시각으로 센다.
+  if (st.state === "closed" && f.landedIn) st = { ...st, state: "merged", mergedAt: st.closedAt };
   const L = LABEL[st.state] || LABEL.unknown;
   score += L.point;
   const prUrl = st.url || `https://github.com/${f.repo}/pull/${f.pr}`;
