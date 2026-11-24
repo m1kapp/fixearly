@@ -98,7 +98,7 @@ if (generatedSrc) {
       hit: ["spec", "label", "ConfigError"],
       // assigned 는 대입했고, collector 는 콜백 순회 관용구, location 은 이동,
       // token 은 같은 파일이 같은 이름을 선언한 자체 메서드다.
-      miss: ["assigned", "out", "collector", "location", "token", "sheet", "node", "acc", "vb", "tracked", "ParseError", "Widget"],
+      miss: ["assigned", "out", "collector", "location", "token", "sheet", "node", "acc", "vb", "tracked", "ParseError", "Widget", "pool", "tileset.cmds"],
     },
     {
       file: "discarded-pure-call-jsx.js",
@@ -407,6 +407,14 @@ if (generatedSrc) {
   );
   const testdata = run(src3);
   check("testdata 의 깨진 파서 픽스처는 제외된다", testdata.code === 0 && /  1개 파일 · /.test(testdata.text));
+
+  // [FP:capitalized-specs-dir] cesium 은 테스트를 packages/engine/Specs/ 에 둔다 — 소문자만 보던 경계를 빠져나가
+  // 공유 참조 fill 2건이 "바로 볼 것"에 떴다(2026-11-25).
+  const srcSpecs = path.join(root, "specs-boundary", "src");
+  fs.mkdirSync(path.join(srcSpecs, "Specs"), { recursive: true });
+  fs.writeFileSync(path.join(srcSpecs, "valid.ts"), body("valid"));
+  fs.writeFileSync(path.join(srcSpecs, "Specs", "ThingSpec.ts"), body("spec"));
+  check("대문자 Specs/ 테스트 디렉터리는 제외된다", /  1개 파일 · /.test(run(srcSpecs).text));
 
   // [FP:minified-bundle] 저장소에 커밋된 벤더 번들은 git 추적 대상이라 모든 필터를
   // 통과한다. twenty 에서 for...in 129곳 오탐을 냈다.

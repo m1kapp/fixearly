@@ -108,3 +108,20 @@ export function parseOrMount(src: string): void {
   if (!src) throw new ParseError('empty');
   new Widget();
 }
+
+// pool: 인자 있는 trim — String#trim·trimStart·trimEnd 는 인자를 받지 않는다. cesium
+// `traversal.stack.trim(traversal.stackMaximumLength)` 는 ManagedArray 의 제자리 축소다(2026-11-25). [FP:trim-with-args]
+export function shrink(pool: any, max: number): void {
+  pool.trim(max);
+}
+
+// tileset.cmds: 같은 파일에서 `this.cmds = new Pool()` 로 만든 객체다 — 문자열이 아니다. cesium
+// `tileset._backfaceCommands.trim()` · `this._cache.trim()` (2026-11-25). [FP:discard-receiver-constructed]
+declare const Pool: any;
+export class Tileset {
+  cmds: any;
+  constructor() { this.cmds = new Pool(); }
+}
+export function endFrame(tileset: Tileset): void {
+  tileset.cmds.trim();
+}
