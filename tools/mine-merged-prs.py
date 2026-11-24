@@ -64,15 +64,12 @@ def gh(args, timeout=120):
 
 
 def repos():
-    """마이닝 대상. 기본은 채점 코퍼스지만 MINE_REPOS 로 더 넓힐 수 있다.
+    """마이닝 대상. 기본은 진단 검증 코퍼스(corpus-repos.json)이고, MINE_REPOS 로 넓힐 수 있다.
 
-    마이닝은 채점과 무관하다 — 등급·기준선에 아무 영향이 없으므로 대상을 넓히는
-    데 제약이 없다. 채점 코퍼스는 기준선이라 늘리면 전 저장소 점수가 움직이지만,
-    여기는 '형태를 어디서 보나'일 뿐이다. tools/mining-repos.json 이 있으면
-    그것도 같이 훑는다(slug 문자열 배열).
+    tools/mining-repos.json 이 있으면 그것도 같이 훑는다(slug 문자열 배열).
     """
     seen = set()
-    for d in json.load(open(f"{HERE}/board-repos.json", encoding="utf-8")):
+    for d in json.load(open(f"{HERE}/corpus-repos.json", encoding="utf-8")):
         m = re.match(r"https://github\.com/([^/]+/[^/]+)", d["url"])
         if m and m.group(1) not in seen:
             seen.add(m.group(1))

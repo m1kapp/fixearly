@@ -106,7 +106,7 @@ npx fixearly --dir=<backend-src> --mine
 ## 채점 코퍼스를 늘릴 때
 
 **늘리면 기존 저장소 점수가 전부 움직인다**(기준선이 종류·체급 중앙이라서).
-그래서 board-repos.json 을 바로 고치지 말고 `tools/try-corpus-candidates.py` 로
+그래서 corpus-repos.json 을 바로 고치지 말고 `tools/try-corpus-candidates.py` 로
 먼저 재고, 기준선이 얼마나 움직이는지 계산한 뒤에 결정한다.
 
 2026-08-01 에 앱 성격 20곳을 재봤다. **기준선은 거의 안 움직였다** — 헤비급
@@ -122,9 +122,8 @@ npx fixearly --dir=<backend-src> --mine
   typebot — 임팩트와 보드가 끊겨 있다.
 
 재발행은 "점수가 왜 움직였나"를 설명해야 하는 이벤트다. 설명할 변동이 없는데
-재발행만 하면 비용만 든다 — **규칙이 바뀌는 다음 판에 묶는다.** 후보는
-`tools/corpus-candidates.json` 에 측정치와 함께 대기 중이고,
-`tools/remeasure-board.sh` 가 재발행 때 그 사실을 알린다.
+재발행만 하면 비용만 든다 — **규칙이 바뀌는 다음 판에 묶는다.** (2026-11-22 점수·보드를 걷어내면서 corpus-candidates.json·remeasure-board.sh 도 지웠다.
+코퍼스는 이제 진단 검증용으로만 쓴다 — tools/corpus-repos.json.)
 
 ## 부정 결과 — `해제할 수 없는 등록` (2026-08-01, 등재 안 함)
 

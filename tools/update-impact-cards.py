@@ -589,36 +589,30 @@ if _merged:
     h = re.sub(r'(<span id="mshape-en">).*?(</span>)', rf"\g<1>{_en}\g<2>", h, count=1, flags=re.S)
     print("머지 형태 줄:", _ko)
 
-# 규칙 목록 — 채점축과 머지 실적을 한 표로 녹인다. "규칙이 남에게 머지됐다"를 규칙 단위로 보여준다.
+# 규칙 목록 — 규칙과 머지 실적을 한 표로 녹인다. "규칙이 남에게 머지됐다"를 규칙 단위로 보여준다.
 # type 접두어로 규칙을 가른다. 새 축이 머지됐는데 여기 없으면 조용히 빠지는 쪽이라, 모르는 접두어는 누락으로 센다.
 # (types, 이름 ko, en, 태그 ko, en, 설명 ko, en, 채점 메모 ko, en)
 RULES = [
     (("정규식 문자 집합 누락", "변경 후 참조 무효화", "문맥 타입 소실", "선택 범위 구두점 제거", "비동기 결과의 대상 검증 누락", "편집 중 단축키 충돌"), "직접 재현한 버그", "Manually reproduced bugs", "수동 검증", "manual verification",
-     "이슈에서 직접 재현한 파서·선택 범위·생성 타입 결함. 자동 진단이나 채점 결과가 아닌 개별 수정이다.",
-     "Parser, selection, and generated-type defects reproduced from reported issues. Individual fixes, not automated diagnostics or scoring.", "", ""),
-    (("O(n²)", "O(n²) 배열 조회", "O(n²) 그룹핑/조회"), "O(n²) 조회", "O(n²) lookup", "채점 06", "scored 06",
+     "이슈에서 직접 재현한 파서·선택 범위·생성 타입 결함. 자동 진단이 아닌 개별 수정이다.",
+     "Parser, selection, and generated-type defects reproduced from reported issues. Individual fixes, not automated diagnostics.", "", ""),
+    (("O(n²)", "O(n²) 배열 조회", "O(n²) 그룹핑/조회"), "O(n²) 조회", "O(n²) lookup", "진단", "diagnostic",
      "행마다 다른 배열을 <code>.find</code>·<code>.some</code>·<code>.includes</code> 로 처음부터 훑는 자리. "
      "한 번 Map·Set 으로 색인해두면 조회가 O(1)이 된다 — 데이터가 커질수록 차이가 제곱으로 벌어진다.",
      "Each row rescans another array with <code>.find</code>/<code>.some</code>/<code>.includes</code>. "
      "Index it once into a Map/Set and each lookup is O(1) — the gap grows with the square of the data.",
-     "테스트·프론트 구역, 정적 외곽, n 이 잘린 자리는 세지 않고 3곳 미만은 면제. 10k줄당 유예 1.0, 캡 5 — "
-     "판정 난 초기 PR 6건 중 4건이 닫혀서, 오탐이 등급을 뒤집지 않게 낮게 잡았다.",
-     "Test/frontend zones, static outers, and capped-n sites are excluded; under three sites is free. Free below 1.0 "
-     "per 10k lines, capped at 5 — four of the first six decided PRs were closed, so a false positive must not flip a grade."),
+     "", ""),
     (("쓰기만 하는 컬렉션",), "쓰기만 하는 컬렉션", "Write-only collection", "진단", "diagnostic",
      "채우기만 하고 아무도 읽지 않는 Set·Map·배열. 소비하던 코드가 리팩터로 사라진 흔적이라 "
      "지워도 동작이 같고, 매번 채우는 비용만 사라진다. knip 은 <code>.add</code> 도 \"사용\"으로 봐서 못 잡는다.",
      "A Set, Map, or array that is filled but never read — what a refactor left behind. Removing it changes "
      "nothing but the cost of filling it. knip misses it because <code>.add</code> counts as a use.", "", ""),
-    (("N+1", "독립 순차 await"), "불필요한 순차 I/O", "Needless sequential I/O", "채점 05", "scored 05",
+    (("N+1", "독립 순차 await"), "불필요한 순차 I/O", "Needless sequential I/O", "진단", "diagnostic",
      "루프 한 바퀴마다 DB·네트워크를 부르는 N+1, 그리고 서로의 결과를 쓰지 않는 <code>await</code> 를 줄 세우는 것. "
      "<code>IN (...)</code> 한 번이나 <code>Promise.all</code> 로 묶으면 왕복이 셈으로 줄어든다.",
      "A DB or network call per loop pass (N+1), and awaits that never use each other's result queued one by one. "
      "One <code>IN (...)</code> or a <code>Promise.all</code> cuts the round trips — provable by counting.",
-     "같은 결함이라 한 축. 37곳 재측정에서 기존 점수와 rho=−0.18 로 독립이고 11곳(30%)에서 발동한다. "
-     "3곳 미만은 안 센다(재시도·커서 페이지네이션은 순차가 맞다). 유예 3.0/1000파일, 캡 5.",
-     "One defect, one axis. Across 37 re-measured repos it is independent of the score (rho=−0.18) and fires in 11 (30%). "
-     "Under three sites is ignored — retries and cursor pagination are meant to be serial. Free below 3.0 per 1,000 files, capped at 5."),
+     "", ""),
     (("버려진 Promise",), "버려진 Promise", "Floating promise", "진단", "diagnostic",
      "async 함수를 <code>await</code> 없이 부르고 결과를 버린다. 실패해도 아무도 모르고, "
      "호출한 쪽은 끝나기 전에 다음 단계로 넘어간다.",
@@ -664,24 +658,6 @@ RULES = [
      "안에서 난 실패는 아무도 못 본다.",
      "<code>forEach(async …)</code> drops the promise each callback returns. The caller moves on without waiting, "
      "and failures inside go unseen.", "", ""),
-    ((), "함수 길이", "Function length", "채점 01", "scored 01",
-     "한 번에 읽어야 하는 양. 중첩 함수·주석을 뺀 자기 코드 줄 기준, 40줄 초과(JSX 60줄) 비율. "
-     "파일을 쪼개도 안 변한다 — 그래서 조작이 안 된다.",
-     "How much you must read at once — a function's own code lines, nested functions and comments removed. "
-     "Splitting files doesn't move it, so it can't be gamed.", "", ""),
-    ((), "인지 복잡도", "Cognitive complexity", "채점 02", "scored 02",
-     "함수를 머리로 따라가는 부담. SonarSource <code>S3776</code> 스펙과 정본값까지 일치 검증.",
-     "How hard a function is to follow. Matches SonarSource <code>S3776</code>, verified to canonical values.", "", ""),
-    ((), "중복", "Duplication", "채점 03", "scored 03",
-     "토큰 단위 복사·붙여넣기 밀도. 74개 실측에서 점수와 상관 −0.11이라 비중을 16→9로 줄였다 — "
-     "대부분에겐 0점, 소수에게만 큰 항목이다.",
-     "Token-level copy-paste density. Correlates −0.11 with score across 74 repos, so its cap was cut 16 → 9: "
-     "zero for most, heavy for a few.", "", ""),
-    ((), "파일 크기", "File size", "채점 04", "scored 04",
-     "평균 줄 수 + 대형 파일 비중. 보조 항으로 강등(27→8) — 같은 코드를 6파일로 쪼개기만 해도 옛 공식은 +27점을 줬다. "
-     "함수 길이와 상관 +0.16이라 버리진 않았다.",
-     "Average lines + oversized-file share, demoted to a minor term (27 → 8): splitting identical code into six files "
-     "used to gain +27. Kept, because it correlates only +0.16 with function length.", "", ""),
 ]
 
 
@@ -962,8 +938,8 @@ def _thanks_card(t):
 _tcta = ('<a class="tk tkc" href="https://github.com/m1kapp/fixearly/issues/new?template=thanks.yml" target="_blank" rel="noopener">'
          '<span class="tka"><span class="ko">비공개 저장소에서 고쳤나요? 이렇게 신청해 주세요</span>'
          '<span class="en">Fixed something in a private repo? Report it like this</span></span>'
-         '<ol class="tks"><li><span class="ko"><code>fixearly --sweep</code> 을 고치기 전·후 같은 폴더에서 돌린다 — 해소된 축과 건수가 담긴 신청 링크가 나온다</span>'
-         '<span class="en">Run <code>fixearly --sweep</code> before and after the fix from the same folder — it prints a report link with the resolved axes and counts</span></li>'
+         '<ol class="tks"><li><span class="ko"><code>fixearly</code> 를 고치기 전·후 같은 폴더에서 돌린다 — 해소된 축과 건수가 담긴 신청 링크가 나온다</span>'
+         '<span class="en">Run <code>fixearly</code> before and after the fix from the same folder — it prints a report link with the resolved axes and counts</span></li>'
          '<li><span class="ko">업종·스택·검증 방법을 고르고, 전→후 숫자가 있으면 적는다</span>'
          '<span class="en">Pick industry, stack and how you verified it; add before → after numbers if you have them</span></li>'
          '<li><span class="ko">저장소명·경로·코드는 안 받는다. 회사 이름은 공개 허락을 체크했을 때만 싣는다</span>'

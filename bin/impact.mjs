@@ -266,11 +266,10 @@ ${tableRows}
 ## 어떻게 찾았나
 
 \`\`\`bash
-npx fixearly --dir=src --dead
+npx fixearly --dir=src
 \`\`\`
 
-\`quality.io\`(루프 안 파일읽기 + DB/HTTP 순차 await)와 \`quality.dead\`(knip)가 후보를 파일:줄로
-뱉는다. SonarQube가 원리상 못 잡는 축이다. 나머지는 사람의 검증.
+규칙이 후보를 파일:줄로 뱉는다. 나머지는 사람의 검증.
 `;
 
 fs.writeFileSync(path.join(ROOT, "IMPACT.md"), md);

@@ -129,8 +129,8 @@ export function buildSweepDecision(quality, { previous = [], readLine, sha = nul
 export function sweepConsoleLines(sweep, limit = 5) {
   const c = sweep.counts;
   const lines = [
-    `  빠른 훑기: 깊게 검증 ${c.deepDive} · 맥락 확인 ${c.context} · 보류 ${c.deferred}`,
-    `  변화: 신규 ${c.new} · 유지 ${c.persistent} · 해소 ${c.resolved}`,
+    `  고칠 줄 ${c.total}개 — 바로 볼 것 ${c.deepDive} · 맥락 확인 ${c.context} · 참고 ${c.deferred}`,
+    `  지난 실행 대비: 신규 ${c.new} · 유지 ${c.persistent} · 해소 ${c.resolved}`,
   ];
   for (const item of sweep.candidates.slice(0, limit)) {
     lines.push(`    [${item.priority}] ${item.label} · ${item.file}:${item.line}`);

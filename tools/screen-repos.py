@@ -5,7 +5,7 @@
   1. 지나가는 외부 기여자 수락률 ≥50% · 머지 5건 이상 · 중앙 ≤7일 (싼 컷 먼저)
   2. CONTRIBUTING·AGENTS·CLAUDE·PR 템플릿의 AI 문구, 외부 PR 을 닫는 워크플로
   3. 외부 기여자 PR 의 CLA 체크
-"open" 이 나온 곳만 클론해서 `fixearly --dir=. --sweep` 로 후보를 센다(훑고 바로 지운다).
+"open" 이 나온 곳만 클론해서 `fixearly --dir=.` 로 후보를 센다(훑고 바로 지운다).
 "check:ai-mention" 은 문구를 사람이 읽어 판정한다 — 단순 언급과 금지가 섞여 있다.
 판정은 data/queue-repos.json(후보) · data/repo-gates.json(막힌 곳)에 남긴다.
 
